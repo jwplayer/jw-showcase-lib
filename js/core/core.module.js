@@ -138,12 +138,19 @@
         }
     }
 
-    run.$inject = ['$rootScope', '$state'];
-    function run ($rootScope, $state) {
+    run.$inject = ['$rootScope', '$state', 'config'];
+    function run ($rootScope, $state, config) {
+
+        $rootScope.$on('$stateChangeStart', function (event, toState) {
+
+            // prevent users going to search page when no searchFeed is defined
+            if (toState.name === 'root.search' && !config.searchFeed) {
+                $state.go('root.dashboard');
+                event.preventDefault();
+            }
+        });
 
         $rootScope.$on('$stateChangeError', function (event, toState) {
-
-            console.log(arguments);
 
             event.preventDefault();
 
