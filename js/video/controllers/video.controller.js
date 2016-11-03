@@ -75,7 +75,6 @@
                 autostart:      $stateParams.autoStart,
                 playlist:       generatePlaylist(feed, item),
                 sharing:        false,
-                related:        {},
                 visualplaylist: false
             };
 
