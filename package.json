@@ -1,0 +1,10 @@
+{
+    "name": "jw-showcase-lib",
+    "description": "JW Showcase library",
+    "version": "2.0.0",
+    "dependencies": {},
+    "repository": {
+        "url": "https://github.com/jwplayer/jw-showcase-lib.git"
+    },
+    "license": "Apache-2.0"
+}
