@@ -1,0 +1,24 @@
+//
+// jwAnimations
+// --------------------------------
+
+.jw-expand-animation {
+    @include transition(all 0.3s ease);
+}
+
+.jw-playlist-remove-animation {
+    @include animation(jw-playlist-remove-animation 0.8s forwards 0.2s);
+}
+
+
+@include keyframes(jw-playlist-remove-animation) {
+    0% {
+        @include transform(translateX(0));
+        opacity: 1;
+    }
+
+    100% {
+        @include transform(translateX(-100%));
+        opacity: 0;
+    }
+}
