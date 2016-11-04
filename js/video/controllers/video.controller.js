@@ -26,16 +26,16 @@
      *
      * @requires $state
      * @requires $stateParams
-     * @requires $location
-     * @requires $window
+     * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
+     * @requires jwShowcase.core.share
      */
-    VideoController.$inject = ['$state', '$stateParams', '$location', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
-    function VideoController ($state, $stateParams, $location, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
+    VideoController.$inject = ['$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
+    function VideoController ($state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
 
         var vm      = this,
             lastPos = 0,
@@ -43,10 +43,11 @@
             started = false,
             watchProgressItem;
 
-        vm.item        = item;
-        vm.feed        = {};
-        vm.duration    = 0;
-        vm.inWatchList = false;
+        vm.item                = item;
+        vm.feed                = feed;
+        vm.recommendationsFeed = null;
+        vm.duration            = 0;
+        vm.inWatchList         = false;
 
         vm.onPlay         = onPlay;
         vm.onComplete     = onComplete;
@@ -87,22 +88,33 @@
         function update () {
 
             var itemIndex = feed.playlist.findIndex(function (current) {
-                    return current.mediaid === item.mediaid;
-                }),
-                playlist  = feed.playlist
-                    .slice(itemIndex)
-                    .concat(feed.playlist.slice(0, itemIndex));
+                return current.mediaid === item.mediaid;
+            });
 
             vm.duration = utils.getVideoDurationByItem(vm.item);
 
-            vm.feed = {
-                title:    feed.title,
-                playlist: playlist
-            };
+            vm.feed.playlist = feed.playlist
+                .slice(itemIndex)
+                .concat(feed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
             vm.inWatchList = watchlist.hasItem(vm.item);
+
+            // load recommendations at this stage to prevent load time to the video page
+            apiConsumer
+                .getRecommendationsFeed(item.mediaid)
+                .then(function (response) {
+
+                    // filter duplicate video's
+                    if (angular.isArray(response.playlist)) {
+                        response.playlist = response.playlist.filter(function (item) {
+                            return feed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                        });
+                    }
+
+                    vm.recommendationsFeed = response;
+                });
         }
 
         /**
@@ -320,6 +332,17 @@
                 mediaId:   item.mediaid,
                 autoStart: autoStart
             });
+        }
+
+        /**
+         * @param mediaId
+         * @returns {Function}
+         */
+        function byMediaId (mediaId) {
+
+            return function (item) {
+                return item.mediaid === mediaId;
+            }
         }
     }
 

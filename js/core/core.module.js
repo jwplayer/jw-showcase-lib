@@ -25,6 +25,7 @@
      */
     angular
         .module('jwShowcase.core', [])
+        .value('JW_PLATFORM_URL', 'https://content.jwplatform.com')
         .config(config)
         .run(run);
 
@@ -143,8 +144,8 @@
 
         $rootScope.$on('$stateChangeStart', function (event, toState) {
 
-            // prevent users going to search page when no searchFeed is defined
-            if (toState.name === 'root.search' && !config.searchFeed) {
+            // prevent users going to search page when no searchPlaylist is defined
+            if (toState.name === 'root.search' && !config.searchPlaylist) {
                 $state.go('root.dashboard');
                 event.preventDefault();
             }

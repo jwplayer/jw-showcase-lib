@@ -45,7 +45,12 @@
     </div>
 
     <div class="jw-row" ng-if="vm.feed.playlist.length > 0">
-      <jw-card-slider feed="vm.feed" featured="false" spacing="12" heading="vm.feed.title"
+      <jw-card-slider feed="vm.feed" featured="false" heading="vm.feed.title"
+          cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+    </div>
+
+    <div class="jw-row jw-expand-animation" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
+      <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Related Videos'"
           cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 

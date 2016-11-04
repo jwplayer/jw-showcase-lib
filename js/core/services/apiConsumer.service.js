@@ -83,8 +83,16 @@
 
         /**
          * @ngdoc method
+         * @name jwShowcase.core.apiConsumer#getSearchFeed
+         * @methodOf jwShowcase.core.apiConsumer
+         *
+         * @description
+         * Get search feed from the {@link jwShowcase.core.api api} and store it in the
+         * {@link jwShowcase.core.dataStore dataStore}. Items not known by JW Showcase will be filtered out.
+         *
+         * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
-        this.search = function (searchPhrase) {
+        this.getSearchFeed = function (searchPhrase) {
 
             var promise;
 
@@ -100,7 +108,7 @@
 
             self.searching = true;
 
-            promise = api.search(searchPhrase);
+            promise = api.getSearchFeed(config.searchPlaylist, searchPhrase);
 
             promise
                 .then(function (response) {
@@ -116,6 +124,34 @@
                 });
 
             return promise;
+        };
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.apiConsumer#getRecommendationsFeed
+         * @methodOf jwShowcase.core.apiConsumer
+         *
+         * @description
+         * Get recommendations feed from the {@link jwShowcase.core.api api} and filter out items not known by
+         * JW Showcase.
+         *
+         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         */
+        this.getRecommendationsFeed = function (mediaId) {
+
+            return api.getRecommendationsFeed(config.recommendationsPlaylist, mediaId)
+                .then(function (response) {
+
+                    var allItems = dataStore.getItems();
+
+                    response.feedid = null;
+
+                    response.playlist = allItems.filter(function (item) {
+                        return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
+                    });
+
+                    return response;
+                });
         };
 
         /**
