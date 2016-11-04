@@ -55,7 +55,9 @@
     speak: none;
 }
 
-
+.jwy-icon-angle-down:before {
+    content: "\e90e";
+}
 .jwy-icon-share:before {
     content: "\e910";
 }
@@ -98,7 +100,7 @@
 .jwy-icon-twitter:before {
     content: "\e904";
 }
-.jwy-icon-double-angle-left:before {
+.jwy-icon-back:before {
     content: "\e902";
 }
 .jwy-icon-angle-left:before {
@@ -115,8 +117,5 @@
 }
 .jwy-icon-buffer:before {
     content: "\e601";
-}
-.jwy-icon-wondering:before {
-    content: "\e90e";
 }
 // scss-lint:enable all
