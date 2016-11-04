@@ -105,6 +105,14 @@
             apiConsumer
                 .getRecommendationsFeed(item.mediaid)
                 .then(function (response) {
+
+                    // filter duplicate video's
+                    if (angular.isArray(response.playlist)) {
+                        response.playlist = response.playlist.filter(function (item) {
+                            return feed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                        });
+                    }
+
                     vm.recommendationsFeed = response;
                 });
         }
@@ -324,6 +332,17 @@
                 mediaId:   item.mediaid,
                 autoStart: autoStart
             });
+        }
+
+        /**
+         * @param mediaId
+         * @returns {Function}
+         */
+        function byMediaId (mediaId) {
+
+            return function (item) {
+                return item.mediaid === mediaId;
+            }
         }
     }
 
