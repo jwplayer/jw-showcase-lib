@@ -15,10 +15,13 @@
       <jw-header-main>
         <jw-header-title class="left">
           <div class="jw-meta-align">
-            {{ vm.item.title }} <span class="jw-meta-duration">{{ vm.duration }}</span>
+            {{ vm.title }} <span class="jw-meta-duration is-hidden-mobile">{{ vm.duration }}</span>
           </div>
         </jw-header-title>
       </jw-header-main>
+      <jw-header-right>
+        <span class="jw-meta-duration is-visible-mobile">{{ vm.duration }}</span>
+      </jw-header-right>
     </jw-header>
 
     <div class="jw-meta-container">
