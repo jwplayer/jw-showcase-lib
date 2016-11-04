@@ -83,7 +83,7 @@
         function searchAndDisplayResults () {
 
             apiConsumer
-                .search(appStore.searchPhrase)
+                .getSearchFeed(appStore.searchPhrase)
                 .then(function () {
 
                     if ($state.$current.name !== 'root.search') {

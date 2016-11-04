@@ -27,10 +27,9 @@
      *
      * @requires $http
      * @requires $log
-     * @requires jwShowcase.core.config
      */
-    apiService.$inject = ['$http', '$q', 'config'];
-    function apiService ($http, $q, config) {
+    apiService.$inject = ['$http', '$q', 'JW_PLATFORM_URL'];
+    function apiService ($http, $q, JW_PLATFORM_URL) {
 
         /**
          * @ngdoc method
@@ -42,54 +41,24 @@
          * Get feed from jw platform
          *
          * @resolves {jwShowcase.core.feed}
-         * @returns {Promise} Promise which be resolved when the request is completed.
+         * @returns {Promise} Promise which will be resolved when the request is completed.
          */
         this.getFeed = function (feedId) {
 
             // reject when feedId is empty or no string
             if (!angular.isString(feedId) || feedId === '') {
-                return $q.reject(new Error('feedId is not given or not an string'));
+                return $q.reject(new Error('feedId is not given or not a string'));
             }
 
-            return $http.get('https://content.jwplatform.com/feeds/' + feedId + '.json')
-                .then(getFeedCompleted, getFeedFailed);
-
-            function getFeedCompleted (response) {
-
-                var feed = response.data;
-
-                // map feedid to items once
-                if (!feed || !angular.isArray(feed.playlist)) {
-                    return getFeedFailed(response);
-                }
-
-                feed.playlist = feed.playlist
-                    .map(function (item) {
-                        item.feedid = feed.feedid;
-                        return item;
-                    })
-                    .map(fixItemUrls);
-
-                return feed;
-            }
-
-            function getFeedFailed (response) {
-
-                var message = 'Failed to get feed with id `' + feedId + '`';
-
-                if (404 === response.status) {
-                    message = 'Feed with id `' + feedId + '` does not exist';
-                }
-
-                return $q.reject(new Error(message));
-            }
+            return getFeed(JW_PLATFORM_URL + '/feeds/' + feedId + '.json');
         };
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.api#search
+         * @name jwShowcase.core.api#getSearchFeed
          * @methodOf jwShowcase.core.api
          *
+         * @param {string} searchPlaylist Search playlist
          * @param {string} phrase Search phrase
          * @description
          * Get search feed from jw platform with given search phrase
@@ -97,33 +66,47 @@
          * @resolves {jwShowcase.core.feed}
          * @returns {Promise} Promise which be resolved when the request is completed.
          */
-        this.search = function (phrase) {
+        this.getSearchFeed = function (searchPlaylist, phrase) {
+
+            // reject when searchPlaylist is missing
+            if (!searchPlaylist) {
+                return $q.reject(new Error('searchPlaylist is missing'));
+            }
 
             // reject when feedId is empty or no string
             if (!angular.isString(phrase) || phrase === '') {
-                return $q.reject(new Error('feedId is not given or not an string'));
+                return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return $http.get('https://content.jwplatform.com/feed.json?feed_id=' + config.searchPlaylist + '&search=' + encodeURIComponent(phrase))
-                .then(searchCompleted, searchFailed);
+            return getFeed(JW_PLATFORM_URL + '/feed.json?feed_id=' + searchPlaylist + '&search=' + encodeURIComponent(phrase));
+        };
 
-            function searchCompleted (response) {
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.api#getRecommendationsFeed
+         * @methodOf jwShowcase.core.api
+         *
+         * @param {string} recommendationsPlaylist Recommendations playlist
+         * @param {string} mediaId Id of item to get related items
+         * @description
+         * Get recommendations feed from jw platform with given mediaId
+         *
+         * @resolves {jwShowcase.core.feed}
+         * @returns {Promise} Promise which be resolved when the request is completed.
+         */
+        this.getRecommendationsFeed = function (recommendationsPlaylist, mediaId) {
 
-                var feed = response.data;
-
-                // ensure playlist key
-                feed.playlist = feed.playlist || [];
-
-                // fix urls in items
-                feed.playlist = feed.playlist.map(fixItemUrls);
-
-                return feed;
+            // reject when recommendationsPlaylist is missing
+            if (!recommendationsPlaylist) {
+                return $q.reject(new Error('recommendationsPlaylist is missing'));
             }
 
-            function searchFailed (response) {
-
-                return $q.reject(new Error('Search failed'));
+            // reject when mediaId is empty or no string
+            if (!angular.isString(mediaId) || mediaId === '') {
+                return $q.reject(new Error('search phrase is not given or not a string'));
             }
+
+            return getFeed(JW_PLATFORM_URL + '/feed.json?feed_id=' + recommendationsPlaylist + '&related_media_id=' + mediaId)
         };
 
         /**
@@ -153,11 +136,56 @@
                 defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
             };
 
-            script.src = 'https://content.jwplatform.com/libraries/' + playerId + '.js';
+            script.src = JW_PLATFORM_URL + '/libraries/' + playerId + '.js';
             document.head.appendChild(script);
 
             return defer.promise;
         };
+
+        /**
+         * Get feed from the given URL.
+         *
+         * @param {string} url
+         * @returns {Promise}
+         */
+        function getFeed (url) {
+
+            return $http.get(url)
+                .then(getFeedCompleted, getFeedFailed);
+
+            function getFeedCompleted (response) {
+
+                var feed = response.data;
+
+                if (!feed || !angular.isArray(feed.playlist)) {
+                    return getFeedFailed(response);
+                }
+
+                feed.playlist = feed.playlist
+                    .map(function (item) {
+
+                        if (!item.feedId) {
+                            item.feedid = feed.feedid;
+                        }
+
+                        return item;
+                    })
+                    .map(fixItemUrls);
+
+                return feed;
+            }
+
+            function getFeedFailed (response) {
+
+                var message = 'Failed to get feed from `' + url + '`';
+
+                if (404 === response.status) {
+                    message = 'Feed with url `' + url + '` does not exist';
+                }
+
+                return $q.reject(new Error(message));
+            }
+        }
 
         /**
          * Fix urls in item and sources
