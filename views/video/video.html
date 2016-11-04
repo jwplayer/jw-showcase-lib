@@ -49,7 +49,7 @@
           cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 
-    <div class="jw-row" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
+    <div class="jw-row jw-expand-animation" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
       <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Recommendations'"
           cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>

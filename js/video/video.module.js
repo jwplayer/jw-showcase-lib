@@ -36,9 +36,8 @@
                 controller:  'VideoController as vm',
                 templateUrl: 'views/video/video.html',
                 resolve:     {
-                    item:                resolveItem,
-                    feed:                resolveFeed,
-                    recommendationsFeed: resolveRecommendationsFeed
+                    item: resolveItem,
+                    feed: resolveFeed
                 },
                 params:      {
                     autoStart: false
@@ -68,17 +67,6 @@
         resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
         function resolveFeed ($stateParams, $q, dataStore) {
             return dataStore.getFeed($stateParams.feedId) || $q.reject();
-        }
-
-        resolveRecommendationsFeed.$inject = ['$q', 'apiConsumer', 'item'];
-        function resolveRecommendationsFeed ($q, apiConsumer, item) {
-
-            return apiConsumer.getRecommendationsFeed(item.mediaid)
-                .then(function (response) {
-                    return $q.resolve(response);
-                }, function () {
-                    return $q.resolve(null);
-                });
         }
     }
 

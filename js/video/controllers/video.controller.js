@@ -26,16 +26,16 @@
      *
      * @requires $state
      * @requires $stateParams
-     * @requires $location
-     * @requires $window
+     * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
+     * @requires jwShowcase.core.share
      */
-    VideoController.$inject = ['$state', '$stateParams', '$location', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'recommendationsFeed', 'item'];
-    function VideoController ($state, $stateParams, $location, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, recommendationsFeed, item) {
+    VideoController.$inject = ['$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
+    function VideoController ($state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
 
         var vm      = this,
             lastPos = 0,
@@ -45,7 +45,7 @@
 
         vm.item                = item;
         vm.feed                = feed;
-        vm.recommendationsFeed = recommendationsFeed;
+        vm.recommendationsFeed = null;
         vm.duration            = 0;
         vm.inWatchList         = false;
 
@@ -100,6 +100,13 @@
             watchProgressItem = watchProgress.getItem(vm.item);
 
             vm.inWatchList = watchlist.hasItem(vm.item);
+
+            // load recommendations at this stage to prevent load time to the video page
+            apiConsumer
+                .getRecommendationsFeed(item.mediaid)
+                .then(function (response) {
+                    vm.recommendationsFeed = response;
+                });
         }
 
         /**
