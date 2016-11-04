@@ -6,17 +6,12 @@
 
     &.expanded {
 
-        .jw-collapsible-text-content::after {
-            display: none;
-        }
-
         .jw-collapsible-text-toggle .jw-button {
-            @include transform(rotate(90deg));
+            @include transform(rotate(180deg));
         }
     }
 
     &.inactive {
-        .jw-collapsible-text-content::after,
         .jw-collapsible-text-toggle {
             display: none;
         }
@@ -27,16 +22,6 @@
 
         position: relative;
         overflow: hidden;
-
-        &::after {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            height: 1.4em;
-
-            content: '';
-        }
     }
 
     .jw-collapsible-text-toggle {
@@ -44,7 +29,10 @@
 
         .jw-button {
             @include transition(transform 0.3s ease 0s);
-            @include transform(rotate(-90deg));
+
+            .jwy-icon {
+                font-size: rem(24px);
+            }
         }
     }
 }
