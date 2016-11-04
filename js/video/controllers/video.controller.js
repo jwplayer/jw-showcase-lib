@@ -34,8 +34,8 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
      */
-    VideoController.$inject = ['$state', '$stateParams', '$location', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
-    function VideoController ($state, $stateParams, $location, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
+    VideoController.$inject = ['$state', '$stateParams', '$location', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'recommendationsFeed', 'item'];
+    function VideoController ($state, $stateParams, $location, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, recommendationsFeed, item) {
 
         var vm      = this,
             lastPos = 0,
@@ -43,10 +43,11 @@
             started = false,
             watchProgressItem;
 
-        vm.item        = item;
-        vm.feed        = {};
-        vm.duration    = 0;
-        vm.inWatchList = false;
+        vm.item                = item;
+        vm.feed                = feed;
+        vm.recommendationsFeed = recommendationsFeed;
+        vm.duration            = 0;
+        vm.inWatchList         = false;
 
         vm.onPlay         = onPlay;
         vm.onComplete     = onComplete;
@@ -87,18 +88,14 @@
         function update () {
 
             var itemIndex = feed.playlist.findIndex(function (current) {
-                    return current.mediaid === item.mediaid;
-                }),
-                playlist  = feed.playlist
-                    .slice(itemIndex)
-                    .concat(feed.playlist.slice(0, itemIndex));
+                return current.mediaid === item.mediaid;
+            });
 
             vm.duration = utils.getVideoDurationByItem(vm.item);
 
-            vm.feed = {
-                title:    feed.title,
-                playlist: playlist
-            };
+            vm.feed.playlist = feed.playlist
+                .slice(itemIndex)
+                .concat(feed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
