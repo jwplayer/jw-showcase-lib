@@ -25,6 +25,7 @@
      */
     angular
         .module('jwShowcase.core', [])
+        .value('JW_PLATFORM_URL', 'https://content.jwplatform.com')
         .config(config)
         .run(run);
 
