@@ -3,15 +3,16 @@
 // --------------------------------
 
 .jw-meta-duration {
+    position: relative;
     display: inline-block;
-    margin-left: 10px;
+    top: -1px;
     padding: 0 8px;
 
     background-color: $white;
     color: $black;
     font-size: rem(11px);
 
-    line-height: 20px;
+    line-height: 19px;
     vertical-align: middle;
 }
 
@@ -27,10 +28,6 @@
     color: $white;
     line-height: 1.4em;
     white-space: normal;
-
-    .jw-collapsible-text-content::after {
-        @include background-image(linear-gradient(transparent, rgba($meta-description-bg-color, 0.8)));
-    }
 }
 
 .jw-meta-row {
@@ -44,6 +41,10 @@
 
 .jw-meta-controls {
     @include flex(0 0 auto);
+
+    .jw-button > .jwy-icon {
+        font-size: rem(28px);
+    }
 }
 
 .jw-meta-feed-title,
@@ -60,6 +61,17 @@
 
     .jw-meta-container {
         padding: 1.5em 20px;
+
+        .jw-collapsible-text {
+            position: relative;
+            padding-bottom: 20px;
+
+            .jw-collapsible-text-toggle {
+                position: absolute;
+                top: 100%;
+                right: 0;
+            }
+        }
     }
 
     .jw-meta-description {
@@ -71,7 +83,15 @@
     }
 
     .jw-meta-controls {
-        text-align: center;
+
+        .jw-button {
+            margin-right: 10px;
+            padding: 0;
+        }
+
+        .jw-button-label {
+            display: none;
+        }
     }
 }
 

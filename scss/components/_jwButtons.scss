@@ -174,7 +174,6 @@
 
     .jwy-icon {
         @include transition(color .1s ease);
-        font-size: rem(32px);
     }
 }
 
@@ -186,11 +185,12 @@
 
     .jwy-icon-stack .jwy-icon {
         @include transition(color .1s ease);
-        color: $main-color;
-    }
+        @include transform(translate(-50%, -50%));
+        top: 50%;
+        left: 50%;
 
-    .jwy-icon {
-        font-size: rem(32px);
+        font-size: 0.7em;
+        color: $main-color;
     }
 }
 
