@@ -4,6 +4,8 @@
 // --------------------------------
 
 .jw-dialog {
+    // fix click through menu
+    pointer-events: auto;
 
     .popup-head {
         display: none;

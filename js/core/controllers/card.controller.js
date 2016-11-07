@@ -77,7 +77,8 @@
 
             if (watchlist.hasItem(vm.item) === true) {
                 watchlist.removeItem(vm.item);
-                vm.showToast({template: 'removedFromWatchlist', duration: 1000});
+                vm.inWatchList = false;
+                vm.showToast({template: 'unsavedVideo', duration: 1000});
             }
 
             event.preventDefault();

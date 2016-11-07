@@ -16,11 +16,11 @@
 
 $main-color: #2b3b57 !default;
 $text-color: #363636 !default;
-$primary-color: #f42957 !default;
 $light-color: #eee !default;
 $dark-color: #363636 !default;
 $disabled-color: #d7dce5 !default;
 
+$primary-color: #f42957 !default;
 $success-color: #393;
 
 $black: #000;
@@ -49,6 +49,13 @@ $tablet-max-width: 960px !default;
 
 $tablet-min-width: $mobile-max-width + 1 !default;
 $desktop-min-width: $tablet-max-width + 1 !default;
+
+//
+// Themes
+// --------------------------------
+
+$theme-light-bg-color: #D7DBE6;
+$theme-dark-bg-color: #363636;
 
 //
 // Header

@@ -44,7 +44,7 @@
     }
 
     .jw-card-menu-item {
-        margin: 0 10px 10px;
+        margin: 5px 0;
         text-align: center;
 
         .jw-button {
@@ -57,14 +57,14 @@
     }
 }
 
-//
-// mediaQueries
-// --------------------------------
-
 @include mobile-only () {
 
-    .jw-card-menu .jw-card-menu-item {
-        font-size: rem(12px);
+    .jw-card-menu {
+
+        .jw-card-menu-item + .jw-card-menu-item ~ .jw-card-menu-item {
+            display: none;
+        }
+
     }
 
 }

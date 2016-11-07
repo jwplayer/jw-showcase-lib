@@ -34,6 +34,9 @@
         vm.menu      = menu;
         vm.dataStore = dataStore;
 
+        vm.watchlist = vm.dataStore.watchlistFeed;
+        vm.watchProgress = vm.dataStore.watchProgressFeed;
+
         vm.userSettings = angular.extend({}, userSettings.settings);
 
         vm.clearWatchlist     = clearWatchlist;
@@ -62,8 +65,8 @@
                 return a.title > b.title;
             });
 
-            $scope.$watch('vm.userSettings.hd', function (value) {
-                userSettings.set('hd', value);
+            $scope.$watch('vm.userSettings.conserveBandwidth', function (value) {
+                userSettings.set('conserveBandwidth', value);
             }, true);
 
             $scope.$watch('vm.userSettings.watchProgress', function (value) {
@@ -77,7 +80,7 @@
         function clearWatchlist () {
 
             confirm
-                .show('Are you sure you want to delete your current watch list?')
+                .show('Do you wish to clear your Saved videos list?')
                 .then(function () {
 
                     watchlist
@@ -91,7 +94,7 @@
         function clearWatchProgress () {
 
             confirm
-                .show('Are you sure you want to delete your current watch progress?')
+                .show('Do you wish to clear your Continue Watching list?')
                 .then(function () {
 
                     watchProgress

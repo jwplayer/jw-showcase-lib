@@ -32,9 +32,9 @@
     function userSettings (session) {
 
         var settings = {
-            hd:            true,
-            watchProgress: true,
-            cookies:       false
+            conserveBandwidth: false,
+            watchProgress:     true,
+            cookies:           false
         };
 
         this.set      = set;

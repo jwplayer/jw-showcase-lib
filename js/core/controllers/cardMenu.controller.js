@@ -27,17 +27,20 @@
      * @requires $scope
      * @requires $timeout
      * @requires jwShowcase.core.watchlist
+     * @requires jwShowcase.core.watchProgress
      */
-    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist'];
-    function CardMenuController ($scope, $timeout, watchlist) {
+    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress'];
+    function CardMenuController ($scope, $timeout, watchlist, watchProgress) {
 
         var vm = this;
 
-        vm.inWatchlist = false;
+        vm.inWatchlist     = false;
+        vm.inWatchProgress = false;
 
-        vm.closeClickHandler           = closeClickHandler;
-        vm.watchlistAddClickHandler    = watchlistAddClickHandler;
-        vm.watchlistRemoveClickHandler = watchlistRemoveClickHandler;
+        vm.closeButtonClickHandler  = closeButtonClickHandler;
+        vm.saveButtonClickHandler   = saveButtonClickHandler;
+        vm.unsaveButtonClickHandler = unsaveButtonClickHandler;
+        vm.removeButtonClickHandler = removeButtonClickHandler;
 
         activate();
 
@@ -48,7 +51,8 @@
          */
         function activate () {
 
-            vm.inWatchlist = watchlist.hasItem(vm.item);
+            vm.inWatchlist     = watchlist.hasItem(vm.item);
+            vm.inWatchProgress = watchProgress.hasItem(vm.item);
 
             $scope.$watch(function () {
                 return watchlist.hasItem(vm.item);
@@ -64,7 +68,7 @@
         /**
          * Handle click event on close button
          */
-        function closeClickHandler () {
+        function closeButtonClickHandler () {
 
             if (angular.isFunction(vm.onClose)) {
                 vm.onClose();
@@ -72,21 +76,42 @@
         }
 
         /**
-         * Handle click event on add to watchlist button
+         * Handle click event on save button
          */
-        function watchlistAddClickHandler () {
+        function saveButtonClickHandler () {
 
             watchlist.addItem(vm.item);
-            vm.jwCard.showToast({template: 'addedToWatchlist', duration: 1000});
+            vm.jwCard.showToast({template: 'savedVideo', duration: 1000});
+
+            $timeout(function() {
+                vm.onClose();
+            }, 500);
         }
 
         /**
-         * Handle click event on remove from watchlist button
+         * Handle click event on unsave button
          */
-        function watchlistRemoveClickHandler () {
+        function unsaveButtonClickHandler () {
 
             watchlist.removeItem(vm.item);
-            vm.jwCard.showToast({template: 'removedFromWatchlist', duration: 1000});
+            vm.jwCard.showToast({template: 'unsavedVideo', duration: 1000});
+
+            $timeout(function() {
+                vm.onClose();
+            }, 500);
+        }
+
+        /**
+         * Handle click event on remove button
+         */
+        function removeButtonClickHandler () {
+
+            watchProgress.removeItem(vm.item);
+            vm.jwCard.showToast({template: 'removedVideo', duration: 1000});
+
+            $timeout(function() {
+                vm.onClose();
+            }, 500);
         }
     }
 

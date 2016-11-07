@@ -76,6 +76,7 @@
                 ph:             4,
                 autostart:      $stateParams.autoStart,
                 playlist:       generatePlaylist(feed, item),
+                related:        false,
                 sharing:        false,
                 visualplaylist: false
             };
@@ -209,8 +210,8 @@
 
             // hd turned off
             // set quality level to lowest quality possible
-            if (false === userSettings.settings.hd) {
-                this.setCurrentQuality(levels.length - 1);
+            if (true === userSettings.settings.conserveBandwidth) {
+                this.setCurrentQuality(levels.length - 2);
             }
 
             // watchProgress is disabled

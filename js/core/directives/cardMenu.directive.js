@@ -54,7 +54,50 @@
         };
 
         function link (scope, element, attr, jwCard) {
+
+            var parents = ionic.DomUtil.getParentOrSelfWithClass,
+                pane;
+
             scope.vm.jwCard = jwCard;
+
+            activate();
+
+            ////////
+
+            function activate () {
+
+                pane = parents(element[0], 'pane');
+
+                if (pane) {
+                    angular.element(pane).on('click', onClickOutside);
+                    scope.$on('$destroy', onDestroy);
+                }
+            }
+
+            function onDestroy () {
+
+                if (pane) {
+                    angular.element(pane).off('click', onClickOutside);
+                }
+            }
+
+            /**
+             * Handle click event outside cardMenu
+             * @param {Event} evt
+             */
+            function onClickOutside (evt) {
+
+                // clicked inside card, don't close
+                if (parents(evt.target, 'jw-card')) {
+                    return;
+                }
+
+                scope.$apply(function () {
+                    scope.vm.onClose();
+                });
+
+                evt.preventDefault();
+            }
         }
     }
 
