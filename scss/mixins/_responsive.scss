@@ -30,49 +30,46 @@
 }
 
 .is-hidden-mobile {
-    display: inherit;
-
     @include mobile-only() {
         display: none !important;
     }
 }
 
 .is-visible-mobile {
-    display: none;
-
-    @include mobile-only() {
-        display: inherit !important;
+    @include tablet-and-larger () {
+        display: none !important;
     }
 }
 
 .is-hidden-tablet {
-    display: inherit;
-
     @include tablet-only() {
         display: none !important;
     }
 }
 
 .is-visible-tablet {
-    display: none;
-
-    @include tablet-only() {
-        display: inherit !important;
+    @include mobile-only () {
+        display: none !important;
     }
-}
-
-.is-hidden-desktop {
-    display: inherit;
 
     @include desktop-only() {
         display: none !important;
     }
 }
 
-.is-visible-desktop {
-    display: none;
-
+.is-hidden-desktop {
     @include desktop-only() {
-        display: inherit !important;
+        display: none !important;
     }
+}
+
+.is-visible-desktop {
+
+    @include mobile-and-tablet () {
+        display: none !important;
+    }
+}
+
+.jw-hybrid-app .is-hidden-hybrid-app {
+    display: none !important;
 }

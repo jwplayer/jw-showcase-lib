@@ -49,6 +49,15 @@ video::-internal-media-controls-overlay-cast-button {
 // mediaQueries
 // --------------------------------
 
+@include mobile-only () {
+
+    .jwplayer.jw-reset {
+        .jw-display-icon-container > .jw-icon {
+            font-size: 1.3em;
+        }
+    }
+}
+
 @include tablet-and-larger () {
 
     .jwplayer.jw-reset.jw-flag-aspect-mode {

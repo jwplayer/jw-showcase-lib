@@ -48,6 +48,7 @@
         vm.recommendationsFeed = null;
         vm.duration            = 0;
         vm.inWatchList         = false;
+        vm.title               = '';
 
         vm.onPlay         = onPlay;
         vm.onComplete     = onComplete;
@@ -100,6 +101,12 @@
             watchProgressItem = watchProgress.getItem(vm.item);
 
             vm.inWatchList = watchlist.hasItem(vm.item);
+
+            vm.title = item.title;
+
+            if (vm.title.length > 100) {
+                vm.title = vm.title.substr(0, 100) + '...';
+            }
 
             // load recommendations at this stage to prevent load time to the video page
             apiConsumer

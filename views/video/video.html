@@ -15,10 +15,13 @@
       <jw-header-main>
         <jw-header-title class="left">
           <div class="jw-meta-align">
-            {{ vm.item.title }} <span class="jw-meta-duration">{{ vm.duration }}</span>
+            {{ vm.title }} <span class="jw-meta-duration is-hidden-mobile">{{ vm.duration }}</span>
           </div>
         </jw-header-title>
       </jw-header-main>
+      <jw-header-right>
+        <span class="jw-meta-duration is-visible-mobile">{{ vm.duration }}</span>
+      </jw-header-right>
     </jw-header>
 
     <div class="jw-meta-container">
@@ -35,7 +38,7 @@
           </i>
           </jw-button>
 
-          <jw-button class="jw-button-share" ng-click="vm.shareClickHandler($event)">
+          <jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareClickHandler($event)">
             <span class="jw-button-label">Share</span> <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
             <i class="jwy-icon jwy-icon-share"></i>
           </i>
@@ -46,12 +49,12 @@
 
     <div class="jw-row" ng-if="vm.feed.playlist.length > 0">
       <jw-card-slider feed="vm.feed" featured="false" heading="vm.feed.title"
-          cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 
     <div class="jw-row jw-expand-animation" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
       <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Related Videos'"
-          cols="{xs: 2, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 
     <jw-footer></jw-footer>
