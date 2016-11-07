@@ -35,12 +35,22 @@
         @include flex(0 0 200px);
         padding-right: 30px;
 
+        color: $main-color;
         font-size: rem(32px);
         line-height: rem(32px);
+        font-weight: bold;
     }
 
     .jw-cookies-explanation {
         @include flex(1 1 auto);
+
+        p {
+            color: $dark-color;
+
+            > a {
+                color: $dark-color;
+            }
+        }
     }
 }
 
