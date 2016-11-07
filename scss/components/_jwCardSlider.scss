@@ -247,10 +247,6 @@ $featured-slider-max-width: 900px;
 
 .jw-card-slider.jw-card-slider--default {
 
-    .jw-card-title {
-        visibility: hidden;
-    }
-
     .jw-card-slider-align {
         padding: 0 #{90px - $default-slider-spacing / 2} 20px;
     }
@@ -266,14 +262,10 @@ $featured-slider-max-width: 900px;
     .jw-card-slider-slide {
         @include single-transition(opacity, 0.2s, ease-in, 0s);
         margin: 0 $default-slider-spacing / 2;
-        opacity: 0.15;
+        opacity: 0.3;
 
         &.is-visible {
             opacity: 1;
-        }
-
-        &.is-visible .jw-card-title {
-            visibility: visible;
         }
 
         &.ng-enter,
@@ -298,7 +290,7 @@ $featured-slider-max-width: 900px;
         }
 
         .jw-card-slider-align {
-            padding: 0 60px 20px 15px;
+            padding: 0 33% 20px 15px;
         }
     }
 }
