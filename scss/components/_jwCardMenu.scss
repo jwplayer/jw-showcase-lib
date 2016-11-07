@@ -44,7 +44,7 @@
     }
 
     .jw-card-menu-item {
-        margin: 0 10px 10px;
+        margin: 5px 0;
         text-align: center;
 
         .jw-button {
@@ -55,4 +55,16 @@
             font-weight: normal;
         }
     }
+}
+
+@include mobile-only () {
+
+    .jw-card-menu {
+
+        .jw-card-menu-item + .jw-card-menu-item ~ .jw-card-menu-item {
+            display: none;
+        }
+
+    }
+
 }
