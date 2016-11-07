@@ -77,14 +77,15 @@
 
         function link (scope, element) {
 
-            var cols            = 0,
-                index           = 0,
-                startCoords     = null,
-                animation       = null,
-                translateX      = 0,
-                forEach         = angular.forEach,
-                $               = element[0].querySelector.bind(element[0]),
-                resizeDebounced = utils.debounce(resize, 100);
+            var cols              = 0,
+                index             = 0,
+                startCoords       = null,
+                animation         = null,
+                translateX        = 0,
+                sliding           = false,
+                forEach           = angular.forEach,
+                $                 = element[0].querySelector.bind(element[0]),
+                resizeDebounced   = utils.debounce(resize, 100);
 
             scope.vm.slideLeft    = slideLeft;
             scope.vm.slideRight   = slideRight;
@@ -290,25 +291,36 @@
             function onTouchMove (event) {
 
                 var coords         = getCoords(event),
-                    distance       = startCoords.x - coords.x,
-                    deltaX         = Math.abs(distance),
+                    distanceX      = startCoords.x - coords.x,
+                    distanceY      = startCoords.y - coords.y,
+                    deltaX         = Math.abs(distanceX),
+                    deltaY         = Math.abs(distanceY),
                     sliderWidth    = $('.jw-card-slider-list').offsetWidth,
                     containerWidth = $('.jw-card-slider-container').offsetWidth;
 
+                if (!sliding) {
+                    if (deltaY > 20) {
+                        afterTouchEnd();
+                        update(false);
+                    }
+                    else if (deltaX > 20) {
+                        sliding = true;
+                    }
+                    return;
+                }
+
+                event.preventDefault();
+
                 // first item
-                if (index === 0 && distance < 0) {
-                    distance = Math.min(50, easeOutDistance(deltaX, containerWidth)) * -1;
+                if (index === 0 && distanceX < 0) {
+                    distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth)) * -1;
                 }
                 // last item
-                else if (index >= getMaxIndex() && distance > 0) {
-                    distance = Math.min(50, easeOutDistance(deltaX, containerWidth));
+                else if (index >= getMaxIndex() && distanceX > 0) {
+                    distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth));
                 }
 
-                if (deltaX > 20) {
-                    event.preventDefault();
-                }
-
-                var percentageOffset = (distance / sliderWidth) * 100;
+                var percentageOffset = (distanceX / sliderWidth) * 100;
 
                 moveSlider(translateX - percentageOffset, false);
             }
@@ -356,6 +368,8 @@
                 touchContainer.removeEventListener('touchmove', onTouchMove);
                 touchContainer.removeEventListener('touchend', onTouchEnd);
                 touchContainer.removeEventListener('touchcancel', onTouchCancel);
+
+                sliding           = false;
 
                 element.removeClass('is-sliding');
             }
