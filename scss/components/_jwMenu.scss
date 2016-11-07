@@ -2,6 +2,7 @@
 // jwMenu
 // --------------------------------
 
+.platform-android .jw-menu-popover.popover,
 .jw-menu-popover.popover {
     height: 600px;
     max-height: 100vh;
@@ -45,6 +46,10 @@
             &:hover {
                 color: $primary-color;
             }
+
+            &.jw-button-disabled {
+                opacity: 0.25;
+            }
         }
 
         .divider {
@@ -54,6 +59,7 @@
 
     .item-toggle {
         color: $main-color;
+        font-weight: bold;
 
         .toggle {
             top: 11px;
@@ -80,8 +86,13 @@
 }
 
 @include mobile-only () {
+    .platform-android .jw-menu-popover.popover,
     .jw-menu-popover.popover {
-        width: 90vw;
-        height: 90vh;
+        width: 100vw;
+        height: 100vh;
+
+        .jw-menu-list {
+            margin-left: 35px;
+        }
     }
 }
