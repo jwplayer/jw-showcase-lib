@@ -175,13 +175,13 @@
     .jw-card-toast {
         @include cover();
 
-        &.jw-card-toast--removed {
-            background: $card-toast-removed-bg-color;
+        &.jw-card-toast-primary {
+            background-color: $primary-color;
             color: $white;
         }
 
-        &.jw-card-toast--added {
-            background: $card-toast-added-bg-color;
+        &.jw-card-toast-success {
+            background-color: $success-color;
             color: $white;
         }
 
