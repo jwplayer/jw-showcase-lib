@@ -106,7 +106,7 @@
          */
         function removeButtonClickHandler () {
 
-            watchlist.removeItem(vm.item);
+            watchProgress.removeItem(vm.item);
             vm.jwCard.showToast({template: 'removedVideo', duration: 1000});
 
             $timeout(function() {
