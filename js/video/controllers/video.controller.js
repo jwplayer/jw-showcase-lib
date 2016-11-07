@@ -76,6 +76,7 @@
                 ph:             4,
                 autostart:      $stateParams.autoStart,
                 playlist:       generatePlaylist(feed, item),
+                related:        false,
                 sharing:        false,
                 visualplaylist: false
             };
