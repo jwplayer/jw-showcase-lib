@@ -56,15 +56,3 @@
         }
     }
 }
-
-//
-// mediaQueries
-// --------------------------------
-
-@include mobile-only () {
-
-    .jw-card-menu .jw-card-menu-item {
-        font-size: rem(12px);
-    }
-
-}

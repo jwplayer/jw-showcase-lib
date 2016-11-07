@@ -11,6 +11,7 @@
 
     color: $white;
 
+    font-weight: bold;
     line-height: 40px;
     text-align: center;
     text-decoration: none;
@@ -27,6 +28,14 @@
         white-space: nowrap;
     }
 
+    &.jw-button-disabled {
+        cursor: default;
+        opacity: 0.9;
+        pointer-events: none;
+        color: $disabled-color;
+        font-weight: normal;
+    }
+
     .jw-button-label {
         display: inline-block;
         font-size: rem(14px);
@@ -41,8 +50,9 @@
 }
 
 .jw-button-primary,
+.jw-button-primary.button,
 .jw-button-primary.activated {
-    background: $primary-color;
+    background-color: $primary-color;
     color: $white;
     font-weight: bold;
 
@@ -52,9 +62,10 @@
 }
 
 .jw-button-hollow,
+.jw-button-hollow.button,
 .jw-button-hollow.activated {
     border: 1px solid lighten($main-color, 60%);
-    background: transparent;
+    background-color: transparent;
     color: $primary-color;
     font-weight: bold;
 
@@ -64,8 +75,9 @@
 }
 
 .jw-button-light,
+.jw-button-light.button,
 .jw-button-light.activated {
-    background: $light-color;
+    background-color: $light-color;
     color: $text-color;
 
     &:hover {
@@ -74,6 +86,7 @@
 }
 
 .jw-button-clear,
+.jw-button-clear.button,
 .jw-button-clear.activated {
     color: $text-color;
 
@@ -82,9 +95,10 @@
     }
 }
 
-.jw-button-dark,
-.jw-button-dark.activated {
-    background: $dark-color;
+.jw-button-main,
+.jw-button-main.button,
+.jw-button-main.activated {
+    background-color: $main-color;
     color: $white;
     font-weight: bold;
 
