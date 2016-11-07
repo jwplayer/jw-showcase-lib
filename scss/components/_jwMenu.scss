@@ -39,6 +39,7 @@
             width: 100%;
             min-height: 30px;
 
+            font-weight: bold;
             color: $main-color;
             line-height: 30px;
             text-align: left;
@@ -49,6 +50,7 @@
 
             &.jw-button-disabled {
                 opacity: 0.25;
+                font-weight: normal;
             }
         }
 
