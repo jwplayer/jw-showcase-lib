@@ -273,13 +273,6 @@
 .jw-card.jw-card--featured {
     font-size: 32px;
 
-    &:not(.jw-card--touch) {
-        &.is-active .jw-card-container,
-        .jw-card-container:hover {
-            background-color: rgba($black, 0.4);
-        }
-    }
-
     .jw-card-duration {
         display: none;
     }
@@ -302,7 +295,7 @@
     }
 
     .jw-card-container {
-        @include background-image(linear-gradient(rgba($black, 0) 50%, rgba($black, 0.9) 95%));
+        background-color: rgba($black, 0.35);
     }
 
     .jw-button-watchlist {
@@ -322,7 +315,7 @@
     }
 
     .jw-card.jw-card--featured .jw-card-description {
-        max-height: 3 * 18px;
+        max-height: 2 * 18px;
         padding: 0 20px;
     }
 
