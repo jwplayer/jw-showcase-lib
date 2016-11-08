@@ -310,6 +310,7 @@
                 }
 
                 event.preventDefault();
+                event.stopPropagation();
 
                 // first item
                 if (index === 0 && distanceX < 0) {
