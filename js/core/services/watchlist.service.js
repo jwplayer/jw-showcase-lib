@@ -76,7 +76,7 @@
             if (index === -1) {
                 clone         = angular.extend({}, item);
                 clone.$feedid = clone.$feedid || clone.feedid;
-                clone.feedid  = 'saved-videos';
+                clone.feedid  = dataStore.watchlistFeed.feedid;
 
                 dataStore.watchlistFeed.playlist.unshift(clone);
                 persist();
@@ -174,6 +174,10 @@
                 var item = dataStore.getItem(keys.mediaid, keys.feedid);
 
                 if (item) {
+
+                    item.feedid = dataStore.watchlistFeed.feedid;
+                    item.$feedid = keys.feedid;
+
                     addItem(item);
                 }
             });

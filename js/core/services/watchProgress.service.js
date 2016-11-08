@@ -92,7 +92,7 @@
             }
             else {
                 clone.$feedid     = clone.$feedid || clone.feedid;
-                clone.feedid      = 'continue-watching';
+                clone.feedid      = dataStore.watchProgressFeed.feedid;
                 clone.progress    = progress;
                 clone.lastWatched = +new Date();
 
@@ -196,6 +196,8 @@
                     if (item) {
                         item.progress    = keys.progress;
                         item.lastWatched = keys.lastWatched;
+                        item.feedid      = dataStore.watchProgressFeed.feedid;
+                        item.$feedid     = keys.feedid;
 
                         dataStore.watchProgressFeed.playlist.push(item);
                     }
