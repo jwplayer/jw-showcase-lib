@@ -35,7 +35,7 @@
                 cssClass: 'jw-dialog',
                 template: message,
                 buttons:  [{
-                    text:  'Yes',
+                    text:  '<strong>Yes</strong>',
                     type:  'jw-button-primary',
                     onTap: function () {
                         defer.resolve();

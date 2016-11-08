@@ -3,18 +3,18 @@
     <div class="jw-card-menu-item" ng-switch="vm.inWatchlist">
       <div ng-switch-when="false">
         <jw-button class="jw-button-primary" ng-click="vm.saveButtonClickHandler()">
-          <span>Save</span><span class="is-hidden-mobile"> this video</span>
+          <strong><span>Save</span><span class="is-hidden-mobile"> this video</span></strong>
         </jw-button>
       </div>
       <div ng-switch-when="true">
         <jw-button class="jw-button-primary" ng-click="vm.unsaveButtonClickHandler()">
-          <span>Unsave</span><span class="is-hidden-mobile"> this video</span>
+          <strong><span>Unsave</span><span class="is-hidden-mobile"> this video</span></strong>
         </jw-button>
       </div>
     </div>
     <div class="jw-card-menu-item" ng-if="vm.inWatchProgress && vm.item.feedid === 'continue-watching'">
       <jw-button class="jw-button-main" ng-click="vm.removeButtonClickHandler()">
-        <span>Remove</span><span class="is-hidden-mobile"> this video</span>
+        <strong><span>Remove</span><span class="is-hidden-mobile"> this video</span></strong>
       </jw-button>
     </div>
     <div class="jw-card-menu-item">
