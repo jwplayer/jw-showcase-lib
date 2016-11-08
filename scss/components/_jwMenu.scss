@@ -75,6 +75,7 @@
 
         input:checked + .track {
             background-color: $main-color;
+            border-color: $main-color;
         }
 
         input:checked + .track .handle {
