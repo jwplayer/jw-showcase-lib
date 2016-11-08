@@ -116,7 +116,7 @@
                 scope.$on('$destroy', destroy);
                 scope.$watch('vm.feed', function () {
                     resizeDebounced();
-                    updateSlides();
+                    $timeout(updateSlides, 10);
                 }, true);
 
                 $timeout(resize, 50);
