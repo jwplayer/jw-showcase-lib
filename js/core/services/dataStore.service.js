@@ -61,8 +61,8 @@
          * The watchlist feed
          */
         this.watchlistFeed = {
-            feedid:   'watchlist',
-            title:    'Watchlist',
+            feedid:   'saved-videos',
+            title:    'Saved videos',
             playlist: []
         };
 
@@ -76,7 +76,7 @@
          * The watchProgress feed
          */
         this.watchProgressFeed = {
-            feedid:   'watchProgress',
+            feedid:   'continue-watching',
             title:    'Continue watching',
             playlist: []
         };

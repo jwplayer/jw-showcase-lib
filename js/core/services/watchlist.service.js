@@ -76,7 +76,7 @@
             if (index === -1) {
                 clone         = angular.extend({}, item);
                 clone.$feedid = clone.$feedid || clone.feedid;
-                clone.feedid  = 'watchlist';
+                clone.feedid  = 'saved-videos';
 
                 dataStore.watchlistFeed.playlist.unshift(clone);
                 persist();

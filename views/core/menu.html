@@ -11,11 +11,11 @@
       <jw-button ui-sref="root.dashboard()" ng-click="vm.menu.hide()">
         Homepage
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'watchlist'})" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ng-click="vm.menu.hide()"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         Saved videos ({{ vm.watchlist.playlist.length }})
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'watchProgress'})" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ng-click="vm.menu.hide()"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
         Continue watching ({{ vm.watchProgress.playlist.length }})
       </jw-button>

@@ -92,7 +92,7 @@
             }
             else {
                 clone.$feedid     = clone.$feedid || clone.feedid;
-                clone.feedid      = 'watchProgress';
+                clone.feedid      = 'continue-watching';
                 clone.progress    = progress;
                 clone.lastWatched = +new Date();
 
