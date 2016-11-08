@@ -35,6 +35,7 @@
      * @param {boolean=}        featured        Featured flag
      * @param {boolean=}        showTitle       Show item title when true
      * @param {boolean=}        showDescription Show item description when true
+     * @param {boolean=}        watchProgress   Show item watch progress
      * @param {function=}       onClick         Will be called when an click event occurs on the card.
      *
      * @example

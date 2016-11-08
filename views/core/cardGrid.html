@@ -1,6 +1,6 @@
 <div class="jw-card-grid">
   <div class="jw-card-grid-cards">
     <jw-card item="item" ng-repeat="item in vm.feed.playlist" show-title="true" show-description="true"
-        class="is-visible" on-click="vm.onCardClick"></jw-card>
+        class="is-visible" on-click="vm.onCardClick" watch-progress="item.feedid === 'continue-watching'"></jw-card>
   </div>
 </div>

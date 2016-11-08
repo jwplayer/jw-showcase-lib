@@ -41,7 +41,6 @@
      *                                              Available sizes; xs, sm, md, lg and xl.
      *
      * @param {boolean=}            featured        Featured slider flag
-     * @param {boolean=}            watchProgress   Show watch progress in card
      * @param {function=}           onCardClick     Function which is being called when the user clicks on a card.
      *
      * @requires $timeout
@@ -62,7 +61,6 @@
             scope:            {
                 heading:       '=?',
                 feed:          '=',
-                watchProgress: '=',
                 cols:          '=',
                 featured:      '=',
                 onCardClick:   '='

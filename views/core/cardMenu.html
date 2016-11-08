@@ -12,7 +12,7 @@
         </jw-button>
       </div>
     </div>
-    <div class="jw-card-menu-item" ng-if="vm.inWatchProgress">
+    <div class="jw-card-menu-item" ng-if="vm.inWatchProgress && vm.item.feedid === 'continue-watching'">
       <jw-button class="jw-button-main" ng-click="vm.removeButtonClickHandler()">
         <span>Remove</span><span class="is-hidden-mobile"> this video</span>
       </jw-button>
