@@ -41,7 +41,6 @@
 
         return {
             scope:            {
-                onClose: '&',
                 item:    '='
             },
             require:          '^jwCard',
@@ -93,7 +92,7 @@
                 }
 
                 scope.$apply(function () {
-                    scope.vm.onClose();
+                    jwCard.menuVisible = false;
                 });
 
                 evt.preventDefault();

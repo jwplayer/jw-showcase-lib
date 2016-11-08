@@ -45,7 +45,6 @@
         vm.posterUrl              = getPosterUrl();
 
         vm.watchlistClickHandler = watchlistClickHandler;
-        vm.showToast             = showToast;
 
         activate();
 
@@ -76,29 +75,19 @@
         function watchlistClickHandler (event) {
 
             if (watchlist.hasItem(vm.item) === true) {
-                watchlist.removeItem(vm.item);
+
                 vm.inWatchList = false;
-                vm.showToast({template: 'unsavedVideo', duration: 1000});
+
+                vm.showToast({
+                    templateUrl: 'views/core/toasts/unsavedVideo.html',
+                    duration:    1000
+                }).then(function () {
+                    watchlist.removeItem(vm.item);
+                });
             }
 
             event.preventDefault();
             event.stopImmediatePropagation();
-        }
-
-        /**
-         * Show a toast over the card
-         *
-         * @param {Object} toast                Toast options object
-         * @param {String} toast.template       Template name
-         * @param {Number} [toast.duration]     Optional duration
-         */
-        function showToast (toast) {
-
-            vm.toast = toast;
-
-            $timeout(function () {
-                vm.toast = null;
-            }, toast.duration || 1000);
         }
 
         /**

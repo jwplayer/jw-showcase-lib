@@ -44,8 +44,7 @@
     </jw-button>
   </div>
 
-  <jw-card-menu on-close="vm.closeMenuHandler()" item="vm.item" ng-if="vm.menuVisible"></jw-card-menu>
+  <jw-card-menu item="vm.item" ng-if="vm.menuVisible"></jw-card-menu>
 
-  <div ng-include="'views/core/toasts/'  + vm.toast.template + '.html'" ng-if="vm.toast" class="jw-card-toast-container"></div>
-
+  <div class="jw-card-toasts"></div>
 </div>

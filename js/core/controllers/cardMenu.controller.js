@@ -70,9 +70,7 @@
          */
         function closeButtonClickHandler () {
 
-            if (angular.isFunction(vm.onClose)) {
-                vm.onClose();
-            }
+            vm.jwCard.menuVisible = false;
         }
 
         /**
@@ -81,10 +79,14 @@
         function saveButtonClickHandler () {
 
             watchlist.addItem(vm.item);
-            vm.jwCard.showToast({template: 'savedVideo', duration: 1000});
 
-            $timeout(function() {
-                vm.onClose();
+            vm.jwCard.showToast({
+                templateUrl: 'views/core/toasts/savedVideo.html',
+                duration:    1000
+            });
+
+            $timeout(function () {
+                vm.jwCard.menuVisible = false;
             }, 500);
         }
 
@@ -93,11 +95,15 @@
          */
         function unsaveButtonClickHandler () {
 
-            watchlist.removeItem(vm.item);
-            vm.jwCard.showToast({template: 'unsavedVideo', duration: 1000});
+            vm.jwCard.showToast({
+                templateUrl: 'views/core/toasts/unsavedVideo.html',
+                duration:    1000
+            }).then(function () {
+                watchlist.removeItem(vm.item);
+            });
 
-            $timeout(function() {
-                vm.onClose();
+            $timeout(function () {
+                vm.jwCard.menuVisible = false;
             }, 500);
         }
 
@@ -106,11 +112,15 @@
          */
         function removeButtonClickHandler () {
 
-            watchProgress.removeItem(vm.item);
-            vm.jwCard.showToast({template: 'removedVideo', duration: 1000});
+            vm.jwCard.showToast({
+                templateUrl: 'views/core/toasts/removedVideo.html',
+                duration:    1000
+            }).then(function () {
+                watchProgress.removeItem(vm.item);
+            });
 
-            $timeout(function() {
-                vm.onClose();
+            $timeout(function () {
+                vm.jwCard.menuVisible = false;
             }, 500);
         }
     }

@@ -45,8 +45,8 @@
      * ```
      */
 
-    cardDirective.$inject = [];
-    function cardDirective () {
+    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache'];
+    function cardDirective ($animate, $q, $timeout, $templateCache) {
 
         return {
             scope:            {
@@ -61,8 +61,54 @@
             controller:       'CardController',
             bindToController: true,
             replace:          true,
-            templateUrl:      'views/core/card.html'
+            templateUrl:      'views/core/card.html',
+            link:             link
         };
+
+        function link (scope, element) {
+
+            scope.vm.showToast = showToast;
+
+            /////////////
+
+            /**
+             * Show a toast over the card
+             *
+             * @param {Object} toast                Toast options object
+             * @param {String} toast.templateUrl    Template url
+             * @param {Number} [toast.duration]     Optional duration
+             *
+             * @returns {Promise}
+             */
+            function showToast (toast) {
+
+                var defer         = $q.defer(),
+                    html          = $templateCache.get(toast.templateUrl),
+                    children      = element.children(),
+                    toastsElement = angular.element(element[0].querySelector('.jw-card-toasts')),
+                    toastElement  = angular.element(html);
+
+                // add toast to card with enter animation
+                $animate.enter(toastElement, toastsElement, children[children.length - 1]);
+
+                // add class to card element
+                element.addClass('jw-card-toast-open');
+
+                // set timeout to remove toast
+                $timeout(function () {
+
+                    element.removeClass('jw-card-toast-open');
+
+                    $animate
+                        .leave(toastElement)
+                        .then(function () {
+                            defer.resolve();
+                        });
+                }, toast.duration || 1000);
+
+                return defer.promise;
+            }
+        }
     }
 
 }());

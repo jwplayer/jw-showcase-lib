@@ -17,7 +17,8 @@
         }
     }
 
-    &.jw-card-menu-open {
+    &.jw-card-menu-open,
+    &.jw-card-toast-open {
         .jw-card-watchlist-button {
             display: none;
         }
@@ -159,7 +160,7 @@
             opacity: 0;
         }
 
-        &.ng-enter-active {
+        &.ng-enter.ng-enter-active {
             opacity: 1;
         }
 
@@ -167,7 +168,7 @@
             opacity: 1;
         }
 
-        &.ng-leave-active {
+        &.ng-leave.ng-leave-active {
             opacity: 0;
         }
     }
@@ -214,7 +215,6 @@
 
         &.jw-card-menu-open,
         &:hover {
-
 
             .jw-card-container {
                 background-color: rgba($black, 0.6);
