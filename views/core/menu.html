@@ -8,27 +8,27 @@
 
     <div class="jw-menu-list">
 
-      <jw-button ui-sref="root.dashboard()" ng-click="vm.menu.hide()">
+      <jw-button ui-sref="root.dashboard()" ui-sref-active="active" ng-click="vm.menu.hide()">
         Homepage
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})"  ui-sref-active="active" ng-click="vm.menu.hide()"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         Saved videos ({{ vm.watchlist.playlist.length }})
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active" ng-click="vm.menu.hide()"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
         Continue watching ({{ vm.watchProgress.playlist.length }})
       </jw-button>
 
       <div class="divider"></div>
 
-      <jw-button ng-repeat="feed in vm.feeds" ui-sref="root.feed({feedId: feed.feedid})">
+      <jw-button ng-repeat="feed in vm.feeds" ui-sref="root.feed({feedId: feed.feedid})" ui-sref-active="active">
         {{ feed.title }}
       </jw-button>
 
       <div class="divider"></div>
 
-      <jw-button class="jw-button-disabled">
+      <jw-button class="jw-button-disabled" ui-sref-active="active">
         All from A-Z
       </jw-button>
 
