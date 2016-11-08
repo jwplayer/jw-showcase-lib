@@ -108,6 +108,7 @@ $loading-z-index: $view-z-index + 1000;
 // Ionic overrides
 // --------------------------------
 
+$ios-statusbar-height: 0;
 $bar-height: $header-height;
 $bar-subheader-height: $subheader-height;
 $link-color: #fff;

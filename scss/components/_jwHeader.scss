@@ -15,6 +15,14 @@
     text-align: center;
     z-index: 9;
 
+    .platform-ios.platform-cordova & {
+        top: $ios-statusbar-height;
+
+        &.jw-subheader {
+            top: $header-height + $ios-statusbar-height;
+        }
+    }
+
     &.jw-subheader {
         top: $header-height;
         height: $subheader-height;
