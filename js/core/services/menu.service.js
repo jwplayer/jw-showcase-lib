@@ -56,11 +56,23 @@
          */
         function positionView (target, popoverElement) {
 
+            var scroll = angular.element(popoverElement[0].querySelector('.scroll')),
+                scrollParent = scroll.parent(),
+                overflow, height, targetHeight;
+
             popoverElement.css({
                 margin: 0,
                 top:    0,
                 left:   0
             });
+
+            height = popoverElement[0].offsetHeight;
+            overflow = scroll[0].scrollHeight - scrollParent[0].offsetHeight;
+
+            if (overflow > 0) {
+                targetHeight = height + overflow + 1;
+                popoverElement.css('height', targetHeight + 'px');
+            }
         }
 
         /**

@@ -4,7 +4,7 @@
 
 .platform-android .jw-menu-popover.popover,
 .jw-menu-popover.popover {
-    height: 600px;
+    height: auto;
     max-height: 100vh;
 
     &.menu-animation {
@@ -14,7 +14,7 @@
 
     &.menu-animation.ng-enter,
     &.menu-animation > .ng-enter {
-        @include transition(all 0.3s ease-in-out);
+        @include transition(opacity 0.3s ease-in-out, transform 0.3s ease-in-out);
     }
 
     &.menu-animation.ng-enter-active,
@@ -25,7 +25,7 @@
 
     &.menu-animation.ng-leave,
     &.menu-animation > .ng-leave {
-        @include transition(all 0.3s ease-in-out);
+        @include transition(opacity 0.3s ease-in-out, transform 0.3s ease-in-out);
     }
 
     .jw-header-nav .jw-button-label {
@@ -39,8 +39,8 @@
             width: 100%;
             min-height: 30px;
 
-            font-weight: bold;
             color: $main-color;
+            font-weight: bold;
             line-height: 30px;
             text-align: left;
 
@@ -74,8 +74,8 @@
         }
 
         input:checked + .track {
-            background-color: $main-color;
             border-color: $main-color;
+            background-color: $main-color;
         }
 
         input:checked + .track .handle {
