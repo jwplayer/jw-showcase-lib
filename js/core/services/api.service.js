@@ -157,6 +157,11 @@
 
                 var feed = response.data;
 
+                // the search feed can return an empty playlist, so we can show "No results for ..."
+                if (feed && 'SEARCH' === feed.kind) {
+                    feed.playlist = feed.playlist || [];
+                }
+
                 if (!feed || !angular.isArray(feed.playlist)) {
                     return getFeedFailed(response);
                 }
