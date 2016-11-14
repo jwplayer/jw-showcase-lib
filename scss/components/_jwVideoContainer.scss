@@ -6,7 +6,7 @@
     position: relative;
     width: 100vw;
 
-    background-color: $dark-color;
+    background-color: $black;
 }
 
 //
@@ -17,9 +17,14 @@
 
     .jw-video-container {
         min-height: 50vh;
-    }
 
-    .jw-video-container > .jw-video-container-aspect {
-        @include cover();
+        > .jw-video-container-aspect {
+            @include cover();
+
+            > .jwplayer {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+        }
     }
 }
