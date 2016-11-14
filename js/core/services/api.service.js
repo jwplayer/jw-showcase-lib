@@ -213,6 +213,13 @@
                 });
             }
 
+            if (angular.isArray(item.tracks)) {
+                item.tracks = item.tracks.map(function (track) {
+                    track.file = fixUrl(track.file);
+                    return track;
+                });
+            }
+
             return item;
         }
 
