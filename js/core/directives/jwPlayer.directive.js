@@ -55,7 +55,7 @@
 
         function link (scope, element, attr) {
 
-            var events         = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'playlistItem', 'time', 'firstFrame'],
+            var events         = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'playlistItem', 'time', 'firstFrame', 'levels'],
                 playerInstance = null,
                 playerId       = generateRandomId();
 
