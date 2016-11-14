@@ -50,6 +50,7 @@
 
             if (viewHistory.backView && viewHistory.backView.stateName !== 'root.video') {
 
+                $ionicViewSwitcher.nextDirection('back');
                 $ionicHistory.goBack();
                 return;
             }
