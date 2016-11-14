@@ -28,10 +28,10 @@
     }
 
     &.jw-button-disabled {
+        color: $disabled-color;
         cursor: default;
         opacity: 0.9;
         pointer-events: none;
-        color: $disabled-color;
     }
 
     .jw-button-label {
@@ -198,8 +198,8 @@
         top: 50%;
         left: 50%;
 
-        font-size: 0.7em;
         color: $main-color;
+        font-size: 0.7em;
     }
 }
 
