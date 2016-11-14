@@ -114,9 +114,18 @@
                 }
 
                 scope.$on('$destroy', destroy);
-                scope.$watch('vm.feed', function () {
-                    resizeDebounced();
-                    $timeout(updateSlides, 10);
+                scope.$watch('vm.feed.playlist', function () {
+
+                    $timeout(function () {
+                        resize();
+                        updateSlides();
+
+                        if (index > 0) {
+                            index = 0;
+                            update(false);
+                        }
+
+                    }, 25);
                 }, true);
 
                 $timeout(resize, 50);
