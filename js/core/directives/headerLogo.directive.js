@@ -33,7 +33,7 @@
         return {
             restrict:         'E',
             require:          '^jwHeader',
-            template:         '<img class="jw-header-logo"/>',
+            template:         '<img class="jw-header-logo" ui-sref="root.dashboard()"/>',
             replace:          true
         };
     }

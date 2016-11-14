@@ -97,6 +97,8 @@
         .jw-header-logo {
             max-width: 100%;
             max-height: $header-height - 20px;
+
+            cursor: pointer;
             vertical-align: middle;
         }
 
