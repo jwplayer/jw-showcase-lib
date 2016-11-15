@@ -24,6 +24,7 @@
      * @ngdoc controller
      * @name jwShowcase.video.controller:VideoController
      *
+     * @requires $scope
      * @requires $state
      * @requires $stateParams
      * @requires jwShowcase.core.apiConsumer
@@ -34,8 +35,8 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
      */
-    VideoController.$inject = ['$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
-    function VideoController ($state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
+    function VideoController ($scope, $state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
 
         var vm             = this,
             lastPos        = 0,
@@ -43,6 +44,8 @@
             started        = false,
             playerPlaylist = [],
             playerDelegate,
+            playerLevels,
+            initialLevel,
             watchProgressItem;
 
         vm.item                = item;
@@ -85,6 +88,10 @@
                 sharing:        false,
                 visualplaylist: false
             };
+
+            $scope.$watch(function () {
+                return userSettings.settings.conserveBandwidth;
+            }, conserveBandwidthChangeHandler);
 
             update();
         }
@@ -158,6 +165,32 @@
             });
         }
 
+        /**
+         * Handle conserveBandwidth setting change
+         * @param {boolean} value
+         */
+        function conserveBandwidthChangeHandler (value) {
+
+            var levelsLength,
+                toQuality = initialLevel;
+
+            // nothing to do
+            if (!playerLevels || !playerDelegate) {
+                return;
+            }
+
+            levelsLength = playerLevels.length;
+
+            if (true === value) {
+                toQuality = levelsLength > 2 ? levelsLength - 1 : levelsLength;
+            }
+
+            playerDelegate.setCurrentQuality(toQuality);
+        }
+
+        /**
+         * Handle ready event
+         */
         function onReady () {
 
             playerDelegate = this;
@@ -206,30 +239,36 @@
 
         /**
          * Handle firstFrame event
-         * @param event
          */
-        function onFirstFrame (event) {
+        function onFirstFrame () {
 
             started = true;
         }
 
+        /**
+         * Handle levels event
+         * @param event
+         */
         function onLevels (event) {
 
-            var levels = event.levels.length;
+            var levelsLength;
+
+            playerLevels = event.levels;
+            levelsLength = playerLevels.length;
+            initialLevel = event.currentQuality;
 
             // hd turned off
             // set quality to last lowest level
             if (true === userSettings.settings.conserveBandwidth) {
-                playerDelegate.setCurrentQuality(levels > 2 ? levels - 1 : levels);
+                playerDelegate.setCurrentQuality(levelsLength > 2 ? levelsLength - 1 : levelsLength);
             }
         }
 
 
         /**
          * Handle complete event
-         * @param event
          */
-        function onComplete (event) {
+        function onComplete () {
 
             watchProgress.removeItem(vm.item);
         }
