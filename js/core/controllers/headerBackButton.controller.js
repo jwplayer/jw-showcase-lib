@@ -27,12 +27,13 @@
      * @requires $state
      * @requires $ionicHistory
      * @requires $ionicViewSwitcher
+     * @requires jwShowcase.core.dataStore
      */
 
-    HeaderBackButtonController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher'];
-    function HeaderBackButtonController ($state, $ionicHistory, $ionicViewSwitcher) {
+    HeaderBackButtonController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
+    function HeaderBackButtonController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
 
-        var vm   = this;
+        var vm = this;
 
         vm.backButtonClickHandler = backButtonClickHandler;
 
@@ -43,16 +44,37 @@
          */
         function backButtonClickHandler () {
 
-            var viewHistory = $ionicHistory.viewHistory(),
-                history     = viewHistory.histories[$ionicHistory.currentHistoryId()],
-                stack       = history ? history.stack : [],
-                stackIndex  = history.cursor - 1;
+            var viewHistory         = $ionicHistory.viewHistory(),
+                history             = viewHistory.histories[$ionicHistory.currentHistoryId()],
+                backView            = viewHistory.backView,
+                stack               = history ? history.stack : [],
+                stackIndex          = history.cursor - 1,
+                watchlistLength     = dataStore.watchlistFeed.playlist.length,
+                watchProgressLength = dataStore.watchProgressFeed.playlist.length,
+                stateName, stateParams;
 
-            if (viewHistory.backView && viewHistory.backView.stateName !== 'root.video') {
+            if (backView) {
 
-                $ionicViewSwitcher.nextDirection('back');
-                $ionicHistory.goBack();
-                return;
+                stateName   = backView.stateName;
+                stateParams = backView.stateParams;
+
+                // watchlist is empty, do not return to this state
+                if (stateName === 'root.feed' && stateParams.feedId === dataStore.watchlistFeed.feedid && !watchlistLength) {
+                    return goToDashboard();
+                }
+
+                // watchProgress is empty, do not return to this state
+                if (stateName === 'root.feed' && stateParams.feedId === dataStore.watchProgressFeed.feedid && !watchProgressLength) {
+                    return goToDashboard();
+                }
+
+                // return to backView, but prevent going though all video states. Only go back to the last video state
+                // if the current state is not the video state.
+                if (stateName !== 'root.video' || $state.$current.name !== 'root.video') {
+                    $ionicViewSwitcher.nextDirection('back');
+                    $ionicHistory.goBack();
+                    return;
+                }
             }
 
             if (stackIndex > 0) {
@@ -70,6 +92,7 @@
                 }
             }
 
+            // fallback to dashboard
             goToDashboard();
         }
 
