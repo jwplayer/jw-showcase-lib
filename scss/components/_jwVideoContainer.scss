@@ -15,11 +15,18 @@
 
 @include tablet-and-larger () {
 
-    .jw-video-container {
-        min-height: 50vh;
-    }
+    :not(.platform-cordova) {
 
-    .jw-video-container > .jw-video-container-aspect {
-        @include cover();
+        .jw-video-container {
+            max-height: 50vh;
+        }
+
+        .jw-video-container .jw-video-container-aspect {
+            padding-top: 56.25%;
+        }
+
+        .jw-video-container .jw-video-container-player {
+            @include cover();
+        }
     }
 }

@@ -1,8 +1,9 @@
 <ion-view class="jw-video-view" cache-view="false" can-swipe-back="false">
   <ion-content class="has-header">
 
-    <div class="jw-video-container jw-video">
-      <div class="jw-video-container-aspect">
+    <div class="jw-video-container">
+      <div class="jw-video-container-aspect"></div>
+      <div class="jw-video-container-player">
         <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
             on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-ready="vm.onReady"
             on-levels="vm.onLevels"></jw-player>
