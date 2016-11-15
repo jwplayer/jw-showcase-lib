@@ -16,6 +16,9 @@
 
 (function () {
 
+    var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'playlistItem', 'time', 'firstFrame',
+        'levels'];
+
     angular
         .module('jwShowcase.core')
         .directive('jwPlayer', JwPlayerDirective);
@@ -55,9 +58,8 @@
 
         function link (scope, element, attr) {
 
-            var events         = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'playlistItem', 'time', 'firstFrame', 'levels'],
-                playerInstance = null,
-                playerId       = generateRandomId();
+            var playerId = generateRandomId(),
+                backElement, playerInstance;
 
             activate();
 
@@ -72,20 +74,100 @@
                     .element(element[0])
                     .attr('id', playerId);
 
+                if (window.jwplayerSdk) {
+                    initializeSdk();
+                    return;
+                }
+
+                initialize();
+            }
+
+            /**
+             * Initialize JS player
+             */
+            function initialize () {
+
                 playerInstance = jwplayer(playerId)
                     .setup(angular.extend({}, scope.settings));
 
-                if (scope.settings.width) {
-                    element.css('width', scope.settings.width);
-                }
+                bindPlayerEventListeners();
 
                 scope.$on('$destroy', function () {
                     $timeout(function () {
                         playerInstance.remove();
                     }, 1000);
                 });
+            }
 
-                bindPlayerEventListeners();
+            /**
+             * Initialize SDK
+             */
+            function initializeSdk () {
+
+                var rect             = element[0].getBoundingClientRect(),
+                    topOffset        = Math.ceil(rect.top),
+                    scrollElement    = ionic.DomUtil.getParentWithClass(element[0], 'scroll-content'),
+                    aspectPercentage = scope.settings.aspectratio === '16:9' ? '56.25%' : '75%';
+
+                backElement = angular
+                    .element('<div></div>')
+                    .css({
+                        backgroundColor: '#000',
+                        position:        'absolute',
+                        top:             topOffset + 'px',
+                        left:            0,
+                        width:           scope.settings.width,
+                        paddingTop:      aspectPercentage
+                    });
+
+                angular.element(scrollElement)
+                    .parent()
+                    .append(backElement);
+
+                // push scrollElement down
+                scrollElement.style.marginTop = aspectPercentage;
+
+                // so event callbacks can use plugin methods
+                playerInstance = window.jwplayerSdk;
+
+                setTimeout(function () {
+                    window.jwplayerSdk.init(angular.extend({}, scope.settings));
+                    window.jwplayerSdk.move(0, topOffset);
+                    window.jwplayerSdk.sendToBack();
+
+                    bindPlayerEventListeners();
+
+                    // ready event
+                    setTimeout(function () {
+                        backElement.css('display', 'none');
+                        window.jwplayerSdk.bringToFront();
+                    }, 50);
+                }, 500);
+
+                scope.$on('jwMenu.visible', function () {
+                    window.jwplayerSdk.sendToBack();
+                });
+
+                scope.$on('jwMenu.hidden', function () {
+                    window.jwplayerSdk.bringToFront();
+                });
+
+                scope.$on('$stateChangeStart', function () {
+
+                    backElement.css('display', 'block');
+
+                    setTimeout(function () {
+                        window.jwplayerSdk.sendToBack();
+                    }, 10);
+
+                    setTimeout(function () {
+                        window.jwplayerSdk.remove();
+                    }, 100);
+                });
+
+                scope.$on('$destroy', function () {
+                    backElement.remove();
+                });
             }
 
             /**
@@ -94,12 +176,10 @@
             function bindPlayerEventListeners () {
 
                 // custom events from directive
-                events.forEach(function (type) {
-
-                    playerInstance
-                        .on(type, function (event) {
-                            proxyEvent(type, event);
-                        });
+                PLAYER_EVENTS.forEach(function (type) {
+                    playerInstance.on(type, function (event) {
+                        proxyEvent(type, event);
+                    });
                 });
             }
 
