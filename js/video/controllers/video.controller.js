@@ -279,8 +279,7 @@
          */
         function onTime (event) {
 
-            var position = Math.round(event.position),
-                progress = event.position / event.duration;
+            var position = Math.round(event.position);
 
             // watchProgress is disabled
             if (false === userSettings.settings.watchProgress) {
@@ -303,12 +302,11 @@
 
             lastPos = position;
 
-            if (angular.isNumber(progress) && position % 2) {
-                handleWatchProgress(progress);
-            }
+            handleWatchProgress(position, event.duration);
         }
 
         /**
+         * Resume video playback at last saved position from watchProgress
          *
          * @param {Number} duration
          */
@@ -323,18 +321,23 @@
         }
 
         /**
-         * Save or remove watchProgress
-         * @param {number} progress
+         * Saves or removes watchProgress
+         * @param {number} position
+         * @param {number} duration
          */
-        function handleWatchProgress (progress) {
+        function handleWatchProgress (position, duration) {
 
-            if (progress > watchProgress.WATCH_PROGRESS_MAX) {
-                if (watchProgress.hasItem(vm.item)) {
-                    watchProgress.removeItem(vm.item);
-                }
-            }
-            else {
+            var progress    = position / duration,
+                minPosition = Math.min(10, duration * watchProgress.MIN_PROGRESS),
+                maxPosition = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS);
+
+            if (angular.isNumber(progress) && position >= minPosition && position < maxPosition) {
                 watchProgress.saveItem(vm.item, progress);
+                return;
+            }
+
+            if (watchProgress.hasItem(vm.item)) {
+                watchProgress.removeItem(vm.item, progress);
             }
         }
 

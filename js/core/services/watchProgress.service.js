@@ -16,10 +16,10 @@
 
 (function () {
 
-    var LOCAL_STORAGE_KEY       = 'jwshowcase.watchprogress';
-    var WATCH_PROGRESS_LIFETIME = 86400000 * 30;
-    var WATCH_PROGRESS_MIN      = 0.01;
-    var WATCH_PROGRESS_MAX      = 0.95;
+    var LOCAL_STORAGE_KEY = 'jwshowcase.watchprogress';
+    var LIFETIME          = 86400000 * 30;
+    var MIN_PROGRESS      = 0.1;
+    var MAX_PROGRESS      = 0.9;
 
     angular
         .module('jwShowcase.core')
@@ -34,8 +34,8 @@
     watchProgress.$inject = ['dataStore', 'session'];
     function watchProgress (dataStore, session) {
 
-        this.WATCH_PROGRESS_MAX = WATCH_PROGRESS_MAX;
-        this.WATCH_PROGRESS_MIN = WATCH_PROGRESS_MIN;
+        this.MAX_PROGRESS = MAX_PROGRESS;
+        this.MIN_PROGRESS = MIN_PROGRESS;
 
         this.saveItem   = saveItem;
         this.removeItem = removeItem;
@@ -216,13 +216,8 @@
                     return false;
                 }
 
-                // if progress is out range
-                if (item.progress < WATCH_PROGRESS_MIN || item.progress > WATCH_PROGRESS_MAX) {
-                    return false;
-                }
-
                 // filter out older items older than lifetime
-                return time - item.lastWatched < WATCH_PROGRESS_LIFETIME
+                return time - item.lastWatched < LIFETIME
             }
         }
 

@@ -211,7 +211,13 @@
          */
         function replaceImageSize (url, width) {
 
-            var matches = url.match(/-(\d+)\.(\w+)$/);
+            var matches;
+
+            if (!url) {
+                return '';
+            }
+
+            matches = url.match(/-(\d+)\.(\w+)$/);
 
             if (matches.length === 3) {
                 url = url.replace(matches[0], matches[0].replace(matches[1], width));

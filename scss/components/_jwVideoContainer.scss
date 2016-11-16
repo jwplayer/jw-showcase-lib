@@ -6,7 +6,7 @@
     position: relative;
     width: 100vw;
 
-    background-color: $dark-color;
+    background-color: $black;
 }
 
 //
@@ -15,17 +15,20 @@
 
 @include tablet-and-larger () {
 
-    :not(.platform-cordova) {
+    .platform-browser .jw-video-container {
 
-        .jw-video-container {
-            max-height: 50vh;
+        .jw-video-container-align {
+            position: relative;
+            max-width: 800px;
+            height: 100%;
+            margin: 0 auto;
         }
 
-        .jw-video-container .jw-video-container-aspect {
+        .jw-video-container-aspect {
             padding-top: 56.25%;
         }
 
-        .jw-video-container .jw-video-container-player {
+        .jw-video-container-player {
             @include cover();
         }
     }

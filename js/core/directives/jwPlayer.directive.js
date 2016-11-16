@@ -158,11 +158,8 @@
 
                     setTimeout(function () {
                         window.jwplayerSdk.sendToBack();
-                    }, 10);
-
-                    setTimeout(function () {
                         window.jwplayerSdk.remove();
-                    }, 100);
+                    }, 10);
                 });
 
                 scope.$on('$destroy', function () {
