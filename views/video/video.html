@@ -1,10 +1,14 @@
-<ion-view>
+<ion-view class="jw-video-view" cache-view="false" can-swipe-back="false">
   <ion-content class="has-header">
 
-    <div class="jw-video-container jw-video">
-      <div class="jw-video-container-aspect">
-        <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
-            on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-play="vm.onPlay"></jw-player>
+    <div class="jw-video-container">
+      <div class="jw-video-container-align">
+        <div class="jw-video-container-aspect"></div>
+        <div class="jw-video-container-player">
+          <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
+              on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-ready="vm.onReady"
+              on-levels="vm.onLevels"></jw-player>
+        </div>
       </div>
     </div>
 
@@ -32,8 +36,10 @@
           </div>
         </div>
         <div class="jw-meta-controls">
-          <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()" ng-class="{'is-active': vm.inWatchList}">
-            <span class="jw-button-label">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}</span> <i class="jwy-icon jwy-icon-banner jwy-icon-stack">
+          <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()"
+              ng-class="{'is-active': vm.inWatchList}">
+            <span class="jw-button-label">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}</span> <i
+              class="jwy-icon jwy-icon-banner jwy-icon-stack">
             <i class="jwy-icon jwy-icon-{{ vm.inWatchList ? 'min' : 'plus' }}"></i>
           </i>
           </jw-button>
@@ -52,7 +58,8 @@
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 
-    <div class="jw-row jw-expand-animation" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
+    <div class="jw-row jw-expand-animation"
+        ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
       <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Related Videos'"
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>

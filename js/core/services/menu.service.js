@@ -135,11 +135,15 @@
                 $timeout(function () {
                     menuPopover.remove();
                     menuPopover = null;
+
+                    $rootScope.$broadcast('jwMenu.hidden');
                 }, popover.hideDelay);
             });
 
             menuPopover
                 .show(document.body);
+
+            $rootScope.$broadcast('jwMenu.visible');
         }
     }
 

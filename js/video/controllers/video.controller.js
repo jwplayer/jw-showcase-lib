@@ -24,6 +24,7 @@
      * @ngdoc controller
      * @name jwShowcase.video.controller:VideoController
      *
+     * @requires $scope
      * @requires $state
      * @requires $stateParams
      * @requires jwShowcase.core.apiConsumer
@@ -34,13 +35,17 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
      */
-    VideoController.$inject = ['$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
-    function VideoController ($state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
+    function VideoController ($scope, $state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
 
-        var vm      = this,
-            lastPos = 0,
-            resumed = false,
-            started = false,
+        var vm             = this,
+            lastPos        = 0,
+            resumed        = false,
+            started        = false,
+            playerPlaylist = [],
+            playerDelegate,
+            playerLevels,
+            initialLevel,
             watchProgressItem;
 
         vm.item                = item;
@@ -50,11 +55,12 @@
         vm.inWatchList         = false;
         vm.title               = '';
 
-        vm.onPlay         = onPlay;
+        vm.onReady        = onReady;
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
         vm.onTime         = onTime;
         vm.onPlaylistItem = onPlaylistItem;
+        vm.onLevels       = onLevels;
 
         vm.cardClickHandler      = cardClickHandler;
         vm.shareClickHandler     = shareClickHandler;
@@ -69,17 +75,23 @@
          */
         function activate () {
 
+            playerPlaylist = generatePlaylist(feed, item);
+
             vm.playerSettings = {
                 width:          '100%',
                 height:         '100%',
                 aspectratio:    '16:9',
                 ph:             4,
                 autostart:      $stateParams.autoStart,
-                playlist:       generatePlaylist(feed, item),
+                playlist:       playerPlaylist,
                 related:        false,
                 sharing:        false,
                 visualplaylist: false
             };
+
+            $scope.$watch(function () {
+                return userSettings.settings.conserveBandwidth;
+            }, conserveBandwidthChangeHandler);
 
             update();
         }
@@ -90,7 +102,7 @@
         function update () {
 
             var itemIndex = feed.playlist.findIndex(function (current) {
-                return current.mediaid === item.mediaid;
+                return current.mediaid === vm.item.mediaid;
             });
 
             vm.duration = utils.getVideoDurationByItem(vm.item);
@@ -103,7 +115,7 @@
 
             vm.inWatchList = watchlist.hasItem(vm.item);
 
-            vm.title = item.title;
+            vm.title = vm.item.title;
 
             if (vm.title.length > 100) {
                 vm.title = vm.title.substr(0, 100) + '...';
@@ -154,18 +166,55 @@
         }
 
         /**
+         * Handle conserveBandwidth setting change
+         * @param {boolean} value
+         */
+        function conserveBandwidthChangeHandler (value) {
+
+            var levelsLength,
+                toQuality = initialLevel;
+
+            // nothing to do
+            if (!playerLevels || !playerDelegate) {
+                return;
+            }
+
+            levelsLength = playerLevels.length;
+
+            if (true === value) {
+                toQuality = levelsLength > 2 ? levelsLength - 1 : levelsLength;
+            }
+
+            playerDelegate.setCurrentQuality(toQuality);
+        }
+
+        /**
+         * Handle ready event
+         */
+        function onReady () {
+
+            playerDelegate = this;
+        }
+
+        /**
          * Handle playlist item event
          * @param {Object} event
          */
         function onPlaylistItem (event) {
 
-            if (!event.item || event.item.mediaid === vm.item.mediaid) {
+            var playlistItem = playerPlaylist[event.index],
+                newItem;
+
+            if (!angular.isNumber(event.index) || !playlistItem) {
                 return;
             }
 
-            var mediaId = event.item.mediaid,
-                feedId  = feed.feedid,
-                newItem = dataStore.getItem(mediaId, feedId);
+            newItem = dataStore.getItem(playlistItem.mediaid, feed.feedid);
+
+            // same item
+            if (newItem.mediaid === vm.item.mediaid) {
+                return;
+            }
 
             // item does not exist in current feed.
             if (!newItem) {
@@ -178,58 +227,48 @@
                 feedId:    newItem.feedid,
                 mediaId:   newItem.mediaid,
                 autoStart: true
+            }, {
+                notify: false
             });
 
-            this.stop();
-        }
+            vm.item = newItem;
+            update();
 
-        /**
-         * Handle play event
-         * @param event
-         */
-        function onPlay (event) {
-
-            // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress) {
-                return;
-            }
-
-            if ($stateParams.autoStart) {
-                resumeWatchProgress(this);
-                started = true;
-            }
+            playerDelegate.stop();
         }
 
         /**
          * Handle firstFrame event
-         * @param event
          */
-        function onFirstFrame (event) {
+        function onFirstFrame () {
 
-            var levels = this.getQualityLevels();
-
-            // hd turned off
-            // set quality level to lowest quality possible
-            if (true === userSettings.settings.conserveBandwidth) {
-                this.setCurrentQuality(levels.length - 2);
-            }
-
-            // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress) {
-                return;
-            }
-
-            if (!$stateParams.autoStart) {
-                resumeWatchProgress(this);
-                started = true;
-            }
+            started = true;
         }
 
         /**
-         * Handle complete event
+         * Handle levels event
          * @param event
          */
-        function onComplete (event) {
+        function onLevels (event) {
+
+            var levelsLength;
+
+            playerLevels = event.levels;
+            levelsLength = playerLevels.length;
+            initialLevel = event.currentQuality;
+
+            // hd turned off
+            // set quality to last lowest level
+            if (true === userSettings.settings.conserveBandwidth) {
+                playerDelegate.setCurrentQuality(levelsLength > 2 ? levelsLength - 1 : levelsLength);
+            }
+        }
+
+
+        /**
+         * Handle complete event
+         */
+        function onComplete () {
 
             watchProgress.removeItem(vm.item);
         }
@@ -250,7 +289,7 @@
             // resume watch progress fail over when duration was 0 on the play or firstFrame event
 
             if (true === started && false === resumed && !!watchProgressItem) {
-                resumeWatchProgress(this);
+                resumeWatchProgress(event.duration);
                 return;
             }
 
@@ -269,15 +308,14 @@
         /**
          * Resume video playback at last saved position from watchProgress
          *
-         * @param player
+         * @param {Number} duration
          */
-        function resumeWatchProgress (player) {
+        function resumeWatchProgress (duration) {
 
-            var duration        = player.getDuration(),
-                toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
+            var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
 
             if (toWatchProgress > 0 && duration > 0) {
-                player.seek(toWatchProgress * duration);
+                playerDelegate.seek(toWatchProgress * duration);
                 resumed = true;
             }
         }
@@ -326,7 +364,7 @@
 
             share.show({
                 target: $event.target,
-                item:   item
+                item:   vm.item
             });
         }
 
@@ -338,11 +376,32 @@
          */
         function cardClickHandler (item, autoStart) {
 
+            var playlistIndex;
+
+            vm.item = item;
+
+            if (item.feedid !== feed.feedid) {
+
+                vm.feed        = dataStore.getFeed(item.feedid);
+                playerPlaylist = generatePlaylist(vm.feed, vm.item);
+
+                playerDelegate.loadPlaylist(playerPlaylist);
+            }
+            else {
+                // set playlistItem
+                playlistIndex = playerPlaylist.findIndex(byMediaId(item.mediaid));
+                playerDelegate.playlistItem(playlistIndex);
+            }
+
             $state.go('root.video', {
                 feedId:    item.feedid,
                 mediaId:   item.mediaid,
                 autoStart: autoStart
+            }, {
+                notify: false
             });
+
+            update();
         }
 
         /**
