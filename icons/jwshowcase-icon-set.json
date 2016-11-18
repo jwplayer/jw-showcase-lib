@@ -1,6 +1,10 @@
 {
     "selection": [
         {
+            "order": 64,
+            "name": "pause"
+        },
+        {
             "order": 61,
             "name": "angle-down",
             "prevSize": 32
@@ -117,16 +121,25 @@
     "metadata": {
         "name": "jwshowcase-icon-set",
         "importSize": {
-            "width": 256,
-            "height": 256
+            "width": 1024,
+            "height": 1024
         },
         "designer": "JW Player",
         "url": "http://jwplayer.com",
-        "iconsHash": 366789805
+        "iconsHash": 410112859
     },
     "height": 1024,
     "prevSize": 32,
     "icons": [
+        {
+            "paths": [
+                "M640 960v-896h256v896h-256zM128 64h256v896h-256v-896z"
+            ],
+            "grid": 32,
+            "tags": [
+                "pause"
+            ]
+        },
         {
             "paths": [
                 "M87.2 229.6l-70 70 494.8 494.8 494.8-494.8-70-70-424.8 424.8z"
