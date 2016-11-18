@@ -96,6 +96,14 @@
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
 
+            $scope.$watch(function () {
+                return watchlist.hasItem(vm.item);
+            }, function (val, oldVal) {
+                if (val !== oldVal) {
+                    vm.inWatchList = val;
+                }
+            });
+
             update();
         }
 
@@ -112,7 +120,6 @@
 
             watchProgressItem = watchProgress.getItem(vm.item);
             vm.duration       = utils.getVideoDurationByItem(vm.item);
-            vm.inWatchList    = watchlist.hasItem(vm.item);
             vm.title          = vm.item.title;
 
             if (vm.title.length > 100) {
