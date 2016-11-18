@@ -79,6 +79,7 @@
         function activate () {
 
             playerPlaylist = generatePlaylist(feed, item);
+            vm.inWatchList = watchlist.hasItem(vm.item);
 
             vm.playerSettings = {
                 width:          '100%',
