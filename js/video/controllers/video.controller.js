@@ -26,7 +26,8 @@
      *
      * @requires $scope
      * @requires $state
-     * @requires $stateParams
+     * @requires $ionicHistory
+     * @requires $ionicScrollDelegate
      * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchProgress
@@ -34,16 +35,19 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
+     * @requires jwShowcase.core.player
      */
-    VideoController.$inject = ['$scope', '$state', '$stateParams', 'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'feed', 'item'];
-    function VideoController ($scope, $state, $stateParams, apiConsumer, dataStore, watchProgress, watchlist, userSettings, utils, share, feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$ionicHistory', '$ionicScrollDelegate',
+        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'feed', 'item'];
+    function VideoController ($scope, $state, $ionicHistory, $ionicScrollDelegate, apiConsumer, dataStore,
+                              watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
 
-        var vm             = this,
-            lastPos        = 0,
-            resumed        = false,
-            started        = false,
-            playerPlaylist = [],
-            playerDelegate,
+        var vm                   = this,
+            lastPos              = 0,
+            resumed              = false,
+            started              = false,
+            requestQualityChange = false,
+            playerPlaylist       = [],
             playerLevels,
             initialLevel,
             watchProgressItem;
@@ -55,7 +59,6 @@
         vm.inWatchList         = false;
         vm.title               = '';
 
-        vm.onReady        = onReady;
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
         vm.onTime         = onTime;
@@ -82,7 +85,7 @@
                 height:         '100%',
                 aspectratio:    '16:9',
                 ph:             4,
-                autostart:      $stateParams.autoStart,
+                autostart:      $state.params.autoStart,
                 playlist:       playerPlaylist,
                 related:        false,
                 sharing:        false,
@@ -101,21 +104,16 @@
          */
         function update () {
 
-            var itemIndex = feed.playlist.findIndex(function (current) {
-                return current.mediaid === vm.item.mediaid;
-            });
-
-            vm.duration = utils.getVideoDurationByItem(vm.item);
+            var itemIndex = feed.playlist.findIndex(byMediaId(vm.item.mediaid));
 
             vm.feed.playlist = feed.playlist
                 .slice(itemIndex)
                 .concat(feed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
-
-            vm.inWatchList = watchlist.hasItem(vm.item);
-
-            vm.title = vm.item.title;
+            vm.duration       = utils.getVideoDurationByItem(vm.item);
+            vm.inWatchList    = watchlist.hasItem(vm.item);
+            vm.title          = vm.item.title;
 
             if (vm.title.length > 100) {
                 vm.title = vm.title.substr(0, 100) + '...';
@@ -147,10 +145,12 @@
          */
         function generatePlaylist (feed, item) {
 
-            var indexOfItem = feed.playlist.findIndex(function (playlistItem) {
-                    return playlistItem.mediaid === item.mediaid;
-                }),
-                playlist    = feed.playlist.slice(indexOfItem);
+            var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
+                playlist;
+
+            playlist = feed.playlist
+                .slice(playlistIndex)
+                .concat(feed.playlist.slice(0, playlistIndex));
 
             return playlist.map(function (current) {
 
@@ -175,25 +175,17 @@
                 toQuality = initialLevel;
 
             // nothing to do
-            if (!playerLevels || !playerDelegate) {
+            if (!playerLevels) {
                 return;
             }
 
             levelsLength = playerLevels.length;
 
             if (true === value) {
-                toQuality = levelsLength > 2 ? levelsLength - 1 : levelsLength;
+                toQuality = levelsLength > 2 ? levelsLength - 2 : levelsLength;
             }
 
-            playerDelegate.setCurrentQuality(toQuality);
-        }
-
-        /**
-         * Handle ready event
-         */
-        function onReady () {
-
-            playerDelegate = this;
+            requestQualityChange = toQuality;
         }
 
         /**
@@ -203,6 +195,7 @@
         function onPlaylistItem (event) {
 
             var playlistItem = playerPlaylist[event.index],
+                stateParams  = $ionicHistory.currentView().stateParams,
                 newItem;
 
             if (!angular.isNumber(event.index) || !playlistItem) {
@@ -212,7 +205,7 @@
             newItem = dataStore.getItem(playlistItem.mediaid, feed.feedid);
 
             // same item
-            if (newItem.mediaid === vm.item.mediaid) {
+            if (!newItem || newItem.mediaid === vm.item.mediaid) {
                 return;
             }
 
@@ -222,19 +215,25 @@
                 return;
             }
 
+            // update $viewHistory
+            stateParams.feedId  = newItem.feedid;
+            stateParams.mediaId = newItem.mediaid;
+
             // update state, but don't notify
-            $state.go('root.video', {
-                feedId:    newItem.feedid,
-                mediaId:   newItem.mediaid,
-                autoStart: true
-            }, {
-                notify: false
-            });
+            $state
+                .go('root.video', {
+                    feedId:    newItem.feedid,
+                    mediaId:   newItem.mediaid,
+                    autoStart: true
+                }, {
+                    notify: false
+                })
+                .then(function () {
+                    $scope.$broadcast('$stateUpdate');
+                });
 
             vm.item = newItem;
             update();
-
-            playerDelegate.stop();
         }
 
         /**
@@ -242,7 +241,15 @@
          */
         function onFirstFrame () {
 
+            var levelsLength = playerLevels.length;
+
             started = true;
+
+            // hd turned off
+            // set quality to last lowest level
+            if (true === userSettings.settings.conserveBandwidth) {
+                player.setCurrentQuality(levelsLength > 2 ? levelsLength - 2 : levelsLength);
+            }
         }
 
         /**
@@ -251,17 +258,8 @@
          */
         function onLevels (event) {
 
-            var levelsLength;
-
             playerLevels = event.levels;
-            levelsLength = playerLevels.length;
             initialLevel = event.currentQuality;
-
-            // hd turned off
-            // set quality to last lowest level
-            if (true === userSettings.settings.conserveBandwidth) {
-                playerDelegate.setCurrentQuality(levelsLength > 2 ? levelsLength - 1 : levelsLength);
-            }
         }
 
 
@@ -280,6 +278,11 @@
         function onTime (event) {
 
             var position = Math.round(event.position);
+
+            if (false !== requestQualityChange) {
+                player.setCurrentQuality(requestQualityChange);
+                requestQualityChange = false;
+            }
 
             // watchProgress is disabled
             if (false === userSettings.settings.watchProgress) {
@@ -315,7 +318,7 @@
             var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
 
             if (toWatchProgress > 0 && duration > 0) {
-                playerDelegate.seek(toWatchProgress * duration);
+                player.seek(toWatchProgress * duration);
                 resumed = true;
             }
         }
@@ -376,32 +379,49 @@
          */
         function cardClickHandler (item, autoStart) {
 
-            var playlistIndex;
+            var playlistIndex,
+                stateParams = $ionicHistory.currentView().stateParams;
+
+            // same item
+            if (vm.item.mediaid === item.mediaid) {
+                return;
+            }
 
             vm.item = item;
+
+            // update mediaId in $viewHistory
+            stateParams.mediaId = vm.item.mediaid;
 
             if (item.feedid !== feed.feedid) {
 
                 vm.feed        = dataStore.getFeed(item.feedid);
                 playerPlaylist = generatePlaylist(vm.feed, vm.item);
 
-                playerDelegate.loadPlaylist(playerPlaylist);
+                // update feedId in $viewHistory
+                stateParams.feedId = item.feedid;
+
+                player.load(playerPlaylist);
             }
             else {
                 // set playlistItem
                 playlistIndex = playerPlaylist.findIndex(byMediaId(item.mediaid));
-                playerDelegate.playlistItem(playlistIndex);
+                player.playlistItem(playlistIndex);
             }
 
-            $state.go('root.video', {
-                feedId:    item.feedid,
-                mediaId:   item.mediaid,
-                autoStart: autoStart
-            }, {
-                notify: false
-            });
+            $state
+                .go('root.video', {
+                    feedId:    item.feedid,
+                    mediaId:   item.mediaid,
+                    autoStart: autoStart
+                }, {
+                    notify: false
+                })
+                .then(function () {
+                    $scope.$broadcast('$stateUpdate');
+                });
 
             update();
+            $ionicScrollDelegate.scrollTop(true);
         }
 
         /**

@@ -12,7 +12,7 @@ $featured-slider-max-width: 900px;
     &.is-sliding {
 
         .jw-card-slider-container .jw-card-slider-list,
-        .jw-card.jw-card--default,
+        .jw-card.jw-card-flag-default,
         .jw-card-play-button,
         .jw-card-poster {
             @include single-transition(none, 0s !important);
@@ -114,11 +114,11 @@ $featured-slider-max-width: 900px;
         color: $main-color;
         cursor: pointer;
 
-        &.jw-card-slider-button--left {
+        &.jw-card-slider-button-flag-left {
             left: 10px;
         }
 
-        &.jw-card-slider-button--right {
+        &.jw-card-slider-button-flag-right {
             right: 10px;
         }
 
@@ -181,13 +181,13 @@ $featured-slider-max-width: 900px;
 }
 
 //
-// jwCardSlider--featured
+// jwCardSlider-flag-featured
 // --------------------------------
 
-.jw-card-slider.jw-card-slider--featured {
+.jw-card-slider.jw-card-slider-flag-featured {
     background-color: $featured-slider-bg-color;
 
-    .jw-card-slider-button.jw-card-slider-button--right {
+    .jw-card-slider-button.jw-card-slider-button-flag-right {
         margin-left: 40px;
     }
 
@@ -242,10 +242,10 @@ $featured-slider-max-width: 900px;
 }
 
 //
-// jwCardSlider--default
+// jwCardSlider-flag-default
 // --------------------------------
 
-.jw-card-slider.jw-card-slider--default {
+.jw-card-slider.jw-card-slider-flag-default {
 
     .jw-card-slider-align {
         padding: 0 #{90px - $default-slider-spacing / 2} 20px;
@@ -297,7 +297,7 @@ $featured-slider-max-width: 900px;
 
 @include tablet-only () {
 
-    .jw-card-slider.jw-card-slider--featured {
+    .jw-card-slider.jw-card-slider-flag-featured {
 
         .jw-card-slider-indicators {
             padding: 0 13px 16px 0;

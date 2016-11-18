@@ -25,17 +25,17 @@
 
     /**
      * @ngdoc directive
-     * @name jwShowcase.video.directive:jwPlayer
+     * @name jwShowcase.core.directive:jwPlayer
      *
      * @description
-     * This directive is used to create an Jwplayer instance.
+     * This directive is used to create a Jwplayer instance.
      *
      * @param {Object=} settings Jwplayer settings that will be used in the `.setup()` method.
      *
      * @requires $parse
      * @requires $timeout
      * @requires jwShowcase.core.utils
-     * @requires config
+     * @requires jwShowcase.core.player
      *
      * @example
      *
@@ -44,8 +44,8 @@
      * ```
      *
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'config'];
-    function JwPlayerDirective ($parse, $timeout, utils, config) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player'];
+    function JwPlayerDirective ($parse, $timeout, utils, player) {
 
         return {
             scope:       {
@@ -59,7 +59,7 @@
         function link (scope, element, attr) {
 
             var playerId = generateRandomId(),
-                backElement, playerInstance;
+                playerInstance;
 
             activate();
 
@@ -74,11 +74,6 @@
                     .element(element[0])
                     .attr('id', playerId);
 
-                if (window.jwplayerSdk) {
-                    initializeSdk();
-                    return;
-                }
-
                 initialize();
             }
 
@@ -92,78 +87,13 @@
 
                 bindPlayerEventListeners();
 
+                player.setPlayer(playerInstance);
+
                 scope.$on('$destroy', function () {
                     $timeout(function () {
+                        player.setPlayer(null);
                         playerInstance.remove();
                     }, 1000);
-                });
-            }
-
-            /**
-             * Initialize SDK
-             */
-            function initializeSdk () {
-
-                var rect             = element[0].getBoundingClientRect(),
-                    topOffset        = Math.ceil(rect.top),
-                    scrollElement    = ionic.DomUtil.getParentWithClass(element[0], 'scroll-content'),
-                    aspectPercentage = scope.settings.aspectratio === '16:9' ? '56.25%' : '75%';
-
-                backElement = angular
-                    .element('<div></div>')
-                    .css({
-                        backgroundColor: '#000',
-                        position:        'absolute',
-                        top:             topOffset + 'px',
-                        left:            0,
-                        width:           scope.settings.width,
-                        paddingTop:      aspectPercentage
-                    });
-
-                angular.element(scrollElement)
-                    .parent()
-                    .append(backElement);
-
-                // push scrollElement down
-                scrollElement.style.marginTop = aspectPercentage;
-
-                // so event callbacks can use plugin methods
-                playerInstance = window.jwplayerSdk;
-
-                setTimeout(function () {
-                    window.jwplayerSdk.init(angular.extend({}, scope.settings));
-                    window.jwplayerSdk.move(0, topOffset);
-                    window.jwplayerSdk.sendToBack();
-
-                    bindPlayerEventListeners();
-
-                    // ready event
-                    setTimeout(function () {
-                        backElement.css('display', 'none');
-                        window.jwplayerSdk.bringToFront();
-                    }, 50);
-                }, 500);
-
-                scope.$on('jwMenu.visible', function () {
-                    window.jwplayerSdk.sendToBack();
-                });
-
-                scope.$on('jwMenu.hidden', function () {
-                    window.jwplayerSdk.bringToFront();
-                });
-
-                scope.$on('$stateChangeStart', function () {
-
-                    backElement.css('display', 'block');
-
-                    setTimeout(function () {
-                        window.jwplayerSdk.sendToBack();
-                        window.jwplayerSdk.remove();
-                    }, 10);
-                });
-
-                scope.$on('$destroy', function () {
-                    backElement.remove();
                 });
             }
 

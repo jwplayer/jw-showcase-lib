@@ -26,16 +26,16 @@
 
     .jw-card-slider {
 
-        &.jw-card-slider--default {
+        &.jw-card-slider-flag-default {
             border-bottom: 1px solid rgba($main-color, 0.2);
         }
 
-        &.jw-card-slider--default.jw-card-slider-button {
+        &.jw-card-slider-flag-default.jw-card-slider-button {
             color: $black;
         }
     }
 
-    .jw-card.jw-card--default {
+    .jw-card.jw-card-flag-default {
 
         .jw-card-info {
             background-color: $white;

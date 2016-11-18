@@ -99,7 +99,7 @@
             function activate () {
 
                 var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
-                    className       = 'jw-card-slider--' + classNameSuffix;
+                    className       = 'jw-card-slider-flag-' + classNameSuffix;
 
                 window.addEventListener('resize', resizeDebounced);
 
@@ -204,8 +204,8 @@
                 updateIndicator();
                 updateSlides();
 
-                $('.jw-card-slider-button--left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
-                $('.jw-card-slider-button--right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
+                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
+                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
 
                 moveSlider(translateX, animate);
             }

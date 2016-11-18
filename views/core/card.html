@@ -9,11 +9,21 @@
   <div class="jw-card-container" ng-click="vm.clickHandler($event, false)">
     <div class="jw-card-table">
       <div class="jw-card-controls jw-card-row">
-        <div class="jw-card-cell">
+        <div class="jw-card-cell" ng-if="!vm.nowPlaying">
           <jw-button class="jw-card-play-button jw-button-play" ng-click="vm.clickHandler($event, true)">
             <i class="jwy-icon jwy-icon-play"></i>
           </jw-button>
           <div class="jw-card-duration jw-card-text">{{ ::vm.duration }}</div>
+        </div>
+        <div class="jw-card-cell" ng-if="vm.nowPlaying">
+          <div class="jw-card-now-playing">
+            <jw-button ng-click="vm.play()" class="jw-card-play-button jw-button-play">
+              <i class="jwy-icon jwy-icon-{{ vm.player.paused ? 'play' : 'pause' }}"></i>
+            </jw-button>
+            <div class="jw-card-text">
+              Currently playing
+            </div>
+          </div>
         </div>
       </div>
       <div class="jw-card-info jw-card-row">

@@ -135,11 +135,17 @@
     border: 0.2em solid $white;
     border-radius: 50%;
 
-    .jwy-icon-play {
-        @include center-self(50%, 54%);
-
+    .jwy-icon {
         color: $primary-color;
         font-size: 1.4em;
+
+        &.jwy-icon-play {
+            @include center-self(50%, 54%);
+        }
+
+        &.jwy-icon-pause {
+            @include center-self(50%, 50%);
+        }
     }
 }
 
