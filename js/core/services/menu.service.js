@@ -93,7 +93,7 @@
          */
         function hide () {
 
-            if (!menuPopover) {
+            if (!menuPopover || !menuPopover.isShown()) {
                 return;
             }
 

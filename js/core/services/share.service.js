@@ -82,7 +82,7 @@
          */
         function hide () {
 
-            if (!sharePopover) {
+            if (!sharePopover || !sharePopover.isShown()) {
                 return;
             }
 
