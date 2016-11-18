@@ -28,23 +28,30 @@
      * @requires $rootScope
      * @requires $scope
      * @requires jwShowcase.core.utils
+     * @requires jwShowcase.core.player
      */
-    CardController.$inject = ['$rootScope', '$scope', 'utils', 'watchlist', '$timeout'];
-    function CardController ($rootScope, $scope, utils, watchlist, $timeout) {
+    CardController.$inject = ['$rootScope', '$scope', '$state', 'utils', 'watchlist', 'player'];
+    function CardController ($rootScope, $scope, $state, utils, watchlist, player) {
 
         var vm = this;
 
-        vm.duration               = 0;
         vm.getClassNames          = getClassNames;
         vm.clickHandler           = clickHandler;
         vm.menuButtonClickHandler = menuButtonClickHandler;
         vm.closeMenuHandler       = closeMenuHandler;
-        vm.menuVisible            = false;
-        vm.inWatchList            = false;
-        vm.toast                  = null;
-        vm.posterUrl              = getPosterUrl();
+        vm.watchlistClickHandler  = watchlistClickHandler;
 
-        vm.watchlistClickHandler = watchlistClickHandler;
+        vm.duration    = 0;
+        vm.menuVisible = false;
+        vm.inWatchList = false;
+        vm.toast       = null;
+        vm.posterUrl   = getPosterUrl();
+        vm.nowPlaying  = false;
+        vm.player      = player;
+
+        vm.play = function () {
+            player.play();
+        };
 
         activate();
 
@@ -58,7 +65,8 @@
             vm.duration    = utils.getVideoDurationByItem(vm.item);
             vm.inWatchList = watchlist.hasItem(vm.item);
 
-            $scope.$on('jwCardMenu:open', handleCardMenuOpenEvent);
+            $scope.$on('jwCardMenu:open', cardMenuOpenEventHandler);
+            $scope.$on('$stateUpdate', update);
 
             $scope.$watch(function () {
                 return watchlist.hasItem(vm.item);
@@ -67,6 +75,19 @@
                     vm.inWatchList = val;
                 }
             });
+
+            update();
+        }
+
+        /**
+         * Update controller
+         */
+        function update () {
+
+            var current = $state.current,
+                params  = $state.params;
+
+            vm.nowPlaying = current.name === 'root.video' && params.mediaId === vm.item.mediaid && params.feedId === vm.item.feedid;
         }
 
         /**
@@ -95,7 +116,7 @@
          * @param {$event} event
          * @param {$scope} targetScope
          */
-        function handleCardMenuOpenEvent (event, targetScope) {
+        function cardMenuOpenEventHandler (event, targetScope) {
 
             if (targetScope === $scope) {
                 return;
@@ -111,11 +132,12 @@
         function getClassNames () {
 
             return {
-                'jw-card--featured': vm.featured,
-                'jw-card--default':  !vm.featured,
-                'jw-card--touch':    'ontouchstart' in window ||
-                                     (window.DocumentTouch && document instanceof window.DocumentTouch),
-                'jw-card-menu-open': vm.menuVisible
+                'jw-card-flag-featured':    vm.featured,
+                'jw-card-flag-default':     !vm.featured,
+                'jw-card-flag-touch':       'ontouchstart' in window ||
+                                            (window.DocumentTouch && document instanceof window.DocumentTouch),
+                'jw-card-flag-now-playing': vm.nowPlaying,
+                'jw-card-flag-menu-open':   vm.menuVisible
             };
         }
 
