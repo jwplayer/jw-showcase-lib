@@ -334,7 +334,7 @@
                 minPosition = Math.min(10, duration * watchProgress.MIN_PROGRESS),
                 maxPosition = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS);
 
-            if (angular.isNumber(progress) && position >= minPosition && position < maxPosition) {
+            if (angular.isNumber(progress) && position >= minPosition && position < maxPosition && !vm.inWatchList) {
                 watchProgress.saveItem(vm.item, progress);
                 return;
             }
