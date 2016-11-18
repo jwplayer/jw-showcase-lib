@@ -57,7 +57,7 @@
         function cardClickHandler (item, autoStart) {
 
             $state.go('root.video', {
-                feedId:    item.feedid,
+                feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
                 autoStart: autoStart
             });
