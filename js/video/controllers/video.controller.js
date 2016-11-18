@@ -395,23 +395,22 @@
                 return;
             }
 
-            vm.item = item;
-
-            // update mediaId in $viewHistory
+            vm.item             = item;
             stateParams.mediaId = vm.item.mediaid;
+            stateParams.feedId  = item.feedid;
 
             if (item.feedid !== feed.feedid) {
 
                 vm.feed        = dataStore.getFeed(item.feedid);
                 playerPlaylist = generatePlaylist(vm.feed, vm.item);
 
-                // update feedId in $viewHistory
-                stateParams.feedId = item.feedid;
-
                 player.load(playerPlaylist);
+
+                if (autoStart) {
+                    player.play(true);
+                }
             }
             else {
-                // set playlistItem
                 playlistIndex = playerPlaylist.findIndex(byMediaId(item.mediaid));
                 player.playlistItem(playlistIndex);
             }
