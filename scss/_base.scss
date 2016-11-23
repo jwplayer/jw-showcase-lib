@@ -115,7 +115,16 @@ $link-color: #fff;
 $base-background-color: transparent;
 $ios-transition-container-bg-color: transparent;
 
+//$toggle-off-bg-color: $disabled-color;
+$toggle-on-light-bg: $main-color;
+$toggle-on-light-border: $white;
+$toggle-width: 46px;
+$toggle-height: 27px;
+$toggle-handle-width: 25px;
+$toggle-handle-height: 25px;
+$toggle-hit-area-expansion: 5px;
 $toggle-off-bg-color: $disabled-color;
+$toggle-off-border-color: $white;
 
 $popover-backdrop-bg-active: rgba($black, 0.3);
 $popover-border-radius: 0;

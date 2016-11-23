@@ -4,6 +4,7 @@
 
 .platform-android .jw-menu-popover.popover,
 .jw-menu-popover.popover {
+    width: 370px;
     height: auto;
     max-height: 100vh;
 
@@ -28,12 +29,16 @@
         @include transition(opacity 0.3s ease-in-out, transform 0.3s ease-in-out);
     }
 
+    .scroll-content.has-header {
+        top: 80px;
+    }
+
     .jw-header-nav .jw-button-label {
         display: none;
     }
 
     .jw-menu-list {
-        margin: 0 5px 20px 55px;
+        margin: 0 25px 20px 46px;
 
         .jw-button {
             width: 100%;
@@ -47,11 +52,23 @@
             &.active,
             &:hover {
                 color: $primary-color;
+
+                > .jwy-icon {
+                    display: block;
+                }
             }
 
             &.jw-button-disabled {
                 font-weight: normal;
                 opacity: 0.25;
+            }
+
+            .jwy-icon {
+                display: none;
+                position: absolute;
+                top: 7px;
+                right: -2px;
+                font-size: rem(20px);
             }
         }
 
@@ -61,32 +78,32 @@
     }
 
     .item-toggle {
-        color: $main-color;
-        font-weight: bold;
 
-        .toggle {
-            top: 9px;
-            padding: 8px 5px;
+        padding-top: 7px;
+        padding-bottom: 7px;
+
+        span {
+            color: $main-color;
+            font-weight: bold;
         }
 
-        .track .handle {
+        .toggle {
+            top: 4px;
+            right: 0;
+        }
+
+        .handle {
             top: 6px;
             border: 1px solid $disabled-color;
         }
 
-        input:checked + .track {
-            border-color: $main-color;
-            background-color: $main-color;
-        }
-
         input:checked + .track .handle {
-            border-color: $white;
-            background-color: $primary-color;
+            border-color: $main-color;
         }
-    }
 
-    .popover-arrow {
-        display: none;
+        .popover-arrow {
+            display: none;
+        }
     }
 }
 

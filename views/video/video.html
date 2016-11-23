@@ -37,14 +37,14 @@
         <div class="jw-meta-controls">
           <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()"
               ng-class="{'is-active': vm.inWatchList}">
-            <span class="jw-button-label">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}</span> <i
+            <small class="jw-button-label">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}</small> <i
               class="jwy-icon jwy-icon-banner jwy-icon-stack">
             <i class="jwy-icon jwy-icon-{{ vm.inWatchList ? 'min' : 'plus' }}"></i>
           </i>
           </jw-button>
 
           <jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareClickHandler($event)">
-            <span class="jw-button-label">Share</span> <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
+            <small class="jw-button-label">Share</small> <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
             <i class="jwy-icon jwy-icon-share"></i>
           </i>
           </jw-button>

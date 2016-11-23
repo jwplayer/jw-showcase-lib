@@ -67,7 +67,6 @@
         @include flex(0 0 $header-nav-width);
         @include align-self(center);
         min-width: $header-nav-width;
-        font-size: rem(32px);
 
         &:first-child {
             padding-left: 10px;
@@ -81,7 +80,6 @@
 
         .jw-button {
             color: $main-color;
-            font-size: rem(14px);
             vertical-align: middle;
 
             &:hover {
@@ -94,6 +92,7 @@
 
             .jw-button-label {
                 padding: 0 3px;
+                font-size: rem(14px);
             }
 
             .jwy-icon {
