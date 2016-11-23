@@ -338,10 +338,6 @@
         max-height: 2 * 18px;
         padding: 0 20px;
     }
-
-    .jw-card.jw-card-flag-default .jw-card-toast .jw-card-toast-container {
-        font-size: rem(12px);
-    }
 }
 
 @include mobile-and-tablet () {
