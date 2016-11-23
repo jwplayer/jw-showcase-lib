@@ -241,6 +241,7 @@
     //
     // Mobile screen size uses a different header height so the scroll content needs to be changed also
     //
+    .platform-ios.platform-cordova:not(.fullscreen) .scroll-content,
     .scroll-content {
         &.has-header {
             top: $header-height-mobile;
