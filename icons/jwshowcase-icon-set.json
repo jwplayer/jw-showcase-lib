@@ -2,7 +2,8 @@
     "selection": [
         {
             "order": 64,
-            "name": "pause"
+            "name": "pause",
+            "prevSize": 32
         },
         {
             "order": 61,
@@ -126,7 +127,7 @@
         },
         "designer": "JW Player",
         "url": "http://jwplayer.com",
-        "iconsHash": 410112859
+        "iconsHash": 865425661
     },
     "height": 1024,
     "prevSize": 32,
@@ -138,7 +139,8 @@
             "grid": 32,
             "tags": [
                 "pause"
-            ]
+            ],
+            "defaultCode": 59666
         },
         {
             "paths": [
@@ -252,7 +254,7 @@
         },
         {
             "paths": [
-                "M227.6 0h568.9c62.5 0 113.2 51.2 113.2 113.8l0.6 910.2-398.3-170.7-398.2 170.7v-910.2c0-62.6 51.2-113.8 113.8-113.8v0 0z"
+                "M904.4 0c-30.4 0-756 0-786.4 0v1024l394-170.8 394 170.8-1.6-1024z"
             ],
             "grid": 32,
             "tags": [
