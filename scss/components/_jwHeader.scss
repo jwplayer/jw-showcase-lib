@@ -81,11 +81,23 @@
 
         .jw-button {
             color: $main-color;
-            font-size: rem(25px);
+            font-size: rem(14px);
             vertical-align: middle;
 
             &:hover {
                 color: $primary-color;
+            }
+
+            &.jw-button-menu .jwy-icon {
+                -webkit-font-smoothing: none;
+            }
+
+            .jw-button-label {
+                padding: 0 3px;
+            }
+
+            .jwy-icon {
+                font-size: rem(24px);
             }
         }
     }
