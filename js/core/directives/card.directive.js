@@ -92,16 +92,15 @@
                 $animate.enter(toastElement, toastsElement, children[children.length - 1]);
 
                 // add class to card element
-                element.addClass('jw-card-toast-open');
+                element.addClass('jw-card-flag-toast-open');
 
                 // set timeout to remove toast
                 $timeout(function () {
 
-                    element.removeClass('jw-card-toast-open');
-
                     $animate
                         .leave(toastElement)
                         .then(function () {
+                            element.removeClass('jw-card-flag-toast-open');
                             defer.resolve();
                         });
                 }, toast.duration || 1000);

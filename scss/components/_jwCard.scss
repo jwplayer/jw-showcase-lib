@@ -20,7 +20,7 @@
     &.jw-card-flag-menu-open,
     &.jw-card-flag-toast-open {
         .jw-card-watchlist-button {
-            display: none;
+            @include transform(scale(0));
         }
     }
 
@@ -37,6 +37,7 @@
     }
 
     .jw-button-watchlist {
+        @include single-transition(transform, 0.2s, ease, 0s);
         position: absolute;
         top: -11px;
         left: 2px;
