@@ -10,6 +10,9 @@
     @include animation(jw-playlist-remove-animation 0.8s forwards 0.2s);
 }
 
+.jw-playlist-add-animation {
+    @include animation(jw-playlist-add-animation 0.4s forwards 0s);
+}
 
 @include keyframes(jw-playlist-remove-animation) {
     0% {
@@ -20,5 +23,21 @@
     100% {
         @include transform(translateX(-100%));
         opacity: 0;
+    }
+}
+
+@include keyframes(jw-playlist-add-animation) {
+    0% {
+        @include transform(scale(0));
+        opacity: 0;
+    }
+
+    75% {
+        @include transform(scale(1.1));
+        opacity: 1;
+    }
+
+    100% {
+        @include transform(scale(1));
     }
 }

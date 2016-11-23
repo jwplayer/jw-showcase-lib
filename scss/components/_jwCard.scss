@@ -205,6 +205,10 @@
         &.jw-card-toast-success {
             background-color: $success-color;
             color: $white;
+
+            .jwy-icon-stack .jwy-icon {
+                color: $success-color;
+            }
         }
 
         .jw-card-toast-container {
