@@ -188,10 +188,24 @@
 }
 
 @include mobile-only () {
-    .jw-header {
 
-        .jw-header-logo h1 {
-            font-size: rem(24px);
+    .jw-header {
+        height: $header-height-mobile;
+
+        &.jw-subheader {
+            top: $header-height-mobile + $ios-statusbar-height;
+        }
+
+        .platform-ios.platform-cordova & {
+            top: $ios-statusbar-height;
+
+            &.jw-subheader {
+                top: $header-height-mobile + $ios-statusbar-height;
+            }
+        }
+
+        .jw-header-main .jw-header-logo {
+            max-height: $header-height-mobile - 20px;
         }
 
         .jw-header-nav {
@@ -201,6 +215,39 @@
 
         .jw-header-nav .jw-button-label {
             display: none;
+        }
+
+        .jw-header-search-bar {
+            padding: 10px;
+
+            .jw-header-search-input {
+                height: $header-height-mobile - 20px;
+            }
+
+            .jw-header-search-input-cap {
+                top: 5px;
+
+                &:first-child {
+                    left: 0;
+                }
+
+                &:last-child {
+                    right: 0;
+                }
+            }
+        }
+    }
+
+    //
+    // Mobile screen size uses a different header height so the scroll content needs to be changed also
+    //
+    .scroll-content {
+        &.has-header {
+            top: $header-height-mobile;
+        }
+
+        &.has-subheader {
+            top: $header-height-mobile + $subheader-height;
         }
     }
 }
