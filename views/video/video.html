@@ -1,12 +1,19 @@
 <ion-view class="jw-video-view" cache-view="false" can-swipe-back="false">
   <ion-content class="has-header">
 
-    <div class="jw-video-container">
+    <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
       <div class="jw-video-container-align">
-        <div class="jw-video-container-aspect"></div>
+        <div class="jw-video-container-aspect">
+          <div class="jw-video-loading">
+            <div class="jw-rotate-animation">
+              <i class="jwy-icon-buffer"></i>
+            </div>
+          </div>
+        </div>
         <div class="jw-video-container-player">
           <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
-              on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"></jw-player>
+              on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
+              on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"></jw-player>
         </div>
       </div>
     </div>
@@ -57,8 +64,7 @@
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
 
-    <div class="jw-row jw-expand-animation"
-        ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
+    <div class="jw-row" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
       <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Related Videos'"
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>

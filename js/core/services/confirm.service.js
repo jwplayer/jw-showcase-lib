@@ -36,13 +36,13 @@
                 template: message,
                 buttons:  [{
                     text:  '<strong>Yes</strong>',
-                    type:  'jw-button-primary',
+                    type:  'jw-button jw-button-primary',
                     onTap: function () {
                         defer.resolve();
                     }
                 }, {
                     text: 'No',
-                    type: 'jw-button-light',
+                    type: 'jw-button jw-button-light',
                     onTap: function () {
                         defer.reject();
                     }

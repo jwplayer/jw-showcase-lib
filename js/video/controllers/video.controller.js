@@ -37,9 +37,9 @@
      * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
      */
-    VideoController.$inject = ['$scope', '$state', '$ionicHistory', '$ionicScrollDelegate',
+    VideoController.$inject = ['$scope', '$state', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
         'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'feed', 'item'];
-    function VideoController ($scope, $state, $ionicHistory, $ionicScrollDelegate, apiConsumer, dataStore,
+    function VideoController ($scope, $state, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer, dataStore,
                               watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
 
         var vm                   = this,
@@ -58,12 +58,16 @@
         vm.duration            = 0;
         vm.inWatchList         = false;
         vm.title               = '';
+        vm.loading             = true;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
         vm.onTime         = onTime;
         vm.onPlaylistItem = onPlaylistItem;
         vm.onLevels       = onLevels;
+        vm.onReady        = onReady;
+        vm.onError        = onError;
+        vm.onSetupError   = onSetupError;
 
         vm.cardClickHandler      = cardClickHandler;
         vm.shareClickHandler     = shareClickHandler;
@@ -194,6 +198,56 @@
             }
 
             requestQualityChange = toQuality;
+        }
+
+        /**
+         * Handle ready event
+         * @param {Object} event
+         */
+        function onReady (event) {
+
+            vm.loading = false;
+        }
+
+        /**
+         * Handle error event
+         * @param {Object} event
+         */
+        function onError (event) {
+
+            vm.loading = false;
+        }
+
+        /**
+         * Handle setup error event
+         * @param {Object} event
+         */
+        function onSetupError (event) {
+
+            vm.loading = false;
+
+            $ionicPopup.show({
+                cssClass: 'jw-dialog',
+                template: '<strong>Oops! Something went wrong. Try again?</strong>',
+                buttons:  [{
+                    text:  'Yes',
+                    type:  'jw-button jw-button-primary',
+                    onTap: function () {
+                        return true;
+                    }
+                }, {
+                    text:  'No',
+                    type:  'jw-button jw-button-light',
+                    onTap: function () {
+                        return false;
+                    }
+                }]
+            }).then(function (retry) {
+
+                if (retry) {
+                    $state.reload();
+                }
+            });
         }
 
         /**

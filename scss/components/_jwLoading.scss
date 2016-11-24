@@ -20,10 +20,6 @@
     .jw-loading-icon {
         @include center-self();
 
-        .jw-loading-icon-animation {
-            @include animation(rotate 2s linear infinite);
-        }
-
         .jwy-icon-buffer {
             color: $primary-color;
             font-size: 5em;
@@ -31,14 +27,3 @@
     }
 }
 
-// scss-lint:disable SelectorFormat
-@include keyframes(rotate) {
-    from {
-        @include transform(rotate(0deg));
-    }
-
-    to {
-        @include transform(rotate(360deg));
-    }
-}
-// scss-lint:enable SelectorFormat

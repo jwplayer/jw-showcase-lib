@@ -16,8 +16,8 @@
 
 (function () {
 
-    var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'playlistItem', 'time', 'firstFrame',
-        'levels'];
+    var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'setupError', 'playlistItem', 'time',
+        'firstFrame', 'levels'];
 
     angular
         .module('jwShowcase.core')
@@ -59,6 +59,7 @@
         function link (scope, element, attr) {
 
             var playerId = generateRandomId(),
+                initTimeoutId,
                 playerInstance;
 
             activate();
@@ -74,7 +75,21 @@
                     .element(element[0])
                     .attr('id', playerId);
 
-                initialize();
+                initTimeoutId = setTimeout(initialize, 500);
+
+                scope.$on('$destroy', function () {
+
+                    // prevent initialisation
+                    clearTimeout(initTimeoutId);
+
+                    // remove player instance after timeout
+                    $timeout(function () {
+                        player.setPlayer(null);
+                        if (playerInstance) {
+                            playerInstance.remove();
+                        }
+                    }, 1000);
+                });
             }
 
             /**
@@ -88,13 +103,6 @@
                 bindPlayerEventListeners();
 
                 player.setPlayer(playerInstance);
-
-                scope.$on('$destroy', function () {
-                    $timeout(function () {
-                        player.setPlayer(null);
-                        playerInstance.remove();
-                    }, 1000);
-                });
             }
 
             /**
