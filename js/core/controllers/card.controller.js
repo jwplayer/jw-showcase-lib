@@ -41,17 +41,14 @@
         vm.closeMenuHandler       = closeMenuHandler;
         vm.watchlistClickHandler  = watchlistClickHandler;
 
-        vm.duration    = 0;
-        vm.menuVisible = false;
-        vm.inWatchList = false;
-        vm.toast       = null;
-        vm.posterUrl   = getPosterUrl();
-        vm.nowPlaying  = false;
-        vm.player      = player;
-
-        vm.play = function () {
-            player.play();
-        };
+        vm.duration      = 0;
+        vm.menuVisible   = false;
+        vm.inWatchList   = false;
+        vm.watchProgress = vm.item.feedid === 'continue-watching';
+        vm.toast         = null;
+        vm.posterUrl     = getPosterUrl();
+        vm.nowPlaying    = false;
+        vm.player        = player;
 
         activate();
 
@@ -163,12 +160,16 @@
          */
         function clickHandler (event, clickedOnPlayIcon) {
 
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            if (true === vm.nowPlaying && clickedOnPlayIcon) {
+                player.play();
+            }
+
             if (angular.isFunction(vm.onClick)) {
                 vm.onClick(vm.item, clickedOnPlayIcon);
             }
-
-            event.preventDefault();
-            event.stopImmediatePropagation();
         }
 
         /**

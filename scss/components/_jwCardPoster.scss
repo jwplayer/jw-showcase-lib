@@ -4,9 +4,7 @@
 
 .jw-card-poster {
     @include single-transition(opacity, 0.2s, ease, 0s);
-
-    position: relative;
-    padding-bottom: (9 / 16) * 100%;
+    @include cover();
 
     background-color: $gray;
 }

@@ -233,11 +233,8 @@ $featured-slider-max-width: 900px;
 
     .jw-card-info {
         @include single-transition(opacity, 0.3s, ease, 0s);
+        padding-bottom: 45px;
         opacity: 0;
-
-        .jw-card-cell {
-            padding-bottom: 45px;
-        }
     }
 }
 
