@@ -101,7 +101,7 @@
 
                 vm.showToast({
                     templateUrl: 'views/core/toasts/unsavedVideo.html',
-                    duration:    1000
+                    duration:    1200
                 }).then(function () {
                     watchlist.removeItem(vm.item);
                 });

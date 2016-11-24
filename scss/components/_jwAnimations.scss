@@ -7,7 +7,7 @@
 }
 
 .jw-playlist-remove-animation {
-    @include animation(jw-playlist-remove-animation 0.5s forwards 0.2s);
+    @include animation(jw-playlist-remove-animation 1s forwards 0s);
 }
 
 .jw-playlist-add-animation {
@@ -20,9 +20,19 @@
         opacity: 1;
     }
 
-    100% {
+    50% {
         @include transform(translateX(-100%));
         opacity: 0;
+    }
+
+    51% {
+        @include transform(translateY(10%));
+        opacity: 0;
+    }
+
+    100% {
+        @include transform(translateY(0));
+        opacity: 1;
     }
 }
 
