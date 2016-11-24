@@ -29,8 +29,8 @@
         .config(config)
         .run(run);
 
-    config.$inject = ['$stateProvider', 'seoProvider'];
-    function config ($stateProvider, seoProvider) {
+    config.$inject = ['$stateProvider', 'seoProvider', '$ionicConfigProvider'];
+    function config ($stateProvider, seoProvider, $ionicConfigProvider) {
 
         $stateProvider
             .state('root', {
@@ -55,6 +55,11 @@
                     description: config.description
                 };
             }]);
+
+        // always use large toggle's
+        $ionicConfigProvider.form.toggle = function () {
+            return 'large';
+        };
 
         /**
          * Preload application data
