@@ -23,6 +23,19 @@
     expandAnimation.$inject = ['$timeout'];
     function expandAnimation ($timeout) {
 
+        /**
+         * Notify scrollCtrl that a resize happened
+         * @param element
+         */
+        function notifyScroll (element) {
+
+            var scrollElement = ionic.DomUtil.getParentWithClass(element, 'scroll-content', 10);
+
+            if (scrollElement) {
+                angular.element(scrollElement).scope().scrollCtrl.resize();
+            }
+        }
+
         return {
             enter: function (element, done) {
 
@@ -39,6 +52,7 @@
 
                     $timeout(function () {
                         element.css('height', 'auto');
+                        notifyScroll(element[0]);
                         done();
                     }, 300);
                 }, 100);
@@ -56,7 +70,10 @@
                         height:  0
                     });
 
-                    $timeout(done, 300);
+                    $timeout(function () {
+                        notifyScroll(element[0]);
+                        done();
+                    }, 300);
                 }, 100);
             }
         }
