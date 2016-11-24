@@ -59,11 +59,11 @@
 
         return {
             scope:            {
-                heading:       '=?',
-                feed:          '=',
-                cols:          '=',
-                featured:      '=',
-                onCardClick:   '='
+                heading:     '=?',
+                feed:        '=',
+                cols:        '=',
+                featured:    '=',
+                onCardClick: '='
             },
             replace:          true,
             controller:       angular.noop,
@@ -75,15 +75,15 @@
 
         function link (scope, element) {
 
-            var cols              = 0,
-                index             = 0,
-                startCoords       = null,
-                animation         = null,
-                translateX        = 0,
-                sliding           = false,
-                forEach           = angular.forEach,
-                $                 = element[0].querySelector.bind(element[0]),
-                resizeDebounced   = utils.debounce(resize, 100);
+            var cols            = 0,
+                index           = 0,
+                startCoords     = null,
+                animation       = null,
+                translateX      = 0,
+                sliding         = false,
+                forEach         = angular.forEach,
+                $               = element[0].querySelector.bind(element[0]),
+                resizeDebounced = utils.debounce(resize, 100);
 
             scope.vm.slideLeft    = slideLeft;
             scope.vm.slideRight   = slideRight;
@@ -211,11 +211,18 @@
             }
 
             /**
-             * Update all slides
+             * Update slides
              */
             function updateSlides () {
 
-                forEach($('.jw-card-slider-list').children, function (slide, slideIndex) {
+                var children = Array.prototype.slice.call($('.jw-card-slider-list').children),
+                    slides;
+
+                slides = children.filter(function (slide) {
+                    return !slide.classList.contains('ng-leave');
+                });
+
+                forEach(slides, function (slide, slideIndex) {
 
                     var lastIndex           = index + cols,
                         offset              = scope.vm.featured ? 2 : 1,
@@ -377,7 +384,7 @@
                 touchContainer.removeEventListener('touchend', onTouchEnd);
                 touchContainer.removeEventListener('touchcancel', onTouchCancel);
 
-                sliding           = false;
+                sliding = false;
 
                 element.removeClass('is-sliding');
             }

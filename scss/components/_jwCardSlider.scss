@@ -269,10 +269,14 @@ $featured-slider-max-width: 900px;
         }
 
         &.ng-enter,
-        &.ng-leave,
-        &.ng-leave-active,
-        &.ng-enter-active {
-            @include transition(none !important);
+        &.ng-leave {
+            @include single-transition(all, 0.3s, ease, 0s);
+        }
+
+        &.ng-enter:not(.ng-enter-active),
+        &.ng-leave.ng-leave-active {
+            width: 0 !important;
+            opacity: 0;
         }
     }
 }

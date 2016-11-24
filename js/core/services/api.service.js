@@ -167,11 +167,13 @@
                 }
 
                 feed.playlist = feed.playlist
-                    .map(function (item) {
+                    .map(function (item, index) {
 
                         if (!item.feedId) {
                             item.feedid = feed.feedid;
                         }
+
+                        item.$key = index + item.mediaid;
 
                         return item;
                     })

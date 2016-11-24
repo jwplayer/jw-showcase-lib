@@ -12,7 +12,7 @@
     </div>
     <div class="jw-card-slider-align">
       <ul class="jw-card-slider-list">
-        <li class="jw-card-slider-slide" ng-repeat="item in vm.feed.playlist">
+        <li class="jw-card-slider-slide" ng-repeat="item in vm.feed.playlist track by item.$key">
           <jw-card item="item" featured="vm.featured" show-title="true" show-description="true"
               on-click="vm.onCardClick" watch-progress="item.feedid === 'continue-watching'"></jw-card>
         </li>
