@@ -40,19 +40,3 @@
     }
 }
 
-//
-// mediaQueries
-// --------------------------------
-
-@include tablet-and-larger () {
-
-    .platform-browser .jw-video-container {
-
-        .jw-video-container-align {
-            position: relative;
-            max-width: 800px;
-            height: 100%;
-            margin: 0 auto;
-        }
-    }
-}

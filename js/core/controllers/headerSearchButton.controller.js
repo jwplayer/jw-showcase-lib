@@ -45,7 +45,7 @@
             appStore.searchBarActive = true;
 
             $timeout(function() {
-                document.querySelector('.jw-header-search-input').focus();
+                document.querySelector('.jw-search-input').focus();
             }, 300);
         }
     }

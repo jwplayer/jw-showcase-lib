@@ -2,7 +2,7 @@
   <ion-content class="has-header">
 
     <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
-      <div class="jw-video-container-align">
+      <div class="jw-container">
         <div class="jw-video-container-aspect">
           <div class="jw-video-loading">
             <div class="jw-rotate-animation">
@@ -18,43 +18,36 @@
       </div>
     </div>
 
-    <jw-header class="jw-header-static jw-subheader">
-      <jw-header-left>
+    <jw-header class="jw-header-static jw-subheader jw-header-video">
+      <div class="jw-header-nav">
         <jw-header-back-button></jw-header-back-button>
-      </jw-header-left>
-      <jw-header-main>
-        <jw-header-title class="left">
-          <div class="jw-meta-align">
-            {{ vm.title }} <span class="jw-meta-duration is-hidden-mobile">{{ vm.duration }}</span>
-          </div>
-        </jw-header-title>
-      </jw-header-main>
-      <jw-header-right>
-        <span class="jw-meta-duration is-visible-mobile">{{ vm.duration }}</span>
-      </jw-header-right>
+      </div>
+      <div class="jw-header-main"></div>
+      <div class="jw-header-nav jw-border-buttons">
+        <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()"
+            ng-class="{'is-active': vm.inWatchList}">
+          <small class="jw-button-label is-hidden-mobile">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}
+          </small>
+          <i class="jwy-icon jwy-icon-banner jwy-icon-stack">
+            <i class="jwy-icon jwy-icon-{{ vm.inWatchList ? 'min' : 'plus' }}"></i>
+          </i>
+        </jw-button><jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareClickHandler($event)">
+          <small class="jw-button-label is-hidden-mobile">Share</small>
+          <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
+            <i class="jwy-icon jwy-icon-share"></i>
+          </i>
+        </jw-button>
+      </div>
     </jw-header>
 
     <div class="jw-meta-container">
-      <div class="jw-meta-align jw-meta-row">
-        <div class="jw-meta-description">
-          <div jw-collapsible-text="4.2em">
-            {{ vm.item.description }}
-          </div>
+      <div class="jw-container">
+        <div class="jw-meta-title">
+          {{ vm.title }} <div class="jw-meta-duration"><span>{{ vm.duration }}</span></div>
         </div>
-        <div class="jw-meta-controls">
-          <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()"
-              ng-class="{'is-active': vm.inWatchList}">
-            <small class="jw-button-label">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}</small> <i
-              class="jwy-icon jwy-icon-banner jwy-icon-stack">
-            <i class="jwy-icon jwy-icon-{{ vm.inWatchList ? 'min' : 'plus' }}"></i>
-          </i>
-          </jw-button>
 
-          <jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareClickHandler($event)">
-            <small class="jw-button-label">Share</small> <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
-            <i class="jwy-icon jwy-icon-share"></i>
-          </i>
-          </jw-button>
+        <div class="jw-meta-description" jw-collapsible-text="4.2em">
+          {{ vm.item.description }}
         </div>
       </div>
     </div>

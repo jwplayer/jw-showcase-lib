@@ -4,16 +4,20 @@
 
 .jw-meta-duration {
     display: inline-block;
-    position: relative;
-    top: -1px;
-    padding: 0 8px;
-
-    background-color: $white;
-    color: $black;
-    font-size: rem(11px);
-
     line-height: 19px;
     vertical-align: middle;
+
+    > span {
+        display: inline-block;
+        position: relative;
+        top: -1px;
+        padding: 0 8px;
+
+        background-color: $white;
+        color: $black;
+        font-size: rem(11px);
+        font-weight: normal;
+    }
 }
 
 .jw-meta-align {
@@ -21,30 +25,19 @@
     margin: 0 auto;
 }
 
+.jw-meta-title {
+    margin-bottom: 15px;
+    font-size: rem(22px);
+    font-weight: bold;
+}
+
 .jw-meta-container {
-    padding: 1.5em $subheader-nav-width;
+    padding: 15px 90px;
 
     background-color: $meta-description-bg-color;
     color: $white;
     line-height: 1.4em;
     white-space: normal;
-}
-
-.jw-meta-row {
-    @include display-flex();
-}
-
-.jw-meta-description {
-    @include flex(1 1 auto);
-    padding-right: 50px;
-}
-
-.jw-meta-controls {
-    @include flex(0 0 auto);
-
-    .jw-button > .jwy-icon {
-        font-size: rem(28px);
-    }
 }
 
 .jw-meta-feed-title,
@@ -60,47 +53,11 @@
 @include mobile-only () {
 
     .jw-meta-container {
-        padding: 1.5em 20px;
-
-        .jw-collapsible-text {
-            position: relative;
-            padding-bottom: 20px;
-
-            .jw-collapsible-text-toggle {
-                position: absolute;
-                top: 100%;
-                right: 0;
-            }
-        }
+        padding: 15px 20px;
     }
 
-    .jw-meta-description {
-        padding-right: 0;
-    }
-
-    .jw-meta-row {
-        @include flex-direction(column);
-    }
-
-    .jw-meta-controls {
-
-        .jw-button {
-            margin-right: 10px;
-            padding: 0;
-        }
-
-        .jw-button-label {
-            display: none;
-        }
-    }
-}
-
-@include tablet-and-larger () {
-
-    .jw-meta-controls .jw-button {
+    .jw-meta-duration {
         display: block;
-        text-align: right;
-        white-space: nowrap;
+        margin-top: 10px;
     }
-
 }

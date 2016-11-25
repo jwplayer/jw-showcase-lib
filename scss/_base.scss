@@ -40,6 +40,10 @@ $font-size-base: 16px !default;
 
 $jwy-icon-path: '../fonts' !default;
 
+$container-width-mobile: 100%;
+$container-width-tablet: 685px;
+$container-width-desktop: 800px;
+
 //
 // Responsive
 // --------------------------------
@@ -64,6 +68,7 @@ $theme-dark-bg-color: #363636;
 $header-height: 90px !default;
 $header-nav-width: 120px !default;
 $header-bg-color: #fff !default;
+$header-padding: 10px;
 
 $header-height-mobile: 60px !default;
 

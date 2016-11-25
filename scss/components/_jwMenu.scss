@@ -42,11 +42,10 @@
 
         .jw-button {
             width: 100%;
-            min-height: 30px;
+            padding: 0.3rem 10px;
 
             color: $main-color;
             font-weight: bold;
-            line-height: 30px;
             text-align: left;
 
             &.active,

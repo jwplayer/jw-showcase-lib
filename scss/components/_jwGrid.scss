@@ -1,0 +1,31 @@
+//
+// jwContainer
+// --------------------------------
+
+.jw-container {
+
+    &-full {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+//
+// mediaQueries
+// --------------------------------
+
+@include tablet-only () {
+
+    .jw-container {
+        max-width: $container-width-tablet;
+        margin: 0 auto;
+    }
+}
+
+@include desktop-only () {
+
+    .jw-container {
+        max-width: $container-width-desktop;
+        margin: 0 auto;
+    }
+}

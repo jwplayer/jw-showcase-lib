@@ -1,14 +1,14 @@
-<jw-header>
-  <jw-header-left>
+<jw-header class="jw-header-full">
+  <div class="jw-header-nav">
     <jw-header-menu-button></jw-header-menu-button>
-  </jw-header-left>
-  <jw-header-main>
+  </div>
+  <div class="jw-header-main">
     <jw-header-logo ng-src="{{ ::rootVm.config.bannerImage }}"></jw-header-logo>
     <jw-header-search-bar></jw-header-search-bar>
-  </jw-header-main>
-  <jw-header-right>
+  </div>
+  <div class="jw-header-nav">
     <jw-header-search-button ng-if="rootVm.config.searchPlaylist"></jw-header-search-button>
-  </jw-header-right>
+  </div>
 </jw-header>
 
 <ion-nav-view></ion-nav-view>

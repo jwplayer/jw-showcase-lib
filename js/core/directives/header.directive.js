@@ -52,11 +52,7 @@
             controller:       angular.noop,
             bindToController: true,
             replace:          true,
-            transclude:       {
-                left:  '?jwHeaderLeft',
-                main:  '?jwHeaderMain',
-                right: '?jwHeaderRight'
-            },
+            transclude:       true,
             templateUrl:      'views/core/header.html',
             link:             link
         };

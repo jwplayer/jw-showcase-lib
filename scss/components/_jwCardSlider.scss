@@ -244,6 +244,19 @@ $featured-slider-max-width: 900px;
 
 .jw-card-slider.jw-card-slider-flag-default {
 
+    &.jw-card-slider-animate .jw-card-slider-slide {
+        &.ng-enter,
+        &.ng-leave {
+            @include single-transition(all, 0.3s, ease, 0s);
+        }
+
+        &.ng-enter:not(.ng-enter-active),
+        &.ng-leave.ng-leave-active {
+            width: 0 !important;
+            opacity: 0;
+        }
+    }
+
     .jw-card-slider-align {
         padding: 0 #{90px - $default-slider-spacing / 2} 20px;
     }
@@ -263,17 +276,6 @@ $featured-slider-max-width: 900px;
 
         &.is-visible {
             opacity: 1;
-        }
-
-        &.ng-enter,
-        &.ng-leave {
-            @include single-transition(all, 0.3s, ease, 0s);
-        }
-
-        &.ng-enter:not(.ng-enter-active),
-        &.ng-leave.ng-leave-active {
-            width: 0 !important;
-            opacity: 0;
         }
     }
 }

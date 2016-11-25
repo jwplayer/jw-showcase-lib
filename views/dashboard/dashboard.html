@@ -3,7 +3,7 @@
 
     <div class="featured">
       <div class="jw-row is-hidden-mobile" ng-if="vm.dataStore.featuredFeed">
-        <jw-card-slider feed="vm.dataStore.featuredFeed" heading="false" spacing="0" featured="true" cols="1"
+        <jw-card-slider class="" feed="vm.dataStore.featuredFeed" heading="false" spacing="0" featured="true" cols="1"
             on-card-click="vm.cardClickHandler"></jw-card-slider>
       </div>
 
@@ -17,7 +17,7 @@
         ng-if="vm.dataStore.watchProgressFeed.playlist.length > 0 && vm.userSettings.settings.watchProgress">
       <jw-card-slider feed="vm.dataStore.watchProgressFeed" featured="false" heading="'Continue watching'"
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"
-          watch-progress="true"></jw-card-slider>
+          class="jw-card-slider-animate"></jw-card-slider>
     </div>
 
     <div class="feed">
@@ -27,7 +27,8 @@
 
     <div class="watchlist jw-expand-animation" ng-if="vm.dataStore.watchlistFeed.playlist.length > 0">
       <jw-card-slider feed="vm.dataStore.watchlistFeed" featured="false" heading="'Saved videos'"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"
+          class="jw-card-slider-animate"></jw-card-slider>
     </div>
 
     <jw-footer></jw-footer>
