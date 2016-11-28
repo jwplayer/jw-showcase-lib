@@ -183,7 +183,7 @@
         @extend %jw-watchlist-dark;
     }
 
-    .jwy-icon {
+    > .jwy-icon {
         @include transition(color .1s ease);
     }
 }
