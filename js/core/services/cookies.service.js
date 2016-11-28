@@ -4,8 +4,18 @@
         .module('jwShowcase.core')
         .service('cookies', cookiesService);
 
-    cookiesService.$inject = ['userSettings', '$controller', '$templateCache', '$rootScope', '$ionicPopover'];
-    function cookiesService (userSettings, $controller, $templateCache, $rootScope, $ionicPopover) {
+    /**
+     * @ngdoc service
+     * @name jwShowcase.core.cookies
+     *
+     * @required $rootScope
+     * @requires $controller
+     * @required $templateCache
+     * @required $ionicPopover
+     * @requires jwShowcase.core.userSettings
+     */
+    cookiesService.$inject = ['$rootScope', '$controller', '$templateCache', '$ionicPopover', 'userSettings'];
+    function cookiesService ($rootScope, $controller, $templateCache, $ionicPopover, userSettings) {
 
         var template,
             popover;
@@ -43,7 +53,12 @@
         }
 
         /**
-         * Hide cookies popover
+         * @ngdoc method
+         * @name jwShowcase.core.cookies#hide
+         * @methodOf jwShowcase.core.cookies
+         *
+         * @description
+         * Hide cookies popover.
          */
         function hide () {
 
@@ -56,7 +71,14 @@
         }
 
         /**
-         * Show cookies popover
+         * @ngdoc method
+         * @name jwShowcase.core.cookies#show
+         * @methodOf jwShowcase.core.cookies
+         *
+         * @description
+         * Show cookies popover.
+         *
+         * @param {string} message The message shown in the confirmation dialog.
          */
         function show () {
 
@@ -91,7 +113,12 @@
         }
 
         /**
-         * Show cookies popover if user has not 'accepted'
+         * @ngdoc method
+         * @name jwShowcase.core.cookies#showIfNeeded
+         * @methodOf jwShowcase.core.cookies
+         *
+         * @description
+         * Show cookies popover if user has not accepted cookies and platform is not Cordova.
          */
         function showIfNeeded () {
 

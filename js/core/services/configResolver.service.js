@@ -26,7 +26,6 @@
      *
      * @requires $http
      * @required $q
-     * @required config
      */
     configResolverService.$inject = ['$http', '$q'];
     function configResolverService ($http, $q) {

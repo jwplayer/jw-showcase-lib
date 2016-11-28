@@ -22,14 +22,13 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:HeaderBackButtonController
+     * @name jwShowcase.core.HeaderBackButtonController
      *
      * @requires $state
      * @requires $ionicHistory
      * @requires $ionicViewSwitcher
      * @requires jwShowcase.core.dataStore
      */
-
     HeaderBackButtonController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
     function HeaderBackButtonController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
 
@@ -40,7 +39,14 @@
         ////////////////
 
         /**
-         * Handle click on back button
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderBackButtonController#backButtonClickHandler
+         * @methodOf jwShowcase.core.HeaderBackButtonController
+         *
+         * @description
+         * Handle click event on the back button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function backButtonClickHandler () {
 
@@ -106,4 +112,4 @@
         }
     }
 
-})();
+}());

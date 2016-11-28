@@ -47,13 +47,14 @@
             resumed              = false,
             started              = false,
             requestQualityChange = false,
+            itemFeed             = feed,
             playerPlaylist       = [],
             playerLevels,
             initialLevel,
             watchProgressItem;
 
         vm.item                = item;
-        vm.feed                = feed;
+        vm.feed                = itemFeed;
         vm.recommendationsFeed = null;
         vm.duration            = 0;
         vm.inWatchList         = false;
@@ -78,11 +79,11 @@
         ////////////////////////
 
         /**
-         * Initialize the controller.
+         * Initialize controller.
          */
         function activate () {
 
-            playerPlaylist = generatePlaylist(feed, item);
+            playerPlaylist = generatePlaylist(itemFeed, item);
             vm.inWatchList = watchlist.hasItem(vm.item);
 
             vm.playerSettings = {
@@ -117,11 +118,11 @@
          */
         function update () {
 
-            var itemIndex = feed.playlist.findIndex(byMediaId(vm.item.mediaid));
+            var itemIndex = itemFeed.playlist.findIndex(byMediaId(vm.item.mediaid));
 
-            vm.feed.playlist = feed.playlist
+            vm.feed.playlist = itemFeed.playlist
                 .slice(itemIndex)
-                .concat(feed.playlist.slice(0, itemIndex));
+                .concat(itemFeed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
             vm.duration       = utils.getVideoDurationByItem(vm.item);
@@ -139,7 +140,7 @@
                     // filter duplicate video's
                     if (angular.isArray(response.playlist)) {
                         response.playlist = response.playlist.filter(function (item) {
-                            return feed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                            return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
 
@@ -179,6 +180,7 @@
 
         /**
          * Handle conserveBandwidth setting change
+         *
          * @param {boolean} value
          */
         function conserveBandwidthChangeHandler (value) {
@@ -202,6 +204,7 @@
 
         /**
          * Handle ready event
+         *
          * @param {Object} event
          */
         function onReady (event) {
@@ -211,6 +214,7 @@
 
         /**
          * Handle error event
+         *
          * @param {Object} event
          */
         function onError (event) {
@@ -220,6 +224,7 @@
 
         /**
          * Handle setup error event
+         *
          * @param {Object} event
          */
         function onSetupError (event) {
@@ -252,6 +257,7 @@
 
         /**
          * Handle playlist item event
+         *
          * @param {Object} event
          */
         function onPlaylistItem (event) {
@@ -264,7 +270,7 @@
                 return;
             }
 
-            newItem = dataStore.getItem(playlistItem.mediaid, feed.feedid);
+            newItem = dataStore.getItem(playlistItem.mediaid, itemFeed.feedid);
 
             // same item
             if (!newItem || newItem.mediaid === vm.item.mediaid) {
@@ -273,7 +279,6 @@
 
             // item does not exist in current feed.
             if (!newItem) {
-                // show dialog!
                 return;
             }
 
@@ -316,6 +321,7 @@
 
         /**
          * Handle levels event
+         *
          * @param event
          */
         function onLevels (event) {
@@ -335,6 +341,7 @@
 
         /**
          * Handle time event
+         *
          * @param event
          */
         function onTime (event) {
@@ -387,6 +394,7 @@
 
         /**
          * Saves or removes watchProgress
+         *
          * @param {number} position
          * @param {number} duration
          */
@@ -407,7 +415,12 @@
         }
 
         /**
-         * Handle click event on watchlist button
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#watchlistClickHandler
+         * @methodOf jwShowcase.video.VideoController
+         *
+         * @description
+         * Handle click event on the watchlist button.
          */
         function watchlistClickHandler () {
 
@@ -422,8 +435,14 @@
         }
 
         /**
-         * Handle click event on share button
-         * @param $event
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#shareClickHandler
+         * @methodOf jwShowcase.video.VideoController
+         *
+         * @description
+         * Handle click event on the share button.
+         *
+         * @param {$event} $event Synthetic event object.
          */
         function shareClickHandler ($event) {
 
@@ -434,12 +453,17 @@
         }
 
         /**
-         * Handle click event on card
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#cardClickHandler
+         * @methodOf jwShowcase.video.VideoController
          *
-         * @param {Object}      item        Clicked item
-         * @param {boolean}     autoStart   Should the video playback start automatically
+         * @description
+         * Handle click event on the card.
+         *
+         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, autoStart) {
+        function cardClickHandler (item, clickedOnPlay) {
 
             var playlistIndex,
                 stateParams = $ionicHistory.currentView().stateParams;
@@ -453,14 +477,15 @@
             stateParams.mediaId = vm.item.mediaid;
             stateParams.feedId  = item.feedid;
 
-            if (item.feedid !== feed.feedid) {
+            if (item.feedid !== itemFeed.feedid) {
 
-                vm.feed        = dataStore.getFeed(item.feedid);
+                itemFeed       = dataStore.getFeed(item.feedid);
+                vm.feed        = itemFeed;
                 playerPlaylist = generatePlaylist(vm.feed, vm.item);
 
                 player.load(playerPlaylist);
 
-                if (autoStart) {
+                if (clickedOnPlay) {
                     player.play(true);
                 }
             }
@@ -473,7 +498,7 @@
                 .go('root.video', {
                     feedId:    item.feedid,
                     mediaId:   item.mediaid,
-                    autoStart: autoStart
+                    autoStart: clickedOnPlay
                 }, {
                     notify: false
                 })

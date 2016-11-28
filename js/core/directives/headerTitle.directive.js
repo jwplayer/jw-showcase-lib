@@ -26,7 +26,6 @@
      * @module jwShowcase.core
      * @restrict E
      */
-
     headerTitleDirective.$inject = [];
     function headerTitleDirective () {
 

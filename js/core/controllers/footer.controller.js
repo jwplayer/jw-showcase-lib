@@ -22,10 +22,7 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:FooterController
-     *
-     * @description
-     *
+     * @name jwShowcase.core.FooterController
      *
      * @requires config
      */

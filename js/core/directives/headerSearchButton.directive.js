@@ -26,7 +26,6 @@
      * @module jwShowcase.core
      * @restrict E
      */
-
     headerSearchButtonDirective.$inject = [];
     function headerSearchButtonDirective () {
 

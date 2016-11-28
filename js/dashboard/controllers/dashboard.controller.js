@@ -22,10 +22,13 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.dashboard.controller:DashboardController
+     * @name jwShowcase.dashboard.DashboardController
      *
-     * @requires ui.router.state.$state
+     * @requires $scope
+     * @requires $state
+     * @requires $ionicHistory
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.userSettings
      */
     DashboardController.$inject = ['$scope', '$state', '$ionicHistory', 'dataStore', 'userSettings'];
     function DashboardController ($scope, $state, $ionicHistory, dataStore, userSettings) {
@@ -41,6 +44,9 @@
 
         ////////////
 
+        /**
+         * Initialize controller
+         */
         function activate () {
 
             $scope.$on('$ionicView.enter', function () {
@@ -49,17 +55,22 @@
         }
 
         /**
-         * Handle click event on cards
+         * @ngdoc method
+         * @name jwShowcase.dashboard.DashboardController#cardClickHandler
+         * @methodOf jwShowcase.dashboard.DashboardController
          *
-         * @param {jwShowcase.core.item}   item        Clicked item
-         * @param {boolean}         autoStart   Should the video playback start automatically
+         * @description
+         * Handle click event on the card.
+         *
+         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, autoStart) {
+        function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
-                autoStart: autoStart
+                autoStart: clickedOnPlay
             });
         }
     }

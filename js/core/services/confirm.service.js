@@ -20,6 +20,13 @@
         .module('jwShowcase.core')
         .service('confirm', confirm);
 
+    /**
+     * @ngdoc service
+     * @name jwShowcase.core.confirm
+     *
+     * @requires $q
+     * @required $ionicPopup
+     */
     confirm.$inject = ['$q', '$ionicPopup'];
     function confirm ($q, $ionicPopup) {
 
@@ -27,6 +34,16 @@
 
         ////////////////
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.confirm#show
+         * @methodOf jwShowcase.core.confirm
+         *
+         * @description
+         * Show confirmation modal with the given message.
+         *
+         * @param {string} message The message shown in the confirmation dialog.
+         */
         function show (message) {
 
             var defer = $q.defer();

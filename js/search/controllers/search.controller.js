@@ -20,6 +20,10 @@
         .module('jwShowcase.search')
         .controller('SearchController', SearchController);
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.search.SearchController
+     */
     SearchController.$inject = ['$scope', '$state', 'dataStore', 'appStore'];
     function SearchController ($scope, $state, dataStore, appStore) {
 
@@ -50,20 +54,24 @@
         }
 
         /**
-         * Handle click event on cards
+         * @ngdoc method
+         * @name jwShowcase.search.SearchController#cardClickHandler
+         * @methodOf jwShowcase.search.SearchController
          *
-         * @param {jwShowcase.core.item}   item        Clicked item
-         * @param {boolean}         autoStart   Should the video playback start automatically
+         * @description
+         * Handle click event on the card.
+         *
+         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, autoStart) {
+        function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
                 feedId:    item.feedid,
                 mediaId:   item.mediaid,
-                autoStart: autoStart
+                autoStart: clickedOnPlay
             });
         }
     }
 
-})();
-
+}());

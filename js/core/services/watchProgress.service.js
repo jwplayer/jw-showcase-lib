@@ -234,4 +234,5 @@
             return a.lastWatched < b.lastWatched;
         }
     }
-})();
+
+}());

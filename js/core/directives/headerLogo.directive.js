@@ -26,7 +26,6 @@
      * @module jwShowcase.core
      * @restrict E
      */
-
     headerLogoDirective.$inject = [];
     function headerLogoDirective () {
 

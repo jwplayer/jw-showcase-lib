@@ -22,32 +22,38 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:HeaderSearchButtonController
+     * @name jwShowcase.core.HeaderSearchButtonController
      *
      * @requires $timeout
      * @requires jwShowcase.core.appStore
      */
-
     HeaderSearchButtonController.$inject = ['$timeout', 'appStore'];
     function HeaderSearchButtonController ($timeout, appStore) {
 
-        var vm   = this;
+        var vm = this;
 
         vm.searchButtonClickHandler = searchButtonClickHandler;
 
         ////////////////
 
         /**
-         * Handle click event on search button
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderSearchButtonController#searchButtonClickHandler
+         * @methodOf jwShowcase.core.HeaderSearchButtonController
+         *
+         * @description
+         * Handle click event on the search button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function searchButtonClickHandler () {
 
             appStore.searchBarActive = true;
 
-            $timeout(function() {
-                document.querySelector('.jw-header-search-input').focus();
+            $timeout(function () {
+                document.querySelector('.jw-search-input').focus();
             }, 300);
         }
     }
 
-})();
+}());

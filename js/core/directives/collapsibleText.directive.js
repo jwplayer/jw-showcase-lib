@@ -23,10 +23,18 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwCollapsibleText
+     * @module jwShowcase.core
+     *
+     * @param   {String} jwCollapsibleText  Default height of text (line height * max lines).
      *
      * @requires jwShowcase.core.utils
+     *
+     * @example
+     *
+     * ```
+     * <div jw-collapsible-text="3em">{{ vm.description }}</div>
+     * ```
      */
-
     collapsibleTextDirective.$inject = ['utils'];
     function collapsibleTextDirective (utils) {
 
@@ -46,7 +54,7 @@
 
         function link (scope, element) {
 
-            var resizeDebounced = utils.debounce(resize, 300),
+            var resizeDebounced = utils.debounce(resize, 100),
                 contentElement = angular.element(element[0].querySelector('.jw-collapsible-text-content'));
 
             scope.vm.toggleClickHandler = toggleClickHandler;
@@ -107,5 +115,5 @@
         }
     }
 
-})();
+}());
 

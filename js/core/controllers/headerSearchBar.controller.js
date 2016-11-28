@@ -22,13 +22,12 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:HeaderBackButtonController
+     * @name jwShowcase.core.HeaderBackButtonController
      *
      * @requires $state
      * @requires jwShowcase.core.appStore
      * @requires jwShowcase.core.apiConsumer
      */
-
     HeaderSearchBarController.$inject = ['$state', 'appStore', 'apiConsumer'];
     function HeaderSearchBarController ($state, appStore, apiConsumer) {
 
@@ -43,7 +42,14 @@
         ////////////////
 
         /**
-         * Handle click event on closeSearch button
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderSearchBarController#closeSearchButtonHandler
+         * @methodOf jwShowcase.core.HeaderSearchBarController
+         *
+         * @description
+         * Handle click event on the close search button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function closeSearchButtonClickHandler () {
 
@@ -51,7 +57,14 @@
         }
 
         /**
-         * Handle change event on search input
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderSearchBarController#searchInputChangeHandler
+         * @methodOf jwShowcase.core.HeaderSearchBarController
+         *
+         * @description
+         * Handle change event off the search input.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function searchInputChangeHandler () {
 
@@ -59,7 +72,14 @@
         }
 
         /**
-         * Handle keyup event on search input
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderSearchBarController#searchInputKeyupHandler
+         * @methodOf jwShowcase.core.HeaderSearchBarController
+         *
+         * @description
+         * Handle keyup event off the search input.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function searchInputKeyupHandler ($event) {
 
@@ -93,4 +113,4 @@
         }
     }
 
-})();
+}());

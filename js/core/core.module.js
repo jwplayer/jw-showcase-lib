@@ -61,6 +61,8 @@
             return 'large';
         };
 
+        $ionicConfigProvider.views.transition('none');
+
         /**
          * Preload application data
          *

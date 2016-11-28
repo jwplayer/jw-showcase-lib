@@ -56,7 +56,6 @@
          *
          * @return {jwShowcase.core.seoProvider} seoProvider instance
          */
-
         function addState (stateName, metadata) {
 
             states.push({
@@ -80,7 +79,6 @@
          *
          * @return {jwShowcase.core.seoProvider} seoProvider instance
          */
-
         function setOtherwise (metadata) {
 
             otherwise = {
@@ -103,7 +101,6 @@
          * @requires $state
          * @requires $injector
          */
-
         function Seo ($rootScope, $state, $injector) {
 
             var service = {

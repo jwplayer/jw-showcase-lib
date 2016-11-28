@@ -20,6 +20,14 @@
         .module('jwShowcase.core')
         .controller('ShareController', ShareController);
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.core.ShareController
+     *
+     * @requires $timeout
+     * @requires $location
+     * @requires jwShowcase.core.utils
+     */
     ShareController.$inject = ['$timeout', '$location', 'utils', 'item'];
     function ShareController ($timeout, $location, utils, item) {
 
@@ -35,7 +43,12 @@
         ////////////////
 
         /**
-         * Copy current url to clipboard
+         * @ngdoc method
+         * @name jwShowcase.core.ShareController#copyUrl
+         * @methodOf jwShowcase.core.ShareController
+         *
+         * @description
+         * Copies current absolute URL to user's clipboard.
          */
         function copyUrl () {
 
