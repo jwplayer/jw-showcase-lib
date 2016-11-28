@@ -20,7 +20,7 @@
     &.ng-hide-remove {
         @include transition(width .5s ease);
 
-        .jw-search-input {
+        .jw-search-input-container {
             @include transition(border .3s ease 0.2s);
         }
     }
@@ -30,13 +30,9 @@
         &:not(.ng-hide-remove-active) {
             width: 42px;
 
-            .jw-search-input {
+            .jw-search-input-container {
                 border-color: transparent;
             }
-        }
-
-        .jw-search-input {
-            background: transparent;
         }
     }
 
@@ -47,10 +43,9 @@
             width: 42px;
         }
 
-        .jw-search-input {
+        .jw-search-input-container {
             @include transition-delay(0s);
             border-color: transparent;
-            background: transparent;
         }
 
         .jw-search-input-cap:last-child {
@@ -58,12 +53,19 @@
         }
     }
 
+    .jw-search-input-container {
+        width: 100%;
+        height: 100%;
+        padding: 0 30px;
+        border-bottom: 1px solid $header-search-border-color;
+    }
+
     .jw-search-input {
         width: 100%;
         height: $header-search-height;
-        padding: 0 30px;
+        padding: 5px 0;
 
-        border-bottom: 1px solid $header-search-border-color;
+        background: transparent;
         border-radius: 0;
         font-size: 16px;
     }
