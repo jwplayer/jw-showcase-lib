@@ -36,13 +36,17 @@
 @import 'components/jwShare';
 @import 'components/jwText';
 @import 'components/jwVideoContainer';
-@import 'components/jwView';
 
 //
 // Import themes
 // --------------------------------
 @import 'themes/light';
 @import 'themes/dark';
+
+//
+// Import skins
+// --------------------------------
+@import 'skins/jwShowcase';
 
 html,
 body {

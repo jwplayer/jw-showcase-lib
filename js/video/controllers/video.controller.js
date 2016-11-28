@@ -98,6 +98,10 @@
                 visualplaylist: false
             };
 
+            if (!window.jwplayer.defaults.skin) {
+                vm.playerSettings.skin = 'jw-showcase';
+            }
+
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);

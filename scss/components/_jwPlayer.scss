@@ -17,24 +17,6 @@
             pointer-events: all;
         }
     }
-
-    &.jw-state-idle,
-    &.jw-state-paused {
-
-        .jw-display-icon-container {
-            display: table;
-
-            border: 4px solid $white;
-            background: transparent;
-        }
-
-        .jw-display-icon-container > .jw-icon {
-            padding-left: 4px;
-
-            color: $primary-color;
-            font-size: 1.7em;
-        }
-    }
 }
 
 // scss-lint:disable PseudoElement
@@ -48,15 +30,6 @@ video::-internal-media-controls-overlay-cast-button {
 //
 // mediaQueries
 // --------------------------------
-
-@include mobile-only () {
-
-    .jwplayer.jw-reset {
-        .jw-display-icon-container > .jw-icon {
-            font-size: 1.3em;
-        }
-    }
-}
 
 @include tablet-and-larger () {
 
