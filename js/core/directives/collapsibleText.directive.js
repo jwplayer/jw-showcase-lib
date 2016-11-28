@@ -25,7 +25,8 @@
      * @name jwShowcase.core.directive:jwCollapsibleText
      * @module jwShowcase.core
      *
-     * @param   {String} jwCollapsibleText  Default height of text (line height * max lines).
+     * @param   {String} jwCollapsibleText      Default height of text (line height * max lines).
+     * @param   {String} jwCollapsibleTextWatch Observe this value for changes.
      *
      * @requires jwShowcase.core.utils
      *
@@ -40,7 +41,8 @@
 
         return {
             scope:            {
-                jwCollapsibleText: '@'
+                jwCollapsibleText:      '@',
+                jwCollapsibleTextWatch: '='
             },
             restrict:         'A',
             controller:       angular.noop,
@@ -55,7 +57,7 @@
         function link (scope, element) {
 
             var resizeDebounced = utils.debounce(resize, 100),
-                contentElement = angular.element(element[0].querySelector('.jw-collapsible-text-content'));
+                contentElement  = angular.element(element[0].querySelector('.jw-collapsible-text-content'));
 
             scope.vm.toggleClickHandler = toggleClickHandler;
 
@@ -70,6 +72,8 @@
 
                 window.addEventListener('resize', resizeDebounced);
                 scope.$on('$destroy', destroy);
+
+                scope.$watch('vm.jwCollapsibleTextWatch', resizeDebounced, false);
 
                 resizeDebounced();
             }
