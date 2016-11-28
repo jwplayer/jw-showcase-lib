@@ -47,13 +47,14 @@
             resumed              = false,
             started              = false,
             requestQualityChange = false,
+            itemFeed             = feed,
             playerPlaylist       = [],
             playerLevels,
             initialLevel,
             watchProgressItem;
 
         vm.item                = item;
-        vm.feed                = feed;
+        vm.feed                = itemFeed;
         vm.recommendationsFeed = null;
         vm.duration            = 0;
         vm.inWatchList         = false;
@@ -82,7 +83,7 @@
          */
         function activate () {
 
-            playerPlaylist = generatePlaylist(feed, item);
+            playerPlaylist = generatePlaylist(itemFeed, item);
             vm.inWatchList = watchlist.hasItem(vm.item);
 
             vm.playerSettings = {
@@ -117,11 +118,11 @@
          */
         function update () {
 
-            var itemIndex = feed.playlist.findIndex(byMediaId(vm.item.mediaid));
+            var itemIndex = itemFeed.playlist.findIndex(byMediaId(vm.item.mediaid));
 
-            vm.feed.playlist = feed.playlist
+            vm.feed.playlist = itemFeed.playlist
                 .slice(itemIndex)
-                .concat(feed.playlist.slice(0, itemIndex));
+                .concat(itemFeed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
             vm.duration       = utils.getVideoDurationByItem(vm.item);
@@ -139,7 +140,7 @@
                     // filter duplicate video's
                     if (angular.isArray(response.playlist)) {
                         response.playlist = response.playlist.filter(function (item) {
-                            return feed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                            return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
 
@@ -264,7 +265,7 @@
                 return;
             }
 
-            newItem = dataStore.getItem(playlistItem.mediaid, feed.feedid);
+            newItem = dataStore.getItem(playlistItem.mediaid, itemFeed.feedid);
 
             // same item
             if (!newItem || newItem.mediaid === vm.item.mediaid) {
@@ -273,7 +274,6 @@
 
             // item does not exist in current feed.
             if (!newItem) {
-                // show dialog!
                 return;
             }
 
@@ -453,9 +453,10 @@
             stateParams.mediaId = vm.item.mediaid;
             stateParams.feedId  = item.feedid;
 
-            if (item.feedid !== feed.feedid) {
+            if (item.feedid !== itemFeed.feedid) {
 
-                vm.feed        = dataStore.getFeed(item.feedid);
+                itemFeed       = dataStore.getFeed(item.feedid);
+                vm.feed        = itemFeed;
                 playerPlaylist = generatePlaylist(vm.feed, vm.item);
 
                 player.load(playerPlaylist);
