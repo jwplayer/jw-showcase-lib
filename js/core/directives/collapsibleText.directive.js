@@ -46,7 +46,7 @@
 
         function link (scope, element) {
 
-            var resizeDebounced = utils.debounce(resize, 300),
+            var resizeDebounced = utils.debounce(resize, 100),
                 contentElement = angular.element(element[0].querySelector('.jw-collapsible-text-content'));
 
             scope.vm.toggleClickHandler = toggleClickHandler;
