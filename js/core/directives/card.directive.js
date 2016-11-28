@@ -23,6 +23,7 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwCard
+     * @module jwShowcase.core
      *
      * @description
      * # jwCard
@@ -43,7 +44,6 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-
     cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache'];
     function cardDirective ($animate, $q, $timeout, $templateCache) {
 

@@ -39,40 +39,15 @@
      *
      * @param {object=} [state-class] Toggle class based current state name
      */
-
     headerDirective.$inject = [];
     function headerDirective () {
 
         return {
             restrict:         'E',
-            scope:            {
-                stateClass: '='
-            },
-            controllerAs:     'vm',
-            controller:       angular.noop,
-            bindToController: true,
             replace:          true,
             transclude:       true,
-            templateUrl:      'views/core/header.html',
-            link:             link
+            templateUrl:      'views/core/header.html'
         };
-
-        function link (scope, element) {
-
-            scope.$on('$stateChangeSuccess', function (evt, toState) {
-
-                var stateClass = scope.vm.stateClass;
-
-                if (angular.isObject(stateClass)) {
-
-                    Object
-                        .keys(stateClass)
-                        .forEach(function (className) {
-                            element.toggleClass(className, stateClass[className] === toState.name);
-                        });
-                }
-            });
-        }
     }
 
 }());

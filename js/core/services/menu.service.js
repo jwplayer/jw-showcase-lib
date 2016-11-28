@@ -29,13 +29,11 @@
 
         var menuPopover;
 
-        activate();
+        this.toggle = toggle;
+        this.hide   = hide;
+        this.show   = show;
 
-        return {
-            toggle: toggle,
-            hide:   hide,
-            show:   show
-        };
+        activate();
 
         //////////
 
@@ -56,7 +54,7 @@
          */
         function positionView (target, popoverElement) {
 
-            var scroll = angular.element(popoverElement[0].querySelector('.scroll')),
+            var scroll       = angular.element(popoverElement[0].querySelector('.scroll')),
                 scrollParent = scroll.parent(),
                 overflow, height, targetHeight;
 
@@ -66,7 +64,7 @@
                 left:   0
             });
 
-            height = popoverElement[0].offsetHeight;
+            height   = popoverElement[0].offsetHeight;
             overflow = scroll[0].scrollHeight - scrollParent[0].offsetHeight;
 
             if (overflow > 0) {
@@ -76,7 +74,12 @@
         }
 
         /**
-         * Toggle menu popover
+         * @ngdoc method
+         * @name jwShowcase.core.menu#toggle
+         * @methodOf jwShowcase.core.menu
+         *
+         * @description
+         * Toggle menu's visibility.
          */
         function toggle () {
 
@@ -89,7 +92,12 @@
         }
 
         /**
-         * Hide menu popover
+         * @ngdoc method
+         * @name jwShowcase.core.menu#hide
+         * @methodOf jwShowcase.core.menu
+         *
+         * @description
+         * Hide menu.
          */
         function hide () {
 
@@ -101,7 +109,12 @@
         }
 
         /**
-         * Show menu popover
+         * @ngdoc method
+         * @name jwShowcase.core.menu#show
+         * @methodOf jwShowcase.core.menu
+         *
+         * @description
+         * Show menu.
          */
         function show () {
 
@@ -130,7 +143,7 @@
                     hideDelay:    300
                 });
 
-            menuScope.$on('popover.hidden', function(event, popover) {
+            menuScope.$on('popover.hidden', function (event, popover) {
 
                 $timeout(function () {
                     menuPopover.remove();

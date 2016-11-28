@@ -30,7 +30,6 @@
      *
      * @param {string=} [icon=jwy-icon-menu] Icon
      */
-
     headerMenuButtonDirective.$inject = ['menu'];
     function headerMenuButtonDirective (menu) {
 

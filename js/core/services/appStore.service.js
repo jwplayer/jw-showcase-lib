@@ -20,6 +20,13 @@
         .module('jwShowcase.core')
         .service('appStore', appStore);
 
+    /**
+     * @ngdoc service
+     * @name jwShowcase.core.appStore
+     *
+     * @description
+     * Store service for application
+     */
     appStore.$inject = [];
     function appStore () {
 

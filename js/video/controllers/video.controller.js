@@ -79,7 +79,7 @@
         ////////////////////////
 
         /**
-         * Initialize the controller.
+         * Initialize controller.
          */
         function activate () {
 
@@ -180,6 +180,7 @@
 
         /**
          * Handle conserveBandwidth setting change
+         *
          * @param {boolean} value
          */
         function conserveBandwidthChangeHandler (value) {
@@ -203,6 +204,7 @@
 
         /**
          * Handle ready event
+         *
          * @param {Object} event
          */
         function onReady (event) {
@@ -212,6 +214,7 @@
 
         /**
          * Handle error event
+         *
          * @param {Object} event
          */
         function onError (event) {
@@ -221,6 +224,7 @@
 
         /**
          * Handle setup error event
+         *
          * @param {Object} event
          */
         function onSetupError (event) {
@@ -253,6 +257,7 @@
 
         /**
          * Handle playlist item event
+         *
          * @param {Object} event
          */
         function onPlaylistItem (event) {
@@ -316,6 +321,7 @@
 
         /**
          * Handle levels event
+         *
          * @param event
          */
         function onLevels (event) {
@@ -335,6 +341,7 @@
 
         /**
          * Handle time event
+         *
          * @param event
          */
         function onTime (event) {
@@ -387,6 +394,7 @@
 
         /**
          * Saves or removes watchProgress
+         *
          * @param {number} position
          * @param {number} duration
          */
@@ -407,7 +415,12 @@
         }
 
         /**
-         * Handle click event on watchlist button
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#watchlistClickHandler
+         * @methodOf jwShowcase.video.VideoController
+         *
+         * @description
+         * Handle click event on the watchlist button.
          */
         function watchlistClickHandler () {
 
@@ -422,8 +435,14 @@
         }
 
         /**
-         * Handle click event on share button
-         * @param $event
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#shareClickHandler
+         * @methodOf jwShowcase.video.VideoController
+         *
+         * @description
+         * Handle click event on the share button.
+         *
+         * @param {$event} $event Synthetic event object.
          */
         function shareClickHandler ($event) {
 
@@ -434,12 +453,17 @@
         }
 
         /**
-         * Handle click event on card
+         * @ngdoc method
+         * @name jwShowcase.video.VideoController#cardClickHandler
+         * @methodOf jwShowcase.video.VideoController
          *
-         * @param {Object}      item        Clicked item
-         * @param {boolean}     autoStart   Should the video playback start automatically
+         * @description
+         * Handle click event on the card.
+         *
+         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, autoStart) {
+        function cardClickHandler (item, clickedOnPlay) {
 
             var playlistIndex,
                 stateParams = $ionicHistory.currentView().stateParams;
@@ -461,7 +485,7 @@
 
                 player.load(playerPlaylist);
 
-                if (autoStart) {
+                if (clickedOnPlay) {
                     player.play(true);
                 }
             }
@@ -474,7 +498,7 @@
                 .go('root.video', {
                     feedId:    item.feedid,
                     mediaId:   item.mediaid,
-                    autoStart: autoStart
+                    autoStart: clickedOnPlay
                 }, {
                     notify: false
                 })

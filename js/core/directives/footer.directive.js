@@ -23,6 +23,7 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwFooter
+     * @module jwShowcase.core
      *
      * @description
      * # jwFooter
@@ -34,7 +35,6 @@
      * <jw-footer></jw-footer>
      * ```
      */
-
     footerDirective.$inject = [];
     function footerDirective () {
 

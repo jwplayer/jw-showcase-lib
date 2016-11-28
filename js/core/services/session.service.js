@@ -24,7 +24,6 @@
      * @ngdoc service
      * @name jwShowcase.core.session
      */
-
     session.$inject = [];
     function session () {
 
@@ -35,11 +34,15 @@
         ////////////////
 
         /**
-         * Get value from localStorage defaulting to defaultValue
+         * @ngdoc method
+         * @name jwShowcase.core.session#load
+         * @methodOf jwShowcase.core.session
          *
-         * @param {string} key
-         * @param {*}      defaultValue
-         * @returns {*}
+         * @description
+         * Get value from localStorage with the given key. Defaults to defaultValue.
+         *
+         * @param {string}  key             The key to load.
+         * @param {*}       defaultValue    This value is returned when key does not exist.
          */
         function load (key, defaultValue) {
 
@@ -68,10 +71,15 @@
         }
 
         /**
-         * Save value in localStorage
+         * @ngdoc method
+         * @name jwShowcase.core.session#save
+         * @methodOf jwShowcase.core.session
          *
-         * @param {string}  key
-         * @param {*}       value
+         * @description
+         * Save value in localStorage with the given key.
+         *
+         * @param {string}  key      Key to identify the value.
+         * @param {*}       value    Value to store.
          */
         function save (key, value) {
 
@@ -95,9 +103,14 @@
         }
 
         /**
-         * Clear value in localStorage
+         * @ngdoc method
+         * @name jwShowcase.core.session#clear
+         * @methodOf jwShowcase.core.session
          *
-         * @param {string}  key
+         * @description
+         * Clears the given key from the localStorage.
+         *
+         * @param {string}  key             The key to clear.
          */
         function clear (key) {
 
@@ -109,4 +122,4 @@
         }
     }
 
-})();
+}());

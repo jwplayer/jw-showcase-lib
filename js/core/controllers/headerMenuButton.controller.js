@@ -22,22 +22,28 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:HeaderMenuButtonController
+     * @name jwShowcase.core.HeaderMenuButtonController
      *
      * @requires jwShowcase.core.menu
      */
-
     HeaderMenuButtonController.$inject = ['menu'];
     function HeaderMenuButtonController (menu) {
 
-        var vm   = this;
+        var vm = this;
 
         vm.menuButtonClickHandler = menuButtonClickHandler;
 
         ////////////////
 
         /**
-         * Handle click on menu button
+         * @ngdoc method
+         * @name jwShowcase.core.HeaderMenuButtonController#menuButtonClickHandler
+         * @methodOf jwShowcase.core.HeaderMenuButtonController
+         *
+         * @description
+         * Handle click event on the menu button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function menuButtonClickHandler () {
 
@@ -45,4 +51,4 @@
         }
     }
 
-})();
+}());

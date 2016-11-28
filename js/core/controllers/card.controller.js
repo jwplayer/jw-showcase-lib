@@ -10,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language
+ * express or implied. See the License on the specific language
  * governing permissions and limitations under the License.
  **/
 
@@ -23,11 +23,25 @@
         .controller('CardController', CardController);
 
     /**
+     * @ngdoc event
+     * @name CardController#jwCardMenu:open
+     * @eventType broadcast on root scope
+     * @description
+     * Broadcasted when the card menu opens.
+     *
+     * @param {$event} event Synthetic event object.
+     * @param {$scope} targetScope Scope where event was broadcasted from.
+     */
+
+    /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:CardController
+     * @name jwShowcase.core.CardController
+     *
      * @requires $rootScope
      * @requires $scope
+     * @requires $state
      * @requires jwShowcase.core.utils
+     * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.player
      */
     CardController.$inject = ['$rootScope', '$scope', '$state', 'utils', 'watchlist', 'player'];
@@ -38,7 +52,6 @@
         vm.getClassNames          = getClassNames;
         vm.clickHandler           = clickHandler;
         vm.menuButtonClickHandler = menuButtonClickHandler;
-        vm.closeMenuHandler       = closeMenuHandler;
         vm.watchlistClickHandler  = watchlistClickHandler;
 
         vm.duration      = 0;
@@ -88,7 +101,14 @@
         }
 
         /**
-         * Handle watchlistclick event
+         * @ngdoc method
+         * @name jwShowcase.core.CardController#watchlistClickHandler
+         * @methodOf jwShowcase.core.CardController
+         *
+         * @description
+         * Handle click event on the watchlist button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function watchlistClickHandler (event) {
 
@@ -109,9 +129,13 @@
         }
 
         /**
-         * Handle jwCardMenu:open event
-         * @param {$event} event
-         * @param {$scope} targetScope
+         * @name cardMenuOpenEventHandler
+         *
+         * @description
+         * Handle jwCardMenu:open event.
+         *
+         * @param {$event} event Synthetic event object.
+         * @param {$scope} targetScope Scope where event was broadcasted from.
          */
         function cardMenuOpenEventHandler (event, targetScope) {
 
@@ -124,7 +148,12 @@
         }
 
         /**
-         * @returns {Object.<string, boolean>}
+         * @ngdoc method
+         * @name jwShowcase.core.CardController#getClassNames
+         * @methodOf jwShowcase.core.CardController
+         *
+         * @description
+         * Returns Object with classNames and whether they should be added or not.
          */
         function getClassNames () {
 
@@ -139,8 +168,11 @@
         }
 
         /**
-         * Return poster url with optimal quality for screen size
-         * @returns {string}
+         * @ngdoc method
+         * @name getPosterUrl
+         *
+         * @description
+         * Returns poster URL with preferred resolution.
          */
         function getPosterUrl () {
 
@@ -155,8 +187,15 @@
         }
 
         /**
-         * @param {Object}      event               Event object
-         * @param {boolean}     clickedOnPlayIcon   True if the user clicked on the play icon
+         * @ngdoc method
+         * @name jwShowcase.core.CardController#clickHandler
+         * @methodOf jwShowcase.core.CardController
+         *
+         * @description
+         * Handle click event on the card or play button.
+         *
+         * @param {$event} event Synthetic event object.
+         * @param {boolean} clickedOnPlayIcon True if the r clicked on the play icon.
          */
         function clickHandler (event, clickedOnPlayIcon) {
 
@@ -173,8 +212,15 @@
         }
 
         /**
-         * Handle click on more button
-         * @param event
+         * @ngdoc method
+         * @name jwShowcase.core.CardController#menuButtonClickHandler
+         * @methodOf jwShowcase.core.CardController
+         *
+         * @param {$event} event Event object
+         * @description
+         * Handle click event on the menu button.
+         *
+         * @fires CardController#jwCardMenu:open
          */
         function menuButtonClickHandler (event) {
 
@@ -182,14 +228,6 @@
             vm.menuVisible = true;
 
             $rootScope.$broadcast('jwCardMenu:open', $scope);
-        }
-
-        /**
-         * Close menu
-         */
-        function closeMenuHandler () {
-
-            vm.menuVisible = false;
         }
     }
 

@@ -22,9 +22,16 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:MenuController
+     * @name jwShowcase.core.MenuController
+     *
+     * @requires $scope
+     * @requires jwShowcase.core.confirm
+     * @requires jwShowcase.core.menu
+     * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.watchlist
+     * @requires jwShowcase.core.watchProgress
+     * @requires jwShowcase.core.userSettings
      */
-
     MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings'];
     function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings) {
 
@@ -34,7 +41,7 @@
         vm.menu      = menu;
         vm.dataStore = dataStore;
 
-        vm.watchlist = vm.dataStore.watchlistFeed;
+        vm.watchlist     = vm.dataStore.watchlistFeed;
         vm.watchProgress = vm.dataStore.watchProgressFeed;
 
         vm.userSettings = angular.extend({}, userSettings.settings);
@@ -75,7 +82,14 @@
         }
 
         /**
-         * Clear watch list
+         * @ngdoc method
+         * @name jwShowcase.core.MenuController#clearWatchlist
+         * @methodOf jwShowcase.core.MenuController
+         *
+         * @description
+         * Show confirmation modal and clear watchlist if the user clicks on 'ok'.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function clearWatchlist () {
 
@@ -89,12 +103,19 @@
         }
 
         /**
-         * Clear watch progress
+         * @ngdoc method
+         * @name jwShowcase.core.MenuController#clearWatchProgress
+         * @methodOf jwShowcase.core.MenuController
+         *
+         * @description
+         * Show confirmation modal and clear watchProgress if the user clicks on 'ok'.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function clearWatchProgress () {
 
             confirm
-                .show('Do you wish to clear your Continue Watching list?')
+                .show('Do you wish to clear your Continue watching list?')
                 .then(function () {
 
                     watchProgress
@@ -103,5 +124,4 @@
         }
     }
 
-})();
-
+}());

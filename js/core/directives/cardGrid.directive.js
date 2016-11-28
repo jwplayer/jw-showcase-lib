@@ -24,6 +24,7 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwCardGrid
+     * @module jwShowcase.core
      *
      * @description
      *
@@ -51,7 +52,6 @@
      * <jw-card-grid feed="vm.feed" spacing="12" cols="{xs: 1, sm: 3}" heading="vm.feed.title"></jw-card-grid>
      * ```
      */
-
     jwCardGrid.$inject = ['$timeout', 'utils'];
     function jwCardGrid ($timeout, utils) {
 
@@ -115,4 +115,4 @@
             }
         }
     }
-})();
+}());

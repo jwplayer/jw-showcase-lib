@@ -32,16 +32,16 @@
      *
      * @scope
      *
-     * @param {jwShowcase.core.feed}       feed            Feed which will be displayed in the slider.
-     * @param {boolean|string=}     heading         Text which will be displayed in the title or false if no title
-     *                                              should be displayed.
+     * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
+     * @param {boolean|string=}         heading         Text which will be displayed in the title or false if no title
+     *                                                  should be displayed.
      *
-     * @param {Object|number=}      cols            How many columns should be visible. Can either be a fixed number or
-     *                                              an object with responsive columns (e.g. `{sm: 2, md: 4}`).
-     *                                              Available sizes; xs, sm, md, lg and xl.
+     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number or
+     *                                                  an object with responsive columns (e.g. `{sm: 2, md: 4}`).
+     *                                                  Available sizes; xs, sm, md, lg and xl.
      *
-     * @param {boolean=}            featured        Featured slider flag
-     * @param {function=}           onCardClick     Function which is being called when the user clicks on a card.
+     * @param {boolean=}                featured        Featured slider flag
+     * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
      *
      * @requires $timeout
      * @requires jwShowcase.core.utils
@@ -53,7 +53,6 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-
     cardSliderDirective.$inject = ['$timeout', 'utils'];
     function cardSliderDirective ($timeout, utils) {
 

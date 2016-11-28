@@ -22,11 +22,15 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:RootController
+     * @name jwShowcase.core.RootController
      *
-     * @requires seo
+     * @requires $scope
+     * @requires $timeout
+     * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.appStore
+     * @requires jwShowcase.core.seo
+     * @requires config
      */
-
     RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'config'];
     function RootController ($scope, $timeout, dataStore, appStore, seo, config) {
 
@@ -56,5 +60,5 @@
         }
     }
 
-})();
+}());
 

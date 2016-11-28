@@ -26,6 +26,7 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwPlayer
+     * @module jwShowcase.core
      *
      * @description
      * This directive is used to create a Jwplayer instance.
@@ -42,7 +43,6 @@
      * ```
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
-     *
      */
     JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player'];
     function JwPlayerDirective ($parse, $timeout, utils, player) {

@@ -23,6 +23,7 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwCardPoster
+     * @module jwShowcase.core
      *
      * @description
      * # jwCardPoster
@@ -38,7 +39,6 @@
      * <jw-card-poster src="item.poster"></jw-card-poster>
      * ```
      */
-
     cardPosterDirective.$inject = [];
     function cardPosterDirective () {
 

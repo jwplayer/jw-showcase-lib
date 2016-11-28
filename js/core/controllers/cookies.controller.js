@@ -20,17 +20,31 @@
         .module('jwShowcase.core')
         .controller('CookiesController', CookiesController);
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.core.CookiesController
+     *
+     * @requires jwShowcase.core.cookies
+     * @requires jwShowcase.core.userSettings
+     */
     CookiesController.$inject = ['cookies', 'userSettings'];
     function CookiesController (cookies, userSettings) {
 
-        var vm   = this;
+        var vm = this;
 
         vm.acceptButtonClickHandler = acceptButtonClickHandler;
 
         ////////////////
 
         /**
-         * Handle click event on accept button
+         * @ngdoc method
+         * @name jwShowcase.core.CookiesController#acceptButtonClickHandler
+         * @methodOf jwShowcase.core.CookiesController
+         *
+         * @description
+         * Handle click event on the accept button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function acceptButtonClickHandler () {
 
@@ -42,5 +56,4 @@
         }
     }
 
-})();
-
+}());

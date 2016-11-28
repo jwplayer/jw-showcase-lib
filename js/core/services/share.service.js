@@ -20,6 +20,11 @@
         .module('jwShowcase.core')
         .service('share', ShareService);
 
+
+    /**
+     * @ngdoc service
+     * @name jwShowcase.core.share
+     */
     ShareService.$inject = ['$rootScope', '$controller', '$templateCache', '$ionicPopover'];
     function ShareService ($rootScope, $controller, $templateCache, $ionicPopover) {
 
@@ -32,11 +37,16 @@
         ////////////////
 
         /**
-         * Show share popover
+         * @ngdoc method
+         * @name jwShowcase.core.share#show
+         * @methodOf jwShowcase.core.share
          *
-         * @param {Object}          options
-         * @param {Element}         options.target  Target element
-         * @param {jwShowcase.core.item}   options.item    Item to share
+         * @description
+         * Show share popover.
+         *
+         * @param {Object}                  options
+         * @param {Element}                 options.target  Target element
+         * @param {jwShowcase.core.item}    options.item    Item to share
          */
         function show (options) {
 
@@ -78,7 +88,12 @@
         }
 
         /**
-         * Hide share popover
+         * @ngdoc method
+         * @name jwShowcase.core.share#hide
+         * @methodOf jwShowcase.core.share
+         *
+         * @description
+         * Hide share popover.
          */
         function hide () {
 

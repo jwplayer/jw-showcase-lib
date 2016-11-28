@@ -26,7 +26,8 @@
      * @name jwShowcase.core.api
      *
      * @requires $http
-     * @requires $log
+     * @requires $q
+     * @requires JW_PLATFORM_URL
      */
     apiService.$inject = ['$http', '$q', 'JW_PLATFORM_URL'];
     function apiService ($http, $q, JW_PLATFORM_URL) {

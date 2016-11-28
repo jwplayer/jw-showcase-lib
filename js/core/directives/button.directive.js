@@ -23,8 +23,11 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwButton
+     * @module jwShowcase.core
+     *
+     * @description
+     * Generic button directive which adds `jw-button` className and button effect.
      */
-
     jwButton.$inject = [];
     function jwButton () {
         return {
@@ -51,12 +54,11 @@
 
                 effectElement.addClass('active');
 
+                // use browsers setTimeout so this this is always executed.
                 setTimeout(function () {
                     effectElement.remove();
                 }, 310);
             });
-
-            // element.append('<span class="jw-button-effect"></span>');
         }
     }
 

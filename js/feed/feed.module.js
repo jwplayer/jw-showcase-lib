@@ -16,6 +16,13 @@
 
 (function () {
 
+    /**
+     * @ngdoc overview
+     * @name jwShowcase.feed
+     *
+     * @description
+     * Feed module
+     */
     angular
         .module('jwShowcase.feed', [])
         .config(config);

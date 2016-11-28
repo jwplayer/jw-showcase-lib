@@ -20,6 +20,12 @@
         .module('jwShowcase.feed')
         .controller('FeedController', FeedController);
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.feed.FeedController
+     *
+     * @requires $scope
+     */
     FeedController.$inject = ['$state', 'feed'];
     function FeedController ($state, feed) {
 
@@ -31,20 +37,24 @@
         ////////////////////////
 
         /**
-         * Handle click event on cards
+         * @ngdoc method
+         * @name jwShowcase.feed.FeedController#cardClickHandler
+         * @methodOf jwShowcase.feed.FeedController
          *
-         * @param {jwShowcase.core.item}   item        Clicked item
-         * @param {boolean}         autoStart   Should the video playback start automatically
+         * @description
+         * Handle click event on the card.
+         *
+         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, autoStart) {
+        function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
-                autoStart: autoStart
+                autoStart: clickedOnPlay
             });
         }
     }
 
-})();
-
+}());

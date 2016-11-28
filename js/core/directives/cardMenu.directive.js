@@ -23,11 +23,12 @@
     /**
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwCardMenu
+     * @module jwShowcase.core
      *
      * @scope
      *
-     * @param {jwShowcase.core.item}   item            Playlist item
-     * @param {function}        onClose         Callback which is called after the user clicks on the close button
+     * @param {jwShowcase.core.item}   item     Playlist item.
+     * @param {function}               onClose  Callback which is called after the user clicks on the close button.
      *
      * @example
      *
@@ -35,7 +36,6 @@
      * <jw-card-menu item="item" on-close="onClose()"></jw-card-menu>
      * ```
      */
-
     cardMenuDirective.$inject = [];
     function cardMenuDirective () {
 
@@ -63,6 +63,9 @@
 
             ////////
 
+            /**
+             * Initialize directive
+             */
             function activate () {
 
                 pane = parents(element[0], 'pane');
@@ -73,6 +76,9 @@
                 }
             }
 
+            /**
+             * Handle directive's $destroy event
+             */
             function onDestroy () {
 
                 if (pane) {

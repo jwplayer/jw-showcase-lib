@@ -22,7 +22,7 @@
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.controller:CardMenuController
+     * @name jwShowcase.core.CardMenuController
      *
      * @requires $scope
      * @requires $timeout
@@ -66,7 +66,14 @@
         }
 
         /**
-         * Handle click event on close button
+         * @ngdoc method
+         * @name jwShowcase.core.CardMenuController#closeButtonClickHandler
+         * @methodOf jwShowcase.core.CardMenuController
+         *
+         * @description
+         * Handle click event on the close button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function closeButtonClickHandler () {
 
@@ -74,7 +81,14 @@
         }
 
         /**
-         * Handle click event on save button
+         * @ngdoc method
+         * @name jwShowcase.core.CardMenuController#saveButtonClickHandler
+         * @methodOf jwShowcase.core.CardMenuController
+         *
+         * @description
+         * Handle click event on the save button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function saveButtonClickHandler () {
 
@@ -91,7 +105,14 @@
         }
 
         /**
-         * Handle click event on unsave button
+         * @ngdoc method
+         * @name jwShowcase.core.CardMenuController#unsaveButtonClickHandler
+         * @methodOf jwShowcase.core.CardMenuController
+         *
+         * @description
+         * Handle click event on the unsave button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function unsaveButtonClickHandler () {
 
@@ -110,7 +131,14 @@
         }
 
         /**
-         * Handle click event on remove button
+         * @ngdoc method
+         * @name jwShowcase.core.CardMenuController#removeButtonClickHandler
+         * @methodOf jwShowcase.core.CardMenuController
+         *
+         * @description
+         * Handle click event on the remove button.
+         *
+         * @param {$event} event Synthetic event object.
          */
         function removeButtonClickHandler () {
 
@@ -127,4 +155,4 @@
         }
     }
 
-})();
+}());

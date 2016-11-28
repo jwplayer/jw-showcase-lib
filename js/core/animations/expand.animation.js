@@ -20,6 +20,14 @@
         .module('jwShowcase.core')
         .animation('.jw-expand-animation', expandAnimation);
 
+    /**
+     * @ngdoc overview
+     * @name jwShowcase.core.expandAnimation
+     *
+     * @description
+     * Animation which animates the height when entering or leaving.
+     */
+
     expandAnimation.$inject = ['$timeout'];
     function expandAnimation ($timeout) {
 

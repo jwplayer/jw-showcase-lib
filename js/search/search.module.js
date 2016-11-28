@@ -20,6 +20,13 @@
         .module('jwShowcase.search', [])
         .config(config);
 
+    /**
+     * @ngdoc overview
+     * @name jwShowcase.search
+     *
+     * @description
+     * Search module
+     */
     config.$inject = ['$stateProvider', 'seoProvider'];
     function config ($stateProvider, seoProvider) {
 
