@@ -54,6 +54,7 @@
         function closeSearchButtonClickHandler () {
 
             appStore.searchBarActive = false;
+            appStore.searchPhrase    = '';
         }
 
         /**
