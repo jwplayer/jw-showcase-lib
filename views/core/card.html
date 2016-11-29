@@ -4,7 +4,8 @@
     <jw-card-poster src="vm.posterUrl"></jw-card-poster>
   </div>
 
-  <div class="jw-card-container" ng-click="vm.clickHandler($event, false)">
+  <a ui-sref="root.video({mediaId: vm.item.mediaid, feedId: vm.item.feedid})" class="jw-card-container"
+      ng-click="vm.clickHandler($event, false)" tabindex="-1">
     <div class="jw-card-controls">
       <div class="jw-card-controls-align">
         <jw-button class="jw-card-play-button jw-button-play" ng-click="vm.clickHandler($event, true)">
@@ -21,7 +22,7 @@
         <div class="jw-card-description jw-card-text" ng-if="vm.showDescription">{{ ::vm.item.description }}</div>
       </div>
     </div>
-  </div>
+  </a>
 
   <jw-button class="jw-card-menu-button" ng-click="vm.menuButtonClickHandler($event)" ng-if="!vm.featured">
     <i class="jwy-icon jwy-icon-more jwy-icon-rotate-90"></i>
