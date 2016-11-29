@@ -21,8 +21,8 @@
      * @type {<Object>}
      */
     var SCREEN_SIZES = {
-        xs: window.matchMedia('(max-width: 640px)'),
-        sm: window.matchMedia('(min-width: 641px) and (max-width: 960px)'),
+        xs: window.matchMedia('(max-width: 540px)'),
+        sm: window.matchMedia('(min-width: 541px) and (max-width: 960px)'),
         md: window.matchMedia('(min-width: 961px) and (max-width: 1280px)'),
         lg: window.matchMedia('(min-width: 1281px) and (max-width: 1680px)'),
         xl: window.matchMedia('(min-width: 1681px)')
