@@ -21,6 +21,14 @@
         }
     }
 
+    &.jw-state-buffering .jw-display-icon-container {
+        background: none;
+
+        .jw-button-color:hover {
+            color: $white;
+        }
+    }
+
     .jw-progress {
         background-color: $primary-color;
     }
