@@ -215,6 +215,10 @@
         function onReady (event) {
 
             vm.loading = false;
+
+            if (angular.isFunction(this.getContainer)) {
+                this.getContainer().focus();
+            }
         }
 
         /**
