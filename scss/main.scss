@@ -77,6 +77,10 @@ body {
         @include box-sizing(border-box);
     }
 
+    a {
+        text-decoration: none;
+    }
+
     .featured .jw-row:not(:last-child):not(:first-child) {
         margin-bottom: 8px;
     }
