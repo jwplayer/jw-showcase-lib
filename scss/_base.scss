@@ -48,8 +48,8 @@ $container-width-desktop: 800px;
 // Responsive
 // --------------------------------
 
-$mobile-max-width: 768px !default;
-$tablet-max-width: 992px !default;
+$mobile-max-width: 767px !default;
+$tablet-max-width: 991px !default;
 
 $tablet-min-width: $mobile-max-width + 1 !default;
 $desktop-min-width: $tablet-max-width + 1 !default;
