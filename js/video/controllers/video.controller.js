@@ -43,6 +43,7 @@
                               watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
 
         var vm                   = this,
+            isMobile             = ionic.Platform.isAndroid() || ionic.Platform.isIOS() || ionic.Platform.isWindowsPhone(),
             lastPos              = 0,
             resumed              = false,
             started              = false,
@@ -91,7 +92,7 @@
                 height:         '100%',
                 aspectratio:    '16:9',
                 ph:             4,
-                autostart:      $state.params.autoStart,
+                autostart:      $state.params.autoStart || isMobile,
                 playlist:       playerPlaylist,
                 related:        false,
                 sharing:        false,
