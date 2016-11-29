@@ -5,6 +5,12 @@
     }
 }
 
+@mixin mobile-only-landscape {
+    @media screen and (max-width: $mobile-max-width) and (orientation: landscape) {
+        @content;
+    }
+}
+
 @mixin mobile-and-tablet {
     @media screen and (max-width: $tablet-max-width) {
         @content;

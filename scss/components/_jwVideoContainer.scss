@@ -40,3 +40,14 @@
     }
 }
 
+@include mobile-only-landscape () {
+
+    .jw-video-container .jw-container {
+        max-height: calc(100vh - #{$header-height-mobile});
+        overflow: hidden;
+
+        .jwplayer {
+            height: 100% !important;
+        }
+    }
+}
