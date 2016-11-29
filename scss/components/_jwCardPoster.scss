@@ -1,0 +1,10 @@
+//
+// jwCardPoster
+// --------------------------------
+
+.jw-card-poster {
+    @include single-transition(opacity, 0.2s, ease, 0s);
+    @include cover();
+
+    background-color: $gray;
+}

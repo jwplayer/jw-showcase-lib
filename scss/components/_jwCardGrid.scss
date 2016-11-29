@@ -1,0 +1,50 @@
+//
+// jwCardGrid
+// --------------------------------
+
+.jw-card-grid {
+    position: relative;
+    margin: 0 80px;
+
+    .jw-card-grid-cards {
+        margin: 30px 0 0;
+
+        @for $i from 1  through 10 {
+            $perc: 100% / $i;
+
+            &.jw-card-grid-#{$i} > .jw-card {
+                width: calc(#{$perc} - 20px);
+                margin: 0 10px 20px;
+            }
+        }
+    }
+
+    .jw-card {
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+}
+
+//
+// mediaQueries
+// --------------------------------
+
+@include mobile-only() {
+
+    .jw-card-grid {
+        margin: 0 15px;
+
+        .jw-card-grid-cards {
+            margin-top: 20px;
+
+            @for $i from 1  through 10 {
+                $perc: 100% / $i;
+
+                &.jw-card-grid-#{$i} > .jw-card {
+                    width: calc(#{$perc} - 10px);
+                    margin: 0 5px 5px;
+                }
+            }
+        }
+    }
+}

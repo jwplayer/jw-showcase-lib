@@ -1,0 +1,67 @@
+//
+// jwAnimations
+// --------------------------------
+
+.jw-expand-animation {
+    @include transition(all 0.3s ease);
+}
+
+.jw-playlist-remove-animation {
+    @include animation(jw-playlist-remove-animation 1s forwards 0s);
+}
+
+.jw-playlist-add-animation {
+    @include animation(jw-playlist-add-animation 0.4s forwards 0s);
+}
+
+.jw-rotate-animation {
+    @include animation(jw-rotate-animation 2s linear infinite);
+}
+
+@include keyframes(jw-playlist-remove-animation) {
+    0% {
+        @include transform(translateX(0));
+        opacity: 1;
+    }
+
+    50% {
+        @include transform(translateX(-100%));
+        opacity: 0;
+    }
+
+    51% {
+        @include transform(translateY(10%));
+        opacity: 0;
+    }
+
+    100% {
+        @include transform(translateY(0));
+        opacity: 1;
+    }
+}
+
+@include keyframes(jw-playlist-add-animation) {
+    0% {
+        @include transform(scale(0));
+        opacity: 0;
+    }
+
+    75% {
+        @include transform(scale(1.4));
+    }
+
+    100% {
+        @include transform(scale(1));
+        opacity: 1;
+    }
+}
+
+@include keyframes(jw-rotate-animation) {
+    from {
+        @include transform(rotate(0deg));
+    }
+
+    to {
+        @include transform(rotate(360deg));
+    }
+}

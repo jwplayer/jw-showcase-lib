@@ -1,0 +1,53 @@
+//
+// jwVideoContainer
+// --------------------------------
+
+.jw-video-container {
+    position: relative;
+    width: 100vw;
+
+    background-color: $black;
+
+    &.is-loading {
+
+        .jw-video-loading {
+            display: block;
+        }
+
+        .jw-video-container-player {
+            opacity: 0;
+        }
+    }
+
+    .jw-video-container-aspect {
+        padding-top: 56.25%;
+    }
+
+    .jw-video-container-player {
+        @include single-transition(opacity, 0.2s, ease-out);
+        @include cover();
+    }
+
+    .jw-video-loading {
+        @include transform(translate(-50%, -50%));
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        color: $white;
+        font-size: rem(52px);
+    }
+}
+
+@include mobile-only-landscape () {
+
+    .jw-video-container .jw-container {
+        max-height: calc(100vh - #{$header-height-mobile});
+        overflow: hidden;
+
+        .jwplayer {
+            height: 100% !important;
+        }
+    }
+}

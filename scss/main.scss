@@ -1,0 +1,87 @@
+//
+// Import base first since it contains all variables and Compass dependencies
+// --------------------------------
+@import 'base';
+
+//
+// Import mixins
+// --------------------------------
+@import 'mixins/responsive';
+@import 'mixins/utils';
+
+//
+// Import components
+// --------------------------------
+@import 'components/jwAnimations';
+@import 'components/jwButtons';
+@import 'components/jwCard';
+@import 'components/jwCardGrid';
+@import 'components/jwCardMenu';
+@import 'components/jwCardPoster';
+@import 'components/jwCardSlider';
+@import 'components/jwCollapsibleText';
+@import 'components/jwCookies';
+@import 'components/jwCover';
+@import 'components/jwDialog';
+@import 'components/jwFooter';
+@import 'components/jwGrid';
+@import 'components/jwHeader';
+@import 'components/jwIcons';
+@import 'components/jwLoading';
+@import 'components/jwMenu';
+@import 'components/jwMeta';
+@import 'components/jwModal';
+@import 'components/jwPlayer';
+@import 'components/jwSearchBar';
+@import 'components/jwShare';
+@import 'components/jwText';
+@import 'components/jwVideoContainer';
+
+//
+// Import themes
+// --------------------------------
+@import 'themes/light';
+@import 'themes/dark';
+
+//
+// Import skins
+// --------------------------------
+@import 'skins/jwShowcase';
+
+html,
+body {
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    @include user-select(none);
+
+    min-width: 320px;
+    margin: 0 0 20px;
+    padding: 0;
+
+    color: $text-color-base;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+
+    -webkit-font-smoothing: antialiased;
+
+    overflow: hidden;
+
+    img {
+        border: 0;
+    }
+
+    * {
+        @include box-sizing(border-box);
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .featured .jw-row:not(:last-child):not(:first-child) {
+        margin-bottom: 8px;
+    }
+}

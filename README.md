@@ -4,8 +4,7 @@ JW Showcase is an open-source, dynamically generated video platform built around
 
 ## Instructions for Using JW Showcase
 
-- [JW Showcase for web](http://www.github.com/jwplayer/jw-showcase)
-- [JW Showcase app](http://www.github.com/jwplayer/jw-showcase-app)
+Please read the instructions at the [JW Showcase](http://www.github.com/jwplayer/jw-showcase) repository.
 
 ## Support and Bug Reporting 
 

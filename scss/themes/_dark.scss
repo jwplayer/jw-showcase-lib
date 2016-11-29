@@ -1,0 +1,54 @@
+
+.jw-theme-dark {
+
+    .pane,
+    .view {
+        background-color: $theme-dark-bg-color;
+
+        &.jw-video-view {
+            background: none;
+
+            .scroll-content {
+                background-color: $theme-dark-bg-color;
+            }
+
+            &[nav-view='entering'] {
+                background-color: $black;
+            }
+        }
+    }
+
+    .jw-card .jw-card-title {
+        color: $white;
+    }
+
+    .jw-card-slider.jw-card-slider-flag-default {
+        border-bottom: 1px solid darken($dark-color, 5%);
+    }
+
+    .jw-card-slider .jw-card-slider-button {
+        color: $white;
+    }
+
+    .jw-card-slider-title .jw-link,
+    .jw-card-slider-title > div,
+    .jw-card-grid-title {
+        color: $white;
+    }
+
+    .jw-card.jw-card-flag-default {
+
+        .jw-card-info {
+            background-color: $black;
+        }
+
+        .jw-card-title,
+        .jw-card-description {
+            color: $white;
+        }
+    }
+
+    .jw-footer {
+        color: $white;
+    }
+}

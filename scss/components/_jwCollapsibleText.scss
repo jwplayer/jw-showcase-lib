@@ -1,0 +1,38 @@
+//
+// jwCollapsibleText
+// --------------------------------
+
+.jw-collapsible-text {
+
+    &.expanded {
+
+        .jw-collapsible-text-toggle .jw-button {
+            @include transform(rotate(180deg));
+        }
+    }
+
+    &.inactive {
+        .jw-collapsible-text-toggle {
+            display: none;
+        }
+    }
+
+    .jw-collapsible-text-content {
+        @include transition(max-height 0.3s ease 0s);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .jw-collapsible-text-toggle {
+        text-align: center;
+
+        .jw-button {
+            @include transition(transform 0.3s ease 0s);
+
+            .jwy-icon {
+                font-size: rem(24px);
+            }
+        }
+    }
+}

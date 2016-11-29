@@ -1,0 +1,26 @@
+<div class="jw-card-menu">
+  <div class="jw-card-menu-container">
+    <div class="jw-card-menu-item" ng-switch="vm.inWatchlist">
+      <div ng-switch-when="false">
+        <jw-button class="jw-button-primary" ng-click="vm.saveButtonClickHandler()">
+          <strong><span>Save</span><span class="is-hidden-mobile"> this video</span></strong>
+        </jw-button>
+      </div>
+      <div ng-switch-when="true">
+        <jw-button class="jw-button-primary" ng-click="vm.unsaveButtonClickHandler()">
+          <strong><span>Unsave</span><span class="is-hidden-mobile"> this video</span></strong>
+        </jw-button>
+      </div>
+    </div>
+    <div class="jw-card-menu-item" ng-if="vm.inWatchProgress && vm.item.feedid === 'continue-watching'">
+      <jw-button class="jw-button-main" ng-click="vm.removeButtonClickHandler()">
+        <strong><span>Remove</span><span class="is-hidden-mobile"> this video</span></strong>
+      </jw-button>
+    </div>
+    <div class="jw-card-menu-item">
+      <jw-button class="jw-button-light" ng-click="vm.closeButtonClickHandler()">
+        Cancel
+      </jw-button>
+    </div>
+  </div>
+</div>

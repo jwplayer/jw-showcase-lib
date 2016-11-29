@@ -1,0 +1,352 @@
+//
+// jwCard
+// --------------------------------
+
+.jw-card {
+    position: relative;
+
+    font-size: rem(15px);
+
+    &:not(.jw-card-flag-touch):not(.jw-card-flag-menu-open) {
+
+        &.jw-card-flag-active,
+        &:hover {
+            .jw-card-controls {
+                opacity: 1;
+            }
+        }
+    }
+
+    &.jw-card-flag-menu-open,
+    &.jw-card-flag-toast-open {
+        .jw-card-watchlist-button {
+            @include transform(scale(0));
+        }
+    }
+
+    &.jw-card-flag-now-playing {
+
+        .jw-card-container {
+            background-color: rgba($black, 0.8);
+        }
+
+        .jw-card-controls,
+        .jw-card-play-button {
+            opacity: 1;
+        }
+
+        .jw-card-text-now-playing {
+            display: block;
+        }
+    }
+
+    .jw-button-watchlist {
+        @include single-transition(transform, 0.2s, ease, 0s);
+        position: absolute;
+        top: -14px;
+        left: 2px;
+
+        &:hover {
+            @include transform(scale(1.2));
+        }
+
+        .jwy-icon {
+            font-size: rem(26px);
+        }
+    }
+
+    .jw-card-aspect {
+        position: relative;
+        padding-bottom: (9 / 16) * 100%;
+    }
+
+    .jw-card-container {
+        @include display-flex();
+        @include flex-direction(column);
+        @include cover();
+        @include single-transition(background, 0.2s, ease, 0s);
+        background: rgba($black, 0.1);
+        cursor: pointer;
+    }
+
+    .jw-card-controls {
+        @include display-flex();
+        @include flex(1 1 auto);
+        @include single-transition(opacity, 0.2s, ease, 0s);
+        position: relative;
+        opacity: 0;
+    }
+
+    .jw-card-controls-align {
+        @include flex(1 1 auto);
+        @include align-self(center);
+        text-align: center;
+    }
+
+    .jw-card-info {
+        @include flex(0 1 auto);
+        color: $white;
+    }
+
+    .jw-card-duration {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 5px;
+
+        font-size: rem(14px);
+    }
+
+    .jw-card-text {
+        color: $white;
+    }
+
+    .jw-card-text-now-playing {
+        display: none;
+    }
+
+    .jw-card-title {
+        padding: 0 10px;
+
+        font-weight: bold;
+        line-height: 39px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .jw-card-description {
+        padding: 0 10px;
+
+        font-size: rem(14px);
+        line-height: rem(16px);
+        overflow: hidden;
+    }
+
+    .jw-card-play-button {
+        @include single-transition(opacity, 0.05s, ease-out, 0s);
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .jw-card-menu-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 5px 0 10px;
+
+        font-size: rem(16px);
+        line-height: 40px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover .jwy-icon {
+            color: $primary-color;
+        }
+
+        .jwy-icon {
+            vertical-align: middle;
+        }
+    }
+
+    .jw-card-toast-container {
+        &.ng-enter,
+        &.ng-leave {
+            @include single-transition(opacity, 0.2s, ease);
+        }
+
+        &.ng-enter {
+            opacity: 0;
+        }
+
+        &.ng-enter.ng-enter-active {
+            opacity: 1;
+        }
+
+        &.ng-leave {
+            opacity: 1;
+        }
+
+        &.ng-leave.ng-leave-active {
+            opacity: 0;
+        }
+    }
+
+    .jw-card-toast {
+        @include cover();
+
+        &.jw-card-toast-primary {
+            background-color: $primary-color;
+            color: $white;
+        }
+
+        &.jw-card-toast-success {
+            background-color: $success-color;
+            color: $white;
+
+            .jwy-icon-stack .jwy-icon {
+                color: $success-color;
+            }
+        }
+
+        .jw-card-toast-container {
+            @include transform(translateY(-50%));
+
+            position: absolute;
+            top: 50%;
+            width: 100%;
+
+            font-size: rem(16px);
+            text-align: center;
+
+            .jw-card-toast-icon {
+                margin-bottom: 10px;
+                font-size: 3em;
+            }
+        }
+    }
+}
+
+//
+// jwCard-flag-default
+// --------------------------------
+
+.jw-card.jw-card-flag-default {
+    padding-bottom: 39px;
+
+    &:not(.jw-card-flag-touch):not(.jw-card-flag-compact):not(.jw-card-flag-now-playing) {
+
+        &.jw-card-flag-menu-open,
+        &:hover {
+
+            .jw-card-container {
+                background-color: rgba($black, 0.6);
+            }
+
+            .jw-card-info .jw-card-info-mask {
+                height: 100px;
+            }
+        }
+    }
+
+    .jw-card-info-mask {
+        @include transition(height 0.2s ease);
+        height: 39px;
+        overflow: hidden;
+    }
+
+    .jw-card-info {
+        position: relative;
+        flex-basis: 39px;
+    }
+
+    .jw-card-description {
+        display: block;
+        display: -webkit-box;
+        max-height: 3 * 16px;
+
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .jw-card-watch-progress {
+        position: absolute;
+        top: -4px;
+        left: 0;
+        width: 0;
+        height: 4px;
+
+        background: $primary-color;
+    }
+
+}
+
+//
+// jwCard-flag-featured
+// --------------------------------
+
+.jw-card.jw-card-flag-featured {
+    font-size: 32px;
+
+    .jw-card-duration {
+        display: none;
+    }
+
+    .jw-card-info {
+        padding-bottom: 10px;
+    }
+
+    .jw-card-title {
+        padding: 0 50px 20px;
+        line-height: 24px;
+    }
+
+    .jw-card-description {
+        display: block;
+        display: -webkit-box;
+        max-height: 6 * 18px;
+        padding: 0 150px 0 50px;
+        line-height: 18px;
+
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+    }
+
+    .jw-card-controls-align {
+        margin-top: 4%;
+    }
+
+    .jw-card-container {
+        background-color: rgba($black, 0.35);
+    }
+
+    .jw-button-watchlist {
+        display: none;
+    }
+}
+
+//
+// mediaQueries
+// --------------------------------
+
+@include mobile-only () {
+
+    .jw-card.jw-card-flag-featured .jw-card-title {
+        margin-bottom: 10px;
+        padding: 0 20px;
+    }
+
+    .jw-card.jw-card-flag-featured .jw-card-description {
+        max-height: 2 * 18px;
+        padding: 0 20px;
+
+        -webkit-line-clamp: 2;
+    }
+}
+
+@include mobile-and-tablet () {
+
+    .jw-card.jw-card-flag-featured {
+        font-size: 21px;
+    }
+}
+
+@include tablet-only () {
+
+    .jw-card.jw-card-flag-featured {
+
+        .jw-card-title {
+            padding: 0 30px 10px;
+        }
+
+        .jw-card-description {
+            max-height: 3 * 18px;
+            padding: 0 30px;
+
+            -webkit-line-clamp: 3;
+        }
+    }
+}

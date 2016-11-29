@@ -1,0 +1,54 @@
+<ion-popover-view class="jw-menu-popover">
+  <jw-header class="jw-header-static jw-header-full">
+    <div class="jw-header-nav">
+      <jw-header-menu-button icon="jwy-icon-cross"></jw-header-menu-button>
+    </div>
+    <div class="jw-header-nav"></div>
+  </jw-header>
+  <ion-content class="has-header">
+
+    <div class="jw-menu-list">
+
+      <jw-button ui-sref="root.dashboard()" ui-sref-active="active" ng-click="vm.menu.hide()">
+        <span class="jw-button-label">Homepage</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})"  ui-sref-active="active" ng-click="vm.menu.hide()"
+          ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
+        <span class="jw-button-label">Saved videos ({{ vm.watchlist.playlist.length }})</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active" ng-click="vm.menu.hide()"
+          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
+        <span class="jw-button-label">Continue watching ({{ vm.watchProgress.playlist.length }})</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+
+      <div class="divider"></div>
+
+      <jw-button ng-repeat="feed in vm.feeds" ui-sref="root.feed({feedId: feed.feedid})" ui-sref-active="active">
+        <span class="jw-button-label">{{ feed.title }}</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+
+      <div class="divider"></div>
+
+      <jw-button ng-click="vm.clearWatchlist()" ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
+        Clear Saved videos
+      </jw-button>
+      <jw-button ng-click="vm.clearWatchProgress()"
+          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
+        Clear Continue watching
+      </jw-button>
+
+      <div class="divider"></div>
+
+      <ion-toggle toggle-class="toggle-light" ng-model="vm.userSettings.conserveBandwidth">
+        Reduce data usage
+      </ion-toggle>
+      <ion-toggle toggle-class="toggle-light" ng-model="vm.userSettings.watchProgress">
+        <span class="is-hidden-mobile">Enable </span>Continue watching
+      </ion-toggle>
+    </div>
+  </ion-content>
+</ion-popover-view>

@@ -1,0 +1,270 @@
+//
+// jwHeader
+// --------------------------------
+
+.jw-header {
+    position: fixed;
+    width: 100vw;
+    height: $header-height;
+    padding: $header-padding;
+
+    background-color: $header-bg-color;
+    z-index: 9;
+
+    //
+    // Make header static
+    //
+    &-static {
+        position: static;
+        width: 100%;
+
+        .jw-header-main .jw-header-title {
+            white-space: normal;
+            overflow: visible;
+        }
+    }
+
+    //
+    // Header container
+    //
+    .jw-header-container {
+        @include display-flex();
+        @include flex-direction(row);
+        position: relative;
+        height: 100%;
+    }
+
+    //
+    // Header navigation
+    //
+    .jw-header-nav {
+        @include flex(0 0 $header-nav-width);
+        @include align-self(center);
+        min-width: $header-nav-width;
+
+        &:last-child {
+            text-align: right;
+        }
+
+        &.jw-border-buttons > .jw-button {
+            border-left: 1px solid lighten($subheader-bg-color, 5%);
+
+            &:last-child {
+                border-right: 1px solid lighten($subheader-bg-color, 5%);
+            }
+        }
+    }
+
+    //
+    // Header main content
+    //
+    .jw-header-main {
+        @include flex(1 1 auto);
+        @include align-self(center);
+        text-align: center;
+
+        .jw-header-logo {
+            max-width: 100%;
+            max-height: $header-height - 20px;
+
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .jw-header-title {
+            line-height: 1em;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+
+            &.left {
+                text-align: left;
+            }
+        }
+    }
+
+    .jw-button {
+        color: $main-color;
+        vertical-align: middle;
+
+        &:hover {
+            color: $primary-color;
+        }
+
+        &.jw-button-menu .jwy-icon {
+            -webkit-font-smoothing: none;
+        }
+
+        .jw-button-label {
+            padding: 0 3px;
+            font-size: rem(14px);
+        }
+
+        > .jwy-icon {
+            font-size: rem(24px);
+        }
+    }
+
+    .jwy-icon.jwy-icon-search {
+        font-size: rem(20px);
+    }
+}
+
+//
+// Subheader
+//
+.jw-header.jw-subheader {
+    top: $header-height;
+    height: $subheader-height;
+    min-height: $subheader-height;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    background-color: $subheader-bg-color;
+
+    //
+    // Static subheader
+    //
+    &.jw-header-static {
+        height: auto;
+    }
+
+    //
+    // Video page header
+    //
+    &.jw-header-video {
+        .jw-header-nav {
+            @include flex(1 0 $header-nav-width);
+        }
+    }
+
+    .jw-header-nav {
+        @include flex(0 0 $subheader-nav-width);
+        min-width: $subheader-nav-width;
+        white-space: nowrap;
+    }
+
+    .jw-button {
+        height: $subheader-height;
+        color: $white;
+        line-height: 25px;
+
+        &:hover {
+            color: $primary-color;
+        }
+    }
+
+    .jw-header-title {
+        padding: 5px 0;
+
+        color: $white;
+        font-size: rem(22px);
+        font-weight: bold;
+    }
+}
+
+.platform-ios.platform-cordova .jw-header {
+    top: $ios-statusbar-height;
+
+    &.jw-subheader {
+        top: $header-height + $ios-statusbar-height;
+    }
+}
+
+//
+// mediaQueries
+// --------------------------------
+
+@include mobile-only () {
+
+    .jw-header {
+        height: $header-height-mobile;
+
+        &-video {
+            padding-right: 0;
+
+            .jw-header-nav:first-child .jw-button {
+                margin: 0;
+            }
+
+            .jw-header-nav:last-child {
+                padding-right: 0;
+            }
+        }
+
+        .jw-header-main .jw-header-logo {
+            max-height: $header-height-mobile - 20px;
+        }
+
+        .jw-header-nav {
+            @include flex(0 0 $subheader-nav-width);
+            min-width: $subheader-nav-width;
+        }
+
+        .jw-header-nav .jw-button-label {
+            display: none;
+        }
+    }
+
+    .jw-header.jw-subheader {
+        top: $header-height-mobile + $ios-statusbar-height;
+    }
+
+    .platform-ios.platform-cordova .jw-header {
+        top: $ios-statusbar-height;
+
+        &.jw-subheader {
+            top: $header-height-mobile + $ios-statusbar-height;
+        }
+    }
+
+    //
+    // Mobile screen size uses a different header height so the scroll content needs to be changed also
+    //
+    .platform-ios.platform-cordova:not(.fullscreen) .scroll-content,
+    .scroll-content {
+        &.has-header {
+            top: $header-height-mobile;
+        }
+
+        &.has-subheader {
+            top: $header-height-mobile + $subheader-height;
+        }
+    }
+}
+
+@include tablet-only () {
+
+    .jw-header {
+
+        &-video {
+            padding: 0 90px;
+        }
+
+        &:not(&-full) .jw-header-container {
+            max-width: $container-width-tablet;
+            margin: 0 auto;
+        }
+    }
+}
+
+@include tablet-and-larger () {
+
+    .jw-header {
+
+        &-video .jw-header-nav:first-child .jw-button {
+            margin-left: -$header-padding;
+        }
+    }
+}
+
+@include desktop-only () {
+
+    .jw-header {
+
+        &:not(&-full) .jw-header-container {
+            max-width: $container-width-desktop;
+            margin: 0 auto;
+        }
+    }
+}
