@@ -38,7 +38,6 @@
      * @param {jwShowcase.core.feed}       feed            Feed with playlist to render jwCards.
      * @param {boolean|string=}     header          Text which will be displayed in the title or false if no title
      *                                              should be displayed.
-     * @param {number=}             spacing         Spacing between cards.
      * @param {Object|number=}      cols            How many columns should be visible. Can either be a fixed number or
      *                                              an object with responsive columns (e.g. `{sm: 2, md: 4}`).
      *                                              Available sizes; xs, sm, md, lg and xl.
@@ -49,7 +48,7 @@
      * @example
      *
      * ```
-     * <jw-card-grid feed="vm.feed" spacing="12" cols="{xs: 1, sm: 3}" heading="vm.feed.title"></jw-card-grid>
+     * <jw-card-grid feed="vm.feed" cols="{xs: 1, sm: 3}" heading="vm.feed.title"></jw-card-grid>
      * ```
      */
     jwCardGrid.$inject = ['$timeout', 'utils'];
@@ -64,7 +63,6 @@
             replace:          true,
             scope:            {
                 cols:        '=',
-                spacing:     '=',
                 heading:     '=',
                 feed:        '=',
                 onCardClick: '='
@@ -73,7 +71,7 @@
 
         function link (scope, element) {
 
-            var cols            = 1,
+            var cols            = 0,
                 debouncedResize = utils.debounce(resize, 200);
 
             activate();
@@ -115,4 +113,5 @@
             }
         }
     }
+
 }());
