@@ -143,6 +143,11 @@
                 vm.title = vm.title.substr(0, 100) + '...';
             }
 
+            // reset slider to first index
+            if (vm.feedCardSliderDelegate) {
+                vm.feedCardSliderDelegate.slideToIndex(0);
+            }
+
             // load recommendations at this stage to prevent load time to the video page
             apiConsumer
                 .getRecommendationsFeed(item.mediaid)
@@ -156,6 +161,11 @@
                     }
 
                     vm.recommendationsFeed = response;
+
+                    // reset slider to first slide
+                    if (vm.recommendationsCardSliderDelegate) {
+                        vm.recommendationsCardSliderDelegate.slideToIndex(0);
+                    }
                 });
         }
 
