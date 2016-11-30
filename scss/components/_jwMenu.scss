@@ -42,7 +42,7 @@
 
         .jw-button {
             width: 100%;
-            padding: 0.3rem 10px;
+            padding: 0.1rem 10px;
 
             color: $main-color;
             font-weight: bold;
@@ -72,14 +72,14 @@
         }
 
         .divider {
-            height: 20px;
+            height: 30px;
         }
     }
 
     .item-toggle {
 
-        padding-top: 7px;
-        padding-bottom: 7px;
+        padding-top: 5px;
+        padding-bottom: 5px;
 
         span {
             color: $main-color;
@@ -94,6 +94,7 @@
         .handle {
             top: 7px;
             border: 1px solid $disabled-color;
+            box-shadow: 0 0 5px rgba($black, 0.35)
         }
 
         input:checked + .track .handle {
