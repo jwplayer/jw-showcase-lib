@@ -121,7 +121,7 @@
 
                         if (index > 0) {
                             index = 0;
-                            update(false);
+                            update(true);
                         }
 
                     }, 25);
