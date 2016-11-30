@@ -42,6 +42,7 @@
      *
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
+     * @param {object=}                 delegate        Exposes a small api to control the cardSlider.
      *
      * @requires $timeout
      * @requires jwShowcase.core.utils
@@ -62,7 +63,8 @@
                 feed:        '=',
                 cols:        '=',
                 featured:    '=',
-                onCardClick: '='
+                onCardClick: '=',
+                delegate:    '=?'
             },
             replace:          true,
             controller:       angular.noop,
@@ -87,6 +89,12 @@
             scope.vm.slideLeft    = slideLeft;
             scope.vm.slideRight   = slideRight;
             scope.vm.slideToIndex = slideToIndex;
+
+            scope.vm.delegate = {
+                slideLeft:    slideLeft,
+                slideRight:   slideRight,
+                slideToIndex: slideToIndex
+            };
 
             activate();
 
@@ -119,9 +127,9 @@
                         resize();
                         updateSlides();
 
-                        if (index > 0) {
-                            index = 0;
-                            update(false);
+                        if (index >= scope.vm.feed.playlist.length) {
+                            index = Math.max(0, scope.vm.feed.playlist.length - 1);
+                            update(true);
                         }
 
                     }, 25);
@@ -136,6 +144,17 @@
             function destroy () {
 
                 window.removeEventListener('resize', resizeDebounced);
+            }
+
+            /**
+             * Slide to index
+             *
+             * @param {number} toIndex
+             */
+            function slideToIndex (toIndex) {
+
+                index = Math.min(scope.vm.feed.playlist.length - 1, Math.max(0, toIndex));
+                update(true);
             }
 
             /**

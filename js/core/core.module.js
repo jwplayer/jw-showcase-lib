@@ -25,7 +25,7 @@
      */
     angular
         .module('jwShowcase.core', [])
-        .value('JW_PLATFORM_URL', 'https://content.jwplatform.com')
+        .constant('DEFAULT_CONTENT_URL', 'https://content.jwplatform.com')
         .config(config)
         .run(run);
 
@@ -75,11 +75,12 @@
          * @param {jwShowcase.core.apiConsumer} apiConsumer
          * @param {jwShowcase.core.watchlist} watchlist
          * @param {jwShowcase.core.userSettings} userSettings
+         * @param {DEFAULT_CONTENT_URL} DEFAULT_CONTENT_URL
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings'];
-        function preloadApp ($q, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings) {
+        preloadApp.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_URL'];
+        function preloadApp ($q, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_URL) {
 
             var defer = $q.defer();
 
@@ -98,6 +99,10 @@
                     angular.forEach(resolvedConfig, function (value, key) {
                         config[key] = value;
                     });
+
+                    if (!angular.isString(config.contentUrl)) {
+                        config.contentUrl = DEFAULT_CONTENT_URL;
+                    }
 
                     if (angular.isString(config.backgroundColor) && '' !== config.backgroundColor) {
                         document.body.style.backgroundColor = config.backgroundColor;

@@ -26,6 +26,7 @@
      *
      * @requires $scope
      * @requires $state
+     * @requires $timeout
      * @requires $ionicHistory
      * @requires $ionicScrollDelegate
      * @requires jwShowcase.core.apiConsumer
@@ -37,22 +38,23 @@
      * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
      */
-    VideoController.$inject = ['$scope', '$state', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
+    VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
         'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'feed', 'item'];
-    function VideoController ($scope, $state, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer, dataStore,
-                              watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
+    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
+                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
 
         var vm                   = this,
-            isMobile             = ionic.Platform.isAndroid() || ionic.Platform.isIOS() || ionic.Platform.isWindowsPhone(),
             lastPos              = 0,
             resumed              = false,
             started              = false,
             requestQualityChange = false,
             itemFeed             = feed,
+            isMobile             = ionic.Platform.isIOS() || ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone(),
             playerPlaylist       = [],
             playerLevels,
             initialLevel,
-            watchProgressItem;
+            watchProgressItem,
+            loadingTimeout;
 
         vm.item                = item;
         vm.feed                = itemFeed;
@@ -95,6 +97,7 @@
                 autostart:      $state.params.autoStart || isMobile,
                 playlist:       playerPlaylist,
                 related:        false,
+                preload:        'metadata',
                 sharing:        false,
                 visualplaylist: false
             };
@@ -114,6 +117,10 @@
                     vm.inWatchList = val;
                 }
             });
+
+            loadingTimeout = $timeout(function () {
+                vm.loading = false;
+            }, 4000);
 
             update();
         }
@@ -137,6 +144,11 @@
                 vm.title = vm.title.substr(0, 100) + '...';
             }
 
+            // reset slider to first index
+            if (vm.feedCardSliderDelegate) {
+                vm.feedCardSliderDelegate.slideToIndex(0);
+            }
+
             // load recommendations at this stage to prevent load time to the video page
             apiConsumer
                 .getRecommendationsFeed(item.mediaid)
@@ -150,6 +162,11 @@
                     }
 
                     vm.recommendationsFeed = response;
+
+                    // reset slider to first slide
+                    if (vm.recommendationsCardSliderDelegate) {
+                        vm.recommendationsCardSliderDelegate.slideToIndex(0);
+                    }
                 });
         }
 
@@ -164,7 +181,7 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                playlist;
+                playlist, sources;
 
             playlist = feed.playlist
                 .slice(playlistIndex)
@@ -172,12 +189,16 @@
 
             return playlist.map(function (current) {
 
+                sources = current.sources.filter(function (source) {
+                    return 'application/dash+xml' !== source.type
+                });
+
                 return {
                     mediaid:     current.mediaid,
                     title:       current.title,
                     description: current.description,
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     current.sources,
+                    sources:     sources,
                     tracks:      current.tracks
                 };
             });
@@ -214,11 +235,15 @@
          */
         function onReady (event) {
 
-            vm.loading = false;
-
             if (angular.isFunction(this.getContainer)) {
                 this.getContainer().focus();
             }
+
+            if (!vm.playerSettings.autostart) {
+                vm.loading = false;
+            }
+
+            $timeout.cancel(loadingTimeout);
         }
 
         /**
@@ -229,6 +254,7 @@
         function onError (event) {
 
             vm.loading = false;
+            $timeout.cancel(loadingTimeout);
         }
 
         /**
@@ -237,8 +263,6 @@
          * @param {Object} event
          */
         function onSetupError (event) {
-
-            vm.loading = false;
 
             $ionicPopup.show({
                 cssClass: 'jw-dialog',
@@ -262,6 +286,9 @@
                     $state.reload();
                 }
             });
+
+            vm.loading = false;
+            $timeout.cancel(loadingTimeout);
         }
 
         /**
@@ -318,6 +345,10 @@
         function onFirstFrame () {
 
             var levelsLength = playerLevels.length;
+
+            if (vm.loading) {
+                vm.loading = false;
+            }
 
             started = true;
 
@@ -494,7 +525,7 @@
 
                 player.load(playerPlaylist);
 
-                if (clickedOnPlay) {
+                if (clickedOnPlay || window.cordova) {
                     player.play(true);
                 }
             }
@@ -520,7 +551,7 @@
         }
 
         /**
-         * @param mediaId
+         * @param {string} mediaId
          * @returns {Function}
          */
         function byMediaId (mediaId) {

@@ -115,7 +115,8 @@
         }
 
         /**
-         * Find duration in item sources and return it in seconds or minutes format.
+         * Find duration in item sources and return it in seconds or minutes format. If the duration is 0 the string
+         * 'LIVE' will be returned.
          *
          * @param {jwShowcase.core.item} item Playlist item
          * @returns {string} The found duration with sec or min suffix.
@@ -139,6 +140,10 @@
                 if (source && source.duration) {
                     duration = source.duration;
                 }
+            }
+
+            if (duration === 0) {
+                return 'LIVE';
             }
 
             if (duration < 60) {
