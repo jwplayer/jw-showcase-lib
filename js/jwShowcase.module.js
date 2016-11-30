@@ -28,7 +28,7 @@
             'jwShowcase.search',
             'jwShowcase.video'
         ])
-        .constant('LIB_VERSION', '3.0.0-beta');
+        .constant('LIB_VERSION', '3.0.0-rc.1');
 
     // make search depth defaulting to 20 instead of 10
     ionic.DomUtil.$getParentOrSelfWithClass = ionic.DomUtil.getParentOrSelfWithClass;
