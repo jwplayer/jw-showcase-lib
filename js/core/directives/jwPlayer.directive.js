@@ -97,10 +97,24 @@
              */
             function initialize () {
 
+                var defaults = {
+                    controls: true
+                };
+
+                if (window.cordova) {
+                    defaults.autostart = false;
+                }
+
                 playerInstance = jwplayer(playerId)
-                    .setup(angular.extend({}, scope.settings));
+                    .setup(angular.extend(defaults, scope.settings));
 
                 bindPlayerEventListeners();
+
+                if (window.cordova && scope.settings.autostart) {
+                    playerInstance.once('ready', function () {
+                        this.play(true);
+                    });
+                }
 
                 player.setPlayer(playerInstance);
             }
