@@ -71,6 +71,7 @@
         vm.onReady        = onReady;
         vm.onError        = onError;
         vm.onSetupError   = onSetupError;
+        vm.onAdImpression = onAdImpression;
 
         vm.cardClickHandler      = cardClickHandler;
         vm.shareClickHandler     = shareClickHandler;
@@ -119,7 +120,7 @@
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
-            }, 4000);
+            }, 2000);
 
             update();
         }
@@ -240,9 +241,8 @@
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;
+                $timeout.cancel(loadingTimeout);
             }
-
-            $timeout.cancel(loadingTimeout);
         }
 
         /**
@@ -414,6 +414,17 @@
             lastPos = position;
 
             handleWatchProgress(position, event.duration);
+        }
+
+        /**
+         * Handle time event
+         *
+         * @param event
+         */
+        function onAdImpression (event) {
+
+            vm.loading = false;
+            $timeout.cancel(loadingTimeout);
         }
 
         /**

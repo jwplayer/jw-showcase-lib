@@ -17,7 +17,7 @@
 (function () {
 
     var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'setupError', 'playlistItem', 'time',
-        'firstFrame', 'levels'];
+        'firstFrame', 'levels', 'adImpression'];
 
     angular
         .module('jwShowcase.core')
