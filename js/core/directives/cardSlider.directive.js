@@ -230,9 +230,6 @@
                 updateIndicator();
                 updateSlides();
 
-                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
-                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
-
                 moveSlider(translateX, animate);
             }
 
@@ -243,6 +240,9 @@
 
                 var children = Array.prototype.slice.call($('.jw-card-slider-list').children),
                     slides;
+
+                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
+                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
 
                 slides = children.filter(function (slide) {
                     return !slide.classList.contains('ng-leave');
