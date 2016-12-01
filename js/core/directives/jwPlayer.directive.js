@@ -97,16 +97,17 @@
              */
             function initialize () {
 
-                var defaults = {
+                var settings = angular.extend({
                     controls: true
-                };
+                }, scope.settings);
 
+                // override autostart
                 if (window.cordova) {
-                    defaults.autostart = false;
+                    settings.autostart = false;
                 }
 
                 playerInstance = jwplayer(playerId)
-                    .setup(angular.extend(defaults, scope.settings));
+                    .setup(settings);
 
                 bindPlayerEventListeners();
 

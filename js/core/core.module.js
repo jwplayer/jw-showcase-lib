@@ -32,6 +32,8 @@
     config.$inject = ['$stateProvider', 'seoProvider', '$ionicConfigProvider'];
     function config ($stateProvider, seoProvider, $ionicConfigProvider) {
 
+        ionic.Platform.isMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone();
+
         $stateProvider
             .state('root', {
                 abstract:    true,

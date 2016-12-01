@@ -70,7 +70,7 @@
             $state.go('root.video', {
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
-                autoStart: clickedOnPlay
+                autoStart: clickedOnPlay || ionic.Platform.isMobile
             });
         }
     }
