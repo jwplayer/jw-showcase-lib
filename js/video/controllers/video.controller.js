@@ -106,6 +106,12 @@
                 vm.playerSettings.skin = 'jw-showcase';
             }
 
+            if (!!window.cordova) {
+                vm.playerSettings.analytics = {
+                    sdkplatform:    ionic.Platform.isAndroid() ? 1 : 2
+                };
+            }
+
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
