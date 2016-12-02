@@ -14,7 +14,7 @@
     </div>
 
     <div class="watchProgress jw-expand-animation"
-        ng-if="vm.dataStore.watchProgressFeed.playlist.length > 0 && vm.userSettings.settings.watchProgress">
+        ng-if="vm.showWatchProgressFeed()">
       <jw-card-slider feed="vm.dataStore.watchProgressFeed" featured="false" heading="'Continue watching'"
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"
           class="jw-card-slider-animate"></jw-card-slider>

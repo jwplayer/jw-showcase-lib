@@ -37,11 +37,12 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
+     * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'feed', 'item'];
+        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
+                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, config, feed, item) {
 
         var vm                   = this,
             lastPos              = 0,
@@ -399,7 +400,7 @@
             }
 
             // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress) {
+            if (false === userSettings.settings.watchProgress || false === config.enableContinueWatching) {
                 return;
             }
 

@@ -70,7 +70,7 @@
          *
          * @param {$q} $q
          * @param {jwShowcase.core.appStore} appStore
-         * @param {jwShowcase.core.config} config
+         * @param {jwShowcase.config} config
          * @param {jwShowcase.core.configResolver} configResolver
          * @param {jwShowcase.core.cookies} cookies
          * @param {jwShowcase.core.api} api

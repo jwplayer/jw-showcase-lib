@@ -27,7 +27,7 @@
      *
      * @requires $http
      * @requires $q
-     * @requires config
+     * @requires jwShowcase.config
      */
     apiService.$inject = ['$http', '$q', 'config'];
     function apiService ($http, $q, config) {
