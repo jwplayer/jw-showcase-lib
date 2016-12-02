@@ -25,7 +25,7 @@
      * @name jwShowcase.core.apiConsumer
      *
      * @requires $q
-     * @required config
+     * @requires jwShowcase.config
      * @required jwShowcase.core.api
      * @required jwShowcase.core.dataStore
      */

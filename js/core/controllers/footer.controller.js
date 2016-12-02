@@ -24,7 +24,7 @@
      * @ngdoc controller
      * @name jwShowcase.core.FooterController
      *
-     * @requires config
+     * @requires jwShowcase.config
      */
     FooterController.$inject = ['config'];
     function FooterController (config) {
