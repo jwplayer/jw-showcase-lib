@@ -13,13 +13,13 @@
         <span class="jw-button-label">Homepage</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})"  ui-sref-active="active" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ui-sref-active="active" ng-click="vm.menu.hide()"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         <span class="jw-button-label">Saved videos ({{ vm.watchlist.playlist.length }})</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
       <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active" ng-click="vm.menu.hide()"
-          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
+          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}" ng-if="::vm.config.enableContinueWatching">
         <span class="jw-button-label">Continue watching ({{ vm.watchProgress.playlist.length }})</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
@@ -36,7 +36,7 @@
       <jw-button ng-click="vm.clearWatchlist()" ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         Clear Saved videos
       </jw-button>
-      <jw-button ng-click="vm.clearWatchProgress()"
+      <jw-button ng-click="vm.clearWatchProgress()" ng-if="::vm.config.enableContinueWatching"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
         Clear Continue watching
       </jw-button>
@@ -46,7 +46,8 @@
       <ion-toggle toggle-class="toggle-light" ng-model="vm.userSettings.conserveBandwidth">
         Reduce data usage
       </ion-toggle>
-      <ion-toggle toggle-class="toggle-light" ng-model="vm.userSettings.watchProgress">
+      <ion-toggle toggle-class="toggle-light" ng-model="vm.userSettings.watchProgress"
+          ng-if="::vm.config.enableContinueWatching">
         <span class="is-hidden-mobile">Enable </span>Continue watching
       </ion-toggle>
     </div>
