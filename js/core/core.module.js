@@ -69,6 +69,8 @@
          * Preload application data
          *
          * @param {$q} $q
+         * @param {$sce} $sce
+         * @param {$state} $state
          * @param {jwShowcase.core.appStore} appStore
          * @param {jwShowcase.config} config
          * @param {jwShowcase.core.configResolver} configResolver
@@ -81,8 +83,8 @@
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
-        function preloadApp ($q, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
+        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
+        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
 
             var defer = $q.defer();
 
@@ -99,7 +101,13 @@
 
                     // apply config
                     angular.forEach(resolvedConfig, function (value, key) {
-                        config[key] = value;
+
+                        if (key === 'bannerImage') {
+                            config[key] = $sce.trustAsResourceUrl(value);
+                        }
+                        else {
+                            config[key] = value;
+                        }
                     });
 
                     if (!angular.isString(config.contentService)) {
