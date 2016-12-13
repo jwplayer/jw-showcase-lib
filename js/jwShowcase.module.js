@@ -28,7 +28,28 @@
             'jwShowcase.search',
             'jwShowcase.video'
         ])
-        .constant('LIB_VERSION', '3.0.0-rc.1');
+        .value('config', {
+            enableContinueWatching: true
+        })
+        .constant('LIB_VERSION', '3.0.0-rc.2');
+
+    /**
+     * @name jwShowcase.config
+     * @type Object
+     *
+     * @property {string}      player
+     * @property {string}      theme
+     * @property {string}      siteName
+     * @property {string}      description
+     * @property {string}      bannerImage
+     * @property {string}      footerText
+     * @property {string}      backgroundColor
+     * @property {boolean}     enableContinueWatching
+     * @property {string}      searchPlaylist
+     * @property {string}      recommendationsPlaylist
+     * @property {string}      featuredPlaylist
+     * @property {String[]}    playlist
+     */
 
     // make search depth defaulting to 20 instead of 10
     ionic.DomUtil.$getParentOrSelfWithClass = ionic.DomUtil.getParentOrSelfWithClass;

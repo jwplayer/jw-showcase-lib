@@ -29,7 +29,7 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.appStore
      * @requires jwShowcase.core.seo
-     * @requires config
+     * @requires jwShowcase.config
      */
     RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'config'];
     function RootController ($scope, $timeout, dataStore, appStore, seo, config) {

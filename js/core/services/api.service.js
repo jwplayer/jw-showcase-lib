@@ -27,7 +27,7 @@
      *
      * @requires $http
      * @requires $q
-     * @requires config
+     * @requires jwShowcase.config
      */
     apiService.$inject = ['$http', '$q', 'config'];
     function apiService ($http, $q, config) {
@@ -51,7 +51,7 @@
                 return $q.reject(new Error('feedId is not given or not a string'));
             }
 
-            return getFeed(config.contentUrl + '/feeds/' + feedId + '.json');
+            return getFeed(config.contentService + '/feeds/' + feedId + '.json');
         };
 
         /**
@@ -79,7 +79,7 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return getFeed(config.contentUrl + '/feed.json?feed_id=' + searchPlaylist + '&search=' + encodeURIComponent(phrase));
+            return getFeed(config.contentService + '/feed.json?feed_id=' + searchPlaylist + '&search=' + encodeURIComponent(phrase));
         };
 
         /**
@@ -107,7 +107,7 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return getFeed(config.contentUrl + '/feed.json?feed_id=' + recommendationsPlaylist + '&related_media_id=' + mediaId)
+            return getFeed(config.contentService + '/feed.json?feed_id=' + recommendationsPlaylist + '&related_media_id=' + mediaId)
         };
 
         /**
@@ -137,7 +137,7 @@
                 defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
             };
 
-            script.src = config.contentUrl + '/libraries/' + playerId + '.js';
+            script.src = config.contentService + '/libraries/' + playerId + '.js';
             document.head.appendChild(script);
 
             return defer.promise;

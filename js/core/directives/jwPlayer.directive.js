@@ -17,7 +17,7 @@
 (function () {
 
     var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'setupError', 'playlistItem', 'time',
-        'firstFrame', 'levels'];
+        'firstFrame', 'levels', 'adImpression'];
 
     angular
         .module('jwShowcase.core')
@@ -97,22 +97,26 @@
              */
             function initialize () {
 
-                var defaults = {
+                var settings = angular.extend({
                     controls: true
-                };
+                }, scope.settings);
 
+                // override autostart
                 if (window.cordova) {
-                    defaults.autostart = false;
+                    settings.autostart = false;
                 }
 
                 playerInstance = jwplayer(playerId)
-                    .setup(angular.extend(defaults, scope.settings));
+                    .setup(settings);
 
                 bindPlayerEventListeners();
 
                 if (window.cordova && scope.settings.autostart) {
-                    playerInstance.once('ready', function () {
-                        this.play(true);
+
+                    playerInstance.once('playlistItem', function () {
+                        setTimeout(function() {
+                            this.play(true);
+                        }.bind(this), 1);
                     });
                 }
 

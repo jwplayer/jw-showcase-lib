@@ -31,15 +31,17 @@
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.userSettings
+     * @requires jwShowcase.config
      */
-    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings'];
-    function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings) {
+    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings', 'config'];
+    function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
 
         vm.feeds     = [];
         vm.menu      = menu;
         vm.dataStore = dataStore;
+        vm.config    = config;
 
         vm.watchlist     = vm.dataStore.watchlistFeed;
         vm.watchProgress = vm.dataStore.watchProgressFeed;

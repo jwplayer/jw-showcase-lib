@@ -124,17 +124,25 @@
                 scope.$watch('vm.feed.playlist', function () {
 
                     $timeout(function () {
+
+                        var slideCount = scope.vm.feed.playlist.length;
+
                         resize();
                         updateSlides();
 
-                        if (index >= scope.vm.feed.playlist.length) {
-                            index = Math.max(0, scope.vm.feed.playlist.length - 1);
+                        if (index >= slideCount) {
+                            index = Math.max(0, slideCount - 1);
+                            update(true);
+                        }
+                        else if (index > 0 && cols + index > slideCount) {
+                            index = Math.max(0, slideCount - cols);
                             update(true);
                         }
 
                     }, 25);
                 }, true);
 
+                resize();
                 $timeout(resize, 50);
             }
 
@@ -222,9 +230,6 @@
                 updateIndicator();
                 updateSlides();
 
-                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
-                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
-
                 moveSlider(translateX, animate);
             }
 
@@ -235,6 +240,9 @@
 
                 var children = Array.prototype.slice.call($('.jw-card-slider-list').children),
                     slides;
+
+                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
+                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
 
                 slides = children.filter(function (slide) {
                     return !slide.classList.contains('ng-leave');

@@ -37,11 +37,12 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
+     * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'feed', 'item'];
+        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, feed, item) {
+                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, config, feed, item) {
 
         var vm                   = this,
             lastPos              = 0,
@@ -49,7 +50,6 @@
             started              = false,
             requestQualityChange = false,
             itemFeed             = feed,
-            isMobile             = ionic.Platform.isIOS() || ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone(),
             playerPlaylist       = [],
             playerLevels,
             initialLevel,
@@ -72,6 +72,7 @@
         vm.onReady        = onReady;
         vm.onError        = onError;
         vm.onSetupError   = onSetupError;
+        vm.onAdImpression = onAdImpression;
 
         vm.cardClickHandler      = cardClickHandler;
         vm.shareClickHandler     = shareClickHandler;
@@ -94,7 +95,7 @@
                 height:         '100%',
                 aspectratio:    '16:9',
                 ph:             4,
-                autostart:      $state.params.autoStart || isMobile,
+                autostart:      $state.params.autoStart,
                 playlist:       playerPlaylist,
                 related:        false,
                 preload:        'metadata',
@@ -104,6 +105,12 @@
 
             if (!window.jwplayer.defaults.skin) {
                 vm.playerSettings.skin = 'jw-showcase';
+            }
+
+            if (!!window.cordova) {
+                vm.playerSettings.analytics = {
+                    sdkplatform:    ionic.Platform.isAndroid() ? 1 : 2
+                };
             }
 
             $scope.$watch(function () {
@@ -120,7 +127,7 @@
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
-            }, 4000);
+            }, 2000);
 
             update();
         }
@@ -241,9 +248,8 @@
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;
+                $timeout.cancel(loadingTimeout);
             }
-
-            $timeout.cancel(loadingTimeout);
         }
 
         /**
@@ -394,7 +400,7 @@
             }
 
             // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress) {
+            if (false === userSettings.settings.watchProgress || false === config.enableContinueWatching) {
                 return;
             }
 
@@ -415,6 +421,17 @@
             lastPos = position;
 
             handleWatchProgress(position, event.duration);
+        }
+
+        /**
+         * Handle time event
+         *
+         * @param event
+         */
+        function onAdImpression (event) {
+
+            vm.loading = false;
+            $timeout.cancel(loadingTimeout);
         }
 
         /**

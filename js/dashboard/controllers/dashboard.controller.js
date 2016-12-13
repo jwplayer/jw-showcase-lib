@@ -29,16 +29,18 @@
      * @requires $ionicHistory
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.userSettings
+     * @requires jwShowcase.config
      */
-    DashboardController.$inject = ['$scope', '$state', '$ionicHistory', 'dataStore', 'userSettings'];
-    function DashboardController ($scope, $state, $ionicHistory, dataStore, userSettings) {
+    DashboardController.$inject = ['$scope', '$state', '$ionicHistory', 'dataStore', 'userSettings', 'config'];
+    function DashboardController ($scope, $state, $ionicHistory, dataStore, userSettings, config) {
 
         var vm = this;
 
-        vm.dataStore          = dataStore;
-        vm.userSettings       = userSettings;
+        vm.dataStore             = dataStore;
+        vm.userSettings          = userSettings;
+        vm.showWatchProgressFeed = showWatchProgressFeed;
 
-        vm.cardClickHandler   = cardClickHandler;
+        vm.cardClickHandler = cardClickHandler;
 
         activate();
 
@@ -70,8 +72,25 @@
             $state.go('root.video', {
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
-                autoStart: clickedOnPlay
+                autoStart: clickedOnPlay || ionic.Platform.isMobile
             });
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.dashboard.DashboardController#showWatchProgressFeed
+         * @methodOf jwShowcase.dashboard.DashboardController
+         *
+         * @description
+         * Determine if the watch progress feed needs to be shown
+         *
+         * @returns {boolean} True if the watchProgress feed needs to be shown
+         */
+        function showWatchProgressFeed () {
+
+            var itemsLength = dataStore.watchProgressFeed.playlist.length;
+
+            return config.enableContinueWatching && userSettings.settings.watchProgress && itemsLength > 0;
         }
     }
 

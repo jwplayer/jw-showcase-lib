@@ -25,12 +25,14 @@
      */
     angular
         .module('jwShowcase.core', [])
-        .constant('DEFAULT_CONTENT_URL', 'https://content.jwplatform.com')
+        .constant('DEFAULT_CONTENT_SERVICE', 'https://content.jwplatform.com')
         .config(config)
         .run(run);
 
     config.$inject = ['$stateProvider', 'seoProvider', '$ionicConfigProvider'];
     function config ($stateProvider, seoProvider, $ionicConfigProvider) {
+
+        ionic.Platform.isMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone();
 
         $stateProvider
             .state('root', {
@@ -67,20 +69,22 @@
          * Preload application data
          *
          * @param {$q} $q
+         * @param {$sce} $sce
+         * @param {$state} $state
          * @param {jwShowcase.core.appStore} appStore
-         * @param {jwShowcase.core.config} config
+         * @param {jwShowcase.config} config
          * @param {jwShowcase.core.configResolver} configResolver
          * @param {jwShowcase.core.cookies} cookies
          * @param {jwShowcase.core.api} api
          * @param {jwShowcase.core.apiConsumer} apiConsumer
          * @param {jwShowcase.core.watchlist} watchlist
          * @param {jwShowcase.core.userSettings} userSettings
-         * @param {DEFAULT_CONTENT_URL} DEFAULT_CONTENT_URL
+         * @param {DEFAULT_CONTENT_SERVICE} DEFAULT_CONTENT_SERVICE
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_URL'];
-        function preloadApp ($q, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_URL) {
+        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
+        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
 
             var defer = $q.defer();
 
@@ -97,11 +101,17 @@
 
                     // apply config
                     angular.forEach(resolvedConfig, function (value, key) {
-                        config[key] = value;
+
+                        if (key === 'bannerImage') {
+                            config[key] = $sce.trustAsResourceUrl(value);
+                        }
+                        else {
+                            config[key] = value;
+                        }
                     });
 
-                    if (!angular.isString(config.contentUrl)) {
-                        config.contentUrl = DEFAULT_CONTENT_URL;
+                    if (!angular.isString(config.contentService)) {
+                        config.contentService = DEFAULT_CONTENT_SERVICE;
                     }
 
                     if (angular.isString(config.backgroundColor) && '' !== config.backgroundColor) {
