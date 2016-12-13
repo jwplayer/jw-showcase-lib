@@ -31,7 +31,7 @@
         .value('config', {
             enableContinueWatching: true
         })
-        .constant('LIB_VERSION', '3.0.0-rc.1');
+        .constant('LIB_VERSION', '3.0.0-rc.2');
 
     /**
      * @name jwShowcase.config
