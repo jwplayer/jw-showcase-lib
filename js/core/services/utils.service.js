@@ -240,12 +240,12 @@
         function copyToClipboard (text) {
 
             var inputElement = angular.element('<input type="text" />'),
-                success = false;
+                success      = false;
 
             inputElement.css({
                 position: 'absolute',
                 left:     '-1000px',
-                fontSize: '12px'
+                fontSize: '18px'
             });
 
             inputElement.val(text);
