@@ -311,6 +311,10 @@
 
                 startCoords = coords;
                 element.addClass('is-sliding');
+
+                if (ionic.Platform.isAndroid() && ionic.Platform.version() < 5) {
+                    event.preventDefault();
+                }
             }
 
             /**
