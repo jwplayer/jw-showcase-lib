@@ -188,7 +188,7 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = ionic.Platform.version() < 5,
+                isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
                 playlist, sources;
 
             playlist = feed.playlist
