@@ -107,6 +107,11 @@
     }
 }
 
+.platform-ios .jw-menu-popover.popover .scroll-content .scroll {
+    padding-bottom: 50px;
+
+}
+
 @include mobile-only () {
     .platform-android .jw-menu-popover.popover,
     .jw-menu-popover.popover {
