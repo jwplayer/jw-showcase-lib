@@ -155,17 +155,6 @@
             }
 
             /**
-             * Slide to index
-             *
-             * @param {number} toIndex
-             */
-            function slideToIndex (toIndex) {
-
-                index = Math.min(scope.vm.feed.playlist.length - 1, Math.max(0, toIndex));
-                update(true);
-            }
-
-            /**
              * Slide amount of cols to the left
              */
             function slideLeft () {
