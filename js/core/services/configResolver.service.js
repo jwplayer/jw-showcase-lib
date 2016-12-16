@@ -44,6 +44,12 @@
 
             if (!configPromise) {
 
+                if (typeof window.config === "object") {
+                    return $q.resolve(getConfigComplete({
+                        data: window.config
+                    }));
+                }
+
                 configPromise = $http
                     .get(window.configLocation)
                     .then(getConfigComplete)
