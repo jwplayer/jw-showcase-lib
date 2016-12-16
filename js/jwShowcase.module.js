@@ -34,7 +34,7 @@
             enableContinueWatching: true
         })
         .decorator('$controller', $controllerDecorator)
-        .constant('LIB_VERSION', '3.0.0-rc.2');
+        .constant('LIB_VERSION', '3.0.0');
 
     /**
      * @name jwShowcase.config
