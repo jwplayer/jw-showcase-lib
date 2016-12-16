@@ -188,6 +188,7 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
+                isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
                 playlist, sources;
 
             playlist = feed.playlist
@@ -197,6 +198,12 @@
             return playlist.map(function (current) {
 
                 sources = current.sources.filter(function (source) {
+
+                    // filter out HLS streams for Android 4
+                    if (isAndroid4 && 'application/vnd.apple.mpegurl' === source.type) {
+                        return false;
+                    }
+
                     return 'application/dash+xml' !== source.type
                 });
 
