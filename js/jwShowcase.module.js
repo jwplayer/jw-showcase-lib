@@ -16,6 +16,8 @@
 
 (function () {
 
+    var isFirefox = /firefox/i.test(ionic.Platform.ua);
+
     /**
      * @ngdoc overview
      * @name jwShowcase
@@ -31,6 +33,7 @@
         .value('config', {
             enableContinueWatching: true
         })
+        .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.0.0-rc.2');
 
     /**
@@ -56,5 +59,21 @@
     ionic.DomUtil.getParentOrSelfWithClass = function (elem, className, depth) {
         return ionic.DomUtil.$getParentOrSelfWithClass(elem, className, depth || 20);
     };
+
+    /**
+     * Decorate $controller to change the `wheelDampen` in the $ionicScroll controller if the browser is Firefox.
+     */
+    $controllerDecorator.$inject = ['$delegate'];
+    function $controllerDecorator ($delegate) {
+
+        return function (constructor, locals) {
+
+            if ('$ionicScroll' === constructor && isFirefox) {
+                locals.scrollViewOptions.wheelDampen = 0.08;
+            }
+
+            return $delegate.apply(null, arguments);
+        }
+    }
 
 }());
