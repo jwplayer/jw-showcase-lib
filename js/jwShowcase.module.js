@@ -68,7 +68,7 @@
 
         return function (constructor, locals) {
 
-            if ('$ionicScroll' === constructor && isFirefox) {
+            if (true === isFirefox && '$ionicScroll' === constructor) {
                 locals.scrollViewOptions.wheelDampen = 0.08;
             }
 
