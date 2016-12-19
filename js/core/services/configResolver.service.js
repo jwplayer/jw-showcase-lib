@@ -44,7 +44,7 @@
 
             if (!configPromise) {
 
-                if (typeof window.config === "object") {
+                if (angular.isObject(window.config)) {
                     return $q.resolve(getConfigComplete({
                         data: window.config
                     }));
