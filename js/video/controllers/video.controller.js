@@ -78,6 +78,8 @@
         vm.shareClickHandler     = shareClickHandler;
         vm.watchlistClickHandler = watchlistClickHandler;
 
+        vm.hasHeader = !config.hideHeader;
+
         activate();
 
         ////////////////////////

@@ -1,5 +1,5 @@
 <ion-view>
-  <jw-header class="jw-subheader jw-header-full">
+  <jw-header class="jw-subheader jw-header-full" ng-class="{ 'hide-main-header': !vm.hasHeader }">
     <div class="jw-header-nav">
       <jw-header-back-button></jw-header-back-button>
     </div>
@@ -9,7 +9,7 @@
     <div class="jw-header-nav"></div>
   </jw-header>
 
-  <ion-content class="has-subheader">
+  <ion-content class="has-subheader" ng-class="{ 'hide-main-header': !vm.hasHeader }">
 
     <h3 class="jw-meta-feed-title" ng-if="!vm.feed.playlist.length">
       Nothing could be found, try changing your search phrase
