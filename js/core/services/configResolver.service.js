@@ -44,6 +44,12 @@
 
             if (!configPromise) {
 
+                if (angular.isObject(window.config)) {
+                    return $q.resolve(getConfigComplete({
+                        data: window.config
+                    }));
+                }
+
                 configPromise = $http
                     .get(window.configLocation)
                     .then(getConfigComplete)
