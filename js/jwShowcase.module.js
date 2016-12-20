@@ -31,7 +31,8 @@
             'jwShowcase.video'
         ])
         .value('config', {
-            enableContinueWatching: true
+            enableContinueWatching: true,
+            enableHeader:           true
         })
         .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.0.0');

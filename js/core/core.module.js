@@ -118,6 +118,10 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
+                    if (!config.enableHeader) {
+                        document.body.classList.add('jw-hide-header');
+                    }
+
                     promises.push(api.getPlayer(config.player));
 
                     if (config.featuredPlaylist) {
