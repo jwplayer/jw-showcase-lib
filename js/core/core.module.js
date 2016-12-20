@@ -122,6 +122,10 @@
                         document.body.classList.add('jw-hide-header');
                     }
 
+                    if (config.hasOwnProperty('enableJsScroll')) {
+                        $ionicConfigProvider.scrolling.jsScrolling(config.enableJsScroll);
+                    }
+
                     promises.push(api.getPlayer(config.player));
 
                     if (config.featuredPlaylist) {
