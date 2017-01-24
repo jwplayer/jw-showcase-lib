@@ -118,11 +118,11 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
-                    if (!config.enableHeader) {
+                    if (false === config.enableHeader) {
                         document.body.classList.add('jw-hide-header');
                     }
 
-                    if (config.hasOwnProperty('enableJsScroll')) {
+                    if (angular.isDefined(config.enableJsScroll)) {
                         $ionicConfigProvider.scrolling.jsScrolling(config.enableJsScroll);
                     }
 
