@@ -1,8 +1,36 @@
 
 .jwplayer.jw-skin-jw-showcase {
 
-    .jw-progress {
-        background-color: $primary-color;
+    &.jw-flag-time-slider-above {
+        .jw-display-icon-container {
+            text-shadow: 0 0 20px rgba($black, 0.3);
+        }
+
+        .jw-controlbar-left-group {
+            padding-left: 8px;
+        }
+
+        .jw-controlbar-right-group {
+            padding-right: 4px;
+        }
+    }
+
+    &:not(.jw-flag-time-slider-above) {
+        .jw-controlbar.jw-background-color {
+            background: rgba($dark-color, .8);
+        }
+    }
+
+    .jw-slider-horizontal,
+    .jw-slider-vertical {
+
+        .jw-progress {
+            background-color: $primary-color;
+        }
+
+        .jw-knob {
+            background-color: $white;
+        }
     }
 
     .jw-button-color,
@@ -22,23 +50,5 @@
     .jw-menu.jw-background-color,
     .jw-slider-vertical.jw-background-color {
         background: rgba($dark-color, .8);
-    }
-
-    &.jw-breakpoint-0,
-    &.jw-breakpoint-1 {
-        .jw-display-icon-container {
-            text-shadow: 0 0 20px rgba($black, 0.3);
-        }
-    }
-
-    &.jw-breakpoint-2,
-    &.jw-breakpoint-3,
-    &.jw-breakpoint-4,
-    &.jw-breakpoint-5,
-    &.jw-breakpoint-6,
-    &.jw-breakpoint-7 {
-        .jw-controlbar.jw-background-color {
-            background: rgba($dark-color, .8);
-        }
     }
 }
