@@ -17,7 +17,7 @@
 
     &:not(.jw-flag-time-slider-above) {
         .jw-controlbar.jw-background-color {
-            background: rgba($dark-color, .8);
+            background-color: rgba($dark-color, .8);
         }
     }
 
@@ -49,6 +49,6 @@
 
     .jw-menu.jw-background-color,
     .jw-slider-vertical.jw-background-color {
-        background: rgba($dark-color, .8);
+        background-color: rgba($dark-color, .8);
     }
 }
