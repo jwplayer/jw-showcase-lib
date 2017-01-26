@@ -1,60 +1,54 @@
 
 .jwplayer.jw-skin-jw-showcase {
 
-    &.jw-state-idle,
-    &.jw-state-paused {
-
+    &.jw-flag-time-slider-above {
         .jw-display-icon-container {
-            display: table;
-
-            border: 4px solid $white;
-            border-radius: 50%;
-            background: transparent;
-            font-size: 1.2em;
+            text-shadow: 0 0 20px rgba($black, 0.3);
         }
 
-        .jw-display-icon-container > .jw-icon {
-            padding-left: 4px;
+        .jw-controlbar-left-group {
+            padding-left: 8px;
+        }
 
-            color: $primary-color;
-            font-size: 1.7em;
+        .jw-controlbar-right-group {
+            padding-right: 4px;
         }
     }
 
-    &.jw-state-buffering .jw-display-icon-container {
-        background: none;
-
-        .jw-button-color:hover {
-            color: $white;
+    &:not(.jw-flag-time-slider-above) {
+        .jw-controlbar.jw-background-color {
+            background-color: rgba($dark-color, .8);
         }
     }
 
-    .jw-progress {
-        background-color: $primary-color;
+    .jw-slider-horizontal,
+    .jw-slider-vertical {
+
+        .jw-progress {
+            background-color: $primary-color;
+        }
+
+        .jw-knob {
+            background-color: $white;
+        }
     }
 
-    .jw-button-color {
+    .jw-button-color,
+    .jw-toggle.jw-off,
+    .jw-display-icon-container {
         color: $white;
 
         &:hover {
             color: $primary-color;
         }
     }
-}
 
-//
-// mediaQueries
-// --------------------------------
+    .jw-toggle {
+        color: $primary-color;
+    }
 
-@include mobile-only () {
-
-    .jwplayer.jw-skin-jw-showcase {
-
-        &.jw-state-idle,
-        &.jw-state-paused {
-            .jw-display-icon-container > .jw-icon {
-                font-size: 1.3em;
-            }
-        }
+    .jw-menu.jw-background-color,
+    .jw-slider-vertical.jw-background-color {
+        background-color: rgba($dark-color, .8);
     }
 }
