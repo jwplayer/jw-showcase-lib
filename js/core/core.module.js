@@ -83,8 +83,8 @@
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
-        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
+        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'dataStore', 'FeedModel', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
+        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, dataStore, FeedModel, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
 
             var defer = $q.defer();
 
@@ -97,7 +97,8 @@
                 .getConfig()
                 .then(function (resolvedConfig) {
 
-                    var promises = [];
+                    var promises = [],
+                        model;
 
                     // apply config
                     angular.forEach(resolvedConfig, function (value, key) {
@@ -118,14 +119,23 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
-                    promises.push(api.getPlayer(config.player));
+                    // promises.push(
+                        api.getPlayer(config.player)
+                    // );
 
-                    if (config.featuredPlaylist) {
-                        promises.push(apiConsumer.getFeaturedFeed());
+                    if (angular.isString(config.featuredPlaylist)) {
+                        model = new FeedModel(config.featuredPlaylist);
+                        apiConsumer.populateFeedModel(model);
+                        dataStore.featuredFeed = model;
                     }
 
-                    if (config.playlists) {
-                        promises.push(apiConsumer.getFeeds());
+                    if (angular.isArray(config.playlists)) {
+
+                        dataStore.feeds = config.playlists.map(function (feedId) {
+                            model = new FeedModel(feedId);
+                            apiConsumer.populateFeedModel(model);
+                            return model;
+                        });
                     }
 
                     $q.all(promises).then(

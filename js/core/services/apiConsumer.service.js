@@ -83,6 +83,35 @@
 
         /**
          * @ngdoc method
+         * @name jwShowcase.core.apiConsumer#populateFeedModel
+         * @methodOf jwShowcase.core.apiConsumer
+         *
+         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         */
+        this.populateFeedModel = function (feed) {
+
+            if (feed && feed.feedid) {
+
+                feed.loading = true;
+                feed.promise = api.getFeed(feed.feedid);
+
+                return feed.promise
+                    .then(function (data) {
+
+                        angular.merge(feed, data);
+
+                        // feed.loading = false;
+                        feed.fire('update');
+
+                        return feed;
+                    });
+            }
+
+            return $q.reject();
+        };
+
+        /**
+         * @ngdoc method
          * @name jwShowcase.core.apiConsumer#getSearchFeed
          * @methodOf jwShowcase.core.apiConsumer
          *

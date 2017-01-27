@@ -55,7 +55,7 @@
             $scope.$on('$stateChangeSuccess', function () {
                 $timeout(function () {
                     appStore.loading = false;
-                }, 1000);
+                }, 50);
             });
         }
     }
