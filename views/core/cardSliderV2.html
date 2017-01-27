@@ -1,0 +1,32 @@
+<div class="jw-card-slider">
+  <div class="jw-card-slider-container">
+    <div class="jw-card-slider-title" ng-if="vm.heading">
+      <!--<a ui-sref="root.feed({feedId: vm.feed.feedid})" class="jw-link" ng-if="vm.feed.feedid">-->
+        <!--<span>{{ vm.heading }}&nbsp;</span> <i class="jwy-icon jwy-icon-angle-right"></i> <span-->
+          <!--class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>-->
+      <!--</a>-->
+      <!--<div ng-if="!vm.feed.feedid">-->
+        <span>{{ vm.heading }}</span> <span
+          class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>
+      <!--</div>-->
+    </div>
+    <div class="jw-card-slider-align">
+      <div class="jw-card-slider-list slides-4">
+        <div class="jw-card-slider-list-prev"></div>
+        <div class="jw-card-slider-list-curr"></div>
+        <div class="jw-card-slider-list-next"></div>
+      </div>
+    </div>
+    <jw-button class="jw-card-slider-button jw-card-slider-button-flag-left is-hidden-mobile"
+        ng-click="vm.slideLeft($event)">
+      <i class="jwy-icon jwy-icon-angle-left"></i>
+    </jw-button>
+    <jw-button class="jw-card-slider-button jw-card-slider-button-flag-right is-hidden-mobile"
+        ng-click="vm.slideRight($event)">
+      <i class="jwy-icon jwy-icon-angle-right"></i>
+    </jw-button>
+    <ul class="jw-card-slider-indicators">
+      <li class="jw-card-slider-indicator" ng-repeat="item in vm.feed.playlist" ng-click="vm.slideToIndex($index)"></li>
+    </ul>
+  </div>
+</div>
