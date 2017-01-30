@@ -118,6 +118,14 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
+                    if (false === config.enableHeader) {
+                        document.body.classList.add('jw-hide-header');
+                    }
+
+                    if (angular.isDefined(config.enableJsScroll)) {
+                        $ionicConfigProvider.scrolling.jsScrolling(config.enableJsScroll);
+                    }
+
                     promises.push(api.getPlayer(config.player));
 
                     if (config.featuredPlaylist) {

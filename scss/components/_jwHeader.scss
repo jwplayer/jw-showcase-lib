@@ -4,6 +4,7 @@
 
 .jw-header {
     position: fixed;
+    top: 0;
     width: 100vw;
     height: $header-height;
     padding: $header-padding;
@@ -114,7 +115,6 @@
 // Subheader
 //
 .jw-header.jw-subheader {
-    top: $header-height;
     height: $subheader-height;
     min-height: $subheader-height;
     padding-top: 0;
@@ -163,14 +163,6 @@
     }
 }
 
-.platform-ios.platform-cordova .jw-header {
-    top: $ios-statusbar-height;
-
-    &.jw-subheader {
-        top: $header-height + $ios-statusbar-height;
-    }
-}
-
 //
 // mediaQueries
 // --------------------------------
@@ -204,30 +196,21 @@
         .jw-header-nav .jw-button-label {
             display: none;
         }
-    }
-
-    .jw-header.jw-subheader {
-        top: $header-height-mobile + $ios-statusbar-height;
-    }
-
-    .platform-ios.platform-cordova .jw-header {
-        top: $ios-statusbar-height;
 
         &.jw-subheader {
-            top: $header-height-mobile + $ios-statusbar-height;
+            top: $header-height-mobile;
         }
     }
 
     //
     // Mobile screen size uses a different header height so the scroll content needs to be changed also
     //
-    .platform-ios.platform-cordova:not(.fullscreen) .scroll-content,
     .scroll-content {
-        &.has-header {
+        &.has-jw-header {
             top: $header-height-mobile;
         }
 
-        &.has-subheader {
+        &.has-jw-subheader {
             top: $header-height-mobile + $subheader-height;
         }
     }
@@ -255,6 +238,20 @@
         &-video .jw-header-nav:first-child .jw-button {
             margin-left: -$header-padding;
         }
+
+        &.jw-subheader {
+            top: $header-height;
+        }
+    }
+
+    .scroll-content {
+        &.has-jw-header {
+            top: $header-height;
+        }
+
+        &.has-jw-subheader {
+            top: $header-height + $subheader-height;
+        }
     }
 }
 
@@ -266,5 +263,24 @@
             max-width: $container-width-desktop;
             margin: 0 auto;
         }
+    }
+}
+
+//
+// .jw-hide-header
+// --------------------------------
+
+.jw-hide-header {
+
+    .jw-subheader {
+        top: 0;
+    }
+
+    .scroll-content.has-jw-subheader {
+        top: $subheader-height;
+    }
+
+    .scroll-content.has-jw-header {
+        top: 0;
     }
 }
