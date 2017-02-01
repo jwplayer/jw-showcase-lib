@@ -54,14 +54,13 @@
     </div>
 
     <div class="jw-row" ng-if="vm.feed.playlist.length > 0">
-      <jw-card-slider feed="vm.feed" featured="false" heading="vm.feed.title" delegate="vm.feedCardSliderDelegate"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+      <jw-card-slider-v2 feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate"
+          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider-v2>
     </div>
 
     <div class="jw-row" ng-if="vm.recommendationsFeed && vm.recommendationsFeed.playlist.length > 0">
-      <jw-card-slider feed="vm.recommendationsFeed" featured="false" heading="'Related Videos'"
-          delegate="vm.recommendationsCardSliderDelegate" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
-          on-card-click="vm.cardClickHandler"></jw-card-slider>
+      <jw-card-slider-v2 feed="vm.recommendationsFeed" featured="false" delegate="vm.recommendationsCardSliderDelegate"
+          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider-v2>
     </div>
 
     <jw-footer></jw-footer>
