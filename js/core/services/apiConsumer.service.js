@@ -93,21 +93,20 @@
             if (feed && feed.feedid) {
 
                 feed.loading = true;
-                feed.promise = api.getFeed(feed.feedid);
+                feed.promise = api.getFeed(feed.feedid).then(function (data) {
 
-                return feed.promise
-                    .then(function (data) {
+                    angular.merge(feed, data);
 
-                        angular.merge(feed, data);
+                    feed.loading = false;
+                    feed.fire('update');
 
-                        // feed.loading = false;
-                        feed.fire('update');
+                    return feed;
+                });
 
-                        return feed;
-                    });
+                return feed.promise;
             }
 
-            return $q.reject();
+            return $q.reject(new Error('feedid is not defined'));
         };
 
         /**
