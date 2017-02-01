@@ -106,10 +106,10 @@
 
             if (index !== -1) {
                 dataStore.watchlistFeed.playlist.splice(index, 1);
+                dataStore.watchlistFeed.fire('update');
+
                 persist();
             }
-
-            dataStore.watchlistFeed.fire('update');
         }
 
         /**

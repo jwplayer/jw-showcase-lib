@@ -97,7 +97,7 @@
                 .getConfig()
                 .then(function (resolvedConfig) {
 
-                    var promises = [],
+                    var feedPromises = [],
                         model;
 
                     // apply config
@@ -119,13 +119,10 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
-                    // promises.push(
-                        api.getPlayer(config.player)
-                    // );
-
-                    if (angular.isString(config.featuredPlaylist)) {
+                    if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
                         model = new FeedModel(config.featuredPlaylist);
-                        apiConsumer.populateFeedModel(model);
+
+                        feedPromises.push(apiConsumer.populateFeedModel(model));
                         dataStore.featuredFeed = model;
                     }
 
@@ -133,15 +130,19 @@
 
                         dataStore.feeds = config.playlists.map(function (feedId) {
                             model = new FeedModel(feedId);
-                            apiConsumer.populateFeedModel(model);
+                            feedPromises.push(apiConsumer.populateFeedModel(model));
                             return model;
                         });
                     }
 
-                    $q.all(promises).then(
-                        handlePreloadSuccess,
-                        handlePreloadError
-                    );
+                    // don't wait for the feeds but we want to populate the watchlist and watchProgress feeds after
+                    // feeds are loaded
+                    $q.all(feedPromises)
+                        .then(handleFeedsLoadSuccess, handleFeedsLoadError);
+
+                    api.getPlayer(config.player)
+                        .then(handlePreloadSuccess, handlePreloadError);
+
                 }, handlePreloadError);
 
             return defer.promise;
@@ -150,10 +151,7 @@
 
             function handlePreloadSuccess () {
 
-                watchlist.restore();
-                watchProgress.restore();
                 userSettings.restore();
-
                 cookies.showIfNeeded();
 
                 defer.resolve();
@@ -167,6 +165,18 @@
                 $state.go('preloadError');
 
                 defer.reject();
+            }
+
+            function handleFeedsLoadSuccess () {
+
+                watchlist.restore();
+                watchProgress.restore();
+            }
+
+            function handleFeedsLoadError () {
+
+                console.log(arguments);
+                // @TODO Show error message?
             }
         }
     }
