@@ -38,6 +38,13 @@
 
             this.playlist = [];
 
+            this.findItem = function (mediaId) {
+
+                return this.playlist.find(function (item) {
+                    return item.mediaid === mediaId;
+                });
+            };
+
             this.on = function (name, callback) {
 
                 eventListeners.push({
