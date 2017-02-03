@@ -98,7 +98,7 @@
                 }
 
                 scope.$apply(function () {
-                    jwCard.menuVisible = false;
+                    jwCard.closeMenu();
                 });
 
                 evt.preventDefault();

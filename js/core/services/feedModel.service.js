@@ -30,13 +30,13 @@
 
         function FeedModel (feedId, title) {
 
-            var eventListeners = [];
-
             this.feedid = feedId;
 
             this.title = title || '';
 
             this.playlist = [];
+
+            this.loading = false;
 
             this.findItem = function (mediaId) {
 
@@ -45,37 +45,12 @@
                 });
             };
 
-            this.on = function (name, callback) {
+            this.clone = function () {
 
-                eventListeners.push({
-                    name:     name,
-                    callback: callback
-                });
-            };
-
-            this.off = function (name, callback) {
-
-                var index = eventListeners.indexOf(function (listener) {
-                    return name === listener.name && callback === listener.callback;
-                });
-
-                if (-1 !== index) {
-                    eventListeners.splice(index, 1);
-                }
-            };
-
-            this.fire = function (name) {
-
-                var args = Array.prototype.slice.call(arguments, 1);
-
-                eventListeners
-                    .filter(function (listener) {
-                        return name === listener.name;
-                    })
-                    .forEach(function (listener) {
-                        listener.callback.apply(null, args);
-                    });
-            };
+                var clone = new FeedModel(this.feedid, this.title);
+                clone.playlist = this.playlist.slice(0);
+                return clone;
+            }
         }
 
         return FeedModel;

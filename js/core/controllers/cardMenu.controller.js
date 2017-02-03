@@ -77,7 +77,7 @@
          */
         function closeButtonClickHandler () {
 
-            vm.jwCard.menuVisible = false;
+            vm.jwCard.closeMenu();
         }
 
         /**
@@ -92,15 +92,15 @@
          */
         function saveButtonClickHandler () {
 
-            watchlist.addItem(vm.item);
-
             vm.jwCard.showToast({
                 templateUrl: 'views/core/toasts/savedVideo.html',
                 duration:    1000
+            }).then(function () {
+                watchlist.addItem(vm.item);
             });
 
             $timeout(function () {
-                vm.jwCard.menuVisible = false;
+                vm.jwCard.closeMenu();
             }, 500);
         }
 
@@ -116,18 +116,13 @@
          */
         function unsaveButtonClickHandler () {
 
-            vm.jwCard.inWatchList = false;
-
             vm.jwCard.showToast({
                 templateUrl: 'views/core/toasts/unsavedVideo.html',
                 duration:    1200
-            }).then(function () {
+            }).then(null, null, function () {
+                vm.jwCard.closeMenu();
                 watchlist.removeItem(vm.item);
             });
-
-            $timeout(function () {
-                vm.jwCard.menuVisible = false;
-            }, 500);
         }
 
         /**
@@ -145,13 +140,10 @@
             vm.jwCard.showToast({
                 templateUrl: 'views/core/toasts/removedVideo.html',
                 duration:    1000
-            }).then(function () {
+            }).then(null, null, function () {
                 watchProgress.removeItem(vm.item);
+                vm.jwCard.closeMenu();
             });
-
-            $timeout(function () {
-                vm.jwCard.menuVisible = false;
-            }, 500);
         }
     }
 

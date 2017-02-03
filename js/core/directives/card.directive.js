@@ -16,6 +16,8 @@
 
 (function () {
 
+    var LARGE_SCREEN = window.matchMedia('(min-device-width: 960px)').matches;
+
     angular
         .module('jwShowcase.core')
         .directive('jwCard', cardDirective);
@@ -32,11 +34,9 @@
      *
      * @scope
      *
-     * @param {jwShowcase.core.item}   item            Playlist item
-     * @param {boolean=}        featured        Featured flag
-     * @param {boolean=}        showTitle       Show item title when true
-     * @param {boolean=}        showDescription Show item description when true
-     * @param {function=}       onClick         Will be called when an click event occurs on the card.
+     * @param {jwShowcase.core.item}    item            Playlist item
+     * @param {boolean=}                featured        Featured flag
+     * @param {function=}               onClick         Will be called when an click event occurs on the card.
      *
      * @example
      *
@@ -44,30 +44,190 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache'];
-    function cardDirective ($animate, $q, $timeout, $templateCache) {
+    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', '$state', 'watchlist', 'utils'];
+    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, $state, watchlist, utils) {
 
         return {
             scope:            {
                 item:            '=',
                 featured:        '=',
-                showTitle:       '=',
-                showDescription: '=',
                 onClick:         '='
             },
             controllerAs:     'vm',
-            controller:       'CardController',
+            controller:       angular.noop,
             bindToController: true,
             replace:          true,
             templateUrl:      'views/core/card.html',
             link:             link
         };
 
+        // @TODO touch device flag
+        // @TODO close menu when other card menu opens
+
         function link (scope, element) {
 
-            scope.vm.showToast = showToast;
+            scope.vm.showToast  = showToast;
+            scope.vm.closeMenu  = closeMenu;
+
+            activate();
 
             /////////////
+
+            function activate () {
+
+                var posterUrl = generatePosterUrl();
+
+                element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+
+                findElement('.jw-card-poster').css({
+                    'background':     'url(' + posterUrl + ') no-repeat center',
+                    'backgroundSize': 'cover'
+                });
+
+                findElement('.jw-card-title').html(scope.vm.item.title);
+                findElement('.jw-card-description').html(scope.vm.item.description);
+                findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
+
+                findElement('.jw-card-container').on('click', containerClickHandler);
+                findElement('.jw-card-menu-button').on('click', menuButtonClickHandler);
+
+                // set watch progress
+                if (scope.vm.item.feedid === 'continue-watching') {
+
+                    findElement('.jw-card-watch-progress')
+                        .removeClass('ng-hide')
+                        .css('width', (scope.vm.item.progress * 100) + '%');
+                }
+
+                scope.$on('$destroy', destroyDirectiveHandler);
+
+                scope.$watch(function () {
+                    return watchlist.hasItem(scope.vm.item);
+                }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Cleanup directive
+             */
+            function destroyDirectiveHandler () {
+
+                findElement('.jw-card-container').off();
+                findElement('.jw-card-menu-button').off();
+            }
+
+            /**
+             * Find child element
+             * @param {string} selector
+             * @returns {Object}
+             */
+            function findElement (selector) {
+
+                return angular.element(element[0].querySelector(selector));
+            }
+
+            /**
+             * Handle click event on the card container
+             * @param event
+             */
+            function containerClickHandler (event) {
+
+                var playButton    = findElement('.jw-card-play-button')[0],
+                    clickedOnPlay = playButton === event.target || playButton === event.target.parentNode;
+
+                if (angular.isFunction(scope.vm.onClick)) {
+                    scope.vm.onClick(scope.vm.item, clickedOnPlay)
+                }
+            }
+
+            /**
+             * Handle click on the menu button
+             */
+            function menuButtonClickHandler () {
+
+                showMenu();
+            }
+
+            /**
+             * Handle click on the watchlist button
+             */
+            function watchlistButtonClickHandler () {
+
+                showToast({
+                    templateUrl: 'views/core/toasts/unsavedVideo.html',
+                    duration: 1200
+                }).then(null, null, function () {
+                    watchlist.removeItem(scope.vm.item);
+                });
+            }
+
+            /**
+             * Handle when this item gets added or removed from the watchlist
+             * @param inWatchlist
+             */
+            function watchlistUpdateHandler (inWatchlist) {
+
+                var watchlistButton = findElement('.jw-card-watchlist-button'),
+                    exists          = !!watchlistButton.length;
+
+                if (inWatchlist && !exists) {
+
+                    watchlistButton = $compile($templateCache.get('views/core/cardWatchlistButton.html'))(scope.$new());
+                    watchlistButton.on('click', watchlistButtonClickHandler);
+
+                    $animate.enter(watchlistButton, element, findElement('.jw-card-menu-button'));
+                }
+
+                if (!inWatchlist && exists) {
+
+                    watchlistButton.off();
+                    watchlistButton.scope().$destroy();
+                    $animate.leave(watchlistButton);
+                }
+            }
+
+            /**
+             * Show the menu
+             */
+            function showMenu () {
+
+                var cardMenu = findElement('.jw-card-menu');
+
+                if (!cardMenu.length) {
+                    cardMenu = $compile('<jw-card-menu item="vm.item"></jw-card-menu>')(scope.$new());
+                    $animate.enter(cardMenu, element, findElement('.jw-card-toasts'));
+                    element.addClass('jw-card-flag-menu-open');
+                }
+            }
+
+            /**
+             * Close the menu
+             */
+            function closeMenu () {
+
+                var cardMenu = findElement('.jw-card-menu');
+
+                if (cardMenu.length) {
+                    cardMenu.scope().$destroy();
+                    $animate.leave(cardMenu);
+                    element.removeClass('jw-card-flag-menu-open');
+                }
+            }
+
+            /**
+             * Generate card poster url
+             * @returns {*|string}
+             */
+            function generatePosterUrl () {
+
+                var width = scope.vm.featured ? 1280 : 640;
+
+                // half width when user has a small screen
+                if (false === LARGE_SCREEN) {
+                    width = width / 2;
+                }
+
+                return utils.replaceImageSize(scope.vm.item.image, width);
+            }
 
             /**
              * Show a toast over the card
@@ -94,6 +254,8 @@
 
                 // set timeout to remove toast
                 $timeout(function () {
+
+                    defer.notify('before_remove');
 
                     $animate
                         .leave(toastElement)

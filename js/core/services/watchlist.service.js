@@ -64,17 +64,14 @@
          * @propertyOf jwShowcase.core.watchlist
          *
          * @param {jwShowcase.core.item} item
-         * @param {boolean} [notify=true]
          *
          * @description
          * Add given item to watchlist
          */
-        function addItem (item, notify) {
+        function addItem (item) {
 
             var index = findItemIndex(item),
                 clone;
-
-            notify = angular.isDefined(notify) ? notify : true;
 
             if (index === -1) {
                 clone         = angular.extend({}, item);
@@ -83,10 +80,6 @@
 
                 dataStore.watchlistFeed.playlist.unshift(clone);
                 persist();
-            }
-
-            if (false !== notify) {
-                dataStore.watchlistFeed.fire('update');
             }
         }
 
@@ -106,8 +99,6 @@
 
             if (index !== -1) {
                 dataStore.watchlistFeed.playlist.splice(index, 1);
-                dataStore.watchlistFeed.fire('update');
-
                 persist();
             }
         }
@@ -165,9 +156,6 @@
 
             // clear data in session
             session.clear(LOCAL_STORAGE_KEY);
-
-            // dispatch event
-            dataStore.watchlistFeed.fire('update');
         }
 
         /**
@@ -190,11 +178,9 @@
                     item.feedid = dataStore.watchlistFeed.feedid;
                     item.$feedid = keys.feedid;
 
-                    addItem(item, false);
+                    addItem(item);
                 }
             });
-
-            dataStore.watchlistFeed.fire('update');
         }
     }
 

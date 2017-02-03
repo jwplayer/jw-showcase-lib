@@ -100,8 +100,6 @@
             }
 
             playlist.sort(sortOnLastWatched);
-
-            dataStore.watchProgressFeed.fire('update');
             persist();
         }
 
@@ -134,8 +132,6 @@
 
             if (index !== -1) {
                 playlist.splice(index, 1);
-                dataStore.watchProgressFeed.fire('update');
-
                 persist();
             }
         }
@@ -151,7 +147,6 @@
         function clearAll () {
 
             dataStore.watchProgressFeed.playlist = [];
-            dataStore.watchProgressFeed.fire('update');
             persist();
         }
 
@@ -206,8 +201,6 @@
                         dataStore.watchProgressFeed.playlist.push(item);
                     }
                 });
-
-            dataStore.watchProgressFeed.fire('update');
 
             /**
              * Test if the given item from localStorage is valid

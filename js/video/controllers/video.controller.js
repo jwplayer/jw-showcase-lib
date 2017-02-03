@@ -40,8 +40,8 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
+        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
+    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer, FeedModel,
                               dataStore, watchProgress, watchlist, userSettings, utils, share, player, config, feed, item) {
 
         var vm                   = this,
@@ -57,7 +57,7 @@
             loadingTimeout;
 
         vm.item                = item;
-        vm.feed                = itemFeed;
+        vm.feed                = feed.clone();
         vm.recommendationsFeed = null;
         vm.duration            = 0;
         vm.inWatchList         = false;
@@ -156,25 +156,26 @@
                 vm.feedCardSliderDelegate.slideToIndex(0);
             }
 
-            // load recommendations at this stage to prevent load time to the video page
-            apiConsumer
-                .getRecommendationsFeed(item.mediaid)
-                .then(function (response) {
+            if (config.recommendationsPlaylist) {
 
-                    // filter duplicate video's
-                    if (angular.isArray(response.playlist)) {
-                        response.playlist = response.playlist.filter(function (item) {
-                            return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
-                        });
-                    }
+                vm.recommendationsFeed = vm.recommendationsFeed || new FeedModel(config.recommendationsPlaylist, 'Related Videos');
+                vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
 
-                    vm.recommendationsFeed = response;
+                apiConsumer
+                    .populateFeedModel(vm.recommendationsFeed, 'recommendations')
+                    .then(function (recommendationsFeed) {
 
-                    // reset slider to first slide
-                    if (vm.recommendationsCardSliderDelegate) {
-                        vm.recommendationsCardSliderDelegate.slideToIndex(0);
-                    }
-                });
+                        // filter duplicate video's
+                        if (angular.isArray(recommendationsFeed.playlist)) {
+                            recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
+                                return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                            });
+                        }
+                    });
+            }
+            else {
+                vm.recommendationsFeed = null;
+            }
         }
 
         /**
@@ -191,7 +192,7 @@
                 isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
                 playlist, sources;
 
-            playlist = feed.playlist
+            playlist = angular.copy(feed.playlist)
                 .slice(playlistIndex)
                 .concat(feed.playlist.slice(0, playlistIndex));
 
@@ -212,8 +213,8 @@
                     title:       current.title,
                     description: current.description,
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     sources,
-                    tracks:      current.tracks
+                    sources:     angular.copy(sources),
+                    tracks:      angular.copy(current.tracks)
                 };
             });
         }
@@ -571,7 +572,7 @@
                 });
 
             update();
-            $ionicScrollDelegate.scrollTop(true);
+            // $ionicScrollDelegate.scrollTop(true);
         }
 
         /**
