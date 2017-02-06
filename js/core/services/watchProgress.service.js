@@ -100,7 +100,6 @@
             }
 
             playlist.sort(sortOnLastWatched);
-
             persist();
         }
 

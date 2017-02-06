@@ -55,7 +55,15 @@
 
         resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
         function resolveFeed ($stateParams, $q, dataStore) {
-            return dataStore.getFeed($stateParams.feedId) || $q.reject();
+
+            var feed = dataStore.getFeed($stateParams.feedId);
+
+            // if the feed is loading wait for the promise to resolve.
+            if (feed.loading) {
+                return feed.promise;
+            }
+
+            return feed || $q.reject();
         }
     }
 }());

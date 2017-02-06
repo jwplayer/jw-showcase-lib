@@ -83,8 +83,8 @@
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
-        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
+        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'dataStore', 'FeedModel', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
+        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, dataStore, FeedModel, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
 
             var defer = $q.defer();
 
@@ -97,7 +97,8 @@
                 .getConfig()
                 .then(function (resolvedConfig) {
 
-                    var promises = [];
+                    var feedPromises = [],
+                        model;
 
                     // apply config
                     angular.forEach(resolvedConfig, function (value, key) {
@@ -118,20 +119,30 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
-                    promises.push(api.getPlayer(config.player));
+                    if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
+                        model = new FeedModel(config.featuredPlaylist);
 
-                    if (config.featuredPlaylist) {
-                        promises.push(apiConsumer.getFeaturedFeed());
+                        feedPromises.push(apiConsumer.populateFeedModel(model));
+                        dataStore.featuredFeed = model;
                     }
 
-                    if (config.playlists) {
-                        promises.push(apiConsumer.getFeeds());
+                    if (angular.isArray(config.playlists)) {
+
+                        dataStore.feeds = config.playlists.map(function (feedId) {
+                            model = new FeedModel(feedId);
+                            feedPromises.push(apiConsumer.populateFeedModel(model));
+                            return model;
+                        });
                     }
 
-                    $q.all(promises).then(
-                        handlePreloadSuccess,
-                        handlePreloadError
-                    );
+                    // don't wait for the feeds but we want to populate the watchlist and watchProgress feeds after
+                    // feeds are loaded
+                    $q.all(feedPromises)
+                        .then(handleFeedsLoadSuccess, handleFeedsLoadError);
+
+                    api.getPlayer(config.player)
+                        .then(handlePreloadSuccess, handlePreloadError);
+
                 }, handlePreloadError);
 
             return defer.promise;
@@ -140,10 +151,7 @@
 
             function handlePreloadSuccess () {
 
-                watchlist.restore();
-                watchProgress.restore();
                 userSettings.restore();
-
                 cookies.showIfNeeded();
 
                 defer.resolve();
@@ -158,11 +166,27 @@
 
                 defer.reject();
             }
+
+            function handleFeedsLoadSuccess () {
+
+                watchlist.restore();
+                watchProgress.restore();
+            }
+
+            function handleFeedsLoadError () {
+
+                console.log(arguments);
+                // @TODO Show error message?
+            }
         }
     }
 
     run.$inject = ['$rootScope', '$state', 'config'];
     function run ($rootScope, $state, config) {
+
+        if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
+            angular.element(document.body).addClass('platform-touch');
+        }
 
         $rootScope.$on('$stateChangeStart', function (event, toState) {
 

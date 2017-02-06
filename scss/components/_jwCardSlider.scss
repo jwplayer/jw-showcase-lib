@@ -14,8 +14,35 @@ $featured-slider-max-width: 900px;
         .jw-card-slider-container .jw-card-slider-list,
         .jw-card.jw-card-flag-default,
         .jw-card-play-button,
+        .jw-card-slider-slide,
         .jw-card-poster {
             @include single-transition(none, 0s !important);
+        }
+    }
+
+    &-flag-loading {
+
+        .jw-card-slider-title {
+            opacity: 0.2;
+        }
+    }
+
+    &-flag-now-playing .jw-card-slider-slide.first {
+
+        .jw-card-container {
+            background-color: rgba($black, 0.6);
+        }
+
+        .jw-card-controls {
+            opacity: 1;
+        }
+
+        .jw-card-play-button {
+            display: none;
+        }
+
+        .jw-card-text-now-playing {
+            display: block;
         }
     }
 
@@ -72,24 +99,7 @@ $featured-slider-max-width: 900px;
 
     .jw-card-slider-list {
         position: relative;
-        margin: 0;
-        padding: 0;
-        list-style: none;
         white-space: nowrap;
-
-        .jw-card-slider-slide:not(.is-visible) {
-            pointer-events: none !important;
-        }
-
-        .jw-card-slider-slide.is-poster-visible .jw-card-poster {
-            @include single-transition(opacity, 0.5s, ease, 0.3s);
-            opacity: 1;
-        }
-
-        .jw-card-slider-slide:not(.is-poster-visible) .jw-card-poster {
-            background-image: none !important;
-            opacity: 0;
-        }
 
         .jw-card-slider-slide {
             display: inline-block;
@@ -114,11 +124,11 @@ $featured-slider-max-width: 900px;
         color: $main-color;
         cursor: pointer;
 
-        &.jw-card-slider-button-flag-left {
+        &-flag-left {
             left: 10px;
         }
 
-        &.jw-card-slider-button-flag-right {
+        &-flag-right {
             right: 10px;
         }
 
@@ -137,30 +147,25 @@ $featured-slider-max-width: 900px;
     }
 
     //
-    // jwCardSliderIndicators
+    // jwCardSliderIndicator
     // --------------------------------
 
-    .jw-card-slider-indicators {
+    .jw-card-slider-indicator {
         @include transform(translateX(-50%));
 
-        display: none;
         position: absolute;
         bottom: 0;
         left: 50%;
         margin: 0;
         padding: 20px;
         list-style: none;
-
-        &.is-visible {
-            display: block;
-        }
     }
 
     //
-    // jwCardSliderIndicator
+    // jwCardSliderIndicatorDot
     // --------------------------------
 
-    .jw-card-slider-indicator {
+    .jw-card-slider-indicator-dot {
         display: inline-block;
         width: 10px;
         height: 10px;
@@ -168,11 +173,6 @@ $featured-slider-max-width: 900px;
 
         border-radius: 50%;
         background-color: $gray;
-        cursor: pointer;
-
-        &:hover {
-            background-color: $white;
-        }
 
         &.is-active {
             background-color: $primary-color;
@@ -204,7 +204,13 @@ $featured-slider-max-width: 900px;
         margin: 0 auto;
     }
 
+    .jw-card-slider-title,
+    .jw-card-menu-button {
+        display: none;
+    }
+
     .jw-card-slider-list {
+
         @for $i from 1 through 10 {
             &.slides-#{$i} .jw-card-slider-slide {
                 width: 100% / $i;
@@ -213,28 +219,21 @@ $featured-slider-max-width: 900px;
     }
 
     .jw-card-slider-slide {
+        @include single-transition(opacity, 0.2s, ease-in, 0s);
 
         &:not(.is-visible) {
-            .jw-card-container {
-                background: rgba($black, 0.5);
-            }
+            opacity: 0.3;
 
-            .jw-card-menu-button {
+            .jw-card-info,
+            .jw-card-controls {
                 display: none;
-            }
-        }
-
-        &.is-visible {
-            .jw-card-info {
-                opacity: 1;
             }
         }
     }
 
     .jw-card-info {
-        @include single-transition(opacity, 0.3s, ease, 0s);
+        //@include single-transition(opacity, 0.3s, ease, 0s);
         padding-bottom: 45px;
-        opacity: 0;
     }
 }
 
@@ -244,24 +243,12 @@ $featured-slider-max-width: 900px;
 
 .jw-card-slider.jw-card-slider-flag-default {
 
-    &.jw-card-slider-animate .jw-card-slider-slide {
-        &.ng-enter,
-        &.ng-leave {
-            @include single-transition(all, 0.3s, ease, 0s);
-        }
-
-        &.ng-enter:not(.ng-enter-active),
-        &.ng-leave.ng-leave-active {
-            width: 0 !important;
-            opacity: 0;
-        }
-    }
-
     .jw-card-slider-align {
         padding: 0 #{90px - $default-slider-spacing / 2} 20px;
     }
 
     .jw-card-slider-list {
+
         @for $i from 1 through 10 {
             &.slides-#{$i} .jw-card-slider-slide {
                 width: calc(#{100% / $i} - #{$default-slider-spacing});
@@ -276,6 +263,18 @@ $featured-slider-max-width: 900px;
 
         &.is-visible {
             opacity: 1;
+        }
+
+        &:not(.is-visible) {
+            pointer-events: none;
+        }
+
+        &-flag-dummy {
+            background: $white;
+
+            .jw-card-aspect {
+                background: $main-color;
+            }
         }
     }
 }
@@ -302,11 +301,11 @@ $featured-slider-max-width: 900px;
 
     .jw-card-slider.jw-card-slider-flag-featured {
 
-        .jw-card-slider-indicators {
+        .jw-card-slider-indicator {
             padding: 0 13px 16px 0;
         }
 
-        .jw-card-slider-indicator {
+        .jw-card-slider-indicator-dot {
             width: 8px;
             height: 8px;
         }
