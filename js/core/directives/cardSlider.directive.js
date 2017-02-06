@@ -81,6 +81,8 @@
                 sliderHasMoved         = false,
                 sliderCanSlide         = false,
                 sliding                = false,
+                userIsSliding          = false,
+                startCoords            = {},
                 totalItems             = 0,
                 itemsVisible           = 1,
                 itemsMargin            = 1,
@@ -109,6 +111,7 @@
 
                 scope.$on('$destroy', destroyHandler);
                 window.addEventListener('resize', resizeHandlerDebounced);
+                findElement('.jw-card-slider-align')[0].addEventListener('touchstart', onTouchStart, false);
 
                 scope.$watch(function () {
                     return scope.vm.feed;
@@ -152,6 +155,7 @@
             function destroyHandler () {
 
                 window.removeEventListener('resize', resizeHandlerDebounced);
+                findElement('.jw-card-slider-align')[0].removeEventListener('touchstart', onTouchStart);
             }
 
             /**
@@ -428,6 +432,122 @@
                         callback && callback();
                     }, 1);
                 }
+            }
+
+            /**
+             * Handle touchstart event
+             * @param {Event} event
+             */
+            function onTouchStart (event) {
+
+                var coords         = getCoords(event),
+                    touchContainer = findElement('.jw-card-slider-align')[0];
+
+                touchContainer.addEventListener('touchmove', onTouchMove);
+                touchContainer.addEventListener('touchend', onTouchEnd);
+                touchContainer.addEventListener('touchcancel', onTouchCancel);
+
+                startCoords = coords;
+                element.addClass('is-sliding');
+
+                if (ionic.Platform.isAndroid() && ionic.Platform.version() < 5) {
+                    event.preventDefault();
+                }
+            }
+
+            /**
+             * Handle touchmove event
+             * @param {Event} event
+             */
+            function onTouchMove (event) {
+
+                var coords         = getCoords(event),
+                    distanceX      = startCoords.x - coords.x,
+                    distanceY      = startCoords.y - coords.y,
+                    deltaX         = Math.abs(distanceX),
+                    deltaY         = Math.abs(distanceY),
+                    sliderWidth    = findElement('.jw-card-slider-list')[0].offsetWidth,
+                    containerWidth = findElement('.jw-card-slider-container')[0].offsetWidth;
+
+                if (animation && animation._active) {
+                    return;
+                }
+
+                if (!userIsSliding) {
+                    if (deltaY > 20) {
+                        afterTouchEnd();
+                        moveSlider(0, true);
+                    }
+                    else if (deltaX > 20) {
+                        userIsSliding = true;
+                    }
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                // first item
+                if (!sliderHasMoved && distanceX < 0) {
+                    distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth)) * -1;
+                }
+                // last item
+                else if (!sliderCanSlide && distanceX > 0) {
+                    distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth));
+                }
+
+                var percentageOffset = (distanceX / sliderWidth) * 100;
+
+                moveSlider(-percentageOffset, false);
+            }
+
+            /**
+             * Handle touchend event
+             * @param {Event} event
+             */
+            function onTouchEnd (event) {
+
+                var coords   = getCoords(event),
+                    distance = startCoords.x - coords.x;
+
+                if (distance < -50 && sliderHasMoved) {
+                    slideLeft();
+                }
+                else if (distance > 50 && sliderCanSlide) {
+                    slideRight();
+                }
+                else {
+                    moveSlider(0, true);
+                }
+
+                afterTouchEnd();
+            }
+
+            /**
+             * Handle touchcancel event
+             */
+            function onTouchCancel () {
+
+                moveSlider(0, true);
+                afterTouchEnd();
+            }
+
+            /**
+             * Remove touch event listeners and remove className 'is-hiding'
+             */
+            function afterTouchEnd () {
+
+                var touchContainer = findElement('.jw-card-slider-align')[0];
+
+                startCoords = null;
+
+                touchContainer.removeEventListener('touchmove', onTouchMove);
+                touchContainer.removeEventListener('touchend', onTouchEnd);
+                touchContainer.removeEventListener('touchcancel', onTouchCancel);
+
+                userIsSliding = false;
+
+                element.removeClass('is-sliding');
             }
 
             /**
