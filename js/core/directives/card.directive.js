@@ -61,9 +61,6 @@
             link:             link
         };
 
-        // @TODO touch device flag
-        // @TODO close menu when other card menu opens
-
         function link (scope, element) {
 
             scope.vm.showToast  = showToast;
