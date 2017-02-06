@@ -4,15 +4,17 @@
 
 .jw-card {
     position: relative;
-
     font-size: rem(15px);
 
-    &:not(.jw-card-flag-touch):not(.jw-card-flag-menu-open) {
+    body:not(.platform-touch) & {
 
-        &.jw-card-flag-active,
-        &:hover {
-            .jw-card-controls {
-                opacity: 1;
+        &:not(.jw-card-flag-menu-open) {
+
+            &.jw-card-flag-active,
+            &:hover {
+                .jw-card-controls {
+                    opacity: 1;
+                }
             }
         }
     }
@@ -212,7 +214,7 @@
 .jw-card.jw-card-flag-default {
     padding-bottom: 39px;
 
-    &:not(.jw-card-flag-touch):not(.jw-card-flag-compact) {
+    body:not(.platform-touch) & {
 
         &.jw-card-flag-menu-open,
         &:hover {

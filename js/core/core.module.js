@@ -184,6 +184,10 @@
     run.$inject = ['$rootScope', '$state', 'config'];
     function run ($rootScope, $state, config) {
 
+        if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
+            angular.element(document.body).addClass('platform-touch');
+        }
+
         $rootScope.$on('$stateChangeStart', function (event, toState) {
 
             // prevent users going to search page when no searchPlaylist is defined

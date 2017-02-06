@@ -83,8 +83,9 @@
                 sliding                = false,
                 userIsSliding          = false,
                 startCoords            = {},
+                sliderMap              = [],
                 totalItems             = 0,
-                itemsVisible           = 1,
+                itemsVisible           = 0,
                 itemsMargin            = 1,
                 animation;
 
@@ -166,7 +167,7 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                if (newValue.title === oldValue.title && newValue.playlist.length === oldValue.playlist.length) {
+                if (comparePlaylist(newValue.playlist, oldValue.playlist)) {
                     return;
                 }
 
@@ -179,6 +180,19 @@
                 element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
 
                 resizeHandler(true);
+            }
+
+            function comparePlaylist (playlist, prevPlaylist) {
+
+                var playlistMap     = playlist.map(function (item) {
+                        return item.$key;
+                    }),
+                    prevPlaylistMap = prevPlaylist.map(function (item) {
+                        return item.$key;
+                    });
+
+                return angular.equals(playlistMap, prevPlaylistMap);
+
             }
 
             /**
@@ -204,11 +218,9 @@
 
                 if (forceRender || needsRender) {
                     renderSlides();
-
-                    if (false === sliderHasMoved) {
-                        moveSlider(0, false);
-                    }
                 }
+
+                moveSlider(0, false);
             }
 
             /**
@@ -216,10 +228,13 @@
              */
             function renderDummySlides () {
 
-                var holder = angular.element('<div></div>');
+                var holder = angular.element('<div></div>'),
+                    dummy;
 
                 for (var i = 0; i < 5; i++) {
-                    holder.append(angular.element(dummySlideTemplate));
+                    dummy = angular.element(dummySlideTemplate);
+                    dummy.children().eq(0).addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+                    holder.append(dummy);
                 }
 
                 sliderList
@@ -232,15 +247,14 @@
              */
             function renderSlides () {
 
-                var holder     = angular.element('<div></div>'),
-                    slides     = Array.prototype.slice.call(findElement('.jw-card-slider-list').children()),
-                    current    = index,
-                    startIndex = sliderHasMoved ? itemsMargin : 0,
-                    totalCols  = itemsVisible + itemsMargin,
+                var itemIndex     = index,
+                    totalCols     = itemsVisible + itemsMargin,
+                    prevNode      = null,
+                    nextSliderMap = [],
                     item, slide;
 
                 if (sliderHasMoved) {
-                    current -= itemsMargin;
+                    itemIndex -= itemsMargin;
                     totalCols += itemsMargin;
                 }
 
@@ -248,65 +262,75 @@
                     return renderDummySlides();
                 }
 
-                if (current < 0) {
-                    current += totalItems;
+                if (itemIndex < 0) {
+                    itemIndex += totalItems;
                 }
 
-                for (var n = 0; n < totalCols; n++) {
+                for (var slideIndex = 0; slideIndex < totalCols; slideIndex++) {
 
-                    if (current > totalItems - 1) {
+                    slide = null;
+
+                    if (itemIndex > totalItems - 1) {
                         if (!sliderCanSlide) {
                             break;
                         }
 
-                        current -= totalItems;
+                        itemIndex -= totalItems;
                     }
 
-                    item = scope.vm.feed.playlist[current];
+                    item = scope.vm.feed.playlist[itemIndex];
 
-                    // find existing slide
-                    // test parentNode when an item is rendered twice
-                    slide = slides.find(function (slide) {
-                        return slide.parentNode !== holder[0] && slide.getAttribute('key') === item.$key;
-                    });
+                    var mapIndex = sliderMap.length;
+                    while (mapIndex--) {
+                        if (sliderMap[mapIndex].key === item.$key) {
+                            slide = sliderMap[mapIndex].el;
+                            nextSliderMap.push(sliderMap[mapIndex]);
+                            sliderMap.splice(mapIndex, 1);
+                            break;
+                        }
+                    }
 
                     if (!slide) {
                         slide = compileSlide(item);
-                    }
-                    else {
-                        slide = angular.element(slide);
+                        nextSliderMap.push({
+                            key: item.$key,
+                            el:  slide
+                        });
                     }
 
                     slide.removeClass('first last');
-                    slide.toggleClass('is-visible', n >= startIndex && n < startIndex + itemsVisible);
 
-                    if (current === 0) {
+                    if (itemIndex === 0) {
                         slide.addClass('first');
                     }
-
-                    if (current === totalItems - 1) {
+                    else if (itemIndex === totalItems - 1) {
                         slide.addClass('last');
                     }
 
-                    holder
-                        .append(slide);
+                    if (slideIndex === 0) {
+                        sliderList.prepend(slide);
+                    }
+                    else {
+                        prevNode.after(slide);
+                    }
 
-                    current++;
+                    prevNode = slide;
+
+                    itemIndex++;
                 }
 
-                findElements('.jw-card-slider-slide')
-                    .forEach(function (slide) {
-                        var childScope = angular.element(slide).scope();
-                        if (scope !== childScope) {
-                            angular.element(slide).scope().$destroy();
-                        }
-                    });
+                // remove rest of the slides
+                sliderMap.forEach(function (item) {
+                    if (item.el.scope()) {
+                        item.el.scope().$destroy();
+                    }
+                    item.el.remove();
+                });
 
-                sliderList
-                    .html('')
-                    .append(holder.children());
+                sliderMap = nextSliderMap;
 
                 updateIndicator();
+                updateVisibleSlides();
                 findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !sliderHasMoved);
             }
 
@@ -342,7 +366,7 @@
 
             /**
              * Set visible classNames to slides
-             * @param {number} offset
+             * @param {number} [offset=0]
              */
             function updateVisibleSlides (offset) {
 

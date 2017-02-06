@@ -151,11 +151,6 @@
                 vm.title = vm.title.substr(0, 100) + '...';
             }
 
-            // reset slider to first index
-            if (vm.feedCardSliderDelegate) {
-                vm.feedCardSliderDelegate.slideToIndex(0);
-            }
-
             if (config.recommendationsPlaylist) {
 
                 vm.recommendationsFeed = vm.recommendationsFeed || new FeedModel(config.recommendationsPlaylist, 'Related Videos');
@@ -572,7 +567,7 @@
                 });
 
             update();
-            // $ionicScrollDelegate.scrollTop(true);
+            $ionicScrollDelegate.scrollTop(true);
         }
 
         /**
