@@ -108,6 +108,9 @@
                 if (!scope.vm.featured) {
                     scope.vm.heading = scope.vm.feed.title || 'loading';
                 }
+                else {
+                    findElement('.jw-card-slider-indicator').removeClass('ng-hide');
+                }
 
                 scope.$on('$destroy', destroyHandler);
                 window.addEventListener('resize', resizeHandlerDebounced);
@@ -303,7 +306,38 @@
                     .html('')
                     .append(holder.children());
 
+                updateIndicator();
                 findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !sliderHasMoved);
+            }
+
+            /**
+             * Update the slider indicator
+             */
+            function updateIndicator () {
+
+                var indicator = findElement('.jw-card-slider-indicator'),
+                    children  = indicator.children();
+
+                if (!scope.vm.featured) {
+                    return;
+                }
+
+                // re-render dots if length mismatches
+                if (children.length !== totalItems) {
+
+                    indicator.html('');
+
+                    for (var i = 0; i < totalItems; i++) {
+                        indicator.append(angular.element('<div class="jw-card-slider-indicator-dot"></div>'));
+                    }
+                }
+
+                // update active dot
+                indicator
+                    .children()
+                    .removeClass('is-active')
+                    .eq(index)
+                    .addClass('is-active');
             }
 
             /**
