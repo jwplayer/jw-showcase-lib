@@ -110,7 +110,7 @@
                         }
                     });
 
-                    if (!angular.isString(config.contentService)) {
+                    if (!config.contentService) {
                         config.contentService = DEFAULT_CONTENT_SERVICE;
                     }
 
