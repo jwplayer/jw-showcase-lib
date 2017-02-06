@@ -92,10 +92,14 @@
              */
             function onClickOutside (evt) {
 
-                // clicked inside card, don't close
-                if (parents(evt.target, 'jw-card')) {
-                    return;
+                var node = evt.target;
+
+                do {
+                    if (node === element[0]) {
+                        return;
+                    }
                 }
+                while(node = node.parentNode);
 
                 scope.$apply(function () {
                     jwCard.closeMenu();
