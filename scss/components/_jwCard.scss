@@ -8,13 +8,10 @@
 
     body:not(.platform-touch) & {
 
-        &:not(.jw-card-flag-menu-open) {
-
-            &.jw-card-flag-active,
-            &:hover {
-                .jw-card-controls {
-                    opacity: 1;
-                }
+        &.jw-card-flag-active,
+        &:hover {
+            .jw-card-controls {
+                opacity: 1;
             }
         }
     }
@@ -216,7 +213,6 @@
 
     body:not(.platform-touch) & {
 
-        &.jw-card-flag-menu-open,
         &:hover {
 
             .jw-card-container {
