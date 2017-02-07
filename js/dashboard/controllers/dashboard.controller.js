@@ -42,6 +42,8 @@
 
         vm.cardClickHandler = cardClickHandler;
 
+        vm.hideHeader = config.hideHeader;
+
         activate();
 
         ////////////

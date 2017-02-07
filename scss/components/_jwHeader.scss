@@ -138,6 +138,10 @@
         }
     }
 
+    &.hide-main-header {
+        top: inherit;
+    }
+
     .jw-header-nav {
         @include flex(0 0 $subheader-nav-width);
         min-width: $subheader-nav-width;
@@ -229,6 +233,10 @@
 
         &.has-subheader {
             top: $header-height-mobile + $subheader-height;
+        }
+
+        &.has-header.hide-main-header {
+            top: $subheader-height;
         }
     }
 }

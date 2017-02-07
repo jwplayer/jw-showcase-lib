@@ -26,13 +26,14 @@
      *
      * @requires $scope
      */
-    FeedController.$inject = ['$state', 'feed'];
-    function FeedController ($state, feed) {
+    FeedController.$inject = ['$state', 'feed', 'config'];
+    function FeedController ($state, feed, config) {
 
         var vm = this;
 
         vm.feed             = feed;
         vm.cardClickHandler = cardClickHandler;
+        vm.hasHeader        = !config.hideHeader;
 
         ////////////////////////
 
