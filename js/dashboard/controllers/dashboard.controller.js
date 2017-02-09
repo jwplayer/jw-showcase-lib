@@ -16,6 +16,8 @@
 
 (function () {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.dashboard')
         .controller('DashboardController', DashboardController);
@@ -39,6 +41,7 @@
         vm.dataStore             = dataStore;
         vm.userSettings          = userSettings;
         vm.showWatchProgressFeed = showWatchProgressFeed;
+        vm.isMobileScreen        = MOBILE_SCREEN;
 
         vm.cardClickHandler = cardClickHandler;
 
