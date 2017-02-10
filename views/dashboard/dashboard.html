@@ -2,15 +2,14 @@
   <ion-content class="has-header">
 
     <div class="featured">
-      <div class="jw-row is-hidden-mobile" ng-if="vm.dataStore.featuredFeed">
+      <div class="jw-row" ng-if="vm.dataStore.featuredFeed && !vm.isMobileScreen">
         <jw-card-slider feed="vm.dataStore.featuredFeed" spacing="0" featured="true" cols="1"
             on-card-click="vm.cardClickHandler"></jw-card-slider>
       </div>
 
-      <!--<div class="jw-row is-visible-mobile" ng-repeat="item in vm.dataStore.featuredFeed.playlist">-->
-      <!--<jw-card class="is-active" item="item" featured="true" show-title="true" show-description="true"-->
-      <!--on-click="vm.cardClickHandler"></jw-card>-->
-      <!--</div>-->
+      <div class="jw-row" ng-repeat="item in vm.dataStore.featuredFeed.playlist" ng-if="vm.isMobileScreen">
+        <jw-card class="is-active" item="item" featured="true" on-click="vm.cardClickHandler"></jw-card>
+      </div>
     </div>
 
     <div class="watchProgress jw-expand-animation" ng-if="vm.showWatchProgressFeed()">
