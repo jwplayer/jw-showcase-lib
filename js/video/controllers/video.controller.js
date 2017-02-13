@@ -111,7 +111,8 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics = {
-                    sdkplatform: ionic.Platform.isAndroid() ? 1 : 2
+                    sdkplatform: ionic.Platform.isAndroid() ? 1 : 2,
+                    bi:          config.id
                 };
             }
 
