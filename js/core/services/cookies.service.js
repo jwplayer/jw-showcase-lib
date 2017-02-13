@@ -13,9 +13,10 @@
      * @required $templateCache
      * @required $ionicPopover
      * @requires jwShowcase.core.userSettings
+     * @requires jwShowcase.config
      */
-    cookiesService.$inject = ['$rootScope', '$controller', '$templateCache', '$ionicPopover', 'userSettings'];
-    function cookiesService ($rootScope, $controller, $templateCache, $ionicPopover, userSettings) {
+    cookiesService.$inject = ['$rootScope', '$controller', '$templateCache', '$ionicPopover', 'userSettings', 'config'];
+    function cookiesService ($rootScope, $controller, $templateCache, $ionicPopover, userSettings, config) {
 
         var template,
             popover;
@@ -124,7 +125,7 @@
 
             var isBrowser = !window.cordova;
 
-            if (!userSettings.settings.cookies && isBrowser) {
+            if (config.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
                 show();
             }
         }
