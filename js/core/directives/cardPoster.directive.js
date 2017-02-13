@@ -274,7 +274,6 @@
                 };
 
                 parser.onflush = function () {
-
                     if (thumbnails.length > 0) {
                         thumbnailsPerRow = 0;
 
@@ -287,7 +286,6 @@
                 };
 
                 parser.onparsingerror = function () {
-
                     thumbnails = [];
                     defer.reject('vtt parse error');
                 };
