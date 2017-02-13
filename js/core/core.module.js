@@ -32,7 +32,9 @@
     config.$inject = ['$stateProvider', 'seoProvider', '$ionicConfigProvider'];
     function config ($stateProvider, seoProvider, $ionicConfigProvider) {
 
-        ionic.Platform.isMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid() || ionic.Platform.isWindowsPhone();
+        var platform = ionic.Platform;
+
+        platform.isMobile = platform.isIOS() || platform.isAndroid() || platform.isWindowsPhone();
 
         $stateProvider
             .state('root', {
@@ -83,8 +85,11 @@
          *
          * @returns {$q.promise}
          */
-        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'apiConsumer', 'dataStore', 'FeedModel', 'watchlist', 'watchProgress', 'userSettings', 'DEFAULT_CONTENT_SERVICE'];
-        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, dataStore, FeedModel, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
+        preloadApp.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
+            'apiConsumer', 'dataStore', 'FeedModel', 'watchlist', 'watchProgress', 'userSettings',
+            'DEFAULT_CONTENT_SERVICE'];
+        function preloadApp ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, dataStore,
+                             FeedModel, watchlist, watchProgress, userSettings, DEFAULT_CONTENT_SERVICE) {
 
             var defer = $q.defer();
 

@@ -42,8 +42,6 @@
          *
          * @description
          * Handle click event on the menu button.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function menuButtonClickHandler () {
 

@@ -139,7 +139,7 @@
 
             return function (item) {
                 return item.mediaid === mediaId;
-            }
+            };
         }
     }
 

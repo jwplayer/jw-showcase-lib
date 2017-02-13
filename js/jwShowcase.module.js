@@ -75,7 +75,7 @@
             }
 
             return $delegate.apply(null, arguments);
-        }
+        };
     }
 
 }());

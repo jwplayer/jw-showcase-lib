@@ -189,16 +189,20 @@
          */
         function getValueForScreenSize (screenSizes, defaultValue) {
 
-            var index,
+            var keys  = Object.keys(screenSizes),
+                key,
+                index = 0,
                 last;
 
-            for (index in SCREEN_SIZES) {
+            for (; index < keys.length; index++) {
 
-                if (angular.isDefined(screenSizes[index])) {
-                    last = screenSizes[index];
+                key = keys[index];
+
+                if (angular.isDefined(screenSizes[key])) {
+                    last = screenSizes[key];
                 }
 
-                if (true === SCREEN_SIZES[index].matches) {
+                if (SCREEN_SIZES[key] && true === SCREEN_SIZES[key].matches) {
                     return last;
                 }
             }

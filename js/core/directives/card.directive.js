@@ -42,8 +42,8 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', '$state', '$http', 'watchlist', 'utils'];
-    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, $state, $http, watchlist, utils) {
+    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', 'watchlist', 'utils'];
+    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, watchlist, utils) {
 
         return {
             scope:            {
@@ -123,7 +123,7 @@
                     clickedOnPlay = playButton === event.target || playButton === event.target.parentNode;
 
                 if (angular.isFunction(scope.vm.onClick)) {
-                    scope.vm.onClick(scope.vm.item, clickedOnPlay)
+                    scope.vm.onClick(scope.vm.item, clickedOnPlay);
                 }
             }
 

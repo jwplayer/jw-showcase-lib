@@ -94,7 +94,7 @@
         .handle {
             top: 7px;
             border: 1px solid $disabled-color;
-            box-shadow: 0 0 5px rgba($black, 0.35)
+            box-shadow: 0 0 5px rgba($black, 0.35);
         }
 
         input:checked + .track .handle {

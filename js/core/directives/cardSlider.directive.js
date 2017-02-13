@@ -33,8 +33,8 @@
      * @scope
      *
      * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
-     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number or
-     *                                                  an object with responsive columns (e.g. `{sm: 2, md: 4}`).
+     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number
+     *                                                  or an object with responsive columns (e.g. `{sm: 2, md: 4}`).
      *                                                  Available sizes; xs, sm, md, lg and xl.
      *
      * @param {boolean=}                featured        Featured slider flag
@@ -140,7 +140,7 @@
              */
             function findElement (selector) {
 
-                return angular.element(element[0].querySelector(selector))
+                return angular.element(element[0].querySelector(selector));
             }
 
             /**
@@ -150,7 +150,7 @@
              */
             function findElements (selector) {
 
-                return angular.element(element[0].querySelectorAll(selector))
+                return angular.element(element[0].querySelectorAll(selector));
             }
 
             /**
@@ -200,7 +200,8 @@
              */
             function resizeHandler (forceRender) {
 
-                var newItemsVisible = angular.isNumber(scope.vm.cols) ? scope.vm.cols : utils.getValueForScreenSize(scope.vm.cols, 1),
+                var newItemsVisible = angular.isNumber(scope.vm.cols) ? scope.vm.cols :
+                        utils.getValueForScreenSize(scope.vm.cols, 1),
                     needsRender     = newItemsVisible !== itemsVisible;
 
                 itemsVisible   = newItemsVisible;
@@ -268,8 +269,6 @@
 
                 for (var slideIndex = 0; slideIndex < totalCols; slideIndex++) {
 
-                    slide = null;
-
                     if (itemIndex > totalItems - 1) {
                         if (!sliderCanSlide) {
                             break;
@@ -278,25 +277,47 @@
                         itemIndex -= totalItems;
                     }
 
-                    item = scope.vm.feed.playlist[itemIndex];
+                    item  = scope.vm.feed.playlist[itemIndex];
+                    slide = findExistingSlide(item) || createSlide(item);
 
-                    var mapIndex = sliderMap.length;
-                    while (mapIndex--) {
-                        if (sliderMap[mapIndex].key === item.$key) {
-                            slide = sliderMap[mapIndex].el;
-                            nextSliderMap.push(sliderMap[mapIndex]);
-                            sliderMap.splice(mapIndex, 1);
-                            break;
-                        }
+                    addClassNamesToSlide(slide);
+                    addSliderToSliderList(slide);
+
+                    prevNode = slide;
+                    itemIndex++;
+                }
+
+                destroySlides();
+
+                sliderMap = nextSliderMap;
+
+                updateIndicator();
+                updateVisibleSlides();
+                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !sliderHasMoved);
+
+                ///////////
+
+                function createSlide () {
+
+                    var slide = compileSlide(item);
+                    nextSliderMap.push({
+                        key: item.$key,
+                        el:  slide
+                    });
+
+                    return slide;
+                }
+
+                function addSliderToSliderList () {
+
+                    if (prevNode) {
+                        return prevNode.after(slide);
                     }
 
-                    if (!slide) {
-                        slide = compileSlide(item);
-                        nextSliderMap.push({
-                            key: item.$key,
-                            el:  slide
-                        });
-                    }
+                    sliderList.prepend(slide);
+                }
+
+                function addClassNamesToSlide() {
 
                     slide.removeClass('first last');
 
@@ -307,31 +328,30 @@
                         slide.addClass('last');
                     }
 
-                    if (slideIndex === 0) {
-                        sliderList.prepend(slide);
-                    }
-                    else {
-                        prevNode.after(slide);
-                    }
-
-                    prevNode = slide;
-
-                    itemIndex++;
                 }
 
-                // remove rest of the slides
-                sliderMap.forEach(function (item) {
-                    if (item.el.scope()) {
-                        item.el.scope().$destroy();
+                function findExistingSlide (item) {
+
+                    var mapIndex = sliderMap.length;
+                    while (mapIndex--) {
+                        if (sliderMap[mapIndex].key === item.$key) {
+                            slide = sliderMap[mapIndex].el;
+                            nextSliderMap.push(sliderMap[mapIndex]);
+                            sliderMap.splice(mapIndex, 1);
+                            break;
+                        }
                     }
-                    item.el.remove();
-                });
+                }
 
-                sliderMap = nextSliderMap;
+                function destroySlides () {
 
-                updateIndicator();
-                updateVisibleSlides();
-                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !sliderHasMoved);
+                    sliderMap.forEach(function (item) {
+                        if (item.el.scope()) {
+                            item.el.scope().$destroy();
+                        }
+                        item.el.remove();
+                    });
+                }
             }
 
             /**
@@ -487,7 +507,9 @@
                     sliding = false;
 
                     setTimeout(function () {
-                        callback && callback();
+                        if (angular.isFunction(callback)) {
+                            callback();
+                        }
                     }, 1);
                 }
             }

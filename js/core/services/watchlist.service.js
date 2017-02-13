@@ -55,7 +55,7 @@
 
             return playlist.findIndex(function (current) {
                 return item.mediaid === current.mediaid;
-            })
+            });
         }
 
         /**

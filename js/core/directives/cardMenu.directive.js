@@ -99,7 +99,7 @@
                         return;
                     }
                 }
-                while(node = node.parentNode);
+                while((node = node.parentNode));
 
                 scope.$apply(function () {
                     jwCard.closeMenu();

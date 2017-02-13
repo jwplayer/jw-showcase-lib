@@ -216,7 +216,7 @@
                 }
 
                 // filter out older items older than lifetime
-                return time - item.lastWatched < LIFETIME
+                return time - item.lastWatched < LIFETIME;
             }
         }
 

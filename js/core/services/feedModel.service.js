@@ -14,7 +14,6 @@
  * governing permissions and limitations under the License.
  **/
 
-
 (function () {
 
     angular
@@ -38,6 +37,10 @@
 
             this.loading = false;
 
+            /**
+             * Find item inside this feed
+             * @param {string} mediaId
+             */
             this.findItem = function (mediaId) {
 
                 return this.playlist.find(function (item) {
@@ -45,12 +48,16 @@
                 });
             };
 
+            /**
+             * Make a copy of the current FeedModel
+             * @returns {FeedModel}
+             */
             this.clone = function () {
 
                 var clone = new FeedModel(this.feedid, this.title);
                 clone.playlist = this.playlist.slice(0);
                 return clone;
-            }
+            };
         }
 
         return FeedModel;

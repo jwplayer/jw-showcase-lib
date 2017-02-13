@@ -40,9 +40,11 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer, FeedModel,
-                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, config, feed, item) {
+        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share',
+        'player', 'config', 'feed', 'item'];
+    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
+                              FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, share, player,
+                              config, feed, item) {
 
         var vm                   = this,
             lastPos              = 0,
@@ -109,7 +111,7 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics = {
-                    sdkplatform:    ionic.Platform.isAndroid() ? 1 : 2
+                    sdkplatform: ionic.Platform.isAndroid() ? 1 : 2
                 };
             }
 
@@ -153,7 +155,10 @@
 
             if (config.recommendationsPlaylist) {
 
-                vm.recommendationsFeed = vm.recommendationsFeed || new FeedModel(config.recommendationsPlaylist, 'Related Videos');
+                if (!vm.recommendationsFeed) {
+                    vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos');
+                }
+
                 vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
 
                 apiConsumer
@@ -200,7 +205,7 @@
                         return false;
                     }
 
-                    return 'application/dash+xml' !== source.type
+                    return 'application/dash+xml' !== source.type;
                 });
 
                 return {
@@ -578,7 +583,7 @@
 
             return function (item) {
                 return item.mediaid === mediaId;
-            }
+            };
         }
     }
 

@@ -43,8 +43,6 @@
          *
          * @description
          * Handle click event on the search button.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function searchButtonClickHandler () {
 

@@ -48,8 +48,6 @@
          *
          * @description
          * Handle click event on the close search button.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function closeSearchButtonClickHandler () {
 
@@ -64,8 +62,6 @@
          *
          * @description
          * Handle change event off the search input.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function searchInputChangeHandler () {
 
@@ -82,17 +78,17 @@
          *
          * @param {$event} event Synthetic event object.
          */
-        function searchInputKeyupHandler ($event) {
+        function searchInputKeyupHandler (event) {
 
             // esc
-            if (27 === $event.which) {
+            if (27 === event.which) {
 
                 appStore.searchPhrase    = '';
                 appStore.searchBarActive = false;
             }
 
             // enter
-            if (13 === $event.which) {
+            if (13 === event.which) {
 
                 searchAndDisplayResults();
             }
