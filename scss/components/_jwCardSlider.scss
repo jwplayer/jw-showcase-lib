@@ -223,6 +223,7 @@ $featured-slider-max-width: 900px;
 
         &:not(.is-visible) {
             opacity: 0.3;
+            pointer-events: none;
 
             .jw-card-info,
             .jw-card-controls {

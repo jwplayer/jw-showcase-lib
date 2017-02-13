@@ -16,8 +16,6 @@
 
 (function () {
 
-    var LARGE_SCREEN = window.matchMedia('(min-device-width: 960px)').matches;
-
     angular
         .module('jwShowcase.core')
         .directive('jwCard', cardDirective);
@@ -44,14 +42,14 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', '$state', 'watchlist', 'utils'];
-    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, $state, watchlist, utils) {
+    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', '$state', '$http', 'watchlist', 'utils'];
+    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, $state, $http, watchlist, utils) {
 
         return {
             scope:            {
-                item:            '=',
-                featured:        '=',
-                onClick:         '='
+                item:     '=',
+                featured: '=',
+                onClick:  '='
             },
             controllerAs:     'vm',
             controller:       angular.noop,
@@ -63,8 +61,8 @@
 
         function link (scope, element) {
 
-            scope.vm.showToast  = showToast;
-            scope.vm.closeMenu  = closeMenu;
+            scope.vm.showToast = showToast;
+            scope.vm.closeMenu = closeMenu;
 
             activate();
 
@@ -72,14 +70,7 @@
 
             function activate () {
 
-                var posterUrl = generatePosterUrl();
-
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
-
-                findElement('.jw-card-poster').css({
-                    'background':     'url(' + posterUrl + ') no-repeat center',
-                    'backgroundSize': 'cover'
-                });
 
                 findElement('.jw-card-title').html(scope.vm.item.title);
                 findElement('.jw-card-description').html(scope.vm.item.description);
@@ -151,7 +142,7 @@
 
                 showToast({
                     templateUrl: 'views/core/toasts/unsavedVideo.html',
-                    duration: 1200
+                    duration:    1200
                 }).then(null, null, function () {
                     watchlist.removeItem(scope.vm.item);
                 });
@@ -208,22 +199,6 @@
                     $animate.leave(cardMenu);
                     element.removeClass('jw-card-flag-menu-open');
                 }
-            }
-
-            /**
-             * Generate card poster url
-             * @returns {*|string}
-             */
-            function generatePosterUrl () {
-
-                var width = scope.vm.featured ? 1280 : 640;
-
-                // half width when user has a small screen
-                if (false === LARGE_SCREEN) {
-                    width = width / 2;
-                }
-
-                return utils.replaceImageSize(scope.vm.item.image, width);
             }
 
             /**

@@ -3,8 +3,16 @@
 // --------------------------------
 
 .jw-card-poster {
-    @include single-transition(opacity, 0.2s, ease, 0s);
+    @include single-transition(opacity, 0.5s, ease, 0s);
     @include cover();
 
-    background-color: $gray;
+    opacity: 0;
+
+    &.is-active {
+        opacity: 1;
+    }
+
+    &.is-loading {
+        background-color: $gray;
+    }
 }
