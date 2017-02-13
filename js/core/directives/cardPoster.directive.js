@@ -231,7 +231,8 @@
 
                 thumbnailsLoading = true;
 
-                quality = quality || (scope.vm.featured ? FEATURED_CARD_THUMBNAIL_QUALITY : DEFAULT_CARD_THUMBNAIL_QUALITY);
+                quality = quality || (scope.vm.featured ? FEATURED_CARD_THUMBNAIL_QUALITY :
+                        DEFAULT_CARD_THUMBNAIL_QUALITY);
 
                 thumbnailsFile = utils.replaceImageSize(thumbnailsTrack.file, quality);
 
@@ -277,7 +278,7 @@
                     if (thumbnails.length > 0) {
                         thumbnailsPerRow = 0;
 
-                        while (thumbnails[thumbnailsPerRow][1] == 0) {
+                        while (thumbnails[thumbnailsPerRow][1] === '0') {
                             thumbnailsPerRow++;
                         }
                     }
