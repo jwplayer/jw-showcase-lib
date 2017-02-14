@@ -32,7 +32,8 @@
         ])
         .value('config', {
             enableContinueWatching: true,
-            enableCookieNotice:     false
+            enableCookieNotice:     false,
+            enableFeaturedText:     false
         })
         .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.0.1');
@@ -50,6 +51,7 @@
      * @property {string}      backgroundColor
      * @property {boolean}     enableContinueWatching
      * @property {boolean}     enableCookieNotice
+     * @property {boolean}     enableFeaturedText
      * @property {string}      searchPlaylist
      * @property {string}      recommendationsPlaylist
      * @property {string}      featuredPlaylist
