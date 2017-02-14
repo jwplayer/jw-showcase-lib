@@ -78,7 +78,7 @@
                 dummySlideTemplate     = $templateCache.get('views/core/cardSliderDummySlide.html'),
                 slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
                 index                  = 0,
-                sliderHasMoved         = false,
+                leftSlidesVisible      = false,
                 sliderCanSlide         = false,
                 sliding                = false,
                 userIsSliding          = false,
@@ -210,9 +210,11 @@
 
                 sliderList.attr('class', 'jw-card-slider-list slides-' + itemsVisible);
 
+                leftSlidesVisible = scope.vm.featured;
+
                 if (!sliderCanSlide) {
-                    index          = 0;
-                    sliderHasMoved = false;
+                    index             = 0;
+                    leftSlidesVisible = false;
                 }
 
                 findElements('.jw-card-slider-button').toggleClass('ng-hide', !sliderCanSlide);
@@ -254,7 +256,7 @@
                     nextSliderMap = [],
                     item, slide;
 
-                if (sliderHasMoved) {
+                if (leftSlidesVisible) {
                     itemIndex -= itemsMargin;
                     totalCols += itemsMargin;
                 }
@@ -293,7 +295,7 @@
 
                 updateIndicator();
                 updateVisibleSlides();
-                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !sliderHasMoved);
+                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !leftSlidesVisible);
 
                 ///////////
 
@@ -317,7 +319,7 @@
                     sliderList.prepend(slide);
                 }
 
-                function addClassNamesToSlide() {
+                function addClassNamesToSlide () {
 
                     slide.removeClass('first last');
 
@@ -338,7 +340,7 @@
                             slide = sliderMap[mapIndex].el;
                             nextSliderMap.push(sliderMap[mapIndex]);
                             sliderMap.splice(mapIndex, 1);
-                            break;
+                            return slide;
                         }
                     }
                 }
@@ -390,7 +392,7 @@
              */
             function updateVisibleSlides (offset) {
 
-                var from = sliderHasMoved ? itemsMargin : 0,
+                var from = leftSlidesVisible ? itemsMargin : 0,
                     to   = from + itemsVisible;
 
                 if (angular.isNumber(offset)) {
@@ -425,7 +427,7 @@
                 var toIndex   = index === 0 ? totalItems - itemsVisible : Math.max(0, index - itemsVisible),
                     slideCols = index - toIndex;
 
-                if (sliding || !sliderHasMoved) {
+                if (sliding || !leftSlidesVisible) {
                     return;
                 }
 
@@ -470,7 +472,7 @@
 
                 moveSlider(((slideCols / itemsVisible) * 100) * -1, true, function () {
 
-                    sliderHasMoved = true;
+                    leftSlidesVisible = true;
 
                     renderSlides();
                     moveSlider(0, false);
@@ -493,7 +495,7 @@
                     animation.kill();
                 }
 
-                if (sliderHasMoved) {
+                if (leftSlidesVisible) {
                     offset -= itemsMargin / itemsVisible * 100;
                 }
 
@@ -568,7 +570,7 @@
                 event.stopPropagation();
 
                 // first item
-                if (!sliderHasMoved && distanceX < 0) {
+                if (!leftSlidesVisible && distanceX < 0) {
                     distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth)) * -1;
                 }
                 // last item
@@ -590,7 +592,7 @@
                 var coords   = getCoords(event),
                     distance = startCoords.x - coords.x;
 
-                if (distance < -50 && sliderHasMoved) {
+                if (distance < -50 && leftSlidesVisible) {
                     slideLeft();
                 }
                 else if (distance > 50 && sliderCanSlide) {
