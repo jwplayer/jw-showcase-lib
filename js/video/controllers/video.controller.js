@@ -102,7 +102,10 @@
                 related:        false,
                 preload:        'metadata',
                 sharing:        false,
-                visualplaylist: false
+                visualplaylist: false,
+                analytics:      {
+                    bi: config.id
+                }
             };
 
             if (!window.jwplayer.defaults.skin) {
@@ -110,10 +113,7 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics = {
-                    sdkplatform: ionic.Platform.isAndroid() ? 1 : 2,
-                    bi:          config.id
-                };
+                vm.playerSettings.analytics.sdkplatform = ionic.Platform.isAndroid() ? 1 : 2;
             }
 
             $scope.$watch(function () {
