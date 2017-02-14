@@ -73,11 +73,11 @@
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (!scope.vm.featured || (scope.vm.featured && config.enableFeaturedText)) {
-                    findElement('.jw-card-title').html(scope.vm.item.title);
-                    findElement('.jw-card-description').html(scope.vm.item.description);
+                if (scope.vm.featured && !config.enableFeaturedText) {
+                    element.addClass('jw-card-flag-hide-text');
                 }
 
+                findElement('.jw-card-title').html(scope.vm.item.title);
                 findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
 
                 findElement('.jw-card-container').on('click', containerClickHandler);
@@ -85,10 +85,7 @@
 
                 // set watch progress
                 if (scope.vm.item.feedid === 'continue-watching') {
-
-                    findElement('.jw-card-watch-progress')
-                        .removeClass('ng-hide')
-                        .css('width', (scope.vm.item.progress * 100) + '%');
+                    scope.$watch('vm.item.progress', watchProgressUpdateHandler);
                 }
 
                 scope.$on('$destroy', destroyDirectiveHandler);
@@ -150,6 +147,13 @@
                 }).then(null, null, function () {
                     watchlist.removeItem(scope.vm.item);
                 });
+            }
+
+            function watchProgressUpdateHandler () {
+
+                findElement('.jw-card-watch-progress')
+                    .removeClass('ng-hide')
+                    .css('width', (scope.vm.item.progress * 100) + '%');
             }
 
             /**

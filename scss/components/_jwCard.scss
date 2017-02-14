@@ -16,8 +16,8 @@
         }
     }
 
-    &.jw-card-flag-menu-open,
-    &.jw-card-flag-toast-open {
+    &-flag-menu-open,
+    &-flag-toast-open {
         .jw-card-watchlist-button {
             @include transform(scale(0) !important);
         }
@@ -263,6 +263,13 @@
 
 .jw-card.jw-card-flag-featured {
     font-size: 32px;
+
+    &.jw-card-flag-hide-text {
+        .jw-card-title,
+        .jw-card-description {
+            display: none;
+        }
+    }
 
     .jw-card-duration,
     .jw-card-menu-button {
