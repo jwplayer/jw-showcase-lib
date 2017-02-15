@@ -59,6 +59,7 @@
 
             ctrl.$formatters.push(markdownLinkFormatter);
             ctrl.$formatters.push(markdownBoldAndItalicFormatter);
+            ctrl.$formatters.push(removeHTMLTagsFormatter);
 
             /**
              * Render the $viewValue as HTML
@@ -102,7 +103,7 @@
                 if (angular.isString(value)) {
                     value = value.replace(MARKDOWN_LINK_REGEX, function (match, word, link) {
 
-                        var target = /(https?|www\.)/.test(link) ? ' target="_blank"' : '';
+                        var target = /^(https?|www\.)/.test(link) ? ' target="_blank"' : '';
 
                         return '<a href="' + link + '"' + target + '>' + word + '</a>';
                     });
@@ -110,8 +111,16 @@
 
                 return value;
             }
+
+            /**
+             * Remove all HTML tags.
+             * @param {string} value
+             * @returns {string}
+             */
+            function removeHTMLTagsFormatter (value) {
+                return (value || '').replace(/<[^>]+>/gm, '');
+            }
         }
     }
 
 }());
-
