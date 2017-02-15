@@ -81,6 +81,18 @@
                         .on('mouseleave', cardMouseLeaveHandler);
                 }
 
+                // set watch progress
+                if (scope.vm.item.feedid === dataStore.watchProgressFeed.feedid) {
+
+                    scope.$watch(function () {
+                        return jwCard.item.progress;
+                    }, function (newVal, oldVal) {
+                        if (newVal !== oldVal) {
+                            showItemProgressThumbnail();
+                        }
+                    });
+                }
+
                 switchToDefaultPoster();
             }
 
