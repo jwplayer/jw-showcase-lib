@@ -44,8 +44,8 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player'];
-    function JwPlayerDirective ($parse, $timeout, utils, player) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'chromecast'];
+    function JwPlayerDirective ($parse, $timeout, utils, player, chromecast) {
 
         return {
             scope:       {
