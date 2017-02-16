@@ -35,12 +35,12 @@
      *
      * @scope
      *
-     * @param {jwShowcase.core.feed}       feed            Feed with playlist to render jwCards.
-     * @param {boolean|string=}     header          Text which will be displayed in the title or false if no title
-     *                                              should be displayed.
-     * @param {Object|number=}      cols            How many columns should be visible. Can either be a fixed number or
-     *                                              an object with responsive columns (e.g. `{sm: 2, md: 4}`).
-     *                                              Available sizes; xs, sm, md, lg and xl.
+     * @param {jwShowcase.core.feed}    feed            Feed with playlist to render jwCards.
+     * @param {boolean|string=}         header          Text which will be displayed in the title or false if no title
+     *                                                  should be displayed.
+     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number
+     *                                                  or an object with responsive columns (e.g. `{sm: 2, md: 4}`).
+     *                                                  Available sizes; xs, sm, md, lg and xl.
      *
      * @requires $timeout
      * @requires jwShowcase.core.utils

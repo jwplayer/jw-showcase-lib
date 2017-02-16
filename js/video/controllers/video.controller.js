@@ -40,11 +40,11 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share',
-        'player', 'config', 'feed', 'item'];
+        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'player',
+        'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, share, player,
-                              config, feed, item) {
+                              FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, player, config,
+                              feed, item) {
 
         var vm                   = this,
             lastPos              = 0,
@@ -61,9 +61,6 @@
         vm.item                = item;
         vm.feed                = feed.clone();
         vm.recommendationsFeed = null;
-        vm.duration            = 0;
-        vm.inWatchList         = false;
-        vm.title               = '';
         vm.loading             = true;
 
         vm.onComplete     = onComplete;
@@ -76,9 +73,7 @@
         vm.onSetupError   = onSetupError;
         vm.onAdImpression = onAdImpression;
 
-        vm.cardClickHandler      = cardClickHandler;
-        vm.shareClickHandler     = shareClickHandler;
-        vm.watchlistClickHandler = watchlistClickHandler;
+        vm.cardClickHandler = cardClickHandler;
 
         activate();
 
@@ -90,7 +85,6 @@
         function activate () {
 
             playerPlaylist = generatePlaylist(itemFeed, item);
-            vm.inWatchList = watchlist.hasItem(vm.item);
 
             vm.playerSettings = {
                 width:          '100%',
@@ -120,14 +114,6 @@
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
 
-            $scope.$watch(function () {
-                return watchlist.hasItem(vm.item);
-            }, function (val, oldVal) {
-                if (val !== oldVal) {
-                    vm.inWatchList = val;
-                }
-            });
-
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
@@ -147,12 +133,6 @@
                 .concat(itemFeed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
-            vm.duration       = utils.getVideoDurationByItem(vm.item);
-            vm.title          = vm.item.title;
-
-            if (vm.title.length > 100) {
-                vm.title = vm.title.substr(0, 100) + '...';
-            }
 
             if (config.recommendationsPlaylist) {
 
@@ -466,11 +446,12 @@
          */
         function handleWatchProgress (position, duration) {
 
-            var progress    = position / duration,
-                minPosition = Math.min(10, duration * watchProgress.MIN_PROGRESS),
-                maxPosition = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS);
+            var progress      = position / duration,
+                minPosition   = Math.min(10, duration * watchProgress.MIN_PROGRESS),
+                maxPosition   = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS),
+                betweenMinMax = position >= minPosition && position < maxPosition;
 
-            if (angular.isNumber(progress) && position >= minPosition && position < maxPosition && !vm.inWatchList) {
+            if (angular.isNumber(progress) && betweenMinMax && !watchlist.hasItem(vm.item)) {
                 watchProgress.saveItem(vm.item, progress);
                 return;
             }
@@ -478,44 +459,6 @@
             if (watchProgress.hasItem(vm.item)) {
                 watchProgress.removeItem(vm.item, progress);
             }
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.video.VideoController#watchlistClickHandler
-         * @methodOf jwShowcase.video.VideoController
-         *
-         * @description
-         * Handle click event on the watchlist button.
-         */
-        function watchlistClickHandler () {
-
-            if (watchlist.hasItem(vm.item)) {
-                watchlist.removeItem(vm.item);
-                vm.inWatchList = false;
-            }
-            else {
-                watchlist.addItem(vm.item);
-                vm.inWatchList = true;
-            }
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.video.VideoController#shareClickHandler
-         * @methodOf jwShowcase.video.VideoController
-         *
-         * @description
-         * Handle click event on the share button.
-         *
-         * @param {$event} $event Synthetic event object.
-         */
-        function shareClickHandler ($event) {
-
-            share.show({
-                target: $event.target,
-                item:   vm.item
-            });
         }
 
         /**

@@ -74,6 +74,17 @@
         this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching');
 
         /**
+         * @ngdoc property
+         * @name jwShowcase.core.dataStore#searchFeed
+         * @propertyOf jwShowcase.core.dataStore
+         *
+         * @type {jwShowcase.core.feed}
+         * @description
+         * The search feed
+         */
+        this.searchFeed = new FeedModel('search-feed', 'Search results');
+
+        /**
          * @ngdoc method
          * @name jwShowcase.core.dataStore#getItem
          * @methodOf jwShowcase.core.dataStore

@@ -16,18 +16,35 @@
 
 (function () {
 
+    /**
+     * @ngdoc component
+     * @name jwButtonMenu
+     * @module jwShowcase.core
+     *
+     * @requires jwShowcase.core.menu
+     *
+     * @param {string=} [icon=jwy-icon-menu] Icon
+     */
+
     angular
         .module('jwShowcase.core')
-        .controller('HeaderMenuButtonController', HeaderMenuButtonController);
+        .component('jwButtonMenu', {
+            bindings: {
+                icon: '@'
+            },
+            controller:   ButtonMenuController,
+            controllerAs: 'vm',
+            templateUrl:  'views/core/buttonMenu.html'
+        });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.HeaderMenuButtonController
+     * @name jwShowcase.core.ButtonMenuController
      *
      * @requires jwShowcase.core.menu
      */
-    HeaderMenuButtonController.$inject = ['menu'];
-    function HeaderMenuButtonController (menu) {
+    ButtonMenuController.$inject = ['menu'];
+    function ButtonMenuController (menu) {
 
         var vm = this;
 
@@ -37,8 +54,8 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.HeaderMenuButtonController#menuButtonClickHandler
-         * @methodOf jwShowcase.core.HeaderMenuButtonController
+         * @name jwShowcase.core.ButtonMenuController#menuButtonClickHandler
+         * @methodOf jwShowcase.core.ButtonMenuController
          *
          * @description
          * Handle click event on the menu button.

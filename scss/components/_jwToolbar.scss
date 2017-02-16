@@ -1,0 +1,150 @@
+//
+// jwToolbar
+// --------------------------------
+
+.jw-toolbar {
+    height: $toolbar-height;
+    min-height: $toolbar-height;
+    padding: 0 $toolbar-padding;
+
+    background-color: $toolbar-bg-color;
+
+    &-subheader {
+        position: fixed;
+        top: $header-height;
+        width: 100vw;
+    }
+
+    &-video {
+        .jw-toolbar-nav:last-child {
+            @include flex-grow(1);
+        }
+    }
+
+    .jw-toolbar-container {
+        @include display-flex();
+        @include flex-direction(row);
+        position: relative;
+    }
+
+    .jw-toolbar-nav {
+        @include flex(0 0 $toolbar-nav-width);
+        @include align-self(center);
+        min-width: $toolbar-nav-width;
+        max-height: $toolbar-height;
+
+        &:last-child {
+            text-align: right;
+
+            .jw-button {
+                border-right: 1px solid lighten($toolbar-bg-color, 5%);
+
+                &:first-child {
+                    border-left: 1px solid lighten($toolbar-bg-color, 5%);
+                }
+            }
+        }
+    }
+
+    .jw-toolbar-title {
+        @include flex(1 1 auto);
+        @include align-self(center);
+        padding: 5px 0;
+
+        color: $toolbar-color;
+        font-size: rem(22px);
+        font-weight: bold;
+        line-height: 1em;
+        text-align: center;
+
+        white-space: nowrap;
+        overflow: hidden;
+
+        &.left {
+            text-align: left;
+        }
+    }
+
+    .jw-button {
+        height: $toolbar-height;
+
+        color: $toolbar-color;
+        line-height: $toolbar-height / 2;
+
+        &:hover {
+            color: $toolbar-hover-color;
+        }
+
+        > .jwy-icon {
+            font-size: 1.5rem;
+        }
+    }
+
+    .jw-toolbar-nav {
+        @include flex(0 0 $toolbar-nav-width);
+        min-width: $toolbar-nav-width;
+        white-space: nowrap;
+    }
+}
+
+.platform-ios.platform-cordova .jw-toolbar.jw-toolbar-subheader {
+    top: $header-height + $ios-statusbar-height;
+}
+
+@include mobile-only () {
+
+    .jw-toolbar {
+
+        &-video {
+            padding-right: 0;
+
+            .jw-toolbar-nav:first-child .jw-button {
+                margin: 0;
+            }
+
+            .jw-toolbar-nav:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+
+    .platform-ios.platform-cordova .jw-toolbar.jw-toolbar-subheader {
+        top: $header-height-mobile + $ios-statusbar-height;
+    }
+}
+
+@include tablet-only () {
+
+    .jw-toolbar {
+
+        &-video {
+            padding: 0 90px;
+
+            .jw-toolbar-container {
+                max-width: $container-width-tablet;
+                margin: 0 auto;
+            }
+        }
+    }
+}
+
+@include tablet-and-larger () {
+
+    .jw-toolbar {
+
+        &-video .jw-toolbar-nav:first-child .jw-button {
+            margin-left: -$toolbar-padding;
+        }
+    }
+}
+
+@include desktop-only () {
+
+    .jw-toolbar {
+
+        &-video .jw-toolbar-container {
+            max-width: $container-width-desktop;
+            margin: 0 auto;
+        }
+    }
+}

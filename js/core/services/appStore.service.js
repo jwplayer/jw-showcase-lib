@@ -44,19 +44,6 @@
          */
         this.preloadError = null;
 
-        /**
-         * @ngdoc property
-         *
-         * @type {boolean}
-         */
-        this.searchBarActive = false;
-
-        /**
-         * @ngdoc property
-         *
-         * @type {string}
-         */
-        this.searchPhrase = '';
     }
 
 }());

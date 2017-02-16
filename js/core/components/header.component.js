@@ -16,19 +16,12 @@
 
 (function () {
 
-    angular
-        .module('jwShowcase.core')
-        .directive('jwHeader', headerDirective);
-
     /**
-     * @ngdoc directive
+     * @ngdoc component
      * @name jwHeader
      * @module jwShowcase.core
-     * @restrict E
      *
      * @description
-     *
-     * # jwHeader
      * Render the header element.
      *
      * @example
@@ -36,18 +29,19 @@
      * ```html
      * <jw-header></jw-header>
      * ```
-     *
-     * @param {object=} [state-class] Toggle class based current state name
      */
-    headerDirective.$inject = [];
-    function headerDirective () {
+    angular
+        .module('jwShowcase.core')
+        .component('jwHeader', {
+            templateUrl:  'views/core/header.html',
+            controller:   HeaderController,
+            controllerAs: 'vm'
+        });
 
-        return {
-            restrict:         'E',
-            replace:          true,
-            transclude:       true,
-            templateUrl:      'views/core/header.html'
-        };
+    HeaderController.$inject = ['config'];
+    function HeaderController (config) {
+
+        this.config = config;
     }
 
 }());
