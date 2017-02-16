@@ -92,10 +92,16 @@
                 });
             }
 
+
+
+
             /**
              * Initialize JS player
              */
             function initialize () {
+                //TODO this is just for testing
+                var playerMode = 'CHROMECAST';
+
 
                 var settings = angular.extend({
                     controls: true
@@ -106,8 +112,17 @@
                     settings.autostart = false;
                 }
 
-                playerInstance = jwplayer(playerId)
+                // SPLIT HERE BETWEEN CHROMECAST AND JWPLAYER
+
+                if(playerMode === 'CHROMECAST') {
+                  chromecast.setSettings(settings);
+                  playerInstance = chromecast;
+                } else {
+
+                  playerInstance = jwplayer(playerId)
                     .setup(settings);
+                }
+
 
                 bindPlayerEventListeners();
 

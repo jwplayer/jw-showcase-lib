@@ -244,7 +244,6 @@
          * @param {Object} event
          */
         function onReady (event) {
-
             if (angular.isFunction(this.getContainer)) {
                 this.getContainer().focus();
             }
@@ -524,7 +523,6 @@
          * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
         function cardClickHandler (item, clickedOnPlay) {
-
             var playlistIndex,
                 stateParams = $ionicHistory.currentView().stateParams;
 
