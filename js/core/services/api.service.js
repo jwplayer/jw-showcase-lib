@@ -51,6 +51,7 @@
                 return $q.reject(new Error('feedId is not given or not a string'));
             }
 
+            return getFeed(config.contentService + '/feeds/' + feedId +'.json');
             return getFeed(config.contentService + '/feed.json?feed_id=' + feedId);
         };
 
