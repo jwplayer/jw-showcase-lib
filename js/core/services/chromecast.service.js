@@ -23,14 +23,14 @@
     .module('jwShowcase.core')
     .service('chromecast', chromecast);
 
-  chromecast.$inject = ['$timeout'];
+  chromecast.$inject = ['$rootScope','$timeout'];
 
-  function chromecast ($timeout) {
-
-
-
+  function chromecast ($rootScope, $timeout) {
     // Private variables
     var session = null;
+
+    this.connect = connect;
+    this.disconnect = disconnect;
 
     function initializeApi () {
       var sessionRequest = new chrome.cast.SessionRequest(CHROME_CAST_APPLICATION_ID, []);
@@ -41,7 +41,19 @@
     initializeApi();
 
     function connect () {
-      chrome.cast.requestSession(chromecastConnected, onError);
+      $rootScope.$emit('chromecast:connecting');
+      chrome.cast.requestSession(chromecastConnected, function (error) {
+        $rootScope.$emit('chromecast:available');
+        onError(error);
+      });
+    }
+
+    function disconnect() {
+      if (session) {
+        session.leave(function () {
+          $rootScope.$emit('chromecast:available');
+        });
+      }
     }
 
     // Listeners
@@ -53,12 +65,12 @@
       console.log('receiverAvailability: ', receiverAvailability);
       // If there is no chromecast receiver available we will try again.
       if (receiverAvailability === chrome.cast.ReceiverAvailability.UNAVAILABLE) {
+        $rootScope.$emit('chromecast:unavailable');
         $timeout(initializeApi(), 500);
       }
 
-      //TODO: Remove, just for testing purposes
       if (receiverAvailability === chrome.cast.ReceiverAvailability.AVAILABLE) {
-        $timeout(function () {connect();}, 5000);
+        $rootScope.$emit('chromecast:available');
       }
     }
 
@@ -67,6 +79,7 @@
     }
 
     function chromecastConnected (createdSession) {
+      $rootScope.$emit('chromecast:connected');
       console.log('Session created', createdSession);
       session = createdSession;
     }

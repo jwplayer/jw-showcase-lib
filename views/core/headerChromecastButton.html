@@ -1,0 +1,13 @@
+<div ng-if="vm.state !== vm.states.UNAVAILABLE">
+  <jw-button class="jw-button-chromecast" ng-click="vm.chromecastButtonClickHandler()" tabindex="0">
+    <span class="jw-button-label">Chromecast</span>
+
+    <i ng-if="vm.state === vm.states.AVAILABLE" class="jwy-icon jwy-icon-chromecast jwy-icon-sm"></i>
+
+    <i ng-if="vm.state === vm.states.CONNECTING" class="jwy-icon jwy-icon-chromecast-connecting-01 jwy-icon-sm clearfix">
+      <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>
+    </i>
+
+    <i ng-if="vm.state === vm.states.CONNECTED" class="jwy-icon jwy-icon-chromecast-connected jwy-icon-sm"></i>
+  </jw-button>
+</div>

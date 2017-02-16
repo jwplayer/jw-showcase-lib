@@ -6,8 +6,9 @@
     <jw-header-logo ng-src="{{ ::rootVm.config.bannerImage }}"></jw-header-logo>
     <jw-header-search-bar></jw-header-search-bar>
   </div>
-  <div class="jw-header-nav">
+  <div class="jw-header-nav" style="display: flex; flex-direction: row-reverse">
     <jw-header-search-button ng-if="rootVm.config.searchPlaylist"></jw-header-search-button>
+    <jw-header-chromecast-button></jw-header-chromecast-button>
   </div>
 </jw-header>
 

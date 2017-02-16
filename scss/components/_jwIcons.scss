@@ -127,14 +127,17 @@
 .jwy-icon-chromecast-connected:before {
   content: "\e914";
 }
+
 .jwy-icon-chromecast-connecting-01 .path1:before {
   content: "\e915";
-  color: rgb(0, 0, 0);
-}
-.jwy-icon-chromecast-connecting-01 .path2:before {
-  content: "\e916";
   margin-left: -1em;
   color: rgb(0, 0, 0);
+}
+
+.jwy-icon-chromecast-connecting-01 .path2:before {
+  content: "\e916";
+  color: rgb(0, 0, 0);
+  margin-left: -1em;
   opacity: 0.3;
 }
 .jwy-icon-chromecast-connecting-01 .path3:before {
@@ -145,48 +148,6 @@
 }
 .jwy-icon-chromecast-connecting-01 .path4:before {
   content: "\e918";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.jwy-icon-chromecast-connecting-02 .path1:before {
-  content: "\e919";
-  color: rgb(0, 0, 0);
-  opacity: 0.3;
-}
-.jwy-icon-chromecast-connecting-02 .path2:before {
-  content: "\e91a";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.jwy-icon-chromecast-connecting-02 .path3:before {
-  content: "\e91b";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-  opacity: 0.3;
-}
-.jwy-icon-chromecast-connecting-02 .path4:before {
-  content: "\e91c";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.jwy-icon-chromecast-connecting-03 .path1:before {
-  content: "\e91d";
-  color: rgb(0, 0, 0);
-  opacity: 0.3;
-}
-.jwy-icon-chromecast-connecting-03 .path2:before {
-  content: "\e91e";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-  opacity: 0.3;
-}
-.jwy-icon-chromecast-connecting-03 .path3:before {
-  content: "\e91f";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-}
-.jwy-icon-chromecast-connecting-03 .path4:before {
-  content: "\e920";
   margin-left: -1em;
   color: rgb(0, 0, 0);
 }
