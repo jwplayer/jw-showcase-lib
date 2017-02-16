@@ -27,6 +27,11 @@
 
   function chromecast ($timeout) {
 
+
+
+    // Private variables
+    var session = null;
+
     function initializeApi () {
       var sessionRequest = new chrome.cast.SessionRequest(CHROME_CAST_APPLICATION_ID, []);
       var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener);
@@ -34,6 +39,10 @@
     }
 
     initializeApi();
+
+    function connect () {
+      chrome.cast.requestSession(chromecastConnected, onError);
+    }
 
     // Listeners
     function onInitSuccess(session) {
@@ -46,10 +55,20 @@
       if (receiverAvailability === chrome.cast.ReceiverAvailability.UNAVAILABLE) {
         $timeout(initializeApi(), 500);
       }
+
+      //TODO: Remove, just for testing purposes
+      if (receiverAvailability === chrome.cast.ReceiverAvailability.AVAILABLE) {
+        $timeout(function () {connect();}, 5000);
+      }
     }
 
     function sessionListener (changedData) {
 
+    }
+
+    function chromecastConnected (createdSession) {
+      console.log('Session created', createdSession);
+      session = createdSession;
     }
 
     function onError(error) {
