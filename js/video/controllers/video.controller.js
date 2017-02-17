@@ -316,12 +316,14 @@
             // update $viewHistory
             stateParams.feedId  = newItem.feedid;
             stateParams.mediaId = newItem.mediaid;
+            stateParams.slug    = newItem.slug;
 
             // update state, but don't notify
             $state
                 .go('root.video', {
                     feedId:    newItem.feedid,
                     mediaId:   newItem.mediaid,
+                    slug:      newItem.$slug,
                     autoStart: true
                 }, {
                     notify: false
@@ -507,6 +509,7 @@
                 .go('root.video', {
                     feedId:    item.feedid,
                     mediaId:   item.mediaid,
+                    slug:      item.$slug,
                     autoStart: clickedOnPlay
                 }, {
                     notify: false

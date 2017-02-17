@@ -57,10 +57,11 @@
             });
 
         seoProvider
-            .otherwise(['config', function (config) {
+            .otherwise(['$location', 'config', function ($location, config) {
                 return {
                     title:       config.siteName,
-                    description: config.description
+                    description: config.description,
+                    canonical:   $location.absUrl()
                 };
             }]);
 
