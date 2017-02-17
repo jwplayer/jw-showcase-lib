@@ -107,7 +107,7 @@
                 .then(function (resolvedConfig) {
 
                     var feedPromises = [],
-                        model;
+                        model, promise;
 
                     // apply config
                     angular.forEach(resolvedConfig, function (value, key) {
@@ -139,7 +139,16 @@
 
                         dataStore.feeds = config.playlists.map(function (feedId) {
                             model = new FeedModel(feedId);
-                            feedPromises.push(apiConsumer.populateFeedModel(model));
+                            promise = apiConsumer
+                                .populateFeedModel(model)
+                                .then(null, function (error) {
+
+                                    // show error, but resolve so we can wait for all feeds to be loaded
+                                    console.error(error);
+                                    return $q.resolve();
+                                });
+
+                            feedPromises.push(promise);
                             return model;
                         });
                     }
@@ -147,7 +156,7 @@
                     // don't wait for the feeds but we want to populate the watchlist and watchProgress feeds after
                     // feeds are loaded
                     $q.all(feedPromises)
-                        .then(handleFeedsLoadSuccess, handleFeedsLoadError);
+                        .then(handleFeedsLoadSuccess);
 
                     api.getPlayer(config.player)
                         .then(handlePreloadSuccess, handlePreloadError);
@@ -180,12 +189,6 @@
 
                 watchlist.restore();
                 watchProgress.restore();
-            }
-
-            function handleFeedsLoadError () {
-
-                console.log(arguments);
-                // @TODO Show error message?
             }
         }
     }

@@ -1,10 +1,14 @@
 <div class="jw-card-slider">
   <div class="jw-card-slider-container">
     <div class="jw-card-slider-title">
-      <a ui-sref="root.feed({feedId: vm.feed.feedid})" class="jw-link">
+      <a ui-sref="root.feed({feedId: vm.feed.feedid})" class="jw-link" ng-if="vm.feed.navigable">
         <span>{{ vm.heading }}&nbsp;</span> <i class="jwy-icon jwy-icon-angle-right"></i> <span
           class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>
       </a>
+      <div ng-if="!vm.feed.navigable">
+        <span>{{ vm.heading }}&nbsp;</span> <span class="jw-card-slider-title-count"
+      ng-if="vm.feed.playlist.length">({{ vm.feed.playlist.length }})</span>
+      </div>
     </div>
     <div class="jw-card-slider-align">
       <div class="jw-card-slider-list"></div>

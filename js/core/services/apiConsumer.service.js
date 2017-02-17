@@ -80,6 +80,15 @@
                     return feed;
                 });
 
+                feed.promise.catch(function (error) {
+
+                    feed.error = error;
+                    feed.loading = false;
+                    feed.navigable = false;
+
+                    return feed;
+                });
+
                 return feed.promise;
             }
 
