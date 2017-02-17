@@ -42,9 +42,9 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache', '$compile', 'watchlist', 'utils',
+    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist', 'utils',
         'config'];
-    function cardDirective ($animate, $q, $timeout, $templateCache, $compile, watchlist, utils, config) {
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils, config) {
 
         return {
             scope:            {
@@ -77,7 +77,13 @@
                     element.addClass('jw-card-flag-hide-text');
                 }
 
-                findElement('.jw-card-title').html(scope.vm.item.title);
+                findElement('.jw-card-title')
+                    .html(scope.vm.item.title)
+                    .attr('href', $state.href('root.video', {
+                        feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
+                        mediaId: scope.vm.item.mediaid,
+                        slug:    scope.vm.item.$slug
+                    }));
                 findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
 
                 findElement('.jw-card-container').on('click', containerClickHandler);
