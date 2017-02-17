@@ -29,12 +29,15 @@
         .config(config)
         .run(run);
 
-    config.$inject = ['$stateProvider', 'seoProvider', '$ionicConfigProvider'];
-    function config ($stateProvider, seoProvider, $ionicConfigProvider) {
+    config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', 'seoProvider', '$ionicConfigProvider'];
+    function config ($stateProvider, $urlMatcherFactoryProvider, seoProvider, $ionicConfigProvider) {
 
         var platform = ionic.Platform;
 
         platform.isMobile = platform.isIOS() || platform.isAndroid() || platform.isWindowsPhone();
+
+        $urlMatcherFactoryProvider
+            .strictMode(false);
 
         $stateProvider
             .state('root', {
