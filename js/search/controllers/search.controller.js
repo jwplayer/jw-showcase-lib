@@ -24,8 +24,8 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$scope', '$state', 'dataStore', 'appStore'];
-    function SearchController ($scope, $state, dataStore, appStore) {
+    SearchController.$inject = ['$state', 'dataStore'];
+    function SearchController ($state, dataStore) {
 
         var vm = this;
 
@@ -33,25 +33,7 @@
 
         vm.cardClickHandler = cardClickHandler;
 
-        activate();
-
         ////////////////////////
-
-        /**
-         * Initialize controller
-         */
-        function activate () {
-
-            // disable searchBar when leaving this view
-            $scope.$on('$ionicView.beforeLeave', function () {
-                appStore.searchBarActive = false;
-            });
-
-            // enable searchBar when entering this view
-            $scope.$on('$ionicView.beforeEnter', function () {
-                appStore.searchBarActive = true;
-            });
-        }
 
         /**
          * @ngdoc method

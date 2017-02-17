@@ -16,25 +16,34 @@
 
 (function () {
 
+    /**
+     * @ngdoc component
+     * @name jwToolbarVideo
+     * @module jwShowcase.video
+     *
+     * @description
+     *
+     * # jwToolbar
+     * Render toolbar component.
+     *
+     * @example
+     *
+     * ```html
+     * <jw-toolbar toolbar-class="jw-toolbar-subclass">
+     *     Title
+     * </jw-toolbar-video>
+     * ```
+     */
     angular
         .module('jwShowcase.core')
-        .directive('jwHeaderLogo', headerLogoDirective);
-
-    /**
-     * @ngdoc directive
-     * @name jwHeaderLogo
-     * @module jwShowcase.core
-     * @restrict E
-     */
-    headerLogoDirective.$inject = [];
-    function headerLogoDirective () {
-
-        return {
-            restrict:         'E',
-            require:          '^jwHeader',
-            template:         '<img class="jw-header-logo" ui-sref="root.dashboard()"/>',
-            replace:          true
-        };
-    }
+        .component('jwToolbar', {
+            templateUrl:  'views/core/toolbar.html',
+            controllerAs: 'vm',
+            transclude:   true,
+            bindings: {
+                'toolbarClass': '@'
+            }
+        });
 
 }());
+

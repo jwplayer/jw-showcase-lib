@@ -1,24 +1,13 @@
 <ion-view>
-  <jw-header class="jw-subheader jw-header-full">
-    <div class="jw-header-nav">
-      <jw-header-back-button></jw-header-back-button>
-    </div>
-    <div class="jw-header-main">
-      <jw-header-title>Search results</jw-header-title>
-    </div>
-    <div class="jw-header-nav"></div>
-  </jw-header>
-
+  <jw-toolbar toolbar-class="jw-toolbar-subheader">Search results</jw-toolbar>
   <ion-content class="has-subheader">
-
-    <h3 class="jw-meta-feed-title" ng-if="!vm.feed.playlist.length">
-      Nothing could be found, try changing your search phrase
-    </h3>
-
+    <div class="jw-content" ng-if="!vm.feed.playlist.length">
+      <h4 class="jw-content-title">
+        Nothing could be found, try changing your search phrase
+      </h4>
+    </div>
     <jw-card-grid feed="vm.feed" on-card-click="vm.cardClickHandler" spacing="12"
         cols="{xs:2, sm:2, md:3, lg:4, xl:5}"></jw-card-grid>
-
     <jw-footer></jw-footer>
-
   </ion-content>
 </ion-view>

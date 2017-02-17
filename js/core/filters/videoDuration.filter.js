@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,28 +18,26 @@
 
     angular
         .module('jwShowcase.core')
-        .directive('jwHeaderBackButton', headerBackButtonDirective);
+        .filter('videoDuration', videoDuration);
 
     /**
-     * @ngdoc directive
-     * @name jwHeaderBackButton
+     * @ngdoc filter
+     * @name jwShowcase.core.filter:videoDuration
      * @module jwShowcase.core
-     * @restrict E
+     *
+     * @description
+     * Get duration from `jwShowcase.core.item` model
      */
-    headerBackButtonDirective.$inject = [];
-    function headerBackButtonDirective () {
+    videoDuration.$inject = ['utils'];
+    function videoDuration (utils) {
+        return videoDurationFilter;
 
-        return {
-            restrict:         'E',
-            require:          '^jwHeader',
-            scope:            true,
-            bindToController: true,
-            controllerAs:     'vm',
-            controller:       'HeaderBackButtonController',
-            templateUrl:      'views/core/headerBackButton.html',
-            replace:          true,
-            transclude:       true
-        };
+        ////////////////
+
+        function videoDurationFilter (parameters) {
+
+            return utils.getVideoDurationByItem(parameters);
+        }
     }
 
 }());

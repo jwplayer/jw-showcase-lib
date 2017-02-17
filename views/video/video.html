@@ -1,6 +1,5 @@
 <ion-view class="jw-video-view" cache-view="false" can-swipe-back="false">
   <ion-content class="has-header">
-
     <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
       <div class="jw-container">
         <div class="jw-video-container-aspect">
@@ -14,56 +13,26 @@
           <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
               on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
               on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
-          on-ad-impression="vm.onAdImpression"></jw-player>
+              on-ad-impression="vm.onAdImpression"></jw-player>
         </div>
       </div>
     </div>
 
-    <jw-header class="jw-header-static jw-subheader jw-header-video">
-      <div class="jw-header-nav">
-        <jw-header-back-button></jw-header-back-button>
-      </div>
-      <div class="jw-header-main"></div>
-      <div class="jw-header-nav jw-border-buttons">
-        <jw-button class="jw-button-watchlist" ng-click="vm.watchlistClickHandler()"
-            ng-class="{'is-active': vm.inWatchList}">
-          <small class="jw-button-label is-hidden-mobile">{{ vm.inWatchList ? 'Unsave video' : 'Save video' }}
-          </small>
-          <i class="jwy-icon jwy-icon-banner jwy-icon-stack">
-            <i class="jwy-icon jwy-icon-{{ vm.inWatchList ? 'min' : 'plus' }}"></i>
-          </i>
-        </jw-button><jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareClickHandler($event)">
-          <small class="jw-button-label is-hidden-mobile">Share</small>
-          <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
-            <i class="jwy-icon jwy-icon-share"></i>
-          </i>
-        </jw-button>
-      </div>
-    </jw-header>
+    <jw-toolbar-video item="vm.item"></jw-toolbar-video>
 
-    <div class="jw-meta-container">
-      <div class="jw-container">
-        <div class="jw-meta-title">
-          {{ vm.title }} <div class="jw-meta-duration"><span>{{ vm.duration }}</span></div>
-        </div>
-
-        <div class="jw-meta-description jw-markdown" jw-collapsible-text="4.2em" jw-collapsible-text-watch="vm.item.description">
-          <jw-markdown ng-model="vm.item.description"></jw-markdown>
-        </div>
-      </div>
+    <div class="jw-row jw-row-inverse">
+      <jw-video-details item="vm.item"></jw-video-details>
     </div>
 
     <div class="jw-row" ng-if="vm.feed">
-      <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" class="jw-card-slider-flag-now-playing"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+      <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate"
+          class="jw-card-slider-flag-now-playing" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
+          on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
-
     <div class="jw-row" ng-if="vm.recommendationsFeed">
-      <jw-card-slider feed="vm.recommendationsFeed" featured="false" delegate="vm.recommendationsCardSliderDelegate"
+      <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos"
           cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
     </div>
-
     <jw-footer></jw-footer>
-
   </ion-content>
 </ion-view>

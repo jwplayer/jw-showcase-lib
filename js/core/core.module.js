@@ -45,11 +45,15 @@
                 templateUrl: 'views/core/root.html'
             })
             .state('preloadError', {
-                templateUrl: 'views/core/preloadError.html'
+                templateUrl: 'views/error/configError.html'
             })
-            .state('root.404', {
-                url:         '/404',
-                templateUrl: 'views/core/404.html'
+            .state('root.videoNotFound', {
+                url:         '/video-not-found',
+                templateUrl: 'views/error/videoNotFound.html'
+            })
+            .state('root.feedNotFound', {
+                url:         '/feed-not-found',
+                templateUrl: 'views/error/feedNotFound.html'
             });
 
         seoProvider
@@ -208,12 +212,16 @@
 
             // prevent loop if something is wrong in preloadError or root.404 state
 
-            if (toState.name === 'preloadError' || toState.name === 'root.404') {
+            if (toState.name === 'preloadError' || toState.name === 'root.videoNotFound' ||
+                toState.name === 'root.feedNotFound') {
                 return;
             }
 
-            if (toState.name === 'root.feed' || toState.name === 'root.video') {
-                $state.go('root.404');
+            if (toState.name === 'root.feed') {
+                $state.go('root.feedNotFound');
+            }
+            else if (toState.name === 'root.video') {
+                $state.go('root.videoNotFound');
             }
             else if (toState.name !== 'root.dashboard') {
                 $state.go('root.dashboard');

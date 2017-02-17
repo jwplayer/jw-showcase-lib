@@ -18,19 +18,23 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('HeaderBackButtonController', HeaderBackButtonController);
+        .component('jwButtonBack', {
+            controller:   ButtonBackController,
+            controllerAs: 'vm',
+            templateUrl:  'views/core/buttonBack.html'
+        });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.HeaderBackButtonController
+     * @name jwShowcase.core.ButtonBackController
      *
      * @requires $state
      * @requires $ionicHistory
      * @requires $ionicViewSwitcher
      * @requires jwShowcase.core.dataStore
      */
-    HeaderBackButtonController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
-    function HeaderBackButtonController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
+    ButtonBackController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
+    function ButtonBackController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
 
         var vm = this;
 
@@ -40,8 +44,8 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.HeaderBackButtonController#backButtonClickHandler
-         * @methodOf jwShowcase.core.HeaderBackButtonController
+         * @name jwShowcase.core.ButtonBackController#backButtonClickHandler
+         * @methodOf jwShowcase.core.ButtonBackController
          *
          * @description
          * Handle click event on the back button.
@@ -59,7 +63,7 @@
                 stateName   = backView.stateName;
                 stateParams = backView.stateParams;
 
-                if (stateName === 'root.feed' ) {
+                if (stateName === 'root.feed') {
 
                     // watchlist is empty, do not return to this state
                     if (stateParams.feedId === dataStore.watchlistFeed.feedid && !watchlistLength) {
@@ -89,10 +93,10 @@
          */
         function navigateBackInHierarchy () {
 
-            var viewHistory         = $ionicHistory.viewHistory(),
-                history             = viewHistory.histories[$ionicHistory.currentHistoryId()],
-                stack               = history ? history.stack : [],
-                stackIndex          = history.cursor - 1,
+            var viewHistory = $ionicHistory.viewHistory(),
+                history     = viewHistory.histories[$ionicHistory.currentHistoryId()],
+                stack       = history ? history.stack : [],
+                stackIndex  = history.cursor - 1,
                 equalState;
 
             if (stackIndex > 0) {

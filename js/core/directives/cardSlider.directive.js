@@ -40,6 +40,7 @@
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
      * @param {object=}                 delegate        Exposes a small api to control the cardSlider.
+     * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
      * @requires $compile
      * @requires $templateCache
@@ -61,6 +62,7 @@
                 cols:        '=',
                 featured:    '=',
                 onCardClick: '=',
+                title:       '@',
                 delegate:    '=?'
             },
             replace:          true,
@@ -107,7 +109,7 @@
 
 
                 if (!scope.vm.featured) {
-                    scope.vm.heading = scope.vm.feed.title || 'loading';
+                    scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
                 }
                 else {
                     findElement('.jw-card-slider-indicator').removeClass('ng-hide');
@@ -172,7 +174,7 @@
                 }
 
                 if (!scope.vm.featured) {
-                    scope.vm.heading = scope.vm.feed.title;
+                    scope.vm.heading = scope.vm.title || scope.vm.feed.title;
                 }
 
                 totalItems = scope.vm.feed.playlist.length;
