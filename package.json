@@ -1,10 +1,21 @@
 {
-    "name": "jw-showcase-lib",
-    "description": "JW Showcase library",
-    "version": "3.0.1",
-    "dependencies": {},
-    "repository": {
-        "url": "https://github.com/jwplayer/jw-showcase-lib.git"
-    },
-    "license": "Apache-2.0"
+  "name": "jw-showcase-lib",
+  "description": "JW Showcase library",
+  "version": "3.0.1",
+  "dependencies": {},
+  "repository": {
+    "url": "https://github.com/jwplayer/jw-showcase-lib.git"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  },
+  "scripts": {
+    "jshint": "jshint -c .jshintrc js",
+    "scss-lint": "scss-lint -c .scss-lint.yml scss"
+  },
+  "pre-commit": [
+    "jshint",
+    "scss-lint"
+  ]
 }
