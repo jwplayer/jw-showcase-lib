@@ -75,7 +75,6 @@
 
             var sliderList             = findElements('.jw-card-slider-list'),
                 resizeHandlerDebounced = utils.debounce(resizeHandler, 100),
-                dummySlideTemplate     = $templateCache.get('views/core/cardSliderDummySlide.html'),
                 slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
                 index                  = 0,
                 leftSlidesVisible      = false,
@@ -127,7 +126,7 @@
 
                 if (loading) {
                     element.addClass('jw-card-slider-flag-loading');
-                    renderDummySlides();
+                    renderLoadingSlides();
                 }
 
                 resizeHandler();
@@ -167,7 +166,7 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                if (comparePlaylist(newValue.playlist, oldValue.playlist)) {
+                if (!feedHasChanged(newValue, oldValue)) {
                     return;
                 }
 
@@ -182,6 +181,23 @@
                 resizeHandler(true);
             }
 
+            /**
+             * Returns true if the feeds has changed and needs to re render
+             * @param {jwShowcase.core.feed} newValue
+             * @param {jwShowcase.core.feed} oldValue
+             * @returns {boolean}
+             */
+            function feedHasChanged (newValue, oldValue) {
+
+                return !comparePlaylist(newValue.playlist, oldValue.playlist) || !!newValue.error;
+            }
+
+            /**
+             * Compare the two given playlists on their $key property
+             * @param {jwShowcase.core.item[]} playlist
+             * @param {jwShowcase.core.item[]} prevPlaylist
+             * @returns {boolean}
+             */
             function comparePlaylist (playlist, prevPlaylist) {
 
                 var playlistMap     = playlist.map(function (item) {
@@ -220,22 +236,36 @@
                 findElements('.jw-card-slider-button').toggleClass('ng-hide', !sliderCanSlide);
 
                 if (forceRender || needsRender) {
-                    renderSlides();
+
+                    if (scope.vm.feed.error) {
+                         renderErrorSlides();
+                    }
+                    else if (scope.vm.feed.loading) {
+                        renderLoadingSlides();
+                    }
+                    else {
+                        renderSlides();
+                    }
                 }
 
                 moveSlider(0, false);
             }
 
             /**
-             * Render dummy slides
+             * Render custom slides
+             * @param {string} templateUrl
+             * @parma {number} count
              */
-            function renderDummySlides () {
+            function renderCustomSlides (templateUrl, count) {
 
                 var holder = angular.element('<div></div>'),
+                    template = $templateCache.get(templateUrl),
                     dummy;
 
-                for (var i = 0; i < 5; i++) {
-                    dummy = angular.element(dummySlideTemplate);
+                count = count || 5;
+
+                for (var i = 0; i < count; i++) {
+                    dummy = angular.element(template);
                     dummy.children().eq(0).addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
                     holder.append(dummy);
                 }
@@ -243,6 +273,28 @@
                 sliderList
                     .html('')
                     .append(holder.children());
+            }
+
+            /**
+             * Render loading slides
+             */
+            function renderLoadingSlides () {
+
+                renderCustomSlides('views/core/cardSliderDummySlide.html', 6);
+
+                element.addClass('jw-card-slider-flag-loading');
+            }
+
+            /**
+             * Render error slides
+             */
+            function renderErrorSlides () {
+
+                renderCustomSlides('views/core/cardSliderErrorSlide.html', 6);
+
+                scope.vm.heading = 'Missing feed';
+
+                element.addClass('jw-card-slider-flag-error');
             }
 
             /**
@@ -259,10 +311,6 @@
                 if (leftSlidesVisible) {
                     itemIndex -= itemsMargin;
                     totalCols += itemsMargin;
-                }
-
-                if (scope.vm.feed.loading) {
-                    return renderDummySlides();
                 }
 
                 if (itemIndex < 0) {

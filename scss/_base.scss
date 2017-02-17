@@ -58,8 +58,14 @@ $desktop-min-width: $tablet-max-width + 1 !default;
 // Themes
 // --------------------------------
 
-$theme-light-bg-color: #d7dbe6;
-$theme-dark-bg-color: #363636;
+$theme-light-bg-color: #d7dbe6 !default;
+$theme-dark-bg-color: #363636 !default;
+
+$theme-light-slider-slide-loading-bg-color: #979797 !default;
+$theme-dark-slider-slide-loading-bg-color: #1a1a1a !default;
+
+$theme-light-slider-title-error-color: #979797 !default;
+$theme-dark-slider-title-error-color: #979797 !default;
 
 //
 // Header

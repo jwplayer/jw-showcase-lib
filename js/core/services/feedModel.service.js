@@ -27,7 +27,7 @@
     feedModelFactory.$inject = [];
     function feedModelFactory () {
 
-        function FeedModel (feedId, title) {
+        function FeedModel (feedId, title, navigable) {
 
             this.feedid = feedId;
 
@@ -35,7 +35,11 @@
 
             this.playlist = [];
 
+            this.navigable = navigable || true;
+
             this.loading = false;
+
+            this.error = false;
 
             /**
              * Find item inside this feed
