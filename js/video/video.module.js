@@ -27,12 +27,15 @@
         .module('jwShowcase.video', [])
         .config(config);
 
-    config.$inject = ['$stateProvider', 'seoProvider'];
-    function config ($stateProvider, seoProvider) {
+    config.$inject = ['$stateProvider', '$urlRouterProvider', 'seoProvider'];
+    function config ($stateProvider, $urlRouterProvider, seoProvider) {
+
+        $urlRouterProvider
+            .when('/list/:feedId/video', '/list/:feedId');
 
         $stateProvider
             .state('root.video', {
-                url:         '/list/:feedId/video/:mediaId/:slug?',
+                url:         '/list/:feedId/video/:mediaId/:slug',
                 controller:  'VideoController as vm',
                 templateUrl: 'views/video/video.html',
                 resolve:     {
@@ -40,7 +43,11 @@
                     item: resolveItem
                 },
                 params:      {
-                    autoStart: false
+                    autoStart: false,
+                    slug:      {
+                        value:  null,
+                        squash: true
+                    }
                 },
                 cache:       false
             });
