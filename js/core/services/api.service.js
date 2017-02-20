@@ -29,8 +29,8 @@
      * @requires $q
      * @requires jwShowcase.config
      */
-    apiService.$inject = ['$http', '$q', 'config'];
-    function apiService ($http, $q, config) {
+    apiService.$inject = ['$http', '$q', 'config', 'utils'];
+    function apiService ($http, $q, config, utils) {
 
         /**
          * @ngdoc method
@@ -177,7 +177,8 @@
                             item.feedid = feed.feedid;
                         }
 
-                        item.$key = index + item.mediaid;
+                        item.$key  = index + item.mediaid;
+                        item.$slug = utils.slugify(item.title);
 
                         return item;
                     })
@@ -248,11 +249,11 @@
     /**
      * @name jwShowcase.core.feed
      * @type Object
-     * @property {string}               description    Feed description
-     * @property {string}               feedid         Feed id
-     * @property {string}               kind           Feed kind
-     * @property {jwShowcase.core.item[]}      playlist       Feed playlist
-     * @property {string}               title          Feed title
+     * @property {string}                   description    Feed description
+     * @property {string}                   feedid         Feed id
+     * @property {string}                   kind           Feed kind
+     * @property {jwShowcase.core.item[]}   playlist       Feed playlist
+     * @property {string}                   title          Feed title
      */
 
     /**
@@ -264,6 +265,8 @@
      * @property {string}               link            Link
      * @property {string}               mediaid         Video id
      * @property {string}               feedid          Feed id (set by apiService)
+     * @property {string}               $feedid         Original feedid
+     * @property {string}               $slug           Title slugified
      * @property {number}               pubdate         Publication date timestamp
      * @property {Object[]}             sources         Video sources
      * @property {string}               tags            Tags

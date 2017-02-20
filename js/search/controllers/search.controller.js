@@ -51,6 +51,7 @@
             $state.go('root.video', {
                 feedId:    item.feedid,
                 mediaId:   item.mediaid,
+                slug:      item.$slug,
                 autoStart: clickedOnPlay || ionic.Platform.isMobile
             });
         }

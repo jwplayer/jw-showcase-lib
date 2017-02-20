@@ -27,12 +27,15 @@
         .module('jwShowcase.video', [])
         .config(config);
 
-    config.$inject = ['$stateProvider', 'seoProvider'];
-    function config ($stateProvider, seoProvider) {
+    config.$inject = ['$stateProvider', '$urlRouterProvider', 'seoProvider'];
+    function config ($stateProvider, $urlRouterProvider, seoProvider) {
+
+        $urlRouterProvider
+            .when('/list/:feedId/video', '/list/:feedId');
 
         $stateProvider
             .state('root.video', {
-                url:         '/video/:feedId/:mediaId',
+                url:         '/list/:feedId/video/:mediaId/:slug',
                 controller:  'VideoController as vm',
                 templateUrl: 'views/video/video.html',
                 resolve:     {
@@ -40,20 +43,23 @@
                     item: resolveItem
                 },
                 params:      {
-                    autoStart: false
+                    autoStart: false,
+                    slug:      {
+                        value:  null,
+                        squash: true
+                    }
                 },
                 cache:       false
             });
 
         seoProvider
-            .state('root.video', ['$stateParams', 'config', 'dataStore', function ($stateParams, config, dataStore) {
-
-                var item = dataStore.getItem($stateParams.mediaId, $stateParams.feedId);
+            .state('root.video', ['$state', 'config', 'item', function ($state, config, item) {
 
                 return {
-                    title:       config.siteName + ' | ' + item.title,
+                    title:       item.title + ' - ' + config.siteName,
                     description: item.description,
-                    image:       item.image
+                    image:       item.image,
+                    canonical:   $state.href('root.video', {slug: item.$slug}, {absolute: true})
                 };
             }]);
 

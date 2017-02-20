@@ -38,10 +38,11 @@
             });
 
         seoProvider
-            .state('root.dashboard', ['config', function (config) {
+            .state('root.dashboard', ['$state', 'config', function ($state, config) {
                 return {
                     title:       config.siteName,
-                    description: config.description
+                    description: config.description,
+                    canonical:   $state.href('root.dashboard', {}, {absolute: true})
                 };
             }]);
     }

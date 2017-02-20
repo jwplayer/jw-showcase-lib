@@ -32,7 +32,7 @@
 
         $stateProvider
             .state('root.feed', {
-                url:         '/feed/:feedId',
+                url:         '/list/:feedId',
                 controller:  'FeedController as vm',
                 templateUrl: 'views/feed/feed.html',
                 resolve:     {
@@ -41,13 +41,12 @@
             });
 
         seoProvider
-            .state('root.feed', ['$stateParams', 'config', 'dataStore', function ($stateParams, config, dataStore) {
-
-                var feed = dataStore.getFeed($stateParams.feedId);
+            .state('root.feed', ['$state', 'config', 'feed', function ($state, config, feed) {
 
                 return {
-                    title:       config.siteName + ' | ' + feed.title,
-                    description: config.description
+                    title:       feed.title + ' - ' + config.siteName,
+                    description: feed.description,
+                    canonical:   $state.href('root.feed', {}, {absolute: true})
                 };
             }]);
 

@@ -47,6 +47,7 @@
         this.getValueForScreenSize  = getValueForScreenSize;
         this.replaceImageSize       = replaceImageSize;
         this.copyToClipboard        = copyToClipboard;
+        this.slugify                = slugify;
 
         ////////////////////////
 
@@ -273,6 +274,21 @@
             inputElement.remove();
 
             return success;
+        }
+
+        /**
+         * Slugify text
+         * @param {string} text
+         * @returns {string}
+         */
+        function slugify (text) {
+
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
         }
     }
 
