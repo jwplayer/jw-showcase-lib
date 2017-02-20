@@ -285,14 +285,27 @@ $featured-slider-max-width: 900px;
 
 @include mobile-only() {
 
-    .jw-card-slider .jw-card-slider-container {
+    .jw-card-slider {
 
-        .jw-card-slider-title {
-            margin: 20px;
+        &-flag-featured .jw-card-slider-container {
+            .jw-card-slider-title {
+                margin: 20px;
+            }
+
+            .jw-card-slider-align {
+                padding: 0 125px 0 15px;
+            }
         }
 
-        .jw-card-slider-align {
-            padding: 0 125px 20px 15px;
+        &-flag-default .jw-card-slider-container {
+
+            .jw-card-slider-title {
+                margin: 20px;
+            }
+
+            .jw-card-slider-align {
+                padding: 0 125px 20px 15px;
+            }
         }
     }
 }

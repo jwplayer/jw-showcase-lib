@@ -3,7 +3,7 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 15px 0;
+    padding: 20px 0;
 
     color: $white;
     line-height: 1.4em;
@@ -31,6 +31,7 @@
         margin-bottom: 15px;
         font-size: rem(22px);
         font-weight: bold;
+        line-height: rem(26px);
     }
 
     .jw-video-description.inactive {
