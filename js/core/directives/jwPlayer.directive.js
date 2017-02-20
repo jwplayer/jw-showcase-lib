@@ -44,8 +44,8 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'chromecast'];
-    function JwPlayerDirective ($parse, $timeout, utils, player, chromecast) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'chromecast', '$rootScope'];
+    function JwPlayerDirective ($parse, $timeout, utils, player, chromecast, $rootScope) {
 
         return {
             scope:       {
@@ -57,6 +57,35 @@
         };
 
         function link (scope, element, attr) {
+          scope.playerMode = chromecast.isConnected ? 'CHROMECAST' : 'JWPLAYER';
+
+          $rootScope.$on('chromecast:unavailable', function (event) {
+            $timeout(function () {
+              scope.playerMode = 'JWPLAYER';
+              activate();
+            });
+          });
+
+          $rootScope.$on('chromecast:available', function (event) {
+            $timeout(function () {
+              scope.playerMode = 'JWPLAYER';
+              activate();
+            });
+          });
+
+          $rootScope.$on('chromecast:connecting', function (event) {
+            $timeout(function () {
+              scope.playerMode = 'JWPLAYER';
+            });
+          });
+
+          $rootScope.$on('chromecast:connected', function (event) {
+            $timeout(function () {
+              scope.playerMode = 'CHROMECAST';
+              activate();
+            });
+          });
+
 
             var playerId = generateRandomId(),
                 initTimeoutId,
@@ -70,6 +99,7 @@
              * Initialize directive
              */
             function activate () {
+                playerInstance && playerInstance.remove && playerInstance.remove();
 
                 angular
                     .element(element[0])
@@ -99,8 +129,7 @@
              * Initialize JS player
              */
             function initialize () {
-                //TODO this is just for testing
-                var playerMode = 'CHROMECAST';
+
 
 
                 var settings = angular.extend({
@@ -112,9 +141,9 @@
                     settings.autostart = false;
                 }
 
-                // SPLIT HERE BETWEEN CHROMECAST AND JWPLAYER
 
-                if(playerMode === 'CHROMECAST') {
+
+                if(scope.playerMode === 'CHROMECAST') {
                   chromecast.setSettings(settings);
                   playerInstance = chromecast;
                 } else {

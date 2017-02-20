@@ -1,0 +1,36 @@
+<div class="chromecast-controls">
+  <div class="chromecast-controls__actions">
+    <div class="chromecast-controls__buttons">
+      <button class="chromecast-controls__button" ng-click="vm.playButtonHandler()">
+        <i class="jwy-icon"
+           ng-class="{'jwy-icon-play': vm.playButtonState === 'PAUSE',
+                      'jwy-icon-pause': vm.playButtonState === 'PLAY'}"></i>
+      </button>
+    </div>
+  </div>
+  <div class="chromecast-controls__controlbar" ng-if="vm.playedPercentage">
+    <div class="chromecast-controls__controlbar__rail">
+      <div class="chromecast-controls__controlbar__progress" ng-style="{'right': (100 - vm.playedPercentage) + '%'}"></div>
+      <div class="chromecast-controls__controlbar__knob" ng-style="{'left': vm.playedPercentage + '%'}">
+        <div class="chromecast-controls__controlbar__knob__hitbox" on-drag="vm.onSliderDrag($event)"></div>
+      </div>
+    </div>
+  </div>
+  <div class="chromecast-controls__info" ng-if="vm.position">
+    <div class="chromecast-controls__info__group">
+      <span class="chromecast-controls__info__group__text">
+        {{vm.position  | secondsToDateTime | date:'mm:ss'}}
+      </span>
+      <span class="chromecast-controls__info__group__text">
+        /
+      </span>
+      <span class="chromecast-controls__info__group__text">
+        {{vm.duration  | secondsToDateTime | date:'mm:ss'}}
+      </span>
+    </div>
+    <div class="chromecast-controls__info__group">
+      volume button
+    </div>
+  </div>
+
+</div>

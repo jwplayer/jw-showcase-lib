@@ -44,6 +44,7 @@
     this.on = on;
     this.once = once;
     this.setSettings = setSettings;
+    this.isConnected = false;
 
     // Player functions
     this.play = play;
@@ -77,6 +78,8 @@
       if (session) {
         session.leave(function () {
           $rootScope.$emit('chromecast:available');
+          self.isConnected = false;
+
         });
       }
     }
@@ -91,8 +94,8 @@
           "images": [
             {
               "url": media.image,
-              "width": 0,
-              "height": 0
+              "width": 300,
+              "height": 250
             }
           ],
           "title": media.title,
@@ -141,6 +144,7 @@
       console.log('Session created', createdSession);
       // Can become one function
       $rootScope.$emit('chromecast:connected');
+      self.isConnected = true;
       session = createdSession;
     }
 
@@ -232,7 +236,7 @@
       }
     }
 
-    $interval(fireTimeEvent, 1000);
+    $interval(fireTimeEvent, 250);
 
     // Registering event listeners
     function on(type, aCallback) {
