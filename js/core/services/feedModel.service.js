@@ -58,8 +58,10 @@
              */
             this.clone = function () {
 
-                var clone = new FeedModel(this.feedid, this.title);
+                var clone = new FeedModel(this.feedid, this.title, this.navigable);
                 clone.playlist = this.playlist.slice(0);
+                clone.description = this.description;
+                clone.custom = angular.extend({}, this.custom);
                 return clone;
             };
         }
