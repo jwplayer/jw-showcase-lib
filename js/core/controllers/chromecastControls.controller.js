@@ -69,10 +69,10 @@
     });
 
     chromecast.once('time', function() {
-      mesureControllBar();
+      measureControllBar();
     });
 
-    function mesureControllBar() {
+    function measureControllBar() {
       $timeout(function(){
         left  = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetLeft');
         width = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetWidth');
