@@ -60,7 +60,7 @@
          * @description
          * The watchlist feed
          */
-        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos', false);
+        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos');
 
         /**
          * @ngdoc property
@@ -71,7 +71,7 @@
          * @description
          * The watchProgress feed
          */
-        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching', false);
+        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching');
 
         /**
          * @ngdoc property
