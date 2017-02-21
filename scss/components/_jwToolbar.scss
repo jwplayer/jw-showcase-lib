@@ -95,6 +95,10 @@
 
     .jw-toolbar {
 
+        &-subheader {
+            top: $header-height-mobile;
+        }
+
         &-video {
             padding-right: 0;
 
