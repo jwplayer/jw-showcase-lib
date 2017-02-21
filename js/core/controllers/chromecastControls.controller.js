@@ -74,8 +74,8 @@
 
     function measureControllBar() {
       $timeout(function(){
-        left  = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetLeft');
-        width = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetWidth');
+        left  = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetLeft');
+        width = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetWidth');
 
         right = left + width;
       });
