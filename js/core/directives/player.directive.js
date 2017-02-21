@@ -21,7 +21,7 @@
 
     angular
         .module('jwShowcase.core')
-        .directive('jwPlayer', JwPlayerDirective);
+        .directive('jwPlayer', PlayerDirective);
 
     /**
      * @ngdoc directive
@@ -44,8 +44,8 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'chromecast', '$rootScope'];
-    function JwPlayerDirective ($parse, $timeout, utils, player, chromecast, $rootScope) {
+    PlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'chromecast', '$rootScope'];
+    function PlayerDirective ($parse, $timeout, utils, player, chromecast, $rootScope) {
 
         return {
             scope:       {
