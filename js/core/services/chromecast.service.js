@@ -36,7 +36,8 @@
     var currentPlaylist = null,
       currentMedia = null,
       currentIndexOfMedia = 0,
-      firstPlay = false;
+      firstPlay = false,
+      endOfMovieMode = false;
 
     // Public functions
     this.connect = connect;
@@ -148,6 +149,8 @@
       session = createdSession;
     }
 
+
+
     function mediaUpdateListener() {
       switch (currentMedia.playerState) {
         case 'PLAYING':
@@ -161,6 +164,17 @@
         case 'PAUSED':
           trigger('pause');
           break;
+        case 'IDLE':
+          // Because the receiver does not send a idle reason we have to detect the end of the video by comparing the
+          // duration and the current time of the video
+          if(currentMedia.media.duration === currentMedia.getEstimatedTime()) {
+            // End of movie mode is detected because the library triggers the event twice at the end of a video
+            if(!endOfMovieMode) {
+                trigger('complete');
+                playlistItem(currentIndexOfMedia + 1);
+              }
+              endOfMovieMode = true;
+          }
       }
     }
 
@@ -208,6 +222,7 @@
         currentMedia = media;
         currentIndexOfMedia = index;
         media.addUpdateListener(mediaUpdateListener);
+        endOfMovieMode = false;
       });
     }
 
