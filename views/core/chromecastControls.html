@@ -4,7 +4,8 @@
       <button class="jw-chromecast-controls-button" ng-click="vm.playButtonHandler()">
         <i class="jwy-icon"
            ng-class="{'jwy-icon-play': vm.playButtonState === vm.buttonStates.PAUSE,
-                      'jwy-icon-pause': vm.playButtonState === vm.buttonStates.PLAY}"></i>
+                      'jwy-icon-pause': vm.playButtonState === vm.buttonStates.PLAY,
+                      'jwy-icon-buffer': vm.playButtonState === vm.buttonStates.BUFFERING}"></i>
       </button>
     </div>
   </div>

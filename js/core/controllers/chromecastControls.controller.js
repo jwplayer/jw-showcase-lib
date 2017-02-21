@@ -32,7 +32,8 @@
 
     vm.buttonStates = {
       PLAY: 'PLAY',
-      PAUSE: 'PAUSE'
+      PAUSE: 'PAUSE',
+      BUFFERING: 'BUFFERING'
     };
 
     vm.playButtonState = vm.buttonStates.PLAY;
@@ -60,6 +61,10 @@
       vm.playButtonState = vm.buttonStates.PAUSE;
     });
 
+    chromecast.on('buffering', function() {
+      vm.playButtonState = vm.buttonStates.BUFFERING;
+    });
+
     chromecast.on('time', function(data) {
       if(vm.timeUpdateActive) {
         vm.position = data.position;
@@ -69,10 +74,10 @@
     });
 
     chromecast.once('time', function() {
-      measureControllBar();
+      measureControlBar();
     });
 
-    function measureControllBar() {
+    function measureControlBar() {
       $timeout(function(){
         left  = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetLeft');
         width = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetWidth');
