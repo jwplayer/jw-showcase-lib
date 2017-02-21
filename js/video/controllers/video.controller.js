@@ -55,7 +55,6 @@
             loadingRecommendations = false,
             playerPlaylist         = [],
             playerLevels,
-            initialLevel,
             watchProgressItem,
             loadingTimeout;
 
@@ -224,7 +223,7 @@
         function conserveBandwidthChangeHandler (value) {
 
             var levelsLength,
-                toQuality = initialLevel;
+                toQuality = 0;
 
             // nothing to do
             if (!playerLevels) {
@@ -377,7 +376,6 @@
         function onLevels (event) {
 
             playerLevels = event.levels;
-            initialLevel = event.currentQuality;
         }
 
 
