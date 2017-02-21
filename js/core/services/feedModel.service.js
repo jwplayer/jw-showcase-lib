@@ -35,7 +35,7 @@
 
             this.playlist = [];
 
-            this.navigable = navigable || true;
+            this.navigable = angular.isDefined(navigable) ? navigable : true;
 
             this.loading = false;
 
