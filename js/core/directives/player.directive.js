@@ -99,7 +99,9 @@
              * Initialize directive
              */
             function activate () {
-                playerInstance && playerInstance.remove && playerInstance.remove();
+              if (playerInstance && angular.isFunction(playerInstance.remove)) {
+                playerInstance.remove();
+              }
 
                 angular
                     .element(element[0])
