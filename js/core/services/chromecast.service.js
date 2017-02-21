@@ -165,10 +165,11 @@
           trigger('pause');
           break;
         case 'IDLE':
-          // HACK BECAUSE RECEIVER NEVER RETURNS AN idleReason
-          // end of movie mode is done because the library triggers the event twice at the end of a video
+          // Because the receiver does not send a idle reason we have to detect the end of the video by comparing the
+          // duration and the current time of the video
           if(currentMedia.media.duration === currentMedia.getEstimatedTime()) {
-              if(!endOfMovieMode) {
+            // End of movie mode is detected because the library triggers the event twice at the end of a video
+            if(!endOfMovieMode) {
                 trigger('complete');
                 playlistItem(currentIndexOfMedia + 1);
               }
