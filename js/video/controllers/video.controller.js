@@ -46,13 +46,14 @@
                               FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, player, config,
                               feed, item) {
 
-        var vm                   = this,
-            lastPos              = 0,
-            resumed              = false,
-            started              = false,
-            requestQualityChange = false,
-            itemFeed             = feed,
-            playerPlaylist       = [],
+        var vm                     = this,
+            lastPos                = 0,
+            resumed                = false,
+            started                = false,
+            requestQualityChange   = false,
+            itemFeed               = feed,
+            loadingRecommendations = false,
+            playerPlaylist         = [],
             playerLevels,
             initialLevel,
             watchProgressItem,
@@ -134,29 +135,44 @@
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
-            if (config.recommendationsPlaylist) {
+            loadRecommendations();
+        }
 
-                if (!vm.recommendationsFeed) {
-                    vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos');
-                }
+        /**
+         * Load recommendations
+         */
+        function loadRecommendations () {
 
-                vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
-
-                apiConsumer
-                    .populateFeedModel(vm.recommendationsFeed, 'recommendations')
-                    .then(function (recommendationsFeed) {
-
-                        // filter duplicate video's
-                        if (angular.isArray(recommendationsFeed.playlist)) {
-                            recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
-                                return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
-                            });
-                        }
-                    });
-            }
-            else {
+            if (!config.recommendationsPlaylist) {
                 vm.recommendationsFeed = null;
+                return;
             }
+
+            if (loadingRecommendations) {
+                return;
+            }
+
+            loadingRecommendations = true;
+
+            if (!vm.recommendationsFeed) {
+                vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+            }
+
+            vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
+
+            apiConsumer
+                .populateFeedModel(vm.recommendationsFeed, 'recommendations')
+                .then(function (recommendationsFeed) {
+
+                    // filter duplicate video's
+                    if (angular.isArray(recommendationsFeed.playlist)) {
+                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
+                            return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
+                        });
+                    }
+
+                    loadingRecommendations = false;
+                });
         }
 
         /**
@@ -316,7 +332,7 @@
             // update $viewHistory
             stateParams.feedId  = newItem.feedid;
             stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = newItem.slug;
+            stateParams.slug    = newItem.$slug;
 
             // update state, but don't notify
             $state
@@ -327,9 +343,6 @@
                     autoStart: true
                 }, {
                     notify: false
-                })
-                .then(function () {
-                    $scope.$broadcast('$stateUpdate');
                 });
 
             vm.item = newItem;
@@ -471,29 +484,31 @@
          * @description
          * Handle click event on the card.
          *
-         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {jwShowcase.core.item}    newItem         Clicked item
          * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, clickedOnPlay) {
+        function cardClickHandler (newItem, clickedOnPlay) {
 
             var playlistIndex,
                 stateParams = $ionicHistory.currentView().stateParams;
 
             // same item
-            if (vm.item.mediaid === item.mediaid) {
+            if (vm.item.mediaid === newItem.mediaid) {
                 return;
             }
 
-            vm.item             = item;
+            vm.item = angular.extend({}, newItem);
+
             stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = item.feedid;
+            stateParams.feedId  = vm.item.feedid;
 
-            if (item.feedid !== itemFeed.feedid) {
+            // update itemFeed and playlist when feed is different
+            if (vm.item.feedid !== itemFeed.feedid) {
 
-                itemFeed       = dataStore.getFeed(item.feedid);
-                vm.feed        = itemFeed;
-                playerPlaylist = generatePlaylist(vm.feed, vm.item);
+                itemFeed = dataStore.getFeed(vm.item.feedid);
+                vm.feed  = itemFeed.clone();
 
+                playerPlaylist = generatePlaylist(itemFeed, vm.item);
                 player.load(playerPlaylist);
 
                 if (clickedOnPlay || window.cordova) {
@@ -501,21 +516,18 @@
                 }
             }
             else {
-                playlistIndex = playerPlaylist.findIndex(byMediaId(item.mediaid));
+                playlistIndex = playerPlaylist.findIndex(byMediaId(vm.item.mediaid));
                 player.playlistItem(playlistIndex);
             }
 
             $state
                 .go('root.video', {
-                    feedId:    item.feedid,
-                    mediaId:   item.mediaid,
-                    slug:      item.$slug,
+                    feedId:    vm.item.feedid,
+                    mediaId:   vm.item.mediaid,
+                    slug:      vm.item.$slug,
                     autoStart: clickedOnPlay
                 }, {
                     notify: false
-                })
-                .then(function () {
-                    $scope.$broadcast('$stateUpdate');
                 });
 
             update();
@@ -528,8 +540,8 @@
          */
         function byMediaId (mediaId) {
 
-            return function (item) {
-                return item.mediaid === mediaId;
+            return function (cursor) {
+                return cursor.mediaid === mediaId;
             };
         }
     }
