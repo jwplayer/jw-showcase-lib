@@ -167,7 +167,6 @@
         case 'IDLE':
           // HACK BECAUSE RECEIVER NEVER RETURNS AN idleReason
           // end of movie mode is done because the library triggers the event twice at the end of a video
-          debugger;
           if(currentMedia.media.duration === currentMedia.getEstimatedTime()) {
               if(!endOfMovieMode) {
                 trigger('complete');
