@@ -36,7 +36,8 @@
     var currentPlaylist = null,
       currentMedia = null,
       currentIndexOfMedia = 0,
-      firstPlay = false;
+      firstPlay = false,
+      endOfMovieMode = false;
 
     // Public functions
     this.connect = connect;
@@ -148,6 +149,8 @@
       session = createdSession;
     }
 
+
+
     function mediaUpdateListener() {
       switch (currentMedia.playerState) {
         case 'PLAYING':
@@ -161,6 +164,17 @@
         case 'PAUSED':
           trigger('pause');
           break;
+        case 'IDLE':
+          // HACK BECAUSE RECEIVER NEVER RETURNS AN idleReason
+          // end of movie mode is done because the library triggers the event twice at the end of a video
+          debugger;
+          if(currentMedia.media.duration === currentMedia.getEstimatedTime()) {
+              if(!endOfMovieMode) {
+                trigger('complete');
+                playlistItem(currentIndexOfMedia + 1);
+              }
+              endOfMovieMode = true;
+          }
       }
     }
 
@@ -208,6 +222,7 @@
         currentMedia = media;
         currentIndexOfMedia = index;
         media.addUpdateListener(mediaUpdateListener);
+        endOfMovieMode = false;
       });
     }
 
