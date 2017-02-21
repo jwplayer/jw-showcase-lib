@@ -1,11 +1,11 @@
-.chromecast-controls {
+.jw-chromecast-controls {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 
-  &__actions {
+  .jw-chromecast-controls-actions {
     position: absolute;
     top: 0;
     left: 0;
@@ -18,11 +18,11 @@
   }
 
 
-  &__buttons {
+  .jw-chromecast-controls-buttons {
 
   }
 
-  &__button {
+  .jw-chromecast-controls-button {
     background: none;
     border: 0;
     color: inherit;
@@ -40,7 +40,7 @@
     text-shadow: 0 0 20px rgba(0,0,0,0.3);
   }
 
-  &__controlbar {
+  .jw-chromecast-controls-controlbar {
     height: 22px;
 
     position: absolute;
@@ -52,21 +52,21 @@
     align-items: center;
     justify-content: flex-start;
 
-    &__rail {
+    .jw-chromecast-controls-rail {
       height: 2px;
       background-color: hsla(0, 0%, 100%, 0.25);
       width: 100%;
       position: relative;
     }
 
-    &__progress {
+    .jw-chromecast-controls-progress {
       position: absolute;
       height: 2px;
       background-color: $primary-color;
       left: 0;
     }
 
-    &__knob {
+    .jw-chromecast-controls-knob {
       position: absolute;
       height: 16px;
       margin-top: -7px;
@@ -77,7 +77,7 @@
       box-shadow: 0 0 1px 1px rgba(black, 0.1);
       background-color: white;
 
-      &__hitbox {
+      .jw-chromecast-controls-hitbox {
         position: absolute;
         height: 60px;
         width: 60px;
@@ -87,19 +87,19 @@
     }
   }
 
-  &__info {
+  .jw-chromecast-controls-info {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 44px;
     position: absolute;
     bottom: 0;
-    &__group {
+    .jw-chromecast-controls-group {
       font-size: 10px;
       padding: 0 8px;
       height: 44px;
       line-height: 40px;
-      &__text {
+      .jw-chromecast-controls-text {
         color: white;
       }
     }
