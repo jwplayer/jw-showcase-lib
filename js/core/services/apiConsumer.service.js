@@ -55,7 +55,6 @@
             if (feed && feed.feedid) {
 
                 feed.loading = true;
-                feed.playlist = [];
 
                 if (type === 'recommendations') {
 
@@ -68,7 +67,7 @@
                         });
                 }
                 else {
-
+                    feed.playlist = [];
                     promise = api.getFeed(feed.feedid);
                 }
 
