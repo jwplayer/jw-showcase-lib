@@ -30,7 +30,12 @@
   function ChromecastControlsController (chromecast, $timeout) {
     var vm = this;
 
-    vm.playButtonState = 'PLAY';
+    vm.buttonStates = {
+      PLAY: 'PLAY',
+      PAUSE: 'PAUSE'
+    };
+
+    vm.playButtonState = vm.buttonStates.PLAY;
     vm.playedPercentage = null;
     vm.timeUpdateActive = true;
 
@@ -40,7 +45,7 @@
 
 
     vm.playButtonHandler = function () {
-      if(vm.playButtonState === 'PLAY') {
+      if(vm.playButtonState === vm.buttonStates.PLAY) {
         chromecast.pause();
       } else {
         chromecast.play();
@@ -48,11 +53,11 @@
     };
 
     chromecast.on('play', function() {
-      vm.playButtonState = 'PLAY';
+      vm.playButtonState = vm.buttonStates.PLAY;
     });
 
     chromecast.on('pause', function() {
-      vm.playButtonState = 'PAUSE';
+      vm.playButtonState = vm.buttonStates.PAUSE;
     });
 
     chromecast.on('time', function(data) {
@@ -64,13 +69,13 @@
     });
 
     chromecast.once('time', function() {
-      mesureControllBar();
+      measureControllBar();
     });
 
-    function mesureControllBar() {
+    function measureControllBar() {
       $timeout(function(){
-        left  = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetLeft');
-        width = angular.element(document.querySelectorAll(".chromecast-controls__controlbar__rail")[0]).prop('offsetWidth');
+        left  = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetLeft');
+        width = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0]).prop('offsetWidth');
 
         right = left + width;
       });

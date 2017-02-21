@@ -1,36 +1,35 @@
-<div class="chromecast-controls">
-  <div class="chromecast-controls__actions">
-    <div class="chromecast-controls__buttons">
-      <button class="chromecast-controls__button" ng-click="vm.playButtonHandler()">
+<div class="jw-chromecast-controls">
+  <div class="jw-chromecast-controls-actions">
+    <div class="jw-chromecast-controls-buttons">
+      <button class="jw-chromecast-controls-button" ng-click="vm.playButtonHandler()">
         <i class="jwy-icon"
-           ng-class="{'jwy-icon-play': vm.playButtonState === 'PAUSE',
-                      'jwy-icon-pause': vm.playButtonState === 'PLAY'}"></i>
+           ng-class="{'jwy-icon-play': vm.playButtonState === vm.buttonStates.PAUSE,
+                      'jwy-icon-pause': vm.playButtonState === vm.buttonStates.PLAY}"></i>
       </button>
     </div>
   </div>
-  <div class="chromecast-controls__controlbar" ng-if="vm.playedPercentage">
-    <div class="chromecast-controls__controlbar__rail">
-      <div class="chromecast-controls__controlbar__progress" ng-style="{'right': (100 - vm.playedPercentage) + '%'}"></div>
-      <div class="chromecast-controls__controlbar__knob" ng-style="{'left': vm.playedPercentage + '%'}">
-        <div class="chromecast-controls__controlbar__knob__hitbox" on-drag="vm.onSliderDrag($event)"></div>
+  <div class="jw-chromecast-controls-controlbar" ng-if="vm.playedPercentage">
+    <div class="jw-chromecast-controls-rail">
+      <div class="jw-chromecast-controls-progress" ng-style="{'right': (100 - vm.playedPercentage) + '%'}"></div>
+      <div class="jw-chromecast-controls-knob" ng-style="{'left': vm.playedPercentage + '%'}">
+        <div class="jw-chromecast-controls-hitbox" on-drag="vm.onSliderDrag($event)"></div>
       </div>
     </div>
   </div>
-  <div class="chromecast-controls__info" ng-if="vm.position">
-    <div class="chromecast-controls__info__group">
-      <span class="chromecast-controls__info__group__text">
+  <div class="jw-chromecast-controls-info" ng-if="vm.position">
+    <div class="jw-chromecast-controls-group">
+      <span class="jw-chromecast-controls-text">
         {{vm.position  | secondsToDateTime | date:'mm:ss'}}
       </span>
-      <span class="chromecast-controls__info__group__text">
+      <span class="jw-chromecast-controls-text">
         /
       </span>
-      <span class="chromecast-controls__info__group__text">
+      <span class="jw-chromecast-controls-text">
         {{vm.duration  | secondsToDateTime | date:'mm:ss'}}
       </span>
     </div>
-    <div class="chromecast-controls__info__group">
+    <div class="jw-chromecast-controls-group">
       volume button
     </div>
   </div>
-
 </div>
