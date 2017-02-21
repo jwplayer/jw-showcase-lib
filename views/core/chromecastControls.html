@@ -3,8 +3,8 @@
     <div class="chromecast-controls__buttons">
       <button class="chromecast-controls__button" ng-click="vm.playButtonHandler()">
         <i class="jwy-icon"
-           ng-class="{'jwy-icon-play': vm.playButtonState === 'PAUSE',
-                      'jwy-icon-pause': vm.playButtonState === 'PLAY'}"></i>
+           ng-class="{'jwy-icon-play': vm.playButtonState === vm.buttonStates.PAUSE,
+                      'jwy-icon-pause': vm.playButtonState === vm.buttonStates.PLAY}"></i>
       </button>
     </div>
   </div>
@@ -32,5 +32,4 @@
       volume button
     </div>
   </div>
-
 </div>
