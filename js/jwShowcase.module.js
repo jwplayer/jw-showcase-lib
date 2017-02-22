@@ -33,7 +33,7 @@
         .value('config', {
             enableContinueWatching: true,
             enableCookieNotice:     false,
-            enableFeaturedText:     false
+            enableFeaturedText:     true
         })
         .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.0.1');
