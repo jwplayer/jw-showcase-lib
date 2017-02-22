@@ -36,7 +36,7 @@
             enableFeaturedText:     true
         })
         .decorator('$controller', $controllerDecorator)
-        .constant('LIB_VERSION', '3.0.1');
+        .constant('LIB_VERSION', '3.1.0-beta');
 
     /**
      * @name jwShowcase.config
