@@ -51,7 +51,7 @@
                 return $q.reject(new Error('feedId is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/feed.json?feed_id=' + feedId);
+            return getFeed(config.contentService + '/v2/playlists/' + feedId);
         };
 
         /**
@@ -81,7 +81,7 @@
 
             phrase = encodeURIComponent(phrase);
 
-            return getFeed(config.contentService + '/feed.json?feed_id=' + searchPlaylist + '&search=' + phrase);
+            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
         };
 
         /**
@@ -109,8 +109,8 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/feed.json?feed_id=' + recommendationsPlaylist +
-                '&related_media_id=' + mediaId);
+            return getFeed(config.contentService + '/v2/playlists/' + recommendationsPlaylist +
+                '?related_media_id=' + mediaId);
         };
 
         /**
