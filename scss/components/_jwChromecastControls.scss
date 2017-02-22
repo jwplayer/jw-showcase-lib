@@ -1,3 +1,8 @@
+@include keyframes(spin) {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+
 .jw-chromecast-controls {
   position: absolute;
   top: 0;
@@ -38,6 +43,19 @@
     background-color: rgba(33,33,33,0.8);
     margin: 0 0.25em;
     text-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .jwy-icon-buffer {
+      position: absolute;
+      @include animation-name(spin);
+      @include animation-duration(4000ms);
+      @include animation-iteration-count(infinite);
+      @include animation-timing-function(linear);
+    }
+
   }
 
   .jw-chromecast-controls-controlbar {

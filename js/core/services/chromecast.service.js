@@ -164,6 +164,9 @@
         case 'PAUSED':
           trigger('pause');
           break;
+        case 'BUFFERING':
+          trigger('buffering');
+          break;
         case 'IDLE':
           // Because the receiver does not send a idle reason we have to detect the end of the video by comparing the
           // duration and the current time of the video
