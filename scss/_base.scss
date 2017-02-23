@@ -18,10 +18,23 @@ $main-color: #2b3b57 !default;
 $text-color: #363636 !default;
 $light-color: #eee !default;
 $dark-color: #363636 !default;
+$inverse-color: #444 !default;
 $disabled-color: #d7dce5 !default;
 
 $primary-color: #f42957 !default;
-$success-color: #393;
+$success-color: #393 !default;
+
+$header-bg-color: #fff !default;
+$header-color: #2b3b57 !default;
+$header-hover-color: #f42957 !default;
+
+$toolbar-bg-color: #292929 !default;
+$toolbar-color: #fff !default;
+$toolbar-hover-color: $primary-color !default;
+
+$search-border-color: #cbced5 !default;
+$search-height: 70px !default;
+
 
 $black: #000;
 $white: #fff;
@@ -58,8 +71,14 @@ $desktop-min-width: $tablet-max-width + 1 !default;
 // Themes
 // --------------------------------
 
-$theme-light-bg-color: #d7dbe6;
-$theme-dark-bg-color: #363636;
+$theme-light-bg-color: #d7dbe6 !default;
+$theme-dark-bg-color: #363636 !default;
+
+$theme-light-slider-slide-loading-bg-color: #979797 !default;
+$theme-dark-slider-slide-loading-bg-color: #1a1a1a !default;
+
+$theme-light-slider-title-error-color: #979797 !default;
+$theme-dark-slider-title-error-color: #979797 !default;
 
 //
 // Header
@@ -71,13 +90,16 @@ $header-bg-color: #fff !default;
 $header-padding: 10px;
 
 $header-height-mobile: 60px !default;
+$header-nav-width-mobile: 50px !default;
 
-$subheader-height: 50px !default;
-$subheader-bg-color: #292929 !default;
-$subheader-nav-width: 80px !default;
+//
+// Toolbar
+// --------------------------------
 
-$header-search-border-color: #cbced5 !default;
-$header-search-height: 50px !default;
+$toolbar-height: 50px !default;
+$toolbar-padding: 10px !default;
+$toolbar-bg-color: #292929 !default;
+$toolbar-nav-width: 80px !default;
 
 //
 // Card
@@ -105,12 +127,6 @@ $card-toast-added-bg-color: $success-color !default;
 $featured-slider-bg-color: #111 !default;
 
 //
-// Meta
-// --------------------------------
-
-$meta-description-bg-color: #444 !default;
-
-//
 // Z-index
 // --------------------------------
 
@@ -123,7 +139,7 @@ $loading-z-index: $view-z-index + 1000;
 
 $ios-statusbar-height: 0;
 $bar-height: $header-height;
-$bar-subheader-height: $subheader-height;
+$bar-subheader-height: $toolbar-height;
 $link-color: #fff;
 $base-background-color: transparent;
 $ios-transition-container-bg-color: transparent;

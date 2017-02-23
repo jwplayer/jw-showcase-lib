@@ -33,18 +33,17 @@
      * @scope
      *
      * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
-     * @param {boolean|string=}         heading         Text which will be displayed in the title or false if no title
-     *                                                  should be displayed.
-     *
-     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number or
-     *                                                  an object with responsive columns (e.g. `{sm: 2, md: 4}`).
+     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number
+     *                                                  or an object with responsive columns (e.g. `{sm: 2, md: 4}`).
      *                                                  Available sizes; xs, sm, md, lg and xl.
      *
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
      * @param {object=}                 delegate        Exposes a small api to control the cardSlider.
+     * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
-     * @requires $timeout
+     * @requires $compile
+     * @requires $templateCache
      * @requires jwShowcase.core.utils
      *
      * @example
@@ -54,16 +53,16 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$timeout', 'utils'];
-    function cardSliderDirective ($timeout, utils) {
+    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
+    function cardSliderDirective ($compile, $templateCache, utils) {
 
         return {
             scope:            {
-                heading:     '=?',
                 feed:        '=',
                 cols:        '=',
                 featured:    '=',
                 onCardClick: '=',
+                title:       '@',
                 delegate:    '=?'
             },
             replace:          true,
@@ -76,29 +75,25 @@
 
         function link (scope, element) {
 
-            var cols            = 0,
-                index           = 0,
-                startCoords     = null,
-                animation       = null,
-                translateX      = 0,
-                sliding         = false,
-                forEach         = angular.forEach,
-                $               = element[0].querySelector.bind(element[0]),
-                resizeDebounced = utils.debounce(resize, 100);
+            var sliderList             = findElements('.jw-card-slider-list'),
+                resizeHandlerDebounced = utils.debounce(resizeHandler, 100),
+                slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
+                index                  = 0,
+                leftSlidesVisible      = false,
+                sliderCanSlide         = false,
+                sliding                = false,
+                userIsSliding          = false,
+                startCoords            = {},
+                sliderMap              = [],
+                totalItems             = 0,
+                itemsVisible           = 0,
+                itemsMargin            = 1,
+                animation;
 
-            scope.vm.slideLeft    = slideLeft;
-            scope.vm.slideRight   = slideRight;
-            scope.vm.slideToIndex = slideToIndex;
-
-            scope.vm.delegate = {
-                slideLeft:    slideLeft,
-                slideRight:   slideRight,
-                slideToIndex: slideToIndex
-            };
+            scope.vm.slideLeft  = slideLeft;
+            scope.vm.slideRight = slideRight;
 
             activate();
-
-            ////////////////////////
 
             /**
              * Initialize the directive.
@@ -106,194 +101,469 @@
             function activate () {
 
                 var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
-                    className       = 'jw-card-slider-flag-' + classNameSuffix;
-
-                window.addEventListener('resize', resizeDebounced);
-
-                $('.jw-card-slider-container').addEventListener('touchstart', onTouchStart, false);
+                    className       = 'jw-card-slider-flag-' + classNameSuffix,
+                    loading         = scope.vm.feed.loading;
 
                 element.addClass(className);
 
-                if (scope.vm.featured) {
 
-                    angular.element($('.jw-card-slider-indicators'))
-                        .addClass('is-visible');
+                if (!scope.vm.featured) {
+                    scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
+                }
+                else {
+                    findElement('.jw-card-slider-indicator').removeClass('ng-hide');
                 }
 
-                scope.$on('$destroy', destroy);
-                scope.$watch('vm.feed.playlist', function () {
+                scope.$on('$destroy', destroyHandler);
+                window.addEventListener('resize', resizeHandlerDebounced);
+                findElement('.jw-card-slider-align')[0].addEventListener('touchstart', onTouchStart, false);
 
-                    $timeout(function () {
+                scope.$watch(function () {
+                    return scope.vm.feed;
+                }, feedUpdateHandler, true);
 
-                        var slideCount = scope.vm.feed.playlist.length;
-
-                        resize();
-                        updateSlides();
-
-                        if (index >= slideCount) {
-                            index = Math.max(0, slideCount - 1);
-                            update(true);
-                        }
-                        else if (index > 0 && cols + index > slideCount) {
-                            index = Math.max(0, slideCount - cols);
-                            update(true);
-                        }
-
-                    }, 25);
-                }, true);
-
-                resize();
-                $timeout(resize, 50);
-            }
-
-            /**
-             * Handle $destroy event
-             */
-            function destroy () {
-
-                window.removeEventListener('resize', resizeDebounced);
-            }
-
-            /**
-             * Slide amount of cols to the left
-             */
-            function slideLeft () {
-
-                if (canSlideLeft()) {
-                    index = Math.max(0, index - cols);
-                    update(true);
+                if (scope.vm.feed) {
+                    totalItems = scope.vm.feed.playlist.length;
                 }
-            }
 
-            /**
-             * Slide amount of cols to the right
-             */
-            function slideRight () {
-
-                if (canSlideRight()) {
-                    index = Math.min(getMaxIndex(), index + cols);
-                    update(true);
+                if (loading) {
+                    element.addClass('jw-card-slider-flag-loading');
+                    renderLoadingSlides();
                 }
+
+                resizeHandler();
             }
 
             /**
-             * Slide to the given index
-             * @param {number} toIndex
+             * Find child element by selector
+             * @param {string} selector
+             * @returns {Object}
              */
-            function slideToIndex (toIndex) {
+            function findElement (selector) {
 
-                if (toIndex !== index) {
-                    index = Math.min(getMaxIndex(), Math.max(0, toIndex));
-                    update(true);
-                }
+                return angular.element(element[0].querySelector(selector));
             }
 
             /**
-             * Returns true if the slider can slide to the left
-             * @returns {boolean}
+             * Find child elements by selector
+             * @param {string} selector
+             * @returns {Object}
              */
-            function canSlideLeft () {
+            function findElements (selector) {
 
-                return index > 0;
+                return angular.element(element[0].querySelectorAll(selector));
             }
 
             /**
-             * Returns true if the slider can slide to the right
-             * @returns {boolean}
+             * Clean up
              */
-            function canSlideRight () {
+            function destroyHandler () {
 
-                return index < getMaxIndex();
+                window.removeEventListener('resize', resizeHandlerDebounced);
+                findElement('.jw-card-slider-align')[0].removeEventListener('touchstart', onTouchStart);
             }
 
             /**
-             * Update slider and slides
-             * @param {boolean} animate Animate the slider to the new position
+             * Gets called when the feed gets updated
              */
-            function update (animate) {
+            function feedUpdateHandler (newValue, oldValue) {
 
-                var offset = (index * (100 / cols));
-
-                translateX = offset * -1;
-
-                updateIndicator();
-                updateSlides();
-
-                moveSlider(translateX, animate);
-            }
-
-            /**
-             * Update slides
-             */
-            function updateSlides () {
-
-                var children = Array.prototype.slice.call($('.jw-card-slider-list').children),
-                    slides;
-
-                $('.jw-card-slider-button-flag-left').classList[canSlideLeft() ? 'remove' : 'add']('is-disabled');
-                $('.jw-card-slider-button-flag-right').classList[canSlideRight() ? 'remove' : 'add']('is-disabled');
-
-                slides = children.filter(function (slide) {
-                    return !slide.classList.contains('ng-leave');
-                });
-
-                forEach(slides, function (slide, slideIndex) {
-
-                    var lastIndex           = index + cols,
-                        offset              = scope.vm.featured ? 2 : 1,
-                        isVisible           = slideIndex >= index && slideIndex < lastIndex,
-                        isPosterVisible     = slideIndex >= index - offset && slideIndex < lastIndex + offset,
-                        isVisibleFunc       = isVisible ? 'add' : 'remove',
-                        isPosterVisibleFunc = isPosterVisible ? 'add' : 'remove';
-
-                    slide.classList[isVisibleFunc]('is-visible');
-                    slide.classList[isPosterVisibleFunc]('is-poster-visible');
-                });
-            }
-
-            /**
-             * Update the indicator
-             */
-            function updateIndicator () {
-
-                var indicator = $('.jw-card-slider-indicators');
-
-                if (!indicator) {
+                if (!feedHasChanged(newValue, oldValue)) {
                     return;
                 }
 
-                forEach(indicator.children, function (indicator, indicatorIndex) {
+                if (!scope.vm.featured) {
+                    scope.vm.heading = scope.vm.title || scope.vm.feed.title;
+                }
 
-                    var isActive = indicatorIndex >= index && indicatorIndex < index + cols,
-                        func     = isActive ? 'add' : 'remove';
+                totalItems = scope.vm.feed.playlist.length;
 
-                    indicator.classList[func]('is-active');
-                });
+                element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
+
+                resizeHandler(true);
+            }
+
+            /**
+             * Returns true if the feeds has changed and needs to re render
+             * @param {jwShowcase.core.feed} newValue
+             * @param {jwShowcase.core.feed} oldValue
+             * @returns {boolean}
+             */
+            function feedHasChanged (newValue, oldValue) {
+
+                return !comparePlaylist(newValue.playlist, oldValue.playlist) || !!newValue.error;
+            }
+
+            /**
+             * Compare the two given playlists on their $key property
+             * @param {jwShowcase.core.item[]} playlist
+             * @param {jwShowcase.core.item[]} prevPlaylist
+             * @returns {boolean}
+             */
+            function comparePlaylist (playlist, prevPlaylist) {
+
+                var playlistMap     = playlist.map(function (item) {
+                        return item.$key;
+                    }),
+                    prevPlaylistMap = prevPlaylist.map(function (item) {
+                        return item.$key;
+                    });
+
+                return angular.equals(playlistMap, prevPlaylistMap);
+
             }
 
             /**
              * Handle resize event
              */
-            function resize () {
+            function resizeHandler (forceRender) {
 
-                var slider = $('.jw-card-slider-list'),
-                    toCols = scope.vm.cols,
-                    className;
+                var newItemsVisible = angular.isNumber(scope.vm.cols) ? scope.vm.cols :
+                        utils.getValueForScreenSize(scope.vm.cols, 1),
+                    needsRender     = newItemsVisible !== itemsVisible;
 
-                if (angular.isObject(toCols)) {
-                    toCols = utils.getValueForScreenSize(toCols, 1);
+                itemsVisible   = newItemsVisible;
+                itemsMargin    = newItemsVisible + 1;
+                sliderCanSlide = totalItems > itemsVisible;
+
+                sliderList.attr('class', 'jw-card-slider-list slides-' + itemsVisible);
+
+                leftSlidesVisible = scope.vm.featured;
+
+                if (!sliderCanSlide) {
+                    index             = 0;
+                    leftSlidesVisible = false;
                 }
 
-                if (cols === toCols) {
+                findElements('.jw-card-slider-button').toggleClass('ng-hide', !sliderCanSlide);
+
+                if (forceRender || needsRender) {
+
+                    if (scope.vm.feed.error) {
+                         renderErrorSlides();
+                    }
+                    else if (scope.vm.feed.loading) {
+                        renderLoadingSlides();
+                    }
+                    else {
+                        renderSlides();
+                    }
+                }
+
+                moveSlider(0, false);
+            }
+
+            /**
+             * Render custom slides
+             * @param {string} templateUrl
+             * @parma {number} count
+             */
+            function renderCustomSlides (templateUrl, count) {
+
+                var holder = angular.element('<div></div>'),
+                    template = $templateCache.get(templateUrl),
+                    dummy;
+
+                count = count || 5;
+
+                for (var i = 0; i < count; i++) {
+                    dummy = angular.element(template);
+                    dummy.children().eq(0).addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+                    holder.append(dummy);
+                }
+
+                sliderList
+                    .html('')
+                    .append(holder.children());
+            }
+
+            /**
+             * Render loading slides
+             */
+            function renderLoadingSlides () {
+
+                renderCustomSlides('views/core/cardSliderDummySlide.html', 6);
+
+                element.addClass('jw-card-slider-flag-loading');
+            }
+
+            /**
+             * Render error slides
+             */
+            function renderErrorSlides () {
+
+                renderCustomSlides('views/core/cardSliderErrorSlide.html', 6);
+
+                scope.vm.heading = 'Missing feed';
+
+                element.addClass('jw-card-slider-flag-error');
+            }
+
+            /**
+             * Render slides
+             */
+            function renderSlides () {
+
+                var itemIndex     = index,
+                    totalCols     = itemsVisible + itemsMargin,
+                    prevNode      = null,
+                    nextSliderMap = [],
+                    item, slide;
+
+                if (leftSlidesVisible) {
+                    itemIndex -= itemsMargin;
+                    totalCols += itemsMargin;
+                }
+
+                if (itemIndex < 0) {
+                    itemIndex += totalItems;
+                }
+
+                for (var slideIndex = 0; slideIndex < totalCols; slideIndex++) {
+
+                    if (itemIndex > totalItems - 1) {
+                        if (!sliderCanSlide) {
+                            break;
+                        }
+
+                        itemIndex -= totalItems;
+                    }
+
+                    item  = scope.vm.feed.playlist[itemIndex];
+                    slide = findExistingSlide(item) || createSlide(item);
+
+                    addClassNamesToSlide(slide);
+                    addSliderToSliderList(slide);
+
+                    prevNode = slide;
+                    itemIndex++;
+                }
+
+                destroySlides();
+
+                sliderMap = nextSliderMap;
+
+                updateIndicator();
+                updateVisibleSlides();
+                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !leftSlidesVisible);
+
+                ///////////
+
+                function createSlide () {
+
+                    var slide = compileSlide(item);
+                    nextSliderMap.push({
+                        key: item.$key,
+                        el:  slide
+                    });
+
+                    return slide;
+                }
+
+                function addSliderToSliderList () {
+
+                    if (prevNode) {
+                        return prevNode.after(slide);
+                    }
+
+                    sliderList.prepend(slide);
+                }
+
+                function addClassNamesToSlide () {
+
+                    slide.removeClass('first last');
+
+                    if (itemIndex === 0) {
+                        slide.addClass('first');
+                    }
+                    else if (itemIndex === totalItems - 1) {
+                        slide.addClass('last');
+                    }
+
+                }
+
+                function findExistingSlide (item) {
+
+                    var mapIndex = sliderMap.length;
+                    while (mapIndex--) {
+                        if (sliderMap[mapIndex].key === item.$key) {
+                            slide = sliderMap[mapIndex].el;
+                            nextSliderMap.push(sliderMap[mapIndex]);
+                            sliderMap.splice(mapIndex, 1);
+                            return slide;
+                        }
+                    }
+                }
+
+                function destroySlides () {
+
+                    sliderMap.forEach(function (item) {
+                        if (item.el.scope()) {
+                            item.el.scope().$destroy();
+                        }
+                        item.el.remove();
+                    });
+                }
+            }
+
+            /**
+             * Update the slider indicator
+             */
+            function updateIndicator () {
+
+                var indicator = findElement('.jw-card-slider-indicator'),
+                    children  = indicator.children();
+
+                if (!scope.vm.featured) {
                     return;
                 }
 
-                cols      = toCols;
-                className = 'slides-' + cols;
+                // re-render dots if length mismatches
+                if (children.length !== totalItems) {
 
-                slider.className = 'jw-card-slider-list ' + className;
+                    indicator.html('');
 
-                update(false);
+                    for (var i = 0; i < totalItems; i++) {
+                        indicator.append(angular.element('<div class="jw-card-slider-indicator-dot"></div>'));
+                    }
+                }
+
+                // update active dot
+                indicator
+                    .children()
+                    .removeClass('is-active')
+                    .eq(index)
+                    .addClass('is-active');
+            }
+
+            /**
+             * Set visible classNames to slides
+             * @param {number} [offset=0]
+             */
+            function updateVisibleSlides (offset) {
+
+                var from = leftSlidesVisible ? itemsMargin : 0,
+                    to   = from + itemsVisible;
+
+                if (angular.isNumber(offset)) {
+                    from += offset;
+                    to += offset;
+                }
+
+                angular.forEach(findElement('.jw-card-slider-list').children(), function (slide, slideIndex) {
+                    slide.classList.toggle('is-visible', slideIndex >= from && slideIndex < to);
+                });
+            }
+
+            /**
+             * Compile a slide
+             * @param {jwShowcase.core.item} item
+             * @returns {angular.element}
+             */
+            function compileSlide (item) {
+
+                var childScope = scope.$new(false, scope);
+
+                childScope.item = item;
+
+                return $compile(angular.element(slideTemplate))(childScope);
+            }
+
+            /**
+             * Slide to the left
+             */
+            function slideLeft () {
+
+                var toIndex   = index === 0 ? totalItems - itemsVisible : Math.max(0, index - itemsVisible),
+                    slideCols = index - toIndex;
+
+                if (sliding || !leftSlidesVisible) {
+                    return;
+                }
+
+                if (slideCols < 0) {
+                    slideCols = (index + totalItems) - toIndex;
+                }
+
+                index = toIndex;
+
+                updateVisibleSlides(-slideCols);
+
+                moveSlider((slideCols / itemsVisible) * 100, true, function () {
+                    renderSlides();
+                    moveSlider(0, false);
+                });
+            }
+
+            /**
+             * Slide to the right
+             */
+            function slideRight () {
+
+                var toIndex   = index + itemsVisible,
+                    maxIndex  = totalItems - itemsVisible,
+                    slideCols = itemsVisible;
+
+                if (sliding) {
+                    return;
+                }
+
+                if (index === maxIndex) {
+                    toIndex = 0;
+                }
+                else if (toIndex >= maxIndex) {
+                    toIndex   = maxIndex;
+                    slideCols = toIndex - index;
+                }
+
+                index = toIndex;
+
+                updateVisibleSlides(slideCols);
+
+                moveSlider(((slideCols / itemsVisible) * 100) * -1, true, function () {
+
+                    leftSlidesVisible = true;
+
+                    renderSlides();
+                    moveSlider(0, false);
+                });
+            }
+
+            /**
+             * Move the slider to the given offset with or without animation.
+             * @param {number} offset Offset
+             * @param {boolean} animate Animate flag
+             * @param {Function} [callback] Callback when slider has moved
+             */
+            function moveSlider (offset, animate, callback) {
+
+                var listElement = findElement('.jw-card-slider-list');
+
+                sliding = true;
+
+                if (animation && animation._active) {
+                    animation.kill();
+                }
+
+                if (leftSlidesVisible) {
+                    offset -= itemsMargin / itemsVisible * 100;
+                }
+
+                animation = window.TweenLite
+                    .to(listElement, animate ? 0.3 : 0, {
+                        x: offset + '%', z: 0.01, onComplete: onSlideComplete
+                    });
+
+                function onSlideComplete () {
+
+                    sliding = false;
+
+                    setTimeout(function () {
+                        if (angular.isFunction(callback)) {
+                            callback();
+                        }
+                    }, 1);
+                }
             }
 
             /**
@@ -303,7 +573,7 @@
             function onTouchStart (event) {
 
                 var coords         = getCoords(event),
-                    touchContainer = $('.jw-card-slider-container');
+                    touchContainer = findElement('.jw-card-slider-align')[0];
 
                 touchContainer.addEventListener('touchmove', onTouchMove);
                 touchContainer.addEventListener('touchend', onTouchEnd);
@@ -328,16 +598,20 @@
                     distanceY      = startCoords.y - coords.y,
                     deltaX         = Math.abs(distanceX),
                     deltaY         = Math.abs(distanceY),
-                    sliderWidth    = $('.jw-card-slider-list').offsetWidth,
-                    containerWidth = $('.jw-card-slider-container').offsetWidth;
+                    sliderWidth    = findElement('.jw-card-slider-list')[0].offsetWidth,
+                    containerWidth = findElement('.jw-card-slider-container')[0].offsetWidth;
 
-                if (!sliding) {
+                if (animation && animation._active) {
+                    return;
+                }
+
+                if (!userIsSliding) {
                     if (deltaY > 20) {
                         afterTouchEnd();
-                        update(false);
+                        moveSlider(0, true);
                     }
                     else if (deltaX > 20) {
-                        sliding = true;
+                        userIsSliding = true;
                     }
                     return;
                 }
@@ -346,17 +620,17 @@
                 event.stopPropagation();
 
                 // first item
-                if (index === 0 && distanceX < 0) {
+                if (!leftSlidesVisible && distanceX < 0) {
                     distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth)) * -1;
                 }
                 // last item
-                else if (index >= getMaxIndex() && distanceX > 0) {
+                else if (!sliderCanSlide && distanceX > 0) {
                     distanceX = Math.min(50, easeOutDistance(deltaX, containerWidth));
                 }
 
                 var percentageOffset = (distanceX / sliderWidth) * 100;
 
-                moveSlider(translateX - percentageOffset, false);
+                moveSlider(-percentageOffset, false);
             }
 
             /**
@@ -368,14 +642,14 @@
                 var coords   = getCoords(event),
                     distance = startCoords.x - coords.x;
 
-                if (distance < -50 && canSlideLeft()) {
+                if (distance < -50 && leftSlidesVisible) {
                     slideLeft();
                 }
-                else if (distance > 50 && canSlideRight()) {
+                else if (distance > 50 && sliderCanSlide) {
                     slideRight();
                 }
                 else {
-                    update(true);
+                    moveSlider(0, true);
                 }
 
                 afterTouchEnd();
@@ -386,7 +660,7 @@
              */
             function onTouchCancel () {
 
-                update(true);
+                moveSlider(0, true);
                 afterTouchEnd();
             }
 
@@ -395,7 +669,7 @@
              */
             function afterTouchEnd () {
 
-                var touchContainer = $('.jw-card-slider-container');
+                var touchContainer = findElement('.jw-card-slider-align')[0];
 
                 startCoords = null;
 
@@ -403,35 +677,9 @@
                 touchContainer.removeEventListener('touchend', onTouchEnd);
                 touchContainer.removeEventListener('touchcancel', onTouchCancel);
 
-                sliding = false;
+                userIsSliding = false;
 
                 element.removeClass('is-sliding');
-            }
-
-            /**
-             * Move the slider to the given offset with or without animation.
-             * @param {number} offset New offset in pixels
-             * @param {boolean} animate Animate flag
-             */
-            function moveSlider (offset, animate) {
-
-                var listElement = $('.jw-card-slider-list');
-
-                if (animation && animation._active) {
-                    animation.kill();
-                }
-
-                animation = window.TweenLite
-                    .to(listElement, animate ? 0.3 : 0, {x: offset + '%', z: 0.01});
-            }
-
-            /**
-             * Return max slide index
-             * @returns {number}
-             */
-            function getMaxIndex () {
-
-                return scope.vm.feed.playlist.length - cols;
             }
 
             /**

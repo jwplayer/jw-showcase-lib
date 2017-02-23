@@ -1,21 +1,16 @@
 
 .jw-theme-light {
 
+    background-color: $theme-light-bg-color;
+
     .pane,
     .view {
-        background-color: $theme-light-bg-color;
+        background-color: transparent;
+    }
 
-        &.jw-video-view {
-            background: none;
-
-            .scroll-content {
-                background-color: $theme-light-bg-color;
-            }
-
-            &[nav-view='entering'] {
-                background-color: $black;
-            }
-        }
+    .jw-row-inverse {
+        background-color: $inverse-color;
+        color: $white;
     }
 
     .jw-card-slider-title .jw-link,
@@ -26,12 +21,38 @@
 
     .jw-card-slider {
 
-        &.jw-card-slider-flag-default {
+        &-flag-default {
             border-bottom: 1px solid rgba($main-color, 0.2);
         }
 
-        &.jw-card-slider-flag-default.jw-card-slider-button {
+        &-flag-default.jw-card-slider-button {
             color: $black;
+        }
+
+        &-flag-error {
+            .jw-card-slider-title .jw-link,
+            .jw-card-slider-title > div {
+                color: $theme-light-slider-title-error-color;
+            }
+        }
+
+        .jw-card-slider-slide {
+
+            &-flag-loading {
+                background: $white;
+
+                .jw-card-aspect {
+                    background: $main-color;
+                }
+            }
+
+            &-flag-error {
+                background: $white;
+
+                .jw-card-aspect {
+                    background: $theme-light-slider-slide-loading-bg-color;
+                }
+            }
         }
     }
 

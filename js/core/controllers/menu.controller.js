@@ -33,7 +33,8 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings', 'config'];
+    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings',
+        'config'];
     function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
@@ -90,8 +91,6 @@
          *
          * @description
          * Show confirmation modal and clear watchlist if the user clicks on 'ok'.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function clearWatchlist () {
 
@@ -111,8 +110,6 @@
          *
          * @description
          * Show confirmation modal and clear watchProgress if the user clicks on 'ok'.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function clearWatchProgress () {
 

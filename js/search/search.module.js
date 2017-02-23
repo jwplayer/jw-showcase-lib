@@ -38,11 +38,12 @@
             });
 
         seoProvider
-            .state('root.search', ['config', function (config) {
+            .state('root.search', ['$state', 'config', function ($state, config) {
 
                 return {
-                    title:       config.siteName + ' | search',
-                    description: config.description
+                    title:       'Search results - ' + config.siteName,
+                    description: config.description,
+                    canonical:   $state.href('root.search', {}, {absolute: true})
                 };
             }]);
     }

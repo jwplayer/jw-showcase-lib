@@ -29,8 +29,8 @@
      * @requires $q
      * @requires jwShowcase.config
      */
-    apiService.$inject = ['$http', '$q', 'config'];
-    function apiService ($http, $q, config) {
+    apiService.$inject = ['$http', '$q', 'config', 'utils'];
+    function apiService ($http, $q, config, utils) {
 
         /**
          * @ngdoc method
@@ -51,7 +51,7 @@
                 return $q.reject(new Error('feedId is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/feeds/' + feedId + '.json');
+            return getFeed(config.contentService + '/v2/playlists/' + feedId);
         };
 
         /**
@@ -79,7 +79,9 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/feed.json?feed_id=' + searchPlaylist + '&search=' + encodeURIComponent(phrase));
+            phrase = encodeURIComponent(phrase);
+
+            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
         };
 
         /**
@@ -107,7 +109,8 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/feed.json?feed_id=' + recommendationsPlaylist + '&related_media_id=' + mediaId)
+            return getFeed(config.contentService + '/v2/playlists/' + recommendationsPlaylist +
+                '?related_media_id=' + mediaId);
         };
 
         /**
@@ -174,7 +177,8 @@
                             item.feedid = feed.feedid;
                         }
 
-                        item.$key = index + item.mediaid;
+                        item.$key  = index + item.mediaid;
+                        item.$slug = utils.slugify(item.title);
 
                         return item;
                     })
@@ -245,11 +249,11 @@
     /**
      * @name jwShowcase.core.feed
      * @type Object
-     * @property {string}               description    Feed description
-     * @property {string}               feedid         Feed id
-     * @property {string}               kind           Feed kind
-     * @property {jwShowcase.core.item[]}      playlist       Feed playlist
-     * @property {string}               title          Feed title
+     * @property {string}                   description    Feed description
+     * @property {string}                   feedid         Feed id
+     * @property {string}                   kind           Feed kind
+     * @property {jwShowcase.core.item[]}   playlist       Feed playlist
+     * @property {string}                   title          Feed title
      */
 
     /**
@@ -261,6 +265,8 @@
      * @property {string}               link            Link
      * @property {string}               mediaid         Video id
      * @property {string}               feedid          Feed id (set by apiService)
+     * @property {string}               $feedid         Original feedid
+     * @property {string}               $slug           Title slugified
      * @property {number}               pubdate         Publication date timestamp
      * @property {Object[]}             sources         Video sources
      * @property {string}               tags            Tags

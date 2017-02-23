@@ -1,33 +1,57 @@
 
 .jw-theme-dark {
 
+    background-color: $theme-dark-bg-color;
+
     .pane,
     .view {
-        background-color: $theme-dark-bg-color;
+        background-color: transparent;
+    }
 
-        &.jw-video-view {
-            background: none;
-
-            .scroll-content {
-                background-color: $theme-dark-bg-color;
-            }
-
-            &[nav-view='entering'] {
-                background-color: $black;
-            }
-        }
+    .jw-row-inverse {
+        background-color: $inverse-color;
+        color: $white;
     }
 
     .jw-card .jw-card-title {
         color: $white;
     }
 
-    .jw-card-slider.jw-card-slider-flag-default {
-        border-bottom: 1px solid darken($dark-color, 5%);
-    }
+    .jw-card-slider {
 
-    .jw-card-slider .jw-card-slider-button {
-        color: $white;
+        &-flag-default {
+            border-bottom: 1px solid darken($dark-color, 5%);
+        }
+
+        &-flag-error {
+            .jw-card-slider-title .jw-link,
+            .jw-card-slider-title > div {
+                color: $theme-dark-slider-title-error-color;
+            }
+        }
+
+        .jw-card-slider-button {
+            color: $white;
+        }
+
+        .jw-card-slider-slide {
+
+            &-flag-loading {
+                background: $black;
+
+                .jw-card-aspect {
+                    background: $main-color;
+                }
+            }
+
+            &-flag-error {
+                background: $black;
+
+                .jw-card-aspect {
+                    background: $theme-dark-slider-slide-loading-bg-color;
+                }
+            }
+        }
     }
 
     .jw-card-slider-title .jw-link,

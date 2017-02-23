@@ -32,7 +32,7 @@
 
         $stateProvider
             .state('root.feed', {
-                url:         '/feed/:feedId',
+                url:         '/list/:feedId',
                 controller:  'FeedController as vm',
                 templateUrl: 'views/feed/feed.html',
                 resolve:     {
@@ -41,13 +41,12 @@
             });
 
         seoProvider
-            .state('root.feed', ['$stateParams', 'config', 'dataStore', function ($stateParams, config, dataStore) {
-
-                var feed = dataStore.getFeed($stateParams.feedId);
+            .state('root.feed', ['$state', 'config', 'feed', function ($state, config, feed) {
 
                 return {
-                    title:       config.siteName + ' | ' + feed.title,
-                    description: config.description
+                    title:       feed.title + ' - ' + config.siteName,
+                    description: feed.description,
+                    canonical:   $state.href('root.feed', {}, {absolute: true})
                 };
             }]);
 
@@ -55,7 +54,15 @@
 
         resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
         function resolveFeed ($stateParams, $q, dataStore) {
-            return dataStore.getFeed($stateParams.feedId) || $q.reject();
+
+            var feed = dataStore.getFeed($stateParams.feedId);
+
+            // if the feed is loading wait for the promise to resolve.
+            if (feed.loading) {
+                return feed.promise;
+            }
+
+            return feed || $q.reject();
         }
     }
 }());

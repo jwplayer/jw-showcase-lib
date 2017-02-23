@@ -100,7 +100,6 @@
             }
 
             playlist.sort(sortOnLastWatched);
-
             persist();
         }
 
@@ -216,8 +215,12 @@
                     return false;
                 }
 
+                if (item.progress < MIN_PROGRESS || item.progress > MAX_PROGRESS) {
+                    return false;
+                }
+
                 // filter out older items older than lifetime
-                return time - item.lastWatched < LIFETIME
+                return time - item.lastWatched < LIFETIME;
             }
         }
 

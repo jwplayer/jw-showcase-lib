@@ -26,8 +26,8 @@
      *
      * @requires jwShowcase.core.utils
      */
-    dataStoreService.$inject = [];
-    function dataStoreService () {
+    dataStoreService.$inject = ['FeedModel'];
+    function dataStoreService (FeedModel) {
 
         /**
          * @ngdoc property
@@ -60,11 +60,7 @@
          * @description
          * The watchlist feed
          */
-        this.watchlistFeed = {
-            feedid:   'saved-videos',
-            title:    'Saved videos',
-            playlist: []
-        };
+        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos');
 
         /**
          * @ngdoc property
@@ -75,11 +71,7 @@
          * @description
          * The watchProgress feed
          */
-        this.watchProgressFeed = {
-            feedid:   'continue-watching',
-            title:    'Continue watching',
-            playlist: []
-        };
+        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching');
 
         /**
          * @ngdoc property
@@ -90,11 +82,7 @@
          * @description
          * The search feed
          */
-        this.searchFeed = {
-            id:       'search',
-            title:    'Search results',
-            playlist: []
-        };
+        this.searchFeed = new FeedModel('search-feed', 'Search results');
 
         /**
          * @ngdoc method
@@ -180,11 +168,10 @@
             // concat watchlist and watchProgress feeds
             allFeeds = allFeeds.concat([this.watchlistFeed, this.watchProgressFeed]);
 
-            feed = allFeeds.find(function (feed) {
+            return allFeeds.find(function (feed) {
                 return feed.feedid === feedId;
             });
 
-            return feed ? angular.extend({}, feed) : undefined;
         }.bind(this);
 
         /**
@@ -195,7 +182,7 @@
 
             return function (item) {
                 return item.mediaid === mediaId;
-            }
+            };
         }
     }
 

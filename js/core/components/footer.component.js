@@ -18,24 +18,24 @@
 
     angular
         .module('jwShowcase.core')
-        .directive('jwHeaderTitle', headerTitleDirective);
+        .component('jwFooter', {
+            controllerAs:     'vm',
+            controller:       FooterController,
+            templateUrl:      'views/core/footer.html'
+        });
 
     /**
-     * @ngdoc directive
-     * @name jwHeaderTitle
-     * @module jwShowcase.core
-     * @restrict E
+     * @ngdoc controller
+     * @name jwShowcase.core.FooterController
+     *
+     * @requires jwShowcase.config
      */
-    headerTitleDirective.$inject = [];
-    function headerTitleDirective () {
+    FooterController.$inject = ['config'];
+    function FooterController (config) {
 
-        return {
-            restrict:         'E',
-            require:          '^jwHeader',
-            template:         '<div class="jw-header-title" ng-transclude></div>',
-            replace:          true,
-            transclude:       true
-        };
+        var vm = this;
+
+        vm.config = config;
     }
 
 }());

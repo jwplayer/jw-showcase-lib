@@ -16,22 +16,24 @@
 
 (function () {
 
+    /**
+     * @ngdoc component
+     * @name jwHeaderMenu
+     * @module jwShowcase.core
+     *
+     * @description
+     * Render the header menu element.
+     *
+     * @example
+     *
+     * ```html
+     * <jw-header-menu></jw-header-menu>
+     * ```
+     */
     angular
         .module('jwShowcase.core')
-        .controller('FooterController', FooterController);
-
-    /**
-     * @ngdoc controller
-     * @name jwShowcase.core.FooterController
-     *
-     * @requires jwShowcase.config
-     */
-    FooterController.$inject = ['config'];
-    function FooterController (config) {
-
-        var vm = this;
-
-        vm.config = config;
-    }
+        .component('jwHeaderMenu', {
+            templateUrl:  'views/core/headerMenu.html'
+        });
 
 }());

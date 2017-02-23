@@ -46,7 +46,7 @@
         max-height: calc(100vh - #{$header-height-mobile});
         overflow: hidden;
 
-        .jwplayer {
+        .jwplayer.jw-flag-aspect-mode {
             height: 100% !important;
         }
     }

@@ -61,7 +61,7 @@
                 if (playerDelegate && angular.isFunction(playerDelegate[method])) {
                     playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
                 }
-            }
+            };
         }
 
         /**
@@ -97,7 +97,7 @@
                 $timeout(function () {
                     callback(event);
                 }, 1);
-            }
+            };
         }
     }
 

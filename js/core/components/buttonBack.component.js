@@ -18,19 +18,23 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('HeaderBackButtonController', HeaderBackButtonController);
+        .component('jwButtonBack', {
+            controller:   ButtonBackController,
+            controllerAs: 'vm',
+            templateUrl:  'views/core/buttonBack.html'
+        });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.HeaderBackButtonController
+     * @name jwShowcase.core.ButtonBackController
      *
      * @requires $state
      * @requires $ionicHistory
      * @requires $ionicViewSwitcher
      * @requires jwShowcase.core.dataStore
      */
-    HeaderBackButtonController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
-    function HeaderBackButtonController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
+    ButtonBackController.$inject = ['$state', '$ionicHistory', '$ionicViewSwitcher', 'dataStore'];
+    function ButtonBackController ($state, $ionicHistory, $ionicViewSwitcher, dataStore) {
 
         var vm = this;
 
@@ -40,21 +44,16 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.HeaderBackButtonController#backButtonClickHandler
-         * @methodOf jwShowcase.core.HeaderBackButtonController
+         * @name jwShowcase.core.ButtonBackController#backButtonClickHandler
+         * @methodOf jwShowcase.core.ButtonBackController
          *
          * @description
          * Handle click event on the back button.
-         *
-         * @param {$event} event Synthetic event object.
          */
         function backButtonClickHandler () {
 
             var viewHistory         = $ionicHistory.viewHistory(),
-                history             = viewHistory.histories[$ionicHistory.currentHistoryId()],
                 backView            = viewHistory.backView,
-                stack               = history ? history.stack : [],
-                stackIndex          = history.cursor - 1,
                 watchlistLength     = dataStore.watchlistFeed.playlist.length,
                 watchProgressLength = dataStore.watchProgressFeed.playlist.length,
                 stateName, stateParams;
@@ -64,14 +63,17 @@
                 stateName   = backView.stateName;
                 stateParams = backView.stateParams;
 
-                // watchlist is empty, do not return to this state
-                if (stateName === 'root.feed' && stateParams.feedId === dataStore.watchlistFeed.feedid && !watchlistLength) {
-                    return goToDashboard();
-                }
+                if (stateName === 'root.feed') {
 
-                // watchProgress is empty, do not return to this state
-                if (stateName === 'root.feed' && stateParams.feedId === dataStore.watchProgressFeed.feedid && !watchProgressLength) {
-                    return goToDashboard();
+                    // watchlist is empty, do not return to this state
+                    if (stateParams.feedId === dataStore.watchlistFeed.feedid && !watchlistLength) {
+                        return goToDashboard();
+                    }
+
+                    // watchProgress is empty, do not return to this state
+                    if (stateParams.feedId === dataStore.watchProgressFeed.feedid && !watchProgressLength) {
+                        return goToDashboard();
+                    }
                 }
 
                 // return to backView, but prevent going though all video states. Only go back to the last video state
@@ -83,12 +85,28 @@
                 }
             }
 
+            navigateBackInHierarchy();
+        }
+
+        /**
+         * Navigate back in view hierarchy
+         */
+        function navigateBackInHierarchy () {
+
+            var viewHistory = $ionicHistory.viewHistory(),
+                history     = viewHistory.histories[$ionicHistory.currentHistoryId()],
+                stack       = history ? history.stack : [],
+                stackIndex  = history.cursor - 1,
+                equalState;
+
             if (stackIndex > 0) {
 
                 while (stackIndex >= 0) {
 
+                    equalState = stack[stackIndex].stateId === viewHistory.currentView.stateId;
+
                     // search until dashboard or feed state is found
-                    if (stack[stackIndex].stateName !== 'root.video' && stack[stackIndex].stateId !== viewHistory.currentView.stateId) {
+                    if (stack[stackIndex].stateName !== 'root.video' && !equalState) {
                         $ionicViewSwitcher.nextDirection('back');
                         stack[stackIndex].go();
                         return;

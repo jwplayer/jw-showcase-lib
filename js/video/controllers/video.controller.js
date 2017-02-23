@@ -40,28 +40,27 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'share', 'player', 'config', 'feed', 'item'];
+        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'player',
+        'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              dataStore, watchProgress, watchlist, userSettings, utils, share, player, config, feed, item) {
+                              FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, player, config,
+                              feed, item) {
 
-        var vm                   = this,
-            lastPos              = 0,
-            resumed              = false,
-            started              = false,
-            requestQualityChange = false,
-            itemFeed             = feed,
-            playerPlaylist       = [],
+        var vm                     = this,
+            lastPos                = 0,
+            resumed                = false,
+            started                = false,
+            requestQualityChange   = false,
+            itemFeed               = feed,
+            loadingRecommendations = false,
+            playerPlaylist         = [],
             playerLevels,
-            initialLevel,
             watchProgressItem,
             loadingTimeout;
 
         vm.item                = item;
-        vm.feed                = itemFeed;
+        vm.feed                = feed.clone();
         vm.recommendationsFeed = null;
-        vm.duration            = 0;
-        vm.inWatchList         = false;
-        vm.title               = '';
         vm.loading             = true;
 
         vm.onComplete     = onComplete;
@@ -74,9 +73,7 @@
         vm.onSetupError   = onSetupError;
         vm.onAdImpression = onAdImpression;
 
-        vm.cardClickHandler      = cardClickHandler;
-        vm.shareClickHandler     = shareClickHandler;
-        vm.watchlistClickHandler = watchlistClickHandler;
+        vm.cardClickHandler = cardClickHandler;
 
         activate();
 
@@ -88,7 +85,6 @@
         function activate () {
 
             playerPlaylist = generatePlaylist(itemFeed, item);
-            vm.inWatchList = watchlist.hasItem(vm.item);
 
             vm.playerSettings = {
                 width:          '100%',
@@ -100,7 +96,10 @@
                 related:        false,
                 preload:        'metadata',
                 sharing:        false,
-                visualplaylist: false
+                visualplaylist: false,
+                analytics:      {
+                    bi: config.id
+                }
             };
 
             if (!window.jwplayer.defaults.skin) {
@@ -108,22 +107,12 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics = {
-                    sdkplatform:    ionic.Platform.isAndroid() ? 1 : 2
-                };
+                vm.playerSettings.analytics.sdkplatform = ionic.Platform.isAndroid() ? 1 : 2;
             }
 
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
-
-            $scope.$watch(function () {
-                return watchlist.hasItem(vm.item);
-            }, function (val, oldVal) {
-                if (val !== oldVal) {
-                    vm.inWatchList = val;
-                }
-            });
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
@@ -144,36 +133,44 @@
                 .concat(itemFeed.playlist.slice(0, itemIndex));
 
             watchProgressItem = watchProgress.getItem(vm.item);
-            vm.duration       = utils.getVideoDurationByItem(vm.item);
-            vm.title          = vm.item.title;
 
-            if (vm.title.length > 100) {
-                vm.title = vm.title.substr(0, 100) + '...';
+            loadRecommendations();
+        }
+
+        /**
+         * Load recommendations
+         */
+        function loadRecommendations () {
+
+            if (!config.recommendationsPlaylist) {
+                vm.recommendationsFeed = null;
+                return;
             }
 
-            // reset slider to first index
-            if (vm.feedCardSliderDelegate) {
-                vm.feedCardSliderDelegate.slideToIndex(0);
+            if (loadingRecommendations) {
+                return;
             }
 
-            // load recommendations at this stage to prevent load time to the video page
+            loadingRecommendations = true;
+
+            if (!vm.recommendationsFeed) {
+                vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+            }
+
+            vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
+
             apiConsumer
-                .getRecommendationsFeed(item.mediaid)
-                .then(function (response) {
+                .populateFeedModel(vm.recommendationsFeed, 'recommendations')
+                .then(function (recommendationsFeed) {
 
                     // filter duplicate video's
-                    if (angular.isArray(response.playlist)) {
-                        response.playlist = response.playlist.filter(function (item) {
+                    if (angular.isArray(recommendationsFeed.playlist)) {
+                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
                             return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
 
-                    vm.recommendationsFeed = response;
-
-                    // reset slider to first slide
-                    if (vm.recommendationsCardSliderDelegate) {
-                        vm.recommendationsCardSliderDelegate.slideToIndex(0);
-                    }
+                    loadingRecommendations = false;
                 });
         }
 
@@ -191,7 +188,7 @@
                 isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
                 playlist, sources;
 
-            playlist = feed.playlist
+            playlist = angular.copy(feed.playlist)
                 .slice(playlistIndex)
                 .concat(feed.playlist.slice(0, playlistIndex));
 
@@ -204,7 +201,7 @@
                         return false;
                     }
 
-                    return 'application/dash+xml' !== source.type
+                    return 'application/dash+xml' !== source.type;
                 });
 
                 return {
@@ -212,8 +209,8 @@
                     title:       current.title,
                     description: current.description,
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     sources,
-                    tracks:      current.tracks
+                    sources:     angular.copy(sources),
+                    tracks:      angular.copy(current.tracks)
                 };
             });
         }
@@ -226,7 +223,7 @@
         function conserveBandwidthChangeHandler (value) {
 
             var levelsLength,
-                toQuality = initialLevel;
+                toQuality = 0;
 
             // nothing to do
             if (!playerLevels) {
@@ -249,7 +246,7 @@
          */
         function onReady (event) {
 
-            if (angular.isFunction(this.getContainer)) {
+            if (config.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
                 this.getContainer().focus();
             }
 
@@ -334,18 +331,17 @@
             // update $viewHistory
             stateParams.feedId  = newItem.feedid;
             stateParams.mediaId = newItem.mediaid;
+            stateParams.slug    = newItem.$slug;
 
             // update state, but don't notify
             $state
                 .go('root.video', {
                     feedId:    newItem.feedid,
                     mediaId:   newItem.mediaid,
+                    slug:      newItem.$slug,
                     autoStart: true
                 }, {
                     notify: false
-                })
-                .then(function () {
-                    $scope.$broadcast('$stateUpdate');
                 });
 
             vm.item = newItem;
@@ -380,7 +376,6 @@
         function onLevels (event) {
 
             playerLevels = event.levels;
-            initialLevel = event.currentQuality;
         }
 
 
@@ -464,11 +459,12 @@
          */
         function handleWatchProgress (position, duration) {
 
-            var progress    = position / duration,
-                minPosition = Math.min(10, duration * watchProgress.MIN_PROGRESS),
-                maxPosition = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS);
+            var progress      = position / duration,
+                minPosition   = Math.min(10, duration * watchProgress.MIN_PROGRESS),
+                maxPosition   = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS),
+                betweenMinMax = position >= minPosition && position < maxPosition;
 
-            if (angular.isNumber(progress) && position >= minPosition && position < maxPosition && !vm.inWatchList) {
+            if (angular.isNumber(progress) && betweenMinMax && !watchlist.hasItem(vm.item)) {
                 watchProgress.saveItem(vm.item, progress);
                 return;
             }
@@ -480,73 +476,37 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.video.VideoController#watchlistClickHandler
-         * @methodOf jwShowcase.video.VideoController
-         *
-         * @description
-         * Handle click event on the watchlist button.
-         */
-        function watchlistClickHandler () {
-
-            if (watchlist.hasItem(vm.item)) {
-                watchlist.removeItem(vm.item);
-                vm.inWatchList = false;
-            }
-            else {
-                watchlist.addItem(vm.item);
-                vm.inWatchList = true;
-            }
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.video.VideoController#shareClickHandler
-         * @methodOf jwShowcase.video.VideoController
-         *
-         * @description
-         * Handle click event on the share button.
-         *
-         * @param {$event} $event Synthetic event object.
-         */
-        function shareClickHandler ($event) {
-
-            share.show({
-                target: $event.target,
-                item:   vm.item
-            });
-        }
-
-        /**
-         * @ngdoc method
          * @name jwShowcase.video.VideoController#cardClickHandler
          * @methodOf jwShowcase.video.VideoController
          *
          * @description
          * Handle click event on the card.
          *
-         * @param {jwShowcase.core.item}    item            Clicked item
+         * @param {jwShowcase.core.item}    newItem         Clicked item
          * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (item, clickedOnPlay) {
+        function cardClickHandler (newItem, clickedOnPlay) {
 
             var playlistIndex,
                 stateParams = $ionicHistory.currentView().stateParams;
 
             // same item
-            if (vm.item.mediaid === item.mediaid) {
+            if (vm.item.mediaid === newItem.mediaid) {
                 return;
             }
 
-            vm.item             = item;
+            vm.item = angular.extend({}, newItem);
+
             stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = item.feedid;
+            stateParams.feedId  = vm.item.feedid;
 
-            if (item.feedid !== itemFeed.feedid) {
+            // update itemFeed and playlist when feed is different
+            if (vm.item.feedid !== itemFeed.feedid) {
 
-                itemFeed       = dataStore.getFeed(item.feedid);
-                vm.feed        = itemFeed;
-                playerPlaylist = generatePlaylist(vm.feed, vm.item);
+                itemFeed = dataStore.getFeed(vm.item.feedid);
+                vm.feed  = itemFeed.clone();
 
+                playerPlaylist = generatePlaylist(itemFeed, vm.item);
                 player.load(playerPlaylist);
 
                 if (clickedOnPlay || window.cordova) {
@@ -554,20 +514,18 @@
                 }
             }
             else {
-                playlistIndex = playerPlaylist.findIndex(byMediaId(item.mediaid));
+                playlistIndex = playerPlaylist.findIndex(byMediaId(vm.item.mediaid));
                 player.playlistItem(playlistIndex);
             }
 
             $state
                 .go('root.video', {
-                    feedId:    item.feedid,
-                    mediaId:   item.mediaid,
+                    feedId:    vm.item.feedid,
+                    mediaId:   vm.item.mediaid,
+                    slug:      vm.item.$slug,
                     autoStart: clickedOnPlay
                 }, {
                     notify: false
-                })
-                .then(function () {
-                    $scope.$broadcast('$stateUpdate');
                 });
 
             update();
@@ -580,9 +538,9 @@
          */
         function byMediaId (mediaId) {
 
-            return function (item) {
-                return item.mediaid === mediaId;
-            }
+            return function (cursor) {
+                return cursor.mediaid === mediaId;
+            };
         }
     }
 

@@ -32,11 +32,9 @@
      *
      * @scope
      *
-     * @param {jwShowcase.core.item}   item            Playlist item
-     * @param {boolean=}        featured        Featured flag
-     * @param {boolean=}        showTitle       Show item title when true
-     * @param {boolean=}        showDescription Show item description when true
-     * @param {function=}       onClick         Will be called when an click event occurs on the card.
+     * @param {jwShowcase.core.item}    item            Playlist item
+     * @param {boolean=}                featured        Featured flag
+     * @param {function=}               onClick         Will be called when an click event occurs on the card.
      *
      * @example
      *
@@ -44,19 +42,18 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$timeout', '$templateCache'];
-    function cardDirective ($animate, $q, $timeout, $templateCache) {
+    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist', 'utils',
+        'config'];
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils, config) {
 
         return {
             scope:            {
-                item:            '=',
-                featured:        '=',
-                showTitle:       '=',
-                showDescription: '=',
-                onClick:         '='
+                item:     '=',
+                featured: '=',
+                onClick:  '='
             },
             controllerAs:     'vm',
-            controller:       'CardController',
+            controller:       angular.noop,
             bindToController: true,
             replace:          true,
             templateUrl:      'views/core/card.html',
@@ -66,8 +63,157 @@
         function link (scope, element) {
 
             scope.vm.showToast = showToast;
+            scope.vm.closeMenu = closeMenu;
+
+            activate();
 
             /////////////
+
+            function activate () {
+
+                element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+
+                if (scope.vm.featured && !config.enableFeaturedText) {
+                    element.addClass('jw-card-flag-hide-text');
+                }
+
+                findElement('.jw-card-title')
+                    .html(scope.vm.item.title)
+                    .attr('href', $state.href('root.video', {
+                        feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
+                        mediaId: scope.vm.item.mediaid,
+                        slug:    scope.vm.item.$slug
+                    }));
+                findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
+
+                findElement('.jw-card-container').on('click', containerClickHandler);
+                findElement('.jw-card-menu-button').on('click', menuButtonClickHandler);
+
+                // set watch progress
+                if (scope.vm.item.feedid === 'continue-watching') {
+                    scope.$watch('vm.item.progress', watchProgressUpdateHandler);
+                }
+
+                scope.$on('$destroy', destroyDirectiveHandler);
+
+                scope.$watch(function () {
+                    return watchlist.hasItem(scope.vm.item);
+                }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Cleanup directive
+             */
+            function destroyDirectiveHandler () {
+
+                findElement('.jw-card-container').off();
+                findElement('.jw-card-menu-button').off();
+            }
+
+            /**
+             * Find child element
+             * @param {string} selector
+             * @returns {Object}
+             */
+            function findElement (selector) {
+
+                return angular.element(element[0].querySelector(selector));
+            }
+
+            /**
+             * Handle click event on the card container
+             * @param event
+             */
+            function containerClickHandler (event) {
+
+                var playButton    = findElement('.jw-card-play-button')[0],
+                    clickedOnPlay = playButton === event.target || playButton === event.target.parentNode;
+
+                if (angular.isFunction(scope.vm.onClick)) {
+                    scope.vm.onClick(scope.vm.item, clickedOnPlay);
+                }
+            }
+
+            /**
+             * Handle click on the menu button
+             */
+            function menuButtonClickHandler () {
+
+                showMenu();
+            }
+
+            /**
+             * Handle click on the watchlist button
+             */
+            function watchlistButtonClickHandler () {
+
+                showToast({
+                    templateUrl: 'views/core/toasts/unsavedVideo.html',
+                    duration:    1200
+                }).then(null, null, function () {
+                    watchlist.removeItem(scope.vm.item);
+                });
+            }
+
+            function watchProgressUpdateHandler () {
+
+                findElement('.jw-card-watch-progress')
+                    .removeClass('ng-hide')
+                    .css('width', (scope.vm.item.progress * 100) + '%');
+            }
+
+            /**
+             * Handle when this item gets added or removed from the watchlist
+             * @param inWatchlist
+             */
+            function watchlistUpdateHandler (inWatchlist) {
+
+                var watchlistButton = findElement('.jw-card-watchlist-button'),
+                    exists          = !!watchlistButton.length;
+
+                if (inWatchlist && !exists) {
+
+                    watchlistButton = $compile($templateCache.get('views/core/cardWatchlistButton.html'))(scope.$new());
+                    watchlistButton.on('click', watchlistButtonClickHandler);
+
+                    $animate.enter(watchlistButton, element, findElement('.jw-card-menu-button'));
+                }
+
+                if (!inWatchlist && exists) {
+
+                    watchlistButton.off();
+                    watchlistButton.scope().$destroy();
+                    $animate.leave(watchlistButton);
+                }
+            }
+
+            /**
+             * Show the menu
+             */
+            function showMenu () {
+
+                var cardMenu = findElement('.jw-card-menu');
+
+                if (!cardMenu.length) {
+                    cardMenu = $compile('<jw-card-menu item="vm.item"></jw-card-menu>')(scope.$new());
+                    $animate.enter(cardMenu, element, findElement('.jw-card-toasts'));
+                    element.addClass('jw-card-flag-menu-open');
+                }
+            }
+
+            /**
+             * Close the menu
+             */
+            function closeMenu () {
+
+                var cardMenu = findElement('.jw-card-menu');
+
+                if (cardMenu.length) {
+                    cardMenu.scope().$destroy();
+                    $animate.leave(cardMenu);
+                    element.removeClass('jw-card-flag-menu-open');
+                }
+            }
 
             /**
              * Show a toast over the card
@@ -94,6 +240,8 @@
 
                 // set timeout to remove toast
                 $timeout(function () {
+
+                    defer.notify('before_remove');
 
                     $animate
                         .leave(toastElement)

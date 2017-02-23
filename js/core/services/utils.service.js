@@ -47,6 +47,7 @@
         this.getValueForScreenSize  = getValueForScreenSize;
         this.replaceImageSize       = replaceImageSize;
         this.copyToClipboard        = copyToClipboard;
+        this.slugify                = slugify;
 
         ////////////////////////
 
@@ -189,16 +190,20 @@
          */
         function getValueForScreenSize (screenSizes, defaultValue) {
 
-            var index,
+            var keys  = Object.keys(screenSizes),
+                key,
+                index = 0,
                 last;
 
-            for (index in SCREEN_SIZES) {
+            for (; index < keys.length; index++) {
 
-                if (angular.isDefined(screenSizes[index])) {
-                    last = screenSizes[index];
+                key = keys[index];
+
+                if (angular.isDefined(screenSizes[key])) {
+                    last = screenSizes[key];
                 }
 
-                if (true === SCREEN_SIZES[index].matches) {
+                if (SCREEN_SIZES[key] && true === SCREEN_SIZES[key].matches) {
                     return last;
                 }
             }
@@ -269,6 +274,21 @@
             inputElement.remove();
 
             return success;
+        }
+
+        /**
+         * Slugify text
+         * @param {string} text
+         * @returns {string}
+         */
+        function slugify (text) {
+
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
         }
     }
 

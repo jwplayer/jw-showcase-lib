@@ -1,0 +1,12 @@
+<div class="jw-video-details">
+  <div class="jw-container">
+    <div class="jw-video-title">
+      {{ vm.item.title | limitTo:100 }}
+      <div class="jw-video-duration"><span>{{ vm.item | videoDuration }}</span></div>
+    </div>
+
+    <div class="jw-video-description" jw-collapsible-text="4.2em" jw-collapsible-text-watch="vm.item.description">
+      <jw-markdown ng-model="vm.item.description" class="jw-markdown"></jw-markdown>
+    </div>
+  </div>
+</div>

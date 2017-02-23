@@ -43,42 +43,55 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.apiConsumer#getFeaturedFeed
+         * @name jwShowcase.core.apiConsumer#populateFeedModel
          * @methodOf jwShowcase.core.apiConsumer
-         *
-         * @description
-         * Get featured feed from the {@link jwShowcase.core.api api} and store it in the
-         * {@link jwShowcase.core.dataStore dataStore}.
          *
          * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
-        this.getFeaturedFeed = function () {
+        this.populateFeedModel = function (feed, type) {
 
-            return api
-                .getFeed(config.featuredPlaylist)
-                .then(updateProp('featuredFeed'));
-        };
+            var promise;
 
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.apiConsumer#getFeeds
-         * @methodOf jwShowcase.core.apiConsumer
-         *
-         * @description
-         * Get all feeds defined in the config from the {@link jwShowcase.core.api api} and store it in the
-         * {@link jwShowcase.core.dataStore dataStore}.
-         *
-         * @returns {Promise} A promise which will be resolved after all api request are finished.
-         */
-        this.getFeeds = function () {
+            if (feed && feed.feedid) {
 
-            var promisesArray = config.playlists.map(function (feedId) {
-                    return api.getFeed(feedId);
-                }),
-                promise       = $q.all(promisesArray);
+                feed.loading = true;
 
-            return promise
-                .then(updateProp('feeds'));
+                if (type === 'recommendations') {
+
+                    promise = api.getRecommendationsFeed(feed.feedid, feed.relatedMediaId)
+                        .then(function (data) {
+                            data.playlist = dataStore.getItems().filter(function (item) {
+                                return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
+                            });
+                            return data;
+                        });
+                }
+                else {
+                    feed.playlist = [];
+                    promise = api.getFeed(feed.feedid);
+                }
+
+                feed.promise = promise.then(function (data) {
+
+                    angular.merge(feed, data);
+                    feed.loading = false;
+
+                    return feed;
+                });
+
+                feed.promise.catch(function (error) {
+
+                    feed.error = error;
+                    feed.loading = false;
+                    feed.navigable = false;
+
+                    return feed;
+                });
+
+                return feed.promise;
+            }
+
+            return $q.reject(new Error('feedid is not defined'));
         };
 
         /**
@@ -127,47 +140,6 @@
         };
 
         /**
-         * @ngdoc method
-         * @name jwShowcase.core.apiConsumer#getRecommendationsFeed
-         * @methodOf jwShowcase.core.apiConsumer
-         *
-         * @description
-         * Get recommendations feed from the {@link jwShowcase.core.api api} and filter out items not known by
-         * JW Showcase.
-         *
-         * @returns {Promise} A promise which will be resolved after the api request is finished.
-         */
-        this.getRecommendationsFeed = function (mediaId) {
-
-            return api.getRecommendationsFeed(config.recommendationsPlaylist, mediaId)
-                .then(function (response) {
-
-                    var allItems = dataStore.getItems();
-
-                    response.feedid = null;
-
-                    response.playlist = allItems.filter(function (item) {
-                        return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                    });
-
-                    return response;
-                });
-        };
-
-        /**
-         * Set data in given prop
-         * @param propName
-         * @returns {function}
-         */
-        function updateProp (propName) {
-
-            return function (data) {
-                dataStore[propName] = data;
-                return data;
-            };
-        }
-
-        /**
          * @param mediaId
          * @returns {Function}
          */
@@ -175,7 +147,7 @@
 
             return function (item) {
                 return item.mediaid === mediaId;
-            }
+            };
         }
     }
 

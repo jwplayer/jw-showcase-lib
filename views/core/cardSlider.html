@@ -1,22 +1,17 @@
 <div class="jw-card-slider">
   <div class="jw-card-slider-container">
-    <div class="jw-card-slider-title" ng-if="vm.heading">
-      <a ui-sref="root.feed({feedId: vm.feed.feedid})" class="jw-link" ng-if="vm.feed.feedid">
-        <span>{{ vm.heading }} </span> <i class="jwy-icon jwy-icon-angle-right"></i> <span
+    <div class="jw-card-slider-title">
+      <a ui-sref="root.feed({feedId: vm.feed.feedid})" class="jw-link" ng-if="vm.feed.navigable">
+        <span>{{ vm.heading }}</span> <i class="jwy-icon jwy-icon-angle-right"></i> <span
           class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>
       </a>
-      <div ng-if="!vm.feed.feedid">
-        <span>{{ vm.heading }} </span> <span
-          class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>
+      <div ng-if="!vm.feed.navigable">
+        <span>{{ vm.heading }}</span> <span class="jw-card-slider-title-count"
+      ng-if="vm.feed.playlist.length">({{ vm.feed.playlist.length }})</span>
       </div>
     </div>
     <div class="jw-card-slider-align">
-      <ul class="jw-card-slider-list">
-        <li class="jw-card-slider-slide" ng-repeat="item in vm.feed.playlist track by item.$key">
-          <jw-card item="item" featured="vm.featured" show-title="true" show-description="true"
-              on-click="vm.onCardClick"></jw-card>
-        </li>
-      </ul>
+      <div class="jw-card-slider-list"></div>
     </div>
     <jw-button class="jw-card-slider-button jw-card-slider-button-flag-left is-hidden-mobile"
         ng-click="vm.slideLeft($event)">
@@ -26,8 +21,6 @@
         ng-click="vm.slideRight($event)">
       <i class="jwy-icon jwy-icon-angle-right"></i>
     </jw-button>
-    <ul class="jw-card-slider-indicators">
-      <li class="jw-card-slider-indicator" ng-repeat="item in vm.feed.playlist" ng-click="vm.slideToIndex($index)"></li>
-    </ul>
+    <div class="jw-card-slider-indicator ng-hide"></div>
   </div>
 </div>

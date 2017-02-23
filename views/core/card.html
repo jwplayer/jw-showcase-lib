@@ -1,41 +1,33 @@
-<div class="jw-card" ng-class="vm.getClassNames()">
+<div class="jw-card">
 
-  <div class="jw-card-aspect">
-    <jw-card-poster src="vm.posterUrl"></jw-card-poster>
+  <div class="jw-card-aspect" jw-card-poster="vm.item">
+    <div class="jw-card-poster is-active is-loading"></div>
   </div>
 
-  <a ui-sref="root.video({mediaId: vm.item.mediaid, feedId: vm.item.feedid})" class="jw-card-container"
-      ng-click="vm.clickHandler($event, false)" tabindex="-1">
+  <div class="jw-card-container">
     <div class="jw-card-controls">
       <div class="jw-card-controls-align">
-        <jw-button class="jw-card-play-button jw-button-play" ng-click="vm.clickHandler($event, true)">
-          <i class="jwy-icon jwy-icon-{{ vm.nowPlaying && !vm.player.paused ? 'pause' : 'play' }}"></i>
-        </jw-button>
+        <a class="jw-button jw-card-play-button jw-button-play">
+          <i class="jwy-icon jwy-icon-play"></i>
+        </a>
         <div class="jw-card-text jw-card-text-now-playing">Currently playing</div>
       </div>
-      <div class="jw-card-duration jw-card-text">{{ ::vm.duration }}</div>
+      <div class="jw-card-duration jw-card-text"></div>
     </div>
     <div class="jw-card-info">
-      <div class="jw-card-watch-progress" ng-if="vm.watchProgress && vm.item.progress > 0" ng-style="{width: vm.item.progress * 100 + '%'}"></div>
+      <div class="jw-card-watch-progress ng-hide"></div>
       <div class="jw-card-info-mask">
-        <div class="jw-card-title jw-card-text" ng-if="vm.showTitle">{{ ::vm.item.title }}</div>
-        <div class="jw-card-description jw-card-text" ng-if="vm.showDescription">{{ ::vm.item.description }}</div>
+        <a class="jw-card-title jw-card-text"></a>
+        <div class="jw-card-description jw-card-text jw-markdown">
+          <jw-markdown ng-model="vm.item.description"></jw-markdown>
+        </div>
       </div>
     </div>
-  </a>
+  </div>
 
-  <jw-button class="jw-card-menu-button" ng-click="vm.menuButtonClickHandler($event)" ng-if="!vm.featured">
+  <jw-button class="jw-card-menu-button">
     <i class="jwy-icon jwy-icon-more jwy-icon-rotate-90"></i>
   </jw-button>
-
-  <jw-button class="jw-card-watchlist-button jw-button-watchlist is-active ng-hide" ng-show="vm.inWatchList"
-      ng-click="vm.watchlistClickHandler($event)">
-    <i class="jwy-icon jwy-icon-banner jwy-icon-stack">
-      <i class="jwy-icon jwy-icon-min"></i>
-    </i>
-  </jw-button>
-
-  <jw-card-menu item="vm.item" ng-if="vm.menuVisible"></jw-card-menu>
 
   <div class="jw-card-toasts"></div>
 </div>

@@ -4,10 +4,9 @@
 
 .jw-card {
     position: relative;
-
     font-size: rem(15px);
 
-    &:not(.jw-card-flag-touch):not(.jw-card-flag-menu-open) {
+    body:not(.platform-touch) & {
 
         &.jw-card-flag-active,
         &:hover {
@@ -17,37 +16,31 @@
         }
     }
 
-    &.jw-card-flag-menu-open,
-    &.jw-card-flag-toast-open {
+    &-flag-menu-open,
+    &-flag-toast-open {
         .jw-card-watchlist-button {
-            @include transform(scale(0));
-        }
-    }
-
-    &.jw-card-flag-now-playing {
-
-        .jw-card-container {
-            background-color: rgba($black, 0.8);
-        }
-
-        .jw-card-controls,
-        .jw-card-play-button {
-            opacity: 1;
-        }
-
-        .jw-card-text-now-playing {
-            display: block;
+            @include transform(scale(0) !important);
         }
     }
 
     .jw-button-watchlist {
-        @include single-transition(transform, 0.2s, ease, 0s);
+        @include single-transition(transform, 0.2s, cubic-bezier(0.48, 0.76, 0.39, 1.15), 0s);
         position: absolute;
         top: -14px;
         left: 2px;
 
         &:hover {
             @include transform(scale(1.2));
+        }
+
+        &.ng-enter,
+        &.ng-leave.ng-leave-active {
+            @include transform(scale(0));
+        }
+
+        &.ng-enter.ng-enter-active,
+        &.ng-leave {
+            @include transform(scale(1));
         }
 
         .jwy-icon {
@@ -103,6 +96,7 @@
 
     .jw-card-text-now-playing {
         display: none;
+        font-size: rem(16px);
     }
 
     .jw-card-title {
@@ -217,9 +211,8 @@
 .jw-card.jw-card-flag-default {
     padding-bottom: 39px;
 
-    &:not(.jw-card-flag-touch):not(.jw-card-flag-compact):not(.jw-card-flag-now-playing) {
+    body:not(.platform-touch) & {
 
-        &.jw-card-flag-menu-open,
         &:hover {
 
             .jw-card-container {
@@ -240,7 +233,6 @@
 
     .jw-card-info {
         position: relative;
-        flex-basis: 39px;
     }
 
     .jw-card-description {
@@ -271,7 +263,19 @@
 .jw-card.jw-card-flag-featured {
     font-size: 32px;
 
-    .jw-card-duration {
+    &.jw-card-flag-hide-text {
+        .jw-card-title,
+        .jw-card-description {
+            display: none;
+        }
+    }
+
+    &:hover .jw-card-container {
+        background-color: transparent;
+    }
+
+    .jw-card-duration,
+    .jw-card-menu-button {
         display: none;
     }
 
@@ -281,7 +285,6 @@
 
     .jw-card-title {
         padding: 0 50px 20px;
-        line-height: 24px;
     }
 
     .jw-card-description {

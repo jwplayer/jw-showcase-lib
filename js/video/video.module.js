@@ -27,46 +27,60 @@
         .module('jwShowcase.video', [])
         .config(config);
 
-    config.$inject = ['$stateProvider', 'seoProvider'];
-    function config ($stateProvider, seoProvider) {
+    config.$inject = ['$stateProvider', '$urlRouterProvider', 'seoProvider'];
+    function config ($stateProvider, $urlRouterProvider, seoProvider) {
+
+        $urlRouterProvider
+            .when('/list/:feedId/video', '/list/:feedId');
 
         $stateProvider
             .state('root.video', {
-                url:            '/video/:feedId/:mediaId',
-                controller:     'VideoController as vm',
-                templateUrl:    'views/video/video.html',
-                resolve:        {
-                    item: resolveItem,
-                    feed: resolveFeed
+                url:         '/list/:feedId/video/:mediaId/:slug',
+                controller:  'VideoController as vm',
+                templateUrl: 'views/video/video.html',
+                resolve:     {
+                    feed: resolveFeed,
+                    item: resolveItem
                 },
-                params:         {
-                    autoStart: false
+                params:      {
+                    autoStart: false,
+                    slug:      {
+                        value:  null,
+                        squash: true
+                    }
                 },
-                cache:          false
+                cache:       false
             });
 
         seoProvider
-            .state('root.video', ['$stateParams', 'config', 'dataStore', function ($stateParams, config, dataStore) {
-
-                var item = dataStore.getItem($stateParams.mediaId, $stateParams.feedId);
+            .state('root.video', ['$state', 'config', 'item', function ($state, config, item) {
 
                 return {
-                    title:       config.siteName + ' | ' + item.title,
+                    title:       item.title + ' - ' + config.siteName,
                     description: item.description,
-                    image:       item.image
+                    image:       item.image,
+                    canonical:   $state.href('root.video', {slug: item.$slug}, {absolute: true})
                 };
             }]);
 
         /////////////////
 
-        resolveItem.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
-        function resolveItem ($stateParams, $q, dataStore) {
-            return dataStore.getItem($stateParams.mediaId, $stateParams.feedId) || $q.reject();
-        }
-
         resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
         function resolveFeed ($stateParams, $q, dataStore) {
-            return dataStore.getFeed($stateParams.feedId) || $q.reject();
+
+            var feed = dataStore.getFeed($stateParams.feedId);
+
+            // if the feed is loading wait for the promise to resolve.
+            if (feed.loading) {
+                return feed.promise;
+            }
+
+            return feed || $q.reject();
+        }
+
+        resolveItem.$inject = ['$stateParams', '$q', 'feed'];
+        function resolveItem ($stateParams, $q, feed) {
+            return feed.findItem($stateParams.mediaId) || $q.reject();
         }
     }
 
