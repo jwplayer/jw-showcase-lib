@@ -246,7 +246,7 @@
          */
         function onReady (event) {
 
-            if (angular.isFunction(this.getContainer)) {
+            if (config.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
                 this.getContainer().focus();
             }
 

@@ -33,7 +33,8 @@
         .value('config', {
             enableContinueWatching: true,
             enableCookieNotice:     false,
-            enableFeaturedText:     true
+            enableFeaturedText:     true,
+            enablePlayerAutoFocus:  true
         })
         .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.1.0-beta');
@@ -52,6 +53,7 @@
      * @property {boolean}     enableContinueWatching
      * @property {boolean}     enableCookieNotice
      * @property {boolean}     enableFeaturedText
+     * @property {boolean}     enablePlayerAutoFocus
      * @property {string}      searchPlaylist
      * @property {string}      recommendationsPlaylist
      * @property {string}      featuredPlaylist
