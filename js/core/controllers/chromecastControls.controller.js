@@ -37,13 +37,7 @@
         };
 
         vm.playButtonState  = vm.buttonStates.PLAY;
-        vm.playedPercentage = null;
         vm.timeUpdateActive = true;
-
-        var left  = null,
-            right = null,
-            width = null
-
 
         vm.playButtonHandler = function () {
             if (vm.playButtonState === vm.buttonStates.PLAY) {
@@ -69,45 +63,8 @@
             if (vm.timeUpdateActive) {
                 vm.position         = data.position;
                 vm.duration         = data.duration;
-                vm.playedPercentage = ((data.position / data.duration) * 100);
             }
         });
-
-        chromecast.once('time', function () {
-            measureControlBar();
-        });
-
-        function measureControlBar () {
-            $timeout(function () {
-                left  = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0])
-                    .prop('offsetLeft');
-                width = angular.element(document.querySelectorAll(".jw-chromecast-controls-rail")[0])
-                    .prop('offsetWidth');
-
-                right = left + width;
-            });
-        }
-
-
-        vm.onSliderDrag = function (event) {
-            vm.timeUpdateActive = false;
-
-            var position         = event.gesture.center.pageX;
-            var relativePosition = position - left;
-            var percentage       = (relativePosition / width);
-
-            percentage < 0 && (percentage = 0);
-            percentage > 100 && (percentage = 100);
-
-            vm.position = vm.duration * percentage;
-            console.log('vm.timeInSeconds: ', vm.position);
-            vm.playedPercentage = ((vm.position / vm.duration) * 100);
-            chromecast.seek(vm.position);
-            vm.timeUpdateActive = true;
-        };
-
-
-
     }
 
 }());
