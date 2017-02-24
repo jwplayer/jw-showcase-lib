@@ -24,18 +24,23 @@
     function chromecastControlbarDirective (chromecast) {
 
         return {
-            scope:       {
+            scope:        {
                 totalTime:   '=',
                 currentTime: '='
             },
-            restrict:    'E',
-            templateUrl: 'views/core/chromecastControlbar.html',
-            transclude:  true,
-            replace:     true,
-            link:        link
+            restrict:     'E',
+            controllerAs: 'vm',
+            controller:   angular.noop,
+            templateUrl:  'views/core/chromecastControlbar.html',
+            transclude:   true,
+            replace:      true,
+            link:         link
         };
 
         function link (scope, element) {
+            scope.vm.onSliderDrag    = onSliderDrag;
+            scope.vm.onSliderRelease = onSliderRelease;
+
             var playedPercentage  = null,
                 updateCurrentTime = true,
                 slidedToTime      = null;
@@ -60,7 +65,6 @@
                 }
             }
 
-
             scope.$watch('currentTime', function () {
                 if (updateCurrentTime && scope.currentTime && scope.totalTime) {
 
@@ -76,7 +80,7 @@
                 }
             });
 
-            scope.onSliderDrag = function (event) {
+            function onSliderDrag (event) {
                 updateCurrentTime = false;
 
                 var fingerPosition   = event.gesture.center.pageX;
@@ -92,16 +96,16 @@
                 }
 
                 slidedToTime = (scope.totalTime * percentage) / 100;
-            };
+            }
 
-            scope.onSliderRelease = function (event) {
+            function onSliderRelease (event) {
                 if (slidedToTime) {
                     chromecast.seek(slidedToTime).then(function () {
-                        slidedToTime = null;
+                        slidedToTime      = null;
                         updateCurrentTime = true;
                     });
                 }
-            };
+            }
         }
     }
 

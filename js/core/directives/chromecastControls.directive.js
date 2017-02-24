@@ -24,18 +24,8 @@
      * @ngdoc directive
      * @name jwShowcase.core.directive:jwChromecastControls
      * @module jwShowcase.core
-     *
-     * @param   {String} jwChromecastControls      Default height of text (line height * max lines).
-     * @param   {String} jwChromecastControlsWatch Observe this value for changes.
-     *
-     * @requires jwShowcase.core.utils
-     *
-     * @example
-     *
-     * ```
-     * <div jw-collapsible-text="3em">{{ vm.description }}</div>
-     * ```
      */
+    
     chromecastControlsDirective.$inject = ['utils'];
     function chromecastControlsDirective (utils) {
 
