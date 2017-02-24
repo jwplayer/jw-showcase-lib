@@ -136,6 +136,10 @@
                         document.body.classList.add('jw-flag-no-header');
                     }
 
+                    if (angular.isDefined(config.enableJsScroll)) {
+                        $ionicConfigProvider.scrolling.jsScrolling(config.enableJsScroll);
+                    }
+
                     if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
                         model = new FeedModel(config.featuredPlaylist);
 
