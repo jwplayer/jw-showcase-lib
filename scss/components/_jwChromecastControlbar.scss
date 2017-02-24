@@ -1,0 +1,46 @@
+.jw-chromecast-controlbar {
+    height: 22px;
+
+    position: absolute;
+    bottom: 44px;
+    left: 15px;
+    right: 15px;
+
+    .jw-chromecast-controlbar-rail {
+        height: 2px;
+        background-color: hsla(0, 0%, 100%, 0.25);
+
+        position: absolute;
+        top: 10px;
+        bottom: 10px;
+        width: 100%;
+    }
+
+    .jw-chromecast-controlbar-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background-color: $primary-color;
+
+    }
+
+    .jw-chromecast-controlbar-knob {
+        width: 16px;
+        height: 16px;
+        margin-top: -7px;
+        border-radius: 100%;
+        box-shadow: 0 0 1px 1px rgba(black, 0.1);
+        background-color: white;
+        position: absolute;
+        z-index: 20;
+
+        .jw-chromecast-controlbar-hitbox {
+            position: absolute;
+            height: 60px;
+            width: 60px;
+            left: -23px;
+            top: -23px;
+        }
+    }
+}

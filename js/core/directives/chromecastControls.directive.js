@@ -16,44 +16,34 @@
 
 (function () {
 
-  angular
-    .module('jwShowcase.core')
-    .directive('jwChromecastControls', chromecastControlsDirective);
+    angular
+        .module('jwShowcase.core')
+        .directive('jwChromecastControls', chromecastControlsDirective);
 
-  /**
-   * @ngdoc directive
-   * @name jwShowcase.core.directive:jwChromecastControls
-   * @module jwShowcase.core
-   *
-   * @param   {String} jwChromecastControls      Default height of text (line height * max lines).
-   * @param   {String} jwChromecastControlsWatch Observe this value for changes.
-   *
-   * @requires jwShowcase.core.utils
-   *
-   * @example
-   *
-   * ```
-   * <div jw-collapsible-text="3em">{{ vm.description }}</div>
-   * ```
-   */
-  chromecastControlsDirective.$inject = ['utils'];
-  function chromecastControlsDirective (utils) {
+    /**
+     * @ngdoc directive
+     * @name jwShowcase.core.directive:jwChromecastControls
+     * @module jwShowcase.core
+     */
+    
+    chromecastControlsDirective.$inject = ['utils'];
+    function chromecastControlsDirective (utils) {
 
-    return {
-      restrict:         'E',
-      controller:       'ChromecastControlsController',
-      controllerAs:     'vm',
-      templateUrl:      'views/core/chromecastControls.html',
-      bindToController: true,
-      transclude:       false,
-      replace:          true,
-      link:             link
-    };
+        return {
+            restrict:         'E',
+            controller:       'ChromecastControlsController',
+            controllerAs:     'vm',
+            templateUrl:      'views/core/chromecastControls.html',
+            bindToController: true,
+            transclude:       false,
+            replace:          true,
+            link:             link
+        };
 
-    function link (scope, element) {
+        function link (scope, element) {
 
+        }
     }
-  }
 
 }());
 

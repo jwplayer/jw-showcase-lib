@@ -9,14 +9,9 @@
       </button>
     </div>
   </div>
-  <div class="jw-chromecast-controls-controlbar" ng-if="vm.playedPercentage">
-    <div class="jw-chromecast-controls-rail">
-      <div class="jw-chromecast-controls-progress" ng-style="{'right': (100 - vm.playedPercentage) + '%'}"></div>
-      <div class="jw-chromecast-controls-knob" ng-style="{'left': vm.playedPercentage + '%'}">
-        <div class="jw-chromecast-controls-hitbox" on-drag="vm.onSliderDrag($event)"></div>
-      </div>
-    </div>
-  </div>
+
+  <jw-chromecast-controlbar total-time="vm.duration" current-time="vm.position" ng-if="vm.duration"></jw-chromecast-controlbar>
+
   <div class="jw-chromecast-controls-info" ng-if="vm.position">
     <div class="jw-chromecast-controls-group">
       <span class="jw-chromecast-controls-text">
