@@ -18,16 +18,16 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('ChromecastControlsController', ChromecastControlsController);
+        .controller('MiniChromecastControlsController', MiniChromecastControlsController);
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.ChromecastControlsController
+     * @name jwShowcase.core.MiniChromecastControlsController
      *
      * @requires jwShowcase.core.menu
      */
-    ChromecastControlsController.$inject = ['chromecast', '$timeout'];
-    function ChromecastControlsController (chromecast, $timeout) {
+    MiniChromecastControlsController.$inject = ['chromecast', '$rootScope'];
+    function MiniChromecastControlsController (chromecast, $rootScope) {
         var vm = this;
 
         vm.buttonStates = {
@@ -37,6 +37,9 @@
         };
 
         vm.playButtonState = vm.buttonStates.PLAY;
+        vm.currentItem     = null;
+        vm.percentage      = null;
+        vm.visible         = false;
 
         vm.playButtonHandler = function () {
             if (vm.playButtonState === vm.buttonStates.PLAY) {
@@ -59,9 +62,20 @@
         });
 
         chromecast.on('time', function (data) {
-            vm.position = data.position;
-            vm.duration = data.duration;
+            vm.position   = data.position;
+            vm.duration   = data.duration;
+            vm.percentage = (data.position / data.duration) * 100;
         });
+
+        chromecast.on('playlistItem', function (data) {
+            vm.currentItem = data.item;
+        });
+
+        $rootScope.$on('$stateChangeStart',
+            function (event, toState, toParams, fromState, fromParams) {
+                vm.visible = toState.name !== 'root.video' && vm.currentItem;
+            }
+        );
     }
 
 }());
