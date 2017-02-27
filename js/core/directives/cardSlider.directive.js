@@ -53,8 +53,8 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
-    function cardSliderDirective ($compile, $templateCache, utils) {
+    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils', 'config'];
+    function cardSliderDirective ($compile, $templateCache, utils, config) {
 
         return {
             scope:            {
@@ -88,6 +88,10 @@
                 totalItems             = 0,
                 itemsVisible           = 0,
                 itemsMargin            = 1,
+                options                = {
+                    enableFeaturedText:    config.enableFeaturedText,
+                    sliderBackgroundColor: null
+                },
                 animation;
 
             scope.vm.slideLeft  = slideLeft;
@@ -104,8 +108,9 @@
                     className       = 'jw-card-slider-flag-' + classNameSuffix,
                     loading         = scope.vm.feed.loading;
 
-                element.addClass(className);
+                setCustomOptions();
 
+                element.addClass(className);
 
                 if (!scope.vm.featured) {
                     scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
@@ -168,6 +173,15 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
+                setCustomOptions();
+
+                if (scope.vm.featured) {
+                    element.toggleClass('jw-card-slider-flag-hide-text', !options.enableFeaturedText);
+                }
+
+                // set slider background color
+                element.css('background-color', options.sliderBackgroundColor || '');
+
                 if (!feedHasChanged(newValue, oldValue)) {
                     return;
                 }
@@ -181,6 +195,28 @@
                 element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
 
                 resizeHandler(true);
+            }
+
+            /**
+             * Set custom options from feed
+             */
+            function setCustomOptions () {
+
+                var custom;
+
+                angular.forEach(options, function (val, key) {
+
+                    custom = scope.vm.feed['showcase.' + key];
+
+                    if (angular.isDefined(custom)) {
+                        if ('true' === custom || 'false' === custom) {
+                            options[key] = 'true' === custom;
+                        }
+                        else {
+                            options[key] = custom;
+                        }
+                    }
+                });
             }
 
             /**
@@ -240,7 +276,7 @@
                 if (forceRender || needsRender) {
 
                     if (scope.vm.feed.error) {
-                         renderErrorSlides();
+                        renderErrorSlides();
                     }
                     else if (scope.vm.feed.loading) {
                         renderLoadingSlides();
@@ -260,7 +296,7 @@
              */
             function renderCustomSlides (templateUrl, count) {
 
-                var holder = angular.element('<div></div>'),
+                var holder   = angular.element('<div></div>'),
                     template = $templateCache.get(templateUrl),
                     dummy;
 

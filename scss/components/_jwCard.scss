@@ -263,13 +263,6 @@
 .jw-card.jw-card-flag-featured {
     font-size: 32px;
 
-    &.jw-card-flag-hide-text {
-        .jw-card-title,
-        .jw-card-description {
-            display: none;
-        }
-    }
-
     &:hover .jw-card-container {
         background-color: transparent;
     }
