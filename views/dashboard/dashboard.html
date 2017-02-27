@@ -7,10 +7,10 @@
             on-card-click="vm.cardClickHandler"></jw-card-slider>
       </div>
 
-      <!--<div class="jw-row is-visible-mobile" ng-repeat="item in vm.dataStore.featuredFeed.playlist">-->
-      <!--<jw-card class="is-active" item="item" featured="true" show-title="true" show-description="true"-->
-      <!--on-click="vm.cardClickHandler"></jw-card>-->
-      <!--</div>-->
+      <div class="jw-row is-visible-mobile" ng-repeat="item in vm.dataStore.featuredFeed.playlist">
+        <jw-card class="is-active" item="item" featured="true" show-title="true" show-description="true"
+            on-click="vm.cardClickHandler"></jw-card>
+      </div>
     </div>
 
     <div class="watchProgress jw-expand-animation" ng-if="vm.showWatchProgressFeed()">
