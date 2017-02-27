@@ -1,0 +1,29 @@
+<div class="jw-mini-chromecast-controls" ng-class="{'jw-mini-chromecast-controls-visible': vm.visible}">
+
+  <div class="jw-mini-chromecast-controls-image" ng-style="{'background-image':'url('+vm.currentItem.image+')'}">
+  </div>
+
+  <div class="jw-mini-chromecast-controls-info">
+    <div class="jw-mini-chromecast-controls-info-container">
+      <p class="jw-mini-chromecast-controls-title">{{vm.currentItem.title}}</p>
+      <p class="jw-mini-chromecast-controls-description">{{vm.currentItem.description}}</p>
+    </div>
+  </div>
+
+  <div class="jw-mini-chromecast-controls-control">
+    <button class="jw-mini-chromecast-controls-button" ng-click="vm.playButtonHandler()">
+      <i class="jwy-icon"
+          ng-class="{'jwy-icon-play': vm.playButtonState === vm.buttonStates.PAUSE,
+                      'jwy-icon-pause': vm.playButtonState === vm.buttonStates.PLAY,
+                      'jwy-icon-buffer': vm.playButtonState === vm.buttonStates.BUFFERING}"></i>
+    </button>
+  </div>
+
+
+  <div class="jw-mini-chromecast-controls-progressbar">
+    {{vm.percentage}}
+    <div class="jw-mini-chromecast-controls-progressbar-fill" ng-style="{'width': vm.percentage + '%'}">
+
+    </div>
+  </div>
+</div>

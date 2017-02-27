@@ -215,11 +215,10 @@
         }
 
         function playlistItem (index) {
-
-            trigger('playlistItem', {index: currentIndexOfMedia, item: currentPlaylist[currentIndexOfMedia]});
-
             // Start playback of the playlist item at the specified index.
             var requestedMedia = currentPlaylist[index];
+            trigger('playlistItem', {index: index, item: requestedMedia});
+
             // Now load in in to the chromecast
             var request        = new chrome.cast.media.LoadRequest(parseMediaObject(requestedMedia));
             session.loadMedia(request, function (media) {

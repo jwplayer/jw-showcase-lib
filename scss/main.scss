@@ -2,13 +2,11 @@
 // Import base first since it contains all variables and Compass dependencies
 // --------------------------------
 @import 'base';
-
 //
 // Import mixins
 // --------------------------------
 @import 'mixins/responsive';
 @import 'mixins/utils';
-
 //
 // Import components
 // --------------------------------
@@ -32,6 +30,7 @@
 @import 'components/jwLoading';
 @import 'components/jwMenu';
 @import 'components/jwMeta';
+@import 'components/jwMiniChromecastControls';
 @import 'components/jwModal';
 @import 'components/jwPlayer';
 @import 'components/jwSearchBar';
