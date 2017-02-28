@@ -26,9 +26,12 @@
      *
      * @requires jwShowcase.core.menu
      */
-    MiniChromecastControlsController.$inject = ['chromecast', '$rootScope'];
-    function MiniChromecastControlsController (chromecast, $rootScope) {
+    MiniChromecastControlsController.$inject = ['chromecast', '$rootScope', '$state'];
+    function MiniChromecastControlsController (chromecast, $rootScope, $state) {
         var vm = this;
+
+        vm.playButtonHandler = playButtonHandler;
+        vm.onClickHandler    = onClickHandler;
 
         vm.buttonStates = {
             PLAY:      'PLAY',
@@ -41,13 +44,22 @@
         vm.percentage      = null;
         vm.visible         = false;
 
-        vm.playButtonHandler = function () {
+        function playButtonHandler () {
             if (vm.playButtonState === vm.buttonStates.PLAY) {
                 chromecast.pause();
             } else {
                 chromecast.play();
             }
-        };
+        }
+
+        function onClickHandler () {
+            if (vm.currentItem) {
+                $state.go('root.video', {
+                    feedId:  vm.currentItem.$feedid || vm.currentItem.feedid,
+                    mediaId: vm.currentItem.mediaid
+                });
+            }
+        }
 
         chromecast.on('play', function () {
             vm.playButtonState = vm.buttonStates.PLAY;

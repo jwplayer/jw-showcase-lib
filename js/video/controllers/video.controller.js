@@ -86,7 +86,6 @@
          * Initialize controller.
          */
         function activate () {
-
             playerPlaylist = generatePlaylist(itemFeed, item);
             vm.inWatchList = watchlist.hasItem(vm.item);
 
@@ -109,7 +108,7 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics = {
-                    sdkplatform:    ionic.Platform.isAndroid() ? 1 : 2
+                    sdkplatform: ionic.Platform.isAndroid() ? 1 : 2
                 };
             }
 
@@ -153,7 +152,7 @@
 
             if (config.recommendationsPlaylist) {
 
-                vm.recommendationsFeed = vm.recommendationsFeed || new FeedModel(config.recommendationsPlaylist, 'Related Videos');
+                vm.recommendationsFeed                = vm.recommendationsFeed || new FeedModel(config.recommendationsPlaylist, 'Related Videos');
                 vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
 
                 apiConsumer
@@ -205,6 +204,7 @@
 
                 return {
                     mediaid:     current.mediaid,
+                    feedid:      current.feedid,
                     title:       current.title,
                     description: current.description,
                     image:       utils.replaceImageSize(current.image, 1920),
@@ -536,10 +536,10 @@
             stateParams.feedId  = item.feedid;
 
             if (item.feedid !== itemFeed.feedid) {
-
                 itemFeed       = dataStore.getFeed(item.feedid);
                 vm.feed        = itemFeed;
                 playerPlaylist = generatePlaylist(vm.feed, vm.item);
+
 
                 player.load(playerPlaylist);
 
