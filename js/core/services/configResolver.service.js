@@ -100,6 +100,11 @@
                 isString  = angular.isString,
                 missing;
 
+            // a message is set in the config
+            if (angular.isString(config.message)) {
+                throw new Error(config.message);
+            }
+
             missing = required
                 .filter(function (value) {
                     return !angular.isString(config[value]);

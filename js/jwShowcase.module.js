@@ -25,6 +25,7 @@
     angular
         .module('jwShowcase', [
             'jwShowcase.core',
+            'jwShowcase.error',
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
