@@ -52,8 +52,7 @@
 
                 configPromise = $http
                     .get(window.configLocation)
-                    .then(getConfigComplete)
-                    .catch(getConfigFailed);
+                    .then(getConfigComplete, getConfigFailed);
             }
 
             return configPromise;
@@ -114,8 +113,8 @@
                 throw new Error('The config file playlists property should be an array');
             }
 
-            if (isDefined(config.featuredPlaylists) && !isString(config.featuredPlaylist)) {
-                throw new Error('The config file featuredPlaylist property should be an string');
+            if (isDefined(config.featuredPlaylist) && !isString(config.featuredPlaylist)) {
+                throw new Error('The config file featuredPlaylist property should be a string');
             }
         }
     }
