@@ -106,7 +106,7 @@
 
             // reject when mediaId is empty or no string
             if (!angular.isString(mediaId) || mediaId === '') {
-                return $q.reject(new Error('search phrase is not given or not a string'));
+                return $q.reject(new Error('media id is not given or not a string'));
             }
 
             return getFeed(config.contentService + '/v2/playlists/' + recommendationsPlaylist +
