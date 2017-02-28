@@ -34,7 +34,8 @@
             enableContinueWatching: true,
             enableCookieNotice:     false,
             enableFeaturedText:     true,
-            enablePlayerAutoFocus:  true
+            enablePlayerAutoFocus:  true,
+            enableHeader:           true
         })
         .decorator('$controller', $controllerDecorator)
         .constant('LIB_VERSION', '3.1.0-beta');
