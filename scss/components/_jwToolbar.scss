@@ -57,6 +57,7 @@
         line-height: 1em;
         text-align: center;
 
+        text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
 
@@ -109,6 +110,10 @@
             .jw-toolbar-nav:last-child {
                 padding-right: 0;
             }
+        }
+
+        .jw-toolbar-title {
+            font-size: rem(16px);
         }
     }
 
