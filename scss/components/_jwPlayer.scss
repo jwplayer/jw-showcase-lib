@@ -36,6 +36,7 @@
 // http://stackoverflow.com/a/29780590
 video::-internal-media-controls-overlay-cast-button {
     display: none;
+    visibility: hidden;
 }
 // scss-lint:enable PseudoElement
 
