@@ -105,7 +105,8 @@
 
             var service = {
                 metadata:   {},
-                initialize: initialize
+                initialize: initialize,
+                update:     update
             };
 
             return service;
@@ -124,6 +125,19 @@
                 $rootScope.$on('$stateChangeSuccess', function (event, toState) {
                     updateMetadata(toState.name);
                 });
+
+                updateMetadata($state.current.name);
+            }
+
+            /**
+             * @ngdoc function
+             * @name jwShowcase.core.seo#update
+             * @methodOf jwShowcase.core.seo
+             *
+             * @description
+             * Update seo properties manually.
+             */
+            function update () {
 
                 updateMetadata($state.current.name);
             }
