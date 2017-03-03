@@ -58,7 +58,7 @@
         function link (scope, element, attrs, $ionicScroll) {
 
             var contentView     = element[0].querySelector('.ionic-scroll'),
-                updateDebounced = utils.debounce(update, 100);
+                updateDebounced = utils.debounce(update, 50);
 
             activate();
 
@@ -89,19 +89,31 @@
             function update () {
 
                 var cardElements = findElements('.jw-lazy-load'),
+                    visibleElements = [],
+                    scrollPosition,
                     scrollOffset;
 
                 if (!cardElements.length) {
                     return;
                 }
 
-                scrollOffset = contentView.offsetHeight + $ionicScroll.getScrollPosition().top + LAZY_LOAD_OFFSET;
+                scrollPosition = $ionicScroll.getScrollPosition().top;
+                scrollOffset = contentView.offsetHeight + scrollPosition + LAZY_LOAD_OFFSET;
 
                 angular.forEach(cardElements, function (element) {
 
-                    if (element.offsetTop <= scrollOffset) {
-                        element.classList.remove('jw-lazy-load');
+                    var top = element.getBoundingClientRect().top + scrollPosition;
+
+                    // prevent recalculations and repaints by first collecting all visible elements. If we would remove
+                    // a className directly the next getBoundingClientRect call will trigger a recalculation.
+
+                    if (top <= scrollOffset) {
+                        visibleElements.push(element);
                     }
+                });
+
+                angular.forEach(visibleElements, function (element) {
+                    element.classList.remove('jw-lazy-load');
                 });
             }
 
