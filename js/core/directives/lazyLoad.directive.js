@@ -58,7 +58,7 @@
         function link (scope, element, attrs, $ionicScroll) {
 
             var contentView     = element[0].querySelector('.ionic-scroll'),
-                scrollDebounced = utils.debounce(scroll, 100);
+                updateDebounced = utils.debounce(update, 100);
 
             activate();
 
@@ -69,10 +69,10 @@
              */
             function activate () {
 
-                angular.element(contentView).on('scroll', scrollDebounced);
+                $ionicScroll.$element.on('scroll scroll-resize', updateDebounced);
                 scope.$on('$destroy', destroy);
 
-                setTimeout(update, 1);
+                updateDebounced();
             }
 
             /**
@@ -80,15 +80,7 @@
              */
             function destroy () {
 
-                angular.element(contentView).off('scroll', scrollDebounced);
-            }
-
-            /**
-             * Scroll handler
-             */
-            function scroll () {
-
-                update();
+                $ionicScroll.$element.off('scroll scroll-resize', updateDebounced);
             }
 
             /**
