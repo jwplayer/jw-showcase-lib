@@ -53,6 +53,14 @@ $featured-slider-max-width: 900px;
         }
     }
 
+    &.jw-lazy-load {
+
+        .jw-card-poster {
+            display: none !important;
+            background: none !important;
+        }
+    }
+
     //
     // jwCardSliderContainer
     // --------------------------------

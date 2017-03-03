@@ -23,6 +23,14 @@
         }
     }
 
+    &.jw-lazy-load {
+
+        .jw-card-poster {
+            display: none !important;
+            background: none !important;
+        }
+    }
+
     .jw-button-watchlist {
         @include single-transition(transform, 0.2s, cubic-bezier(0.48, 0.76, 0.39, 1.15), 0s);
         position: absolute;
