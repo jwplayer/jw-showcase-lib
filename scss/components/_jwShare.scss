@@ -13,3 +13,18 @@
         text-align: center;
     }
 }
+
+// scss-lint:disable SelectorFormat
+.platform-ios7,
+.platform-ios8,
+.platform-ios9 {
+    .jw-share.popover .jw-share-link {
+        opacity: 0.4;
+        pointer-events: none;
+
+        .jw-button-label {
+            color: $gray;
+        }
+    }
+}
+// scss-lint:enable SelectorFormat

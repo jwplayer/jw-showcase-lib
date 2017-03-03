@@ -62,10 +62,14 @@
                 opacity: 0.25;
             }
 
+            .jw-button-label {
+                width: 100%;
+            }
+
             .jwy-icon {
                 display: none;
                 position: absolute;
-                top: 7px;
+                top: 5px;
                 right: -2px;
                 font-size: rem(20px);
             }

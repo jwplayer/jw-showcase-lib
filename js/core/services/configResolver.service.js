@@ -52,8 +52,7 @@
 
                 configPromise = $http
                     .get(window.configLocation)
-                    .then(getConfigComplete)
-                    .catch(getConfigFailed);
+                    .then(getConfigComplete, getConfigFailed);
             }
 
             return configPromise;
@@ -101,6 +100,11 @@
                 isString  = angular.isString,
                 missing;
 
+            // a message is set in the config
+            if (angular.isString(config.message)) {
+                throw new Error(config.message);
+            }
+
             missing = required
                 .filter(function (value) {
                     return !angular.isString(config[value]);
@@ -114,8 +118,8 @@
                 throw new Error('The config file playlists property should be an array');
             }
 
-            if (isDefined(config.featuredPlaylists) && !isString(config.featuredPlaylist)) {
-                throw new Error('The config file featuredPlaylist property should be an string');
+            if (isDefined(config.featuredPlaylist) && !isString(config.featuredPlaylist)) {
+                throw new Error('The config file featuredPlaylist property should be a string');
             }
         }
     }

@@ -16,19 +16,18 @@
         width: 80%;
     }
 
-    .jw-modal-title,
-    .jw-modal-message {
-        color: $black;
+    .jw-modal-image {
+        margin-bottom: 10px;
         text-align: center;
     }
 
-    .jw-modal-title {
-        padding: 10px 20px;
-        font-size: rem(28px);
-        font-weight: bold;
-    }
-
     .jw-modal-message {
         padding: 10px 20px;
+
+        color: $black;
+        font-size: 1.75rem;
+        font-weight: 300;
+        line-height: normal;
+        text-align: center;
     }
 }

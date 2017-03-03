@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,13 @@
 (function () {
 
     angular
-        .module('jwShowcase.core')
-        .service('appStore', appStore);
+        .module('jwShowcase.error')
+        .controller('ErrorController', ErrorController);
 
-    /**
-     * @ngdoc service
-     * @name jwShowcase.core.appStore
-     *
-     * @description
-     * Store service for application
-     */
-    appStore.$inject = [];
-    function appStore () {
-
-        /**
-         * @ngdoc property
-         *
-         * @type {boolean}
-         */
-        this.loading = true;
-
+    ErrorController.$inject = ['$stateParams'];
+    function ErrorController ($stateParams) {
+        var vm = this;
+        vm.message = $stateParams.message;
     }
 
 }());

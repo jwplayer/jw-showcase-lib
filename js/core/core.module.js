@@ -46,18 +46,8 @@
                     preload: preloadApp
                 },
                 templateUrl: 'views/core/root.html'
-            })
-            .state('preloadError', {
-                templateUrl: 'views/error/configError.html'
-            })
-            .state('root.videoNotFound', {
-                url:         '/video-not-found',
-                templateUrl: 'views/error/videoNotFound.html'
-            })
-            .state('root.feedNotFound', {
-                url:         '/feed-not-found',
-                templateUrl: 'views/error/feedNotFound.html'
             });
+
 
         seoProvider
             .otherwise(['$location', 'config', function ($location, config) {
@@ -132,6 +122,14 @@
                         document.body.style.backgroundColor = config.backgroundColor;
                     }
 
+                    if (false === config.enableHeader) {
+                        document.body.classList.add('jw-flag-no-header');
+                    }
+
+                    if (angular.isDefined(config.enableJsScroll)) {
+                        $ionicConfigProvider.scrolling.jsScrolling(config.enableJsScroll);
+                    }
+
                     if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
                         model = new FeedModel(config.featuredPlaylist);
 
@@ -142,7 +140,7 @@
                     if (angular.isArray(config.playlists)) {
 
                         dataStore.feeds = config.playlists.map(function (feedId) {
-                            model = new FeedModel(feedId);
+                            model   = new FeedModel(feedId);
                             promise = apiConsumer
                                 .populateFeedModel(model)
                                 .then(null, function (error) {
@@ -181,10 +179,11 @@
 
             function handlePreloadError (error) {
 
-                appStore.loading      = false;
-                appStore.preloadError = error;
+                appStore.loading = false;
 
-                $state.go('preloadError');
+                $state.go('error', {
+                    message: error.message
+                });
 
                 defer.reject();
             }
@@ -204,33 +203,34 @@
             angular.element(document.body).addClass('platform-touch');
         }
 
-        $rootScope.$on('$stateChangeStart', function (event, toState) {
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
 
             // prevent users going to search page when no searchPlaylist is defined
             if (toState.name === 'root.search' && !config.searchPlaylist) {
-                $state.go('root.dashboard');
                 event.preventDefault();
+                $state.go('root.dashboard');
             }
         });
 
         $rootScope.$on('$stateChangeError', function (event, toState) {
 
+            var name = toState.name;
+
             event.preventDefault();
 
-            // prevent loop if something is wrong in preloadError or root.404 state
+            // prevent loop if something is wrong in error or root.404 state
 
-            if (toState.name === 'preloadError' || toState.name === 'root.videoNotFound' ||
-                toState.name === 'root.feedNotFound') {
+            if (name === 'error' || name === 'root.videoNotFound' || name === 'root.feedNotFound') {
                 return;
             }
 
-            if (toState.name === 'root.feed') {
+            if (name === 'root.feed') {
                 $state.go('root.feedNotFound');
             }
-            else if (toState.name === 'root.video') {
+            else if (name === 'root.video') {
                 $state.go('root.videoNotFound');
             }
-            else if (toState.name !== 'root.dashboard') {
+            else if (name !== 'root.dashboard') {
                 $state.go('root.dashboard');
             }
         });

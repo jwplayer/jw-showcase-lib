@@ -18,7 +18,7 @@
 
     var LARGE_SCREEN                        = window.matchMedia('(min-device-width: 960px)').matches,
         THUMBNAIL_AUTOMATIC_TIMEOUT         = 500,
-        THUMBNAIL_AUTOMATIC_INTERVAL        = 1500,
+        THUMBNAIL_AUTOMATIC_INTERVAL        = 2300,
         CONTINUE_WATCHING_THUMBNAIL_QUALITY = 320,
         DEFAULT_CARD_THUMBNAIL_QUALITY      = 120,
         FEATURED_CARD_THUMBNAIL_QUALITY     = 320;

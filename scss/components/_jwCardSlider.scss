@@ -46,6 +46,21 @@ $featured-slider-max-width: 900px;
         }
     }
 
+    &-flag-hide-text .jw-card {
+        .jw-card-title,
+        .jw-card-description {
+            display: none;
+        }
+    }
+
+    &.jw-lazy-load {
+
+        .jw-card-poster {
+            display: none !important;
+            background: none !important;
+        }
+    }
+
     //
     // jwCardSliderContainer
     // --------------------------------
@@ -59,13 +74,14 @@ $featured-slider-max-width: 900px;
     // --------------------------------
 
     .jw-card-slider-title {
-        display: inline-block;
         margin: 20px 90px;
 
         font-size: 21px;
         font-weight: bold;
 
         > .jw-link {
+            display: inline-block;
+
             text-decoration: none;
             cursor: pointer;
 

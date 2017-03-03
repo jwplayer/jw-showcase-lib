@@ -23,6 +23,14 @@
         }
     }
 
+    &.jw-lazy-load {
+
+        .jw-card-poster {
+            display: none !important;
+            background: none !important;
+        }
+    }
+
     .jw-button-watchlist {
         @include single-transition(transform, 0.2s, cubic-bezier(0.48, 0.76, 0.39, 1.15), 0s);
         position: absolute;
@@ -100,6 +108,8 @@
     }
 
     .jw-card-title {
+        display: inline-block;
+        width: 100%;
         padding: 0 10px;
 
         font-weight: bold;
@@ -263,13 +273,6 @@
 .jw-card.jw-card-flag-featured {
     font-size: 32px;
 
-    &.jw-card-flag-hide-text {
-        .jw-card-title,
-        .jw-card-description {
-            display: none;
-        }
-    }
-
     &:hover .jw-card-container {
         background-color: transparent;
     }
@@ -285,6 +288,7 @@
 
     .jw-card-title {
         padding: 0 50px 20px;
+        line-height: normal;
     }
 
     .jw-card-description {

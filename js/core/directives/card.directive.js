@@ -42,9 +42,9 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist', 'utils',
-        'config'];
-    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils, config) {
+    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist',
+        'utils'];
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils) {
 
         return {
             scope:            {
@@ -72,10 +72,6 @@
             function activate () {
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
-
-                if (scope.vm.featured && !config.enableFeaturedText) {
-                    element.addClass('jw-card-flag-hide-text');
-                }
 
                 findElement('.jw-card-title')
                     .html(scope.vm.item.title)

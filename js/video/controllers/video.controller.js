@@ -33,6 +33,7 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
+     * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.share
@@ -40,10 +41,10 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'userSettings', 'utils', 'player',
+        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
         'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, userSettings, utils, player, config,
+                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
                               feed, item) {
 
         var vm                     = this,
@@ -342,6 +343,9 @@
                     autoStart: true
                 }, {
                     notify: false
+                })
+                .then(function () {
+                    seo.update();
                 });
 
             vm.item = newItem;
@@ -499,6 +503,7 @@
 
             stateParams.mediaId = vm.item.mediaid;
             stateParams.feedId  = vm.item.feedid;
+            stateParams.slug    = vm.item.$slug;
 
             // update itemFeed and playlist when feed is different
             if (vm.item.feedid !== itemFeed.feedid) {
@@ -526,6 +531,9 @@
                     autoStart: clickedOnPlay
                 }, {
                     notify: false
+                })
+                .then(function () {
+                    seo.update();
                 });
 
             update();
