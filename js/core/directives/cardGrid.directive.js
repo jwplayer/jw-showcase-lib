@@ -62,11 +62,11 @@
             templateUrl:      'views/core/cardGrid.html',
             replace:          true,
             scope:            {
-                cols:        '=',
-                heading:     '=',
-                feed:        '=',
-                onCardClick: '='
-            }
+                cols:          '=',
+                heading:       '=',
+                feed:          '=',
+                onCardClick:   '=',
+                cardClassName: '@'
             },
             require:          '?^$ionicScroll'
         };
