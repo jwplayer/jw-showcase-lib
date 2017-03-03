@@ -67,9 +67,11 @@
                 feed:        '=',
                 onCardClick: '='
             }
+            },
+            require:          '?^$ionicScroll'
         };
 
-        function link (scope, element) {
+        function link (scope, element, attrs, $ionicScroll) {
 
             var cols            = 0,
                 debouncedResize = utils.debounce(resize, 200);
@@ -89,6 +91,13 @@
                 scope.$on('$destroy', function () {
                     window.removeEventListener('resize', debouncedResize);
                 });
+
+                // tell ionicScroll when te content is changed
+                if ($ionicScroll) {
+                    scope.$watchCollection('vm.feed', function () {
+                        $timeout($ionicScroll.resize, 50);
+                    });
+                }
             }
 
             /**
