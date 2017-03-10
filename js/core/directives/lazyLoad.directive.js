@@ -46,8 +46,8 @@
      * </ion-view>
      */
 
-    jwLazyLoad.$inject = ['utils'];
-    function jwLazyLoad (utils) {
+    jwLazyLoad.$inject = ['$timeout', 'utils'];
+    function jwLazyLoad ($timeout, utils) {
 
         return {
             link:    link,
@@ -72,7 +72,7 @@
                 $ionicScroll.$element.on('scroll scroll-resize', updateDebounced);
                 scope.$on('$destroy', destroy);
 
-                updateDebounced();
+                $timeout(updateDebounced, 200);
             }
 
             /**
