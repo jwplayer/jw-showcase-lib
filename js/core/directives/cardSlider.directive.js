@@ -53,8 +53,8 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils', 'config'];
-    function cardSliderDirective ($compile, $templateCache, utils, config) {
+    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
+    function cardSliderDirective ($compile, $templateCache, utils) {
 
         return {
             scope:            {
@@ -89,7 +89,6 @@
                 itemsVisible           = 0,
                 itemsMargin            = 1,
                 options                = {
-                    enableFeaturedText:    config.enableFeaturedText,
                     sliderBackgroundColor: null
                 },
                 animation;
@@ -174,10 +173,6 @@
             function feedUpdateHandler (newValue, oldValue) {
 
                 setCustomOptions();
-
-                if (scope.vm.featured) {
-                    element.toggleClass('jw-card-slider-flag-hide-text', !options.enableFeaturedText);
-                }
 
                 // set slider background color
                 element.css('background-color', options.sliderBackgroundColor || '');
