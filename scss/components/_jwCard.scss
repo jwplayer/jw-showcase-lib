@@ -23,6 +23,13 @@
         }
     }
 
+    &-flag-hide-text {
+        .jw-card-title,
+        .jw-card-description {
+            display: none !important;
+        }
+    }
+
     &.jw-lazy-load {
 
         .jw-card-poster {
