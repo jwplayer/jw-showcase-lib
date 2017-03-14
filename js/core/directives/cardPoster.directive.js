@@ -69,10 +69,12 @@
 
                 itemPosterUrl = generatePosterUrl();
 
-                // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
-                thumbnailsTrack = jwCard.item.tracks.find(function (track) {
-                    return track.kind === 'thumbnails' || track.kind === 'thumbnail';
-                });
+                if (angular.isArray(jwCard.item.tracks)) {
+                    // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
+                    thumbnailsTrack = jwCard.item.tracks.find(function (track) {
+                        return track.kind === 'thumbnails' || track.kind === 'thumbnail';
+                    });
+                }
 
                 if (jwCard.featured) {
 
