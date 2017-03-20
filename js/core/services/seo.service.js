@@ -16,7 +16,7 @@
 
 (function () {
 
-    var SEO_PROPERTIES = ['title', 'description', 'image', 'canonical'];
+    var SEO_PROPERTIES = ['title', 'description', 'image', 'canonical', 'schema'];
 
     angular
         .module('jwShowcase.core')
@@ -158,6 +158,9 @@
                 // clean metadata
                 service.metadata = {};
 
+                // empty schema
+                updateSchema();
+
                 if (!toState) {
                     return;
                 }
@@ -186,6 +189,9 @@
                         break;
                     case 'canonical':
                         updateCanonicalHref(value);
+                        break;
+                    case 'schema':
+                        updateSchema(value);
                     }
                 });
             }
@@ -242,6 +248,26 @@
                 if (metaTag) {
                     metaTag.content = content;
                 }
+            }
+
+            /**
+             * Update schema script application/ld+json element
+             * @param {Object} [data] Schema data. When not given it will empty the script element.
+             */
+            function updateSchema (data) {
+
+                var script = document.querySelector('script#schema');
+
+                if (!script) {
+                    return;
+                }
+
+                if (!data) {
+                    script.textContent = '';
+                    return;
+                }
+
+                script.textContent = JSON.stringify(data);
             }
         }
     }
