@@ -94,7 +94,7 @@
          */
         function validateConfig (config) {
 
-            var required  = ['player', 'theme', 'siteName', 'description', 'bannerImage', 'footerText'],
+            var required  = ['player', 'theme', 'siteName', 'description', 'bannerImage'],
                 isDefined = angular.isDefined,
                 isArray   = angular.isArray,
                 isString  = angular.isString,
