@@ -26,15 +26,13 @@
      * @ngdoc controller
      * @name jwShowcase.dashboard.DashboardController
      *
-     * @requires $scope
      * @requires $state
-     * @requires $ionicHistory
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    DashboardController.$inject = ['$scope', '$state', '$ionicHistory', 'dataStore', 'userSettings', 'config'];
-    function DashboardController ($scope, $state, $ionicHistory, dataStore, userSettings, config) {
+    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'config'];
+    function DashboardController ($state, dataStore, userSettings, config) {
 
         var vm = this;
 
@@ -54,9 +52,7 @@
          */
         function activate () {
 
-            $scope.$on('$ionicView.enter', function () {
-                $ionicHistory.clearHistory();
-            });
+            $state.history = [];
         }
 
         /**
@@ -76,7 +72,7 @@
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || ionic.Platform.isMobile
+                autoStart: clickedOnPlay || !!window.cordova
             });
         }
 

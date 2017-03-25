@@ -1,55 +1,31 @@
 //
-// jwCookiesPopover
+// jwCookies
 // --------------------------------
-.jw-cookies-popover.popover {
+.jw-cookies {
+    @include display-flex();
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
 
-    &.cookies-animation {
-        @include transform(translateY(-20%));
-        opacity: 0;
-    }
+.jw-cookies-title {
+    @include flex(0 0 200px);
+    padding-right: 30px;
 
-    &.cookies-animation.ng-enter,
-    &.cookies-animation > .ng-enter {
-        @include transition(all 0.3s ease-in-out);
-    }
+    color: $main-color;
+    font-size: rem(32px);
+    font-weight: bold;
+    line-height: rem(32px);
+}
 
-    &.cookies-animation.ng-enter-active,
-    &.cookies-animation > .ng-enter-active {
-        @include transform(translateY(0%));
-        opacity: 1;
-    }
+.jw-cookies-explanation {
+    @include flex(1 1 auto);
 
-    &.cookies-animation.ng-leave,
-    &.cookies-animation > .ng-leave {
-        @include transition(all 0.3s ease-in-out);
-    }
+    p {
+        color: $dark-color;
 
-    .jw-cookies {
-        @include display-flex();
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 40px;
-    }
-
-    .jw-cookies-title {
-        @include flex(0 0 200px);
-        padding-right: 30px;
-
-        color: $main-color;
-        font-size: rem(32px);
-        font-weight: bold;
-        line-height: rem(32px);
-    }
-
-    .jw-cookies-explanation {
-        @include flex(1 1 auto);
-
-        p {
+        > a {
             color: $dark-color;
-
-            > a {
-                color: $dark-color;
-            }
         }
     }
 }
@@ -60,20 +36,17 @@
 
 @include mobile-only () {
 
-    .jw-cookies-popover.popover {
+    .jw-cookies {
+        @include flex-direction(column);
+        padding: 20px;
+    }
 
-        .jw-cookies {
-            @include flex-direction(column);
-            padding: 20px;
-        }
+    .jw-cookies-title {
+        @include flex(1 1 auto);
+        margin-bottom: 20px;
+    }
 
-        .jw-cookies-title {
-            @include flex(1 1 auto);
-            margin-bottom: 20px;
-        }
-
-        .jw-cookies-button-bar {
-            text-align: center;
-        }
+    .jw-cookies-button-bar {
+        text-align: center;
     }
 }

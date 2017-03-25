@@ -7,15 +7,16 @@
     padding: $header-padding;
 
     background-color: $header-bg-color;
+    //box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.09);
 
     //
     // Make header fixed
     //
     &-fixed {
         position: fixed;
-        width: 100vw;
+        width: 100%;
 
-        z-index: 9;
+        z-index: $header-z-index;
     }
 
     //
@@ -98,10 +99,6 @@
     }
 }
 
-.platform-ios.platform-cordova .jw-header {
-    top: $ios-statusbar-height;
-}
-
 //
 // mediaQueries
 // --------------------------------
@@ -123,9 +120,5 @@
         .jw-header-nav .jw-button-label {
             display: none;
         }
-    }
-
-    .platform-ios.platform-cordova .jw-header {
-        top: $ios-statusbar-height;
     }
 }

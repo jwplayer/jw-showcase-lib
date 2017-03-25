@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,18 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('MenuController', MenuController);
+        .component('jwSidebar', {
+            templateUrl:  'views/core/sidebar.html',
+            controller:   SidebarController,
+            controllerAs: 'vm'
+        });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.MenuController
+     * @name jwShowcase.core.SidebarController
      *
      * @requires $scope
-     * @requires jwShowcase.core.confirm
+     * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.menu
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchlist
@@ -33,14 +37,13 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings',
+    SidebarController.$inject = ['$scope', 'popup', 'dataStore', 'watchlist', 'watchProgress', 'userSettings',
         'config'];
-    function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings, config) {
+    function SidebarController ($scope, popup, dataStore, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
 
         vm.feeds     = [];
-        vm.menu      = menu;
         vm.dataStore = dataStore;
         vm.config    = config;
 
@@ -94,12 +97,20 @@
          */
         function clearWatchlist () {
 
-            confirm
-                .show('Do you wish to clear your Saved videos list?')
-                .then(function () {
 
-                    watchlist
-                        .clearAll();
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Do you wish to clear your Saved videos list?'
+                    }
+                })
+                .then(function (result) {
+
+                    if (true === result) {
+                        watchlist.clearAll();
+                    }
                 });
         }
 
@@ -113,12 +124,19 @@
          */
         function clearWatchProgress () {
 
-            confirm
-                .show('Do you wish to clear your Continue watching list?')
-                .then(function () {
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Do you wish to clear your Continue watching list?'
+                    }
+                })
+                .then(function (result) {
 
-                    watchProgress
-                        .clearAll();
+                    if (true === result) {
+                        watchProgress.clearAll();
+                    }
                 });
         }
     }

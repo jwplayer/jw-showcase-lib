@@ -119,7 +119,7 @@
 @include mobile-only () {
     .platform-android .jw-menu-popover.popover,
     .jw-menu-popover.popover {
-        width: 100vw;
+        width: 100%;
         height: 100vh;
 
         .jw-menu-list {

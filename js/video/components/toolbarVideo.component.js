@@ -44,8 +44,8 @@
             }
         });
 
-    ToolbarVideoController.$inject = ['$scope', 'share', 'watchlist'];
-    function ToolbarVideoController ($scope, share, watchlist) {
+    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist'];
+    function ToolbarVideoController ($scope, popup, watchlist) {
 
         var vm = this;
 
@@ -80,8 +80,12 @@
          */
         function shareButtonClickHandler (event) {
 
-            share.show({
-                item:   vm.item,
+            popup.show({
+                controller: 'ShareController as vm',
+                templateUrl: 'views/core/popups/share.html',
+                resolve: {
+                    item: vm.item
+                },
                 target: event.target
             });
         }

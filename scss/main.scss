@@ -23,18 +23,17 @@
 @import 'components/jwContent';
 @import 'components/jwCookies';
 @import 'components/jwCover';
-@import 'components/jwDialog';
 @import 'components/jwFooter';
 @import 'components/jwGrid';
 @import 'components/jwHeader';
 @import 'components/jwIcons';
 @import 'components/jwLoading';
 @import 'components/jwMarkdown';
-@import 'components/jwMenu';
 @import 'components/jwModal';
 @import 'components/jwPlayer';
+@import 'components/jwPopups';
 @import 'components/jwSearch';
-@import 'components/jwShare';
+@import 'components/jwSidebar';
 @import 'components/jwText';
 @import 'components/jwToolbar';
 @import 'components/jwVideoContainer';
@@ -62,7 +61,7 @@ body {
     @include user-select(none);
 
     min-width: 320px;
-    margin: 0 0 20px;
+    margin: 0;
     padding: 0;
 
     color: $text-color-base;
@@ -71,7 +70,8 @@ body {
 
     -webkit-font-smoothing: antialiased;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     img {
         border: 0;
@@ -83,6 +83,11 @@ body {
 
     a {
         text-decoration: none;
+    }
+
+    a, button, input {
+        border: 0;
+        outline: none;
     }
 
     .featured .jw-row:not(:last-child) {

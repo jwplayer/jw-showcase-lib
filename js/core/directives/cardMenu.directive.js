@@ -54,9 +54,6 @@
 
         function link (scope, element, attr, jwCard) {
 
-            var parents = ionic.DomUtil.getParentOrSelfWithClass,
-                pane;
-
             scope.vm.jwCard = jwCard;
 
             activate();
@@ -68,12 +65,8 @@
              */
             function activate () {
 
-                pane = parents(element[0], 'pane');
-
-                if (pane) {
-                    angular.element(pane).on('click', onClickOutside);
-                    scope.$on('$destroy', onDestroy);
-                }
+                angular.element(document.body).on('click', onClickOutside);
+                scope.$on('$destroy', onDestroy);
             }
 
             /**
@@ -81,9 +74,7 @@
              */
             function onDestroy () {
 
-                if (pane) {
-                    angular.element(pane).off('click', onClickOutside);
-                }
+                angular.element(document.body).off('click', onClickOutside);
             }
 
             /**

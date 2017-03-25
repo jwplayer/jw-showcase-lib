@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,38 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('CookiesController', CookiesController);
+        .controller('ConfirmController', ConfirmController);
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.CookiesController
+     * @name jwShowcase.core.ConfirmController
      *
-     * @requires jwShowcase.core.userSettings
+     * @requires popupInstance
      */
-    CookiesController.$inject = ['userSettings', 'popupInstance'];
-    function CookiesController (userSettings, popupInstance) {
+    ConfirmController.$inject = ['popupInstance', 'message'];
+    function ConfirmController (popupInstance, message) {
 
         var vm = this;
 
+        vm.message = message;
+
         vm.acceptButtonClickHandler = acceptButtonClickHandler;
+        vm.declineButtonClickHandler = declineButtonClickHandler;
 
         ////////////////
 
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.CookiesController#acceptButtonClickHandler
-         * @methodOf jwShowcase.core.CookiesController
-         *
-         * @description
-         * Handle click event on the accept button.
-         *
-         * @param {$event} event Synthetic event object.
-         */
         function acceptButtonClickHandler () {
 
-            // save in userSettings
-            userSettings.set('cookies', true);
-
-            // hide cookies popup
-            popupInstance.close(true);
+            popupInstance
+                .close(true);
         }
+
+        function declineButtonClickHandler () {
+
+            popupInstance
+                .close(false);
+        }
+
     }
 
 }());

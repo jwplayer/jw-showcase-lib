@@ -52,7 +52,7 @@
                 feedId:    item.feedid,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || ionic.Platform.isMobile
+                autoStart: clickedOnPlay || !!window.cordova
             });
         }
     }

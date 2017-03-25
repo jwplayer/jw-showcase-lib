@@ -27,8 +27,6 @@
      * @requires $scope
      * @requires $state
      * @requires $timeout
-     * @requires $ionicHistory
-     * @requires $ionicScrollDelegate
      * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchProgress
@@ -40,10 +38,10 @@
      * @requires jwShowcase.core.player
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
+    VideoController.$inject = ['$scope', '$state', '$timeout',
         'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
         'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
+    function VideoController ($scope, $state, $timeout, apiConsumer,
                               FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
                               feed, item) {
 
@@ -108,7 +106,7 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = ionic.Platform.isAndroid() ? 1 : 2;
+                vm.playerSettings.analytics.sdkplatform = 1; //ionic.Platform.isAndroid() ? 1 : 2;
             }
 
             $scope.$watch(function () {
@@ -186,7 +184,7 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
+                isAndroid4    = false, //ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
                 playlist, sources;
 
             playlist = angular.copy(feed.playlist)
@@ -275,28 +273,28 @@
          */
         function onSetupError (event) {
 
-            $ionicPopup.show({
-                cssClass: 'jw-dialog',
-                template: '<strong>Oops! Something went wrong. Try again?</strong>',
-                buttons:  [{
-                    text:  'Yes',
-                    type:  'jw-button jw-button-primary',
-                    onTap: function () {
-                        return true;
-                    }
-                }, {
-                    text:  'No',
-                    type:  'jw-button jw-button-light',
-                    onTap: function () {
-                        return false;
-                    }
-                }]
-            }).then(function (retry) {
-
-                if (retry) {
-                    $state.reload();
-                }
-            });
+            // $ionicPopup.show({
+            //     cssClass: 'jw-dialog',
+            //     template: '<strong>Oops! Something went wrong. Try again?</strong>',
+            //     buttons:  [{
+            //         text:  'Yes',
+            //         type:  'jw-button jw-button-primary',
+            //         onTap: function () {
+            //             return true;
+            //         }
+            //     }, {
+            //         text:  'No',
+            //         type:  'jw-button jw-button-light',
+            //         onTap: function () {
+            //             return false;
+            //         }
+            //     }]
+            // }).then(function (retry) {
+            //
+            //     if (retry) {
+            //         $state.reload();
+            //     }
+            // });
 
             vm.loading = false;
             $timeout.cancel(loadingTimeout);
@@ -310,7 +308,7 @@
         function onPlaylistItem (event) {
 
             var playlistItem = playerPlaylist[event.index],
-                stateParams  = $ionicHistory.currentView().stateParams,
+                stateParams  = $state.params,
                 newItem;
 
             if (!angular.isNumber(event.index) || !playlistItem) {
@@ -492,7 +490,7 @@
         function cardClickHandler (newItem, clickedOnPlay) {
 
             var playlistIndex,
-                stateParams = $ionicHistory.currentView().stateParams;
+                stateParams = $state.params;
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
@@ -537,7 +535,8 @@
                 });
 
             update();
-            $ionicScrollDelegate.scrollTop(true);
+            // $ionicScrollDelegate.scrollTop(true);
+            document.body.scrollTop = 0;
         }
 
         /**

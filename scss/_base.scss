@@ -111,7 +111,7 @@ $card-text-color: #4a4a4a !default;
 // Dialog
 // --------------------------------
 
-$dialog-text-color: #4a4a4a !default;
+$popover-text-color: #4a4a4a !default;
 
 //
 // Card toasts
@@ -130,46 +130,9 @@ $featured-slider-bg-color: #111 !default;
 // Z-index
 // --------------------------------
 
-$view-z-index: 1000;
-$loading-z-index: $view-z-index + 1000;
-
-//
-// Ionic overrides
-// --------------------------------
-
-$ios-statusbar-height: 0;
-$bar-height: $header-height;
-$bar-subheader-height: $toolbar-height;
-$link-color: #fff;
-$base-background-color: transparent;
-$ios-transition-container-bg-color: transparent;
-
-//$toggle-off-bg-color: $disabled-color;
-$toggle-on-light-bg: $main-color;
-$toggle-on-light-border: $white;
-$toggle-width: 46px;
-$toggle-height: 27px;
-$toggle-handle-width: 23px;
-$toggle-handle-height: 23px;
-$toggle-hit-area-expansion: 5px;
-$toggle-off-bg-color: $disabled-color;
-$toggle-off-border-color: $white;
-
-$popover-backdrop-bg-active: rgba($black, 0.3);
-$popover-border-radius: 0;
-$popover-border-radius-ios: 0;
-$item-padding: 10px;
-
-$item-border-width: 0;
-$item-divider-bg: transparent;
-$item-divider-padding: 2px;
-
-$popover-bg-color-android: #fff;
-$button-height: 40px;
-$popup-background-color: #fff;
-$popup-border-radius: 0;
-$popup-button-line-height: 40px;
-$popup-button-border-radius: 0;
-$popup-button-min-height: 40px;
-
-$positive: $primary-color;
+$view-z-index: 5;
+$loading-z-index: 10;
+$header-z-index: 15;
+$toolbar-z-index: 15;
+$sidebar-z-index: 20;
+$popups-z-index: 25;

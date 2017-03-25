@@ -6,16 +6,16 @@
 
     <div class="jw-menu-list">
 
-      <jw-button ui-sref="root.dashboard()" ui-sref-active="active" ng-click="vm.menu.hide()">
+      <jw-button ui-sref="root.dashboard()" ui-sref-active="active" ng-click="vm.sidebar.hide()">
         <span class="jw-button-label">Homepage</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ui-sref-active="active" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ui-sref-active="active" ng-click="vm.sidebar.hide()"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         <span class="jw-button-label">Saved videos ({{ vm.watchlist.playlist.length }})</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
-      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active" ng-click="vm.menu.hide()"
+      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active" ng-click="vm.sidebar.hide()"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}" ng-if="::vm.config.enableContinueWatching">
         <span class="jw-button-label">Continue watching ({{ vm.watchProgress.playlist.length }})</span>
         <i class="jwy-icon jwy-icon-angle-right"></i>
