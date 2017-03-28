@@ -25,6 +25,7 @@
      */
     angular
         .module('jwShowcase.core', [])
+        .run(run)
         .config(config);
 
     config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', 'seoProvider', 'historyProvider'];
@@ -53,6 +54,11 @@
                     canonical:   $location.absUrl()
                 };
             }]);
+    }
+
+    run.$inject = ['history'];
+    function run (history) {
+        history.attach();
     }
 
     if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {

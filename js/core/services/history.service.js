@@ -31,37 +31,58 @@
 
         this.$get = History;
 
-        History.$inject = ['$rootScope', '$state'];
-        function History ($rootScope, $state) {
+        History.$inject = ['$rootScope', '$state', '$location'];
+        function History ($rootScope, $state, $location) {
 
-            var self = this;
+            var self      = this;
+            var goingBack = false;
 
-            this.history   = [];
-            this.add       = add;
+            this.history = [];
+
+            this.attach    = attach;
             this.goToIndex = goToIndex;
             this.goBack    = goBack;
 
-            activate();
-
             //////////////
 
-            function activate () {
+            function attach () {
 
-                $rootScope.$on('$stateChangeSuccess', function (event, fromState, fromParams, toState, toParams) {
-                    if (fromState && fromParams && fromState.name) {
-                        add(toState.name, toParams);
+                $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+
+                    var newUrl = $location.url(),
+                        historyIndex;
+
+                    if (fromState.abstract) {
+                        return;
                     }
+
+                    historyIndex = self.history.findIndex(function (curr) {
+                        return newUrl === curr[0];
+                    });
+
+                    if (historyIndex > -1) {
+                        self.history.splice(0, historyIndex);
+                        goingBack = false;
+                        return;
+                    }
+
+                    if (!goingBack) {
+                        add(newUrl, fromState.name, fromParams);
+                    }
+
+                    goingBack = false;
                 });
             }
 
             /**
              * Add state to history
+             * @param {string} url
              * @param {string} name
              * @param {Object} params
              */
-            function add (name, params) {
+            function add (url, name, params) {
 
-                self.history.unshift([name, params]);
+                self.history.unshift([url, name, params]);
                 self.history.splice(15);
             }
 
@@ -74,29 +95,32 @@
                 var item = self.history[index];
 
                 if (item) {
-                    $state.go(item[0], item[1]);
-                    self.history.splice(0, index);
+                    goingBack = true;
+                    $state.go(item[1], item[2]);
+                    self.history.splice(0, index + 1);
                 }
             }
 
+            /**
+             * Go back to the previous state
+             */
             function goBack () {
 
                 var history = self.history;
 
-                // fallback to root.dashboard
-                if (history.length < 2) {
+                // fallback to defaultState and clear history
+                if (!history.length) {
                     self.history = [];
-                    return $state.go(defaultState);
+                    goingBack    = true;
+                    $state.go(defaultState);
+                    return;
                 }
 
-                // go back
-                self.goToIndex(1);
+                self.goToIndex(0);
             }
 
             return this;
         }
     }
-
-
 
 }());
