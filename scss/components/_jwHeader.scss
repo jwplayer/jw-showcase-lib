@@ -9,6 +9,12 @@
     background-color: $header-bg-color;
     //box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.09);
 
+    .jw-flag-loading-config & {
+        .jw-header-logo {
+            display: none;
+        }
+    }
+
     //
     // Make header fixed
     //
