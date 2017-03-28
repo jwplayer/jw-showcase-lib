@@ -85,6 +85,7 @@
 
                 // fallback to root.dashboard
                 if (history.length < 2) {
+                    self.history = [];
                     return $state.go(defaultState);
                 }
 
