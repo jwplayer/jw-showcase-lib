@@ -44,8 +44,8 @@
             }
         });
 
-    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist'];
-    function ToolbarVideoController ($scope, popup, watchlist) {
+    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'offline'];
+    function ToolbarVideoController ($scope, popup, watchlist, offline) {
 
         var vm = this;
 
@@ -104,7 +104,25 @@
                 return watchlist.removeItem(vm.item);
             }
 
-            watchlist.addItem(vm.item);
+
+            if (!offline.hasSupport) {
+                return watchlist.addItem(vm.item);
+            }
+
+            popup
+                .show({
+                    templateUrl: 'views/core/popups/confirm.html',
+                    controller:  'ConfirmController as vm',
+                    resolve:     {
+                        message: 'Media files can use significant storage space on your device. Are you sure you ' +
+                                 'want to download'
+                    }
+                })
+                .then(function (result) {
+                    if (result) {
+                        watchlist.addItem(vm.item);
+                    }
+                });
         }
     }
 

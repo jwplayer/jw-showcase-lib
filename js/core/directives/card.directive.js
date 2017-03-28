@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'config'];
+        'watchlist', 'utils', 'offline', 'config'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            config) {
+                            offline, config) {
 
         return {
             scope:            {
@@ -74,18 +74,13 @@
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
+                if (offline.hasSupport) {
+                    activateOfflineSupport();
+                }
+
                 if (scope.vm.featured) {
 
-                    var enableFeaturedText = config.enableFeaturedText,
-                        feed = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
-
-                    if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
-                        enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
-                    }
-
-                    if (!enableFeaturedText) {
-                        element.addClass('jw-card-flag-hide-text');
-                    }
+                    activateFeatured();
                 }
 
                 findElement('.jw-card-title')
@@ -110,6 +105,42 @@
                 scope.$watch(function () {
                     return watchlist.hasItem(scope.vm.item);
                 }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Activate featured card
+             */
+            function activateFeatured () {
+
+                var enableFeaturedText = config.enableFeaturedText,
+                    feed               = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
+
+                if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
+                    enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
+                }
+
+                if (!enableFeaturedText) {
+                    element.addClass('jw-card-flag-hide-text');
+                }
+            }
+
+            /**
+             * Activate offline support
+             */
+            function activateOfflineSupport () {
+
+                scope.$watch(function () {
+                    return offline.offlineMediaIds.indexOf(scope.vm.item.mediaid) > -1;
+                }, setOfflineAvailable);
+            }
+
+            /**
+             *
+             * @param available
+             */
+            function setOfflineAvailable (available) {
+
+                element.toggleClass('jw-card-flag-offline-available', available);
             }
 
             /**

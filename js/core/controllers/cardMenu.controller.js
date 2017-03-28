@@ -28,9 +28,10 @@
      * @requires $timeout
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
+     * @requires jwShowcase.core.offline
      */
-    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress'];
-    function CardMenuController ($scope, $timeout, watchlist, watchProgress) {
+    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress', 'offline', 'popup'];
+    function CardMenuController ($scope, $timeout, watchlist, watchProgress, offline, popup) {
 
         var vm = this;
 
@@ -92,16 +93,40 @@
          */
         function saveButtonClickHandler () {
 
-            vm.jwCard.showToast({
-                templateUrl: 'views/core/toasts/savedVideo.html',
-                duration:    1000
-            }).then(function () {
-                watchlist.addItem(vm.item);
-            });
+            if (!offline.hasSupport) {
+                return afterSave();
+            }
 
-            $timeout(function () {
-                vm.jwCard.closeMenu();
-            }, 500);
+            popup
+                .show({
+                    templateUrl: 'views/core/popups/confirm.html',
+                    controller:  'ConfirmController as vm',
+                    resolve:     {
+                        message: 'Media files can use significant storage space on your device. Are you sure you ' +
+                                 'want to download'
+                    }
+                })
+                .then(function (result) {
+                    if (result) {
+                        afterSave();
+                    }
+                });
+
+            ////////
+
+            function afterSave () {
+
+                vm.jwCard.showToast({
+                    templateUrl: 'views/core/toasts/savedVideo.html',
+                    duration:    1000
+                }).then(function () {
+                    watchlist.addItem(vm.item);
+                });
+
+                $timeout(function () {
+                    vm.jwCard.closeMenu();
+                }, 500);
+            }
         }
 
         /**

@@ -39,8 +39,8 @@
      */
 
     Preload.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
-        'apiConsumer', 'watchlist', 'watchProgress', 'userSettings'];
-    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist,
+        'apiConsumer', 'offline', 'watchlist', 'watchProgress', 'userSettings'];
+    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, offline, watchlist,
                       watchProgress, userSettings) {
 
         var defer = $q.defer();
@@ -92,6 +92,8 @@
 
             userSettings.restore();
             showCookiesNotice();
+
+            offline.prefetchPlayer(window.jwplayer.version.split('+').shift());
 
             defer.resolve();
         }

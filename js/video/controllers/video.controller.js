@@ -40,10 +40,10 @@
      */
     VideoController.$inject = ['$scope', '$state', '$timeout',
         'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
-        'config', 'feed', 'item'];
+        'offline', 'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
-                              feed, item) {
+                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, offline,
+                              config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -82,6 +82,14 @@
          * Initialize controller.
          */
         function activate () {
+
+            if (offline.isOffline) {
+                itemFeed.playlist = itemFeed.playlist.filter(function (item) {
+                    return offline.hasDownloadedItem(item);
+                });
+
+                vm.feed = itemFeed.clone();
+            }
 
             playerPlaylist = generatePlaylist(itemFeed, item);
 
@@ -202,6 +210,12 @@
 
                     return 'application/dash+xml' !== source.type;
                 });
+
+                if (!navigator.onLine) {
+                    sources = current.sources.find(function (cur) {
+                        return cur.type === 'video/mp4' && cur.width <= 720;
+                    });
+                }
 
                 return {
                     mediaid:     current.mediaid,

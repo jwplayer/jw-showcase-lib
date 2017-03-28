@@ -1,0 +1,30 @@
+
+//
+// jwOffline
+// --------------------------------
+
+.jw-flag-offline {
+
+    .jw-card:not(.jw-card-flag-offline-available) {
+        pointer-events: none;
+
+        .jw-card-poster {
+            opacity: 0.6;
+        }
+    }
+
+    .jw-offline-message {
+        display: block;
+    }
+}
+
+.jw-offline-message {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 8px 0;
+    background: $dark-color;
+    color: $white;
+    text-align: center;
+}
