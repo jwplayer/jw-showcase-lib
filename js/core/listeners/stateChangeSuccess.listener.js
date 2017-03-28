@@ -20,8 +20,8 @@
         .module('jwShowcase.core')
         .run(registerListener);
 
-    registerListener.$inject = ['$rootScope', '$state', 'appStore', 'config'];
-    function registerListener ($rootScope, $state, appStore, config) {
+    registerListener.$inject = ['$rootScope', 'appStore'];
+    function registerListener ($rootScope, appStore) {
 
         $rootScope.$on('$stateChangeSuccess', function (event, toState) {
 
