@@ -37,7 +37,8 @@
                 templateUrl: 'views/feed/feed.html',
                 resolve:     {
                     feed: resolveFeed
-                }
+                },
+                scrollTop:   'last'
             });
 
         seoProvider

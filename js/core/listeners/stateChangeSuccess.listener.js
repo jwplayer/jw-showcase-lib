@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,20 @@
 
     angular
         .module('jwShowcase.core')
-        .service('appStore', appStore);
+        .run(registerListener);
 
-    /**
-     * @ngdoc service
-     * @name jwShowcase.core.appStore
-     *
-     * @description
-     * Store service for application
-     */
-    appStore.$inject = [];
-    function appStore () {
+    registerListener.$inject = ['$rootScope', '$state', 'appStore', 'config'];
+    function registerListener ($rootScope, $state, appStore, config) {
 
-        /**
-         * @ngdoc property
-         *
-         * @type {boolean}
-         */
-        this.loading = true;
+        $rootScope.$on('$stateChangeSuccess', function (event, toState) {
 
-        /**
-         * @ngdoc property
-         * @type {Object}
-         */
-        this.scrollTopCache = {};
+            if (toState.scrollTop === 'last' && appStore.scrollTopCache[toState.name]) {
+                document.body.scrollTop = appStore.scrollTopCache[toState.name];
+            }
+            else if (angular.isNumber(toState.scrollTop)) {
+                document.body.scrollTop = toState.scrollTop;
+            }
+        });
     }
 
 }());

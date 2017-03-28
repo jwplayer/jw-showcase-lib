@@ -34,7 +34,8 @@
             .state('root.search', {
                 url:         '/search',
                 controller:  'SearchController as vm',
-                templateUrl: 'views/search/search.html'
+                templateUrl: 'views/search/search.html',
+                scrollTop:   'last'
             });
 
         seoProvider
