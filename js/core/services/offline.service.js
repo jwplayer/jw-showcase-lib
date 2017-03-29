@@ -151,11 +151,13 @@
                 window.addEventListener('online', function () {
                     document.body.classList.remove('jw-flag-offline');
                     self.isOffline = false;
+                    $rootScope.$apply();
                 });
 
                 window.addEventListener('offline', function () {
                     document.body.classList.add('jw-flag-offline');
                     self.isOffline = true;
+                    $rootScope.$apply();
                 });
             });
         }

@@ -39,6 +39,7 @@
         this.pause             = playerMethod('pause');
         this.stop              = playerMethod('stop');
         this.seek              = playerMethod('seek');
+        this.getState          = playerMethod('getState');
         this.playlistItem      = playerMethod('playlistItem');
         this.setCurrentQuality = playerMethod('setCurrentQuality');
         this.load              = playerMethod('load');
@@ -59,7 +60,7 @@
 
             return function () {
                 if (playerDelegate && angular.isFunction(playerDelegate[method])) {
-                    playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
+                    return playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
                 }
             };
         }

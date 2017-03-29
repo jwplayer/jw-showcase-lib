@@ -83,14 +83,6 @@
          */
         function activate () {
 
-            if (offline.isOffline) {
-                itemFeed.playlist = itemFeed.playlist.filter(function (item) {
-                    return offline.hasDownloadedItem(item);
-                });
-
-                vm.feed = itemFeed.clone();
-            }
-
             playerPlaylist = generatePlaylist(itemFeed, item);
 
             vm.playerSettings = {
@@ -121,6 +113,17 @@
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
 
+            $scope.$watch(function () {
+                return offline.isOffline;
+            }, function () {
+                var state = player.getState();
+                if (state !== 'playing' && state !== 'paused') {
+                    playerPlaylist = generatePlaylist(itemFeed, item);
+                    player.load(playerPlaylist);
+                    update();
+                }
+            });
+
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
@@ -141,7 +144,9 @@
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
-            loadRecommendations();
+            if (navigator.onLine) {
+                loadRecommendations();
+            }
         }
 
         /**
@@ -196,6 +201,13 @@
                 playlist, sources;
 
             playlist = angular.copy(feed.playlist)
+                .filter(function (item) {
+                    if (navigator.onLine) {
+                        return true;
+                    }
+
+                    return offline.hasDownloadedItem(item);
+                })
                 .slice(playlistIndex)
                 .concat(feed.playlist.slice(0, playlistIndex));
 
