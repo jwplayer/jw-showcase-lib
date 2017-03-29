@@ -36,11 +36,12 @@
 // --------------------------------
 
 .jw-sidebar {
-    @include single-transition(transform, 0.2s, ease-out);
+    @include single-transition(transform, 0.2s, cubic-bezier(0.52, 0.51, 0.2, 1));
     @include transform(translateX(-100%));
     position: fixed;
     top: 0;
     width: 370px;
+    max-width: 100%;
     height: auto;
     max-height: 100vh;
 
@@ -48,14 +49,16 @@
     z-index: $sidebar-z-index;
 
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 
-    .jw-menu-list {
-        padding: 0 25px 40px 46px;
+    &-content {
+        padding: 0 22px 40px 46px;
 
         .jw-button {
+            display: block;
             width: 100%;
-            padding: 0.2rem 10px;
+            height: 32px;
+            padding: 3px 0;
 
             color: $main-color;
             font-weight: bold;
@@ -87,9 +90,27 @@
                 font-size: rem(20px);
             }
         }
+    }
 
-        .divider {
-            height: 35px;
+    &-group {
+        margin-bottom: 25px;
+    }
+
+    &-row {
+        @include display-flex();
+        height: 32px;
+
+        .jw-sidebar-label {
+            @include flex(1 0 auto);
+            @include align-self(center);
+            color: $main-color;
+            font-weight: bold;
+        }
+
+        .jw-sidebar-action {
+            @include flex(0 0 42px);
+            @include align-self(center);
+            margin-left: 22px;
         }
     }
 }

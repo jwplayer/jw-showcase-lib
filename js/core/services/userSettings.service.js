@@ -33,7 +33,7 @@
 
         var settings = {
             conserveBandwidth: false,
-            watchProgress:     true,
+            continueWatching:  true,
             cookies:           false
         };
 
