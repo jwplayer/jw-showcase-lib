@@ -535,8 +535,9 @@
                 });
 
             update();
-            // $ionicScrollDelegate.scrollTop(true);
-            document.body.scrollTop = 0;
+            window.TweenLite.to(document.body, 0.3, {
+                scrollTop: 0
+            });
         }
 
         /**
