@@ -19,18 +19,6 @@
     }
 }
 
-// scss-lint:disable SelectorFormat
-.platform-android4_4 {
-    .jwplayer.jw-flag-time-slider-above:not(.jw-flag-ads-googleima) {
-        &:not(.jw-flag-ads) .jw-controlbar,
-        &:not(.jw-flag-live) .jw-controlbar {
-            height: 85px;
-        }
-    }
-}
-
-// scss-lint:enable SelectorFormat
-
 //
 // mediaQueries
 // --------------------------------

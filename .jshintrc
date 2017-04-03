@@ -57,6 +57,7 @@
         "WebVTT": false,
         "angular": false,
         "jwplayer": false,
-        "$": false
+        "$": false,
+        "UAParser": false
     }
 }
