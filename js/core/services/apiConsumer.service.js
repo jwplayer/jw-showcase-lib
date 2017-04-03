@@ -35,13 +35,6 @@
         var self = this;
 
         /**
-         * @ngdoc property
-         *
-         * @type {boolean}
-         */
-        this.searching = false;
-
-        /**
          * @ngdoc method
          * @name jwShowcase.core.apiConsumer#populateFeedModel
          * @methodOf jwShowcase.core.apiConsumer
@@ -109,17 +102,10 @@
 
             var promise;
 
-            // already searching
-            if (true === self.searching) {
-                $q.reject();
-            }
-
             // empty searchPhrase
-            if (!self.searchPhrase) {
+            if (!searchPhrase) {
                 dataStore.searchFeed.playlist = [];
             }
-
-            self.searching = true;
 
             promise = api.getSearchFeed(config.searchPlaylist, searchPhrase);
 
@@ -131,14 +117,21 @@
                     dataStore.searchFeed.playlist = allItems.filter(function (item) {
                         return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
                     });
-                })
-                .finally(function () {
-                    self.searching = false;
                 });
 
             return promise;
         };
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.apiConsumer#loadFeedsFromConfig
+         * @methodOf jwShowcase.core.apiConsumer
+         *
+         * @description
+         * Load all feeds from the config file.
+         *
+         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         */
         this.loadFeedsFromConfig = function () {
 
             var model, promise,

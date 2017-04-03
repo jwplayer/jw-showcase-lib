@@ -48,7 +48,7 @@
         vm.watchProgress = vm.dataStore.watchProgressFeed;
 
         vm.conserveBandwidth = userSettings.settings.conserveBandwidth;
-        vm.continueWatching = userSettings.settings.continueWatching;
+        vm.continueWatching  = userSettings.settings.continueWatching;
 
         vm.clearWatchlist     = clearWatchlist;
         vm.clearWatchProgress = clearWatchProgress;

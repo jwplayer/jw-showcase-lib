@@ -38,6 +38,12 @@
             controllerAs: 'vm'
         });
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.core.HeaderController
+     *
+     * @requires jwShowcase.config
+     */
     HeaderController.$inject = ['config'];
     function HeaderController (config) {
 

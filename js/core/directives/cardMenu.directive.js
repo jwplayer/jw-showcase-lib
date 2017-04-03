@@ -85,12 +85,12 @@
 
                 var node = evt.target;
 
-                do {
+                while (node) {
                     if (node === element[0]) {
                         return;
                     }
+                    node = node.parentNode;
                 }
-                while((node = node.parentNode));
 
                 scope.$apply(function () {
                     jwCard.closeMenu();
