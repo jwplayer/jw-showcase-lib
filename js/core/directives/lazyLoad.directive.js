@@ -67,7 +67,7 @@
              */
             function activate () {
 
-                window.addEventListener('scroll', updateDebounced);
+                window.addEventListener('scroll', updateDebounced, window.supportsPassive ? {passive: true} : false);
                 scope.$on('$destroy', destroy);
 
                 $timeout(updateDebounced, 500);
