@@ -25,14 +25,50 @@
             controller:   SidebarLayoutController
         });
 
+    /**
+     * @ngdoc controller
+     * @name jwShowcase.core.SidebarLayoutController
+     *
+     * @requires jwShowcase.core.sidebar
+     */
     SidebarLayoutController.$inject = ['sidebar'];
     function SidebarLayoutController (sidebar) {
 
-        this.sidebar = sidebar;
+        var vm = this;
 
-        this.backdropClickHandler = function () {
-            this.sidebar.opened = false;
-        };
+        vm.sidebar = sidebar;
+
+        vm.backdropClickHandler = backdropClickHandler;
+        vm.swipeLeftHandler     = swipeLeftHandler;
+
+        ///////////////
+
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SidebarLayoutController#backdropClickHandler
+         * @methodOf jwShowcase.core.SidebarLayoutController
+         *
+         * @description
+         * Handle click event on the sidebar backdrop element.
+         */
+        function backdropClickHandler () {
+
+            sidebar.hide();
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SidebarLayoutController#swipeLeftHandler
+         * @methodOf jwShowcase.core.SidebarLayoutController
+         *
+         * @description
+         * Handle swipe to the left on the sidebar element.
+         */
+        function swipeLeftHandler () {
+
+            sidebar.hide();
+        }
     }
 
 }());

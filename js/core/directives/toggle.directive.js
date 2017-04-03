@@ -78,7 +78,9 @@
             function swipeStartHandler (coords, event) {
 
                 startCoords = coords;
+
                 event.preventDefault();
+                event.stopImmediatePropagation();
             }
 
             /**
