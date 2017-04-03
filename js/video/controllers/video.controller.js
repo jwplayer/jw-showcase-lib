@@ -28,22 +28,22 @@
      * @requires $state
      * @requires $timeout
      * @requires jwShowcase.core.apiConsumer
+     * @requires jwShowcase.core.FeedModel
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
-     * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
+     * @requires jwShowcase.core.platform
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
-        'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
-                              feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item'];
+    function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
+                              watchlist, seo, userSettings, utils, player, platform, config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -106,7 +106,7 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = 1; //ionic.Platform.isAndroid() ? 1 : 2;
+                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
             }
 
             $scope.$watch(function () {
@@ -184,9 +184,9 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = false, //ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
+                isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
                 playlist, sources;
-
+            
             playlist = angular.copy(feed.playlist)
                 .slice(playlistIndex)
                 .concat(feed.playlist.slice(0, playlistIndex));
@@ -268,33 +268,23 @@
 
         /**
          * Handle setup error event
-         *
-         * @param {Object} event
          */
-        function onSetupError (event) {
+        function onSetupError () {
 
-            // $ionicPopup.show({
-            //     cssClass: 'jw-dialog',
-            //     template: '<strong>Oops! Something went wrong. Try again?</strong>',
-            //     buttons:  [{
-            //         text:  'Yes',
-            //         type:  'jw-button jw-button-primary',
-            //         onTap: function () {
-            //             return true;
-            //         }
-            //     }, {
-            //         text:  'No',
-            //         type:  'jw-button jw-button-light',
-            //         onTap: function () {
-            //             return false;
-            //         }
-            //     }]
-            // }).then(function (retry) {
-            //
-            //     if (retry) {
-            //         $state.reload();
-            //     }
-            // });
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Something went wrong while loading the video, try again?'
+                    }
+                })
+                .then(function (result) {
+
+                    if (true === result) {
+                        $state.reload();
+                    }
+                });
 
             vm.loading = false;
             $timeout.cancel(loadingTimeout);

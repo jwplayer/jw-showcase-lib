@@ -25,11 +25,15 @@
 
         var isTouch = 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch),
             parser  = new window.UAParser(),
-            result  = parser.getResult();
+            result  = parser.getResult(),
+            osName  = result.os.name.toLowerCase();
 
         return {
             prepare:         prepare,
             isTouch:         isTouch,
+            isAndroid:       osName === 'android',
+            isIOS:           osName === 'ios',
+            isWindows:       osName === 'windows',
             browserName:     result.browser.name,
             browserVersion:  result.browser.version,
             platformName:    result.os.name,
@@ -38,8 +42,7 @@
 
         function prepare () {
 
-            var body = angular.element(document.body),
-                osName = result.os.name.toLowerCase();
+            var body   = angular.element(document.body);
 
             if (true === isTouch) {
                 body.addClass('jw-flag-touch');
