@@ -79,28 +79,41 @@
         function addPopupToView (instance) {
 
             ensurePopupsElement();
-            movePopupToTarget(instance);
 
             angular.element(popupsElement[0].querySelector('.jw-popups-container'))
                 .append(instance.element);
 
             updatePopupsVisibility();
+            movePopupToTarget(instance);
         }
 
+        /**
+         * Move the popup to the target element
+         * @param {PopupInstance} instance
+         */
         function movePopupToTarget (instance) {
 
             var target = instance.options.target,
-                rect;
+                targetRect,
+                left, top,
+                width, height, pageWidth;
 
             if (!target) {
                 return;
             }
 
-            rect = target.getBoundingClientRect();
+            targetRect = target.getBoundingClientRect();
+            pageWidth  = window.innerWidth;
+            width      = instance.element[0].offsetWidth;
+            height     = instance.element[0].offsetHeight;
+
+            // prevent overflow
+            left = Math.min(pageWidth - (width / 2), Math.max(width / 2, targetRect.left));
+            top  = Math.max(height / 2, targetRect.top);
 
             instance.element.css({
-                top:  rect.top + 'px',
-                left: rect.left + 'px'
+                top:  top + 'px',
+                left: left + 'px'
             });
         }
 
