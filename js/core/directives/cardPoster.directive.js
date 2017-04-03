@@ -37,8 +37,8 @@
      * The `jwCardPoster` directive is responsible for showing the item poster or thumbnail.
      */
 
-    jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'utils'];
-    function jwCardPoster ($http, $q, dataStore, utils) {
+    jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'platform', 'utils'];
+    function jwCardPoster ($http, $q, dataStore, platform, utils) {
 
         return {
             link:    link,
@@ -76,7 +76,7 @@
                     });
                 }
 
-                if (jwCard.featured) {
+                if (jwCard.featured && !platform.isTouch) {
 
                     // bind to jwCard element
                     element.parent()

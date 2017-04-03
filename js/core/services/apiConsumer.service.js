@@ -29,8 +29,8 @@
      * @required jwShowcase.core.api
      * @required jwShowcase.core.dataStore
      */
-    apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore'];
-    function apiConsumerService ($q, config, api, dataStore) {
+    apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore', 'FeedModel'];
+    function apiConsumerService ($q, config, api, dataStore, FeedModel) {
 
         var self = this;
 
@@ -68,7 +68,7 @@
                 }
                 else {
                     feed.playlist = [];
-                    promise = api.getFeed(feed.feedid);
+                    promise       = api.getFeed(feed.feedid);
                 }
 
                 feed.promise = promise.then(function (data) {
@@ -81,8 +81,8 @@
 
                 feed.promise.catch(function (error) {
 
-                    feed.error = error;
-                    feed.loading = false;
+                    feed.error     = error;
+                    feed.loading   = false;
                     feed.navigable = false;
 
                     return feed;
@@ -137,6 +137,39 @@
                 });
 
             return promise;
+        };
+
+        this.loadFeedsFromConfig = function () {
+
+            var model, promise,
+                feedPromises = [];
+
+            if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
+                model = new FeedModel(config.featuredPlaylist);
+
+                feedPromises.push(self.populateFeedModel(model));
+                dataStore.featuredFeed = model;
+            }
+
+            if (angular.isArray(config.playlists)) {
+
+                dataStore.feeds = config.playlists.map(function (feedId) {
+                    model   = new FeedModel(feedId);
+                    promise = self
+                        .populateFeedModel(model)
+                        .then(null, function (error) {
+
+                            // show error, but resolve so we can wait for all feeds to be loaded
+                            console.error(error);
+                            return $q.resolve();
+                        });
+
+                    feedPromises.push(promise);
+                    return model;
+                });
+            }
+
+            return $q.all(feedPromises);
         };
 
         /**

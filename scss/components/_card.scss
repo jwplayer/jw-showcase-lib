@@ -6,7 +6,7 @@
     position: relative;
     font-size: rem(15px);
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &.jw-card-flag-active,
         &:hover {
@@ -228,7 +228,7 @@
 .jw-card.jw-card-flag-default {
     padding-bottom: 39px;
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &:hover {
 

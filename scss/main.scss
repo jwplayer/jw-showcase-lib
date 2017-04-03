@@ -12,34 +12,34 @@
 //
 // Import components
 // --------------------------------
-@import 'components/jwAnimations';
-@import 'components/jwButtons';
-@import 'components/jwCard';
-@import 'components/jwCardGrid';
-@import 'components/jwCardMenu';
-@import 'components/jwCardPoster';
-@import 'components/jwCardSlider';
-@import 'components/jwCollapsibleText';
-@import 'components/jwContent';
-@import 'components/jwCookies';
-@import 'components/jwCover';
-@import 'components/jwDialog';
-@import 'components/jwFooter';
-@import 'components/jwGrid';
-@import 'components/jwHeader';
-@import 'components/jwIcons';
-@import 'components/jwLoading';
-@import 'components/jwMarkdown';
-@import 'components/jwMenu';
-@import 'components/jwModal';
-@import 'components/jwPlayer';
-@import 'components/jwSearch';
-@import 'components/jwShare';
-@import 'components/jwText';
-@import 'components/jwToolbar';
-@import 'components/jwVideoContainer';
-@import 'components/jwVideoDetails';
-@import 'components/jwView';
+@import 'components/animations';
+@import 'components/buttons';
+@import 'components/card';
+@import 'components/cardGrid';
+@import 'components/cardMenu';
+@import 'components/cardPoster';
+@import 'components/cardSlider';
+@import 'components/collapsibleText';
+@import 'components/content';
+@import 'components/cookies';
+@import 'components/cover';
+@import 'components/footer';
+@import 'components/grid';
+@import 'components/header';
+@import 'components/icons';
+@import 'components/loading';
+@import 'components/markdown';
+@import 'components/modal';
+@import 'components/player';
+@import 'components/popups';
+@import 'components/search';
+@import 'components/sidebar';
+@import 'components/text';
+@import 'components/toggle';
+@import 'components/toolbar';
+@import 'components/videoContainer';
+@import 'components/videoDetails';
+@import 'components/view';
 
 //
 // Import themes
@@ -50,7 +50,7 @@
 //
 // Import skins
 // --------------------------------
-@import 'skins/jwShowcase';
+@import 'skins/showcase';
 
 html,
 body {
@@ -62,7 +62,7 @@ body {
     @include user-select(none);
 
     min-width: 320px;
-    margin: 0 0 20px;
+    margin: 0;
     padding: 0;
 
     color: $text-color-base;
@@ -71,7 +71,8 @@ body {
 
     -webkit-font-smoothing: antialiased;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     img {
         border: 0;
@@ -83,6 +84,13 @@ body {
 
     a {
         text-decoration: none;
+    }
+
+    a,
+    button,
+    input {
+        border: 0;
+        outline: none;
     }
 
     .featured .jw-row:not(:last-child) {

@@ -44,8 +44,8 @@
             }
         });
 
-    VideoDetailsController.$inject = ['$scope', 'share', 'watchlist'];
-    function VideoDetailsController ($scope, share, watchlist) {
+    VideoDetailsController.$inject = ['$scope', 'popup', 'watchlist'];
+    function VideoDetailsController ($scope, popup, watchlist) {
 
         var vm = this;
 
@@ -80,7 +80,7 @@
          */
         function shareButtonClickHandler (event) {
 
-            share.show({
+            popup.show({
                 item:   vm.item,
                 target: event.target
             });

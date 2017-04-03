@@ -24,11 +24,10 @@
      * @ngdoc controller
      * @name jwShowcase.core.CookiesController
      *
-     * @requires jwShowcase.core.cookies
      * @requires jwShowcase.core.userSettings
      */
-    CookiesController.$inject = ['cookies', 'userSettings'];
-    function CookiesController (cookies, userSettings) {
+    CookiesController.$inject = ['userSettings', 'popupInstance'];
+    function CookiesController (userSettings, popupInstance) {
 
         var vm = this;
 
@@ -51,8 +50,8 @@
             // save in userSettings
             userSettings.set('cookies', true);
 
-            // hide cookies popover
-            cookies.hide();
+            // hide cookies popup
+            popupInstance.close(true);
         }
     }
 

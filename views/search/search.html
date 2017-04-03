@@ -1,13 +1,12 @@
-<ion-view jw-lazy-load>
-  <jw-toolbar toolbar-class="jw-toolbar-subheader">Search results</jw-toolbar>
-  <ion-content class="has-jw-subheader">
-    <div class="jw-content" ng-if="!vm.feed.playlist.length">
-      <h4 class="jw-content-title">
-        Nothing could be found, try changing your search phrase
-      </h4>
-    </div>
-    <jw-card-grid feed="vm.feed" on-card-click="vm.cardClickHandler" card-class-name="jw-lazy-load"
-        cols="{xs:2, sm:2, md:3, lg:4, xl:5}"></jw-card-grid>
-    <jw-footer></jw-footer>
-  </ion-content>
-</ion-view>
+<jw-toolbar toolbar-class="jw-toolbar-subheader">Search results</jw-toolbar>
+
+<div class="has-jw-subheader">
+  <div class="jw-content" ng-if="!vm.feed.playlist.length">
+    <h4 class="jw-content-title">
+      Nothing could be found, try changing your search phrase
+    </h4>
+  </div>
+
+  <jw-card-grid feed="vm.feed" on-card-click="vm.cardClickHandler" card-class-name="jw-lazy-load"
+      cols="{xs:2, sm:2, md:3, lg:4, xl:5}"></jw-card-grid>
+</div>

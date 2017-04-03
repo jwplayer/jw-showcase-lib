@@ -4,7 +4,7 @@
 
 .jw-video-container {
     position: relative;
-    width: 100vw;
+    width: 100%;
 
     background-color: $black;
 
@@ -34,9 +34,11 @@
         position: absolute;
         top: 50%;
         left: 50%;
+        height: 1em;
 
         color: $white;
         font-size: rem(52px);
+        line-height: 1em;
     }
 }
 

@@ -37,7 +37,9 @@
                 templateUrl: 'views/feed/feed.html',
                 resolve:     {
                     feed: resolveFeed
-                }
+                },
+                scrollTop:   'last',
+                persistent:   true
             });
 
         seoProvider

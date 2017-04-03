@@ -1,0 +1,60 @@
+<div class="jw-sidebar">
+  <jw-header-menu></jw-header-menu>
+
+  <div class="jw-sidebar-content">
+    <div class="jw-sidebar-group">
+      <jw-button ui-sref="root.dashboard()" ui-sref-active="active">
+        <span class="jw-button-label">Homepage</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+      <jw-button ui-sref="root.feed({feedId: 'saved-videos'})" ui-sref-active="active"
+          ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
+        <span class="jw-button-label">Saved videos ({{ vm.watchlist.playlist.length }})</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+      <jw-button ui-sref="root.feed({feedId: 'continue-watching'})" ui-sref-active="active"
+          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length || !vm.continueWatching}"
+          ng-if="::vm.config.enableContinueWatching">
+        <span class="jw-button-label">Continue watching ({{ vm.watchProgress.playlist.length }})</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+    </div>
+
+    <div class="jw-sidebar-group">
+      <jw-button ng-repeat="feed in vm.feeds" ui-sref="root.feed({feedId: feed.feedid})" ui-sref-active="active">
+        <span class="jw-button-label">{{ feed.title }}</span>
+        <i class="jwy-icon jwy-icon-angle-right"></i>
+      </jw-button>
+    </div>
+
+    <div class="jw-sidebar-group">
+      <jw-button ng-click="vm.clearWatchlist()" ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
+        <span class="jw-button-label">Clear Saved videos</span>
+      </jw-button>
+      <jw-button ng-click="vm.clearWatchProgress()" ng-if="::vm.config.enableContinueWatching"
+          ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
+        <span class="jw-button-label">Clear Continue watching</span>
+      </jw-button>
+    </div>
+
+    <div class="jw-sidebar-group">
+      <div class="jw-sidebar-row">
+        <div class="jw-sidebar-label">
+          Reduce data usage
+        </div>
+        <div class="jw-sidebar-action">
+          <jw-toggle ng-model="vm.conserveBandwidth" ng-change="vm.onChangeHandler('conserveBandwidth')"></jw-toggle>
+        </div>
+      </div>
+      <div class="jw-sidebar-row">
+        <div class="jw-sidebar-label">
+          <span class="is-hidden-mobile">Enable </span>Continue watching
+        </div>
+        <div class="jw-sidebar-action">
+          <jw-toggle ng-model="vm.continueWatching" ng-change="vm.onChangeHandler('continueWatching')"></jw-toggle>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

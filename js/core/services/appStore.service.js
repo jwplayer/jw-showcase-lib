@@ -37,6 +37,11 @@
          */
         this.loading = true;
 
+        /**
+         * @ngdoc property
+         * @type {Object}
+         */
+        this.scrollTopCache = {};
     }
 
 }());

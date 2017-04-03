@@ -1,0 +1,37 @@
+
+.jw-flag-no-header {
+
+    .has-jw-subheader {
+        padding-top: $toolbar-height;
+    }
+
+    .jw-toolbar-subheader {
+        top: 0;
+    }
+}
+
+body:not(.jw-flag-no-header) {
+    .has-jw-header {
+        padding-top: $header-height;
+    }
+
+    .has-jw-subheader {
+        padding-top: $header-height + $toolbar-height;
+    }
+}
+
+//
+// Mobile screen size uses a different header height so the scroll content needs to be changed also
+//
+@include mobile-only () {
+
+    body:not(.jw-flag-no-header) {
+        .has-jw-header {
+            padding-top: $header-height-mobile;
+        }
+
+        .has-jw-subheader {
+            padding-top: $header-height-mobile + $toolbar-height;
+        }
+    }
+}

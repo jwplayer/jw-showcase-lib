@@ -600,10 +600,12 @@
             /**
              * Handle touchstart event
              * @param {Event} event
+             * @todo detect isAndroid4
              */
             function onTouchStart (event) {
 
-                var coords         = getCoords(event),
+                var isAndroid4     = false,
+                    coords         = getCoords(event),
                     touchContainer = findElement('.jw-card-slider-align')[0];
 
                 touchContainer.addEventListener('touchmove', onTouchMove);
@@ -613,7 +615,7 @@
                 startCoords = coords;
                 element.addClass('is-sliding');
 
-                if (ionic.Platform.isAndroid() && ionic.Platform.version() < 5) {
+                if (true === isAndroid4) {
                     event.preventDefault();
                 }
             }

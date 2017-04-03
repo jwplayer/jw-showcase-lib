@@ -49,7 +49,7 @@
                         squash: true
                     }
                 },
-                cache:       false
+                scrollTop:   0
             });
 
         seoProvider
