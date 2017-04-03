@@ -38,7 +38,8 @@
                 resolve:     {
                     feed: resolveFeed
                 },
-                scrollTop:   'last'
+                scrollTop:   'last',
+                persistent:   true
             });
 
         seoProvider

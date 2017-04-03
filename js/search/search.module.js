@@ -36,6 +36,7 @@
                 controller:  'SearchController as vm',
                 templateUrl: 'views/search/search.html',
                 scrollTop:   'last',
+                persistent:  true,
                 resolve:     {
                     searchPlaylist: ['$q', 'config', function ($q, config) {
                         if (!config.searchPlaylist) {
