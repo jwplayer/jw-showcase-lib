@@ -13,7 +13,18 @@
         .jw-sidebar-backdrop {
             display: block;
         }
+
+        .jw-flag-touch & {
+
+            .jw-sidebar {
+                overflow: scroll;
+            }
+        }
     }
+}
+
+.jw-flag-touch.jw-flag-sidebar-opened {
+    overflow: hidden;
 }
 
 //
