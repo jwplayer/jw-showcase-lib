@@ -189,10 +189,6 @@
                             cached.scope.$emit('$viewRestored', {name: name});
                         });
 
-                        if (cached.scrollTop) {
-                            document.body.scrollTop = cached.scrollTop;
-                        }
-
                         currentEl    = cached.element;
                         currentScope = cached.scope;
                     }
@@ -211,7 +207,7 @@
                         var cached = $state.$current.persistent && $state.$current.viewCache &&
                             $state.$current.viewCache[name];
 
-                        if (cached) {
+                        if (cached && angular.equals(cached.params, $state.params)) {
                             cleanupLastView();
                             restoreFromCache(name, cached);
                             return;
@@ -283,8 +279,8 @@
                                 }
                                 cached                          = {
                                     element:   clone,
-                                    scope:     newScope,
-                                    scrollTop: document.body.scrollTop
+                                    params:    angular.copy({}, $state.params),
+                                    scope:     newScope
                                 };
                                 cached.scope.$persistent        = true;
                                 $state.$current.viewCache[name] = cached;
