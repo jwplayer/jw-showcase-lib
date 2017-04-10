@@ -185,13 +185,14 @@
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
                 isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
-                playlist, playlistItem, sources;
-            
-            playlist = angular.copy(feed.playlist)
-                .slice(playlistIndex)
-                .concat(feed.playlist.slice(0, playlistIndex));
+                playlistCopy  = angular.copy(feed.playlist),
+                playlistItem, sources;
 
-            return playlist.map(function (current) {
+            playlistCopy = playlistCopy
+                .slice(playlistIndex)
+                .concat(playlistCopy.slice(0, playlistIndex));
+
+            return playlistCopy.map(function (current) {
 
                 // make a copy of the playlist item, we don't want to override the original
                 playlistItem = angular.extend({}, current);
@@ -208,8 +209,8 @@
 
                 return angular.extend(playlistItem, {
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     angular.copy(sources),
-                    tracks:      angular.copy(current.tracks)
+                    sources:     sources,
+                    tracks:      current.tracks
                 });
             });
         }
