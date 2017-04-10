@@ -3,11 +3,11 @@
 // --------------------------------
 
 .jw-header {
+    @include box-shadow(0 0 15px 0 rgba($black, 0.5));
     height: $header-height;
     padding: $header-padding;
 
     background-color: $header-bg-color;
-    //box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.09);
 
     .jw-flag-loading-config & {
         .jw-header-logo {
