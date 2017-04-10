@@ -364,7 +364,7 @@
                     slide = findExistingSlide(item) || createSlide(item);
 
                     addClassNamesToSlide(slide);
-                    addSliderToSliderList(slide);
+                    addSlideToSliderList(slide);
 
                     prevNode = slide;
                     itemIndex++;
@@ -391,7 +391,7 @@
                     return slide;
                 }
 
-                function addSliderToSliderList () {
+                function addSlideToSliderList () {
 
                     if (prevNode) {
                         return prevNode.after(slide);
