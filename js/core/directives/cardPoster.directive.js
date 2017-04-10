@@ -225,7 +225,7 @@
 
                 var current = findElement('.jw-card-poster.is-active');
 
-                current.parent()[0].insertBefore(posterElement[0], current[0]);
+                element.prepend(posterElement);
                 current.removeClass('is-active');
 
                 setTimeout(function () {
