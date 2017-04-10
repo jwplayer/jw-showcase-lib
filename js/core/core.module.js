@@ -28,8 +28,13 @@
         .run(run)
         .config(config);
 
-    config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', 'seoProvider', 'historyProvider'];
-    function config ($stateProvider, $urlMatcherFactoryProvider, seoProvider, historyProvider) {
+    config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', '$touchProvider', 'seoProvider',
+        'historyProvider'];
+    function config ($stateProvider, $urlMatcherFactoryProvider, $touchProvider, seoProvider, historyProvider) {
+
+        if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
+            $touchProvider.ngClickOverrideEnabled(true);
+        }
 
         $urlMatcherFactoryProvider
             .strictMode(false);
