@@ -168,6 +168,7 @@
                 })
                 .finally(function () {
                     searching = false;
+                    $rootScope.$broadcast('$viewContentUpdated');
                 });
         }
     }

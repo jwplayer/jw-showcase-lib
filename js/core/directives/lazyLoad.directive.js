@@ -69,6 +69,7 @@
 
                 window.addEventListener('scroll', updateDebounced, window.supportsPassive ? {passive: true} : false);
                 scope.$on('$destroy', destroy);
+                scope.$on('$viewContentUpdated', updateDebounced);
 
                 $timeout(updateDebounced, 500);
             }
