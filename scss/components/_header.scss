@@ -3,7 +3,6 @@
 // --------------------------------
 
 .jw-header {
-    @include box-shadow(0 0 15px 0 rgba($black, 0.5));
     height: $header-height;
     padding: $header-padding;
 
@@ -19,6 +18,7 @@
     // Make header fixed
     //
     &-fixed {
+        @include box-shadow(0 0 15px 0 rgba($black, 0.5));
         position: fixed;
         width: 100%;
 
