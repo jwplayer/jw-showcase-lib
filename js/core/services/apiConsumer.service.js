@@ -29,17 +29,10 @@
      * @required jwShowcase.core.api
      * @required jwShowcase.core.dataStore
      */
-    apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore'];
-    function apiConsumerService ($q, config, api, dataStore) {
+    apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore', 'FeedModel'];
+    function apiConsumerService ($q, config, api, dataStore, FeedModel) {
 
         var self = this;
-
-        /**
-         * @ngdoc property
-         *
-         * @type {boolean}
-         */
-        this.searching = false;
 
         /**
          * @ngdoc method
@@ -68,7 +61,7 @@
                 }
                 else {
                     feed.playlist = [];
-                    promise = api.getFeed(feed.feedid);
+                    promise       = api.getFeed(feed.feedid);
                 }
 
                 feed.promise = promise.then(function (data) {
@@ -81,8 +74,8 @@
 
                 feed.promise.catch(function (error) {
 
-                    feed.error = error;
-                    feed.loading = false;
+                    feed.error     = error;
+                    feed.loading   = false;
                     feed.navigable = false;
 
                     return feed;
@@ -109,17 +102,10 @@
 
             var promise;
 
-            // already searching
-            if (true === self.searching) {
-                $q.reject();
-            }
-
             // empty searchPhrase
-            if (!self.searchPhrase) {
+            if (!searchPhrase) {
                 dataStore.searchFeed.playlist = [];
             }
-
-            self.searching = true;
 
             promise = api.getSearchFeed(config.searchPlaylist, searchPhrase);
 
@@ -131,12 +117,52 @@
                     dataStore.searchFeed.playlist = allItems.filter(function (item) {
                         return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
                     });
-                })
-                .finally(function () {
-                    self.searching = false;
                 });
 
             return promise;
+        };
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.apiConsumer#loadFeedsFromConfig
+         * @methodOf jwShowcase.core.apiConsumer
+         *
+         * @description
+         * Load all feeds from the config file.
+         *
+         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         */
+        this.loadFeedsFromConfig = function () {
+
+            var model, promise,
+                feedPromises = [];
+
+            if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
+                model = new FeedModel(config.featuredPlaylist);
+
+                feedPromises.push(self.populateFeedModel(model));
+                dataStore.featuredFeed = model;
+            }
+
+            if (angular.isArray(config.playlists)) {
+
+                dataStore.feeds = config.playlists.map(function (feedId) {
+                    model   = new FeedModel(feedId);
+                    promise = self
+                        .populateFeedModel(model)
+                        .then(null, function (error) {
+
+                            // show error, but resolve so we can wait for all feeds to be loaded
+                            console.error(error);
+                            return $q.resolve();
+                        });
+
+                    feedPromises.push(promise);
+                    return model;
+                });
+            }
+
+            return $q.all(feedPromises);
         };
 
         /**

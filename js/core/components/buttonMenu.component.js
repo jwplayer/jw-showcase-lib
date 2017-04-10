@@ -43,8 +43,8 @@
      *
      * @requires jwShowcase.core.menu
      */
-    ButtonMenuController.$inject = ['menu'];
-    function ButtonMenuController (menu) {
+    ButtonMenuController.$inject = ['sidebar'];
+    function ButtonMenuController (sidebar) {
 
         var vm = this;
 
@@ -62,7 +62,7 @@
          */
         function menuButtonClickHandler () {
 
-            menu.toggle();
+            sidebar.toggle();
         }
     }
 

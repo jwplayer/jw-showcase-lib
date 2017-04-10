@@ -1,3 +1,19 @@
+/**
+ * Copyright 2017 Longtail Ad Solutions Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ **/
+
 (function () {
 
     angular
@@ -8,68 +24,16 @@
      * @ngdoc service
      * @name jwShowcase.core.cookies
      *
-     * @required $rootScope
-     * @requires $controller
-     * @required $templateCache
-     * @required $ionicPopover
-     * @requires jwShowcase.core.userSettings
-     * @requires jwShowcase.config
+     * @required jwShowcase.core.popup
      */
-    cookiesService.$inject = ['$rootScope', '$controller', '$templateCache', '$ionicPopover', 'userSettings', 'config'];
-    function cookiesService ($rootScope, $controller, $templateCache, $ionicPopover, userSettings, config) {
+    cookiesService.$inject = ['popup'];
+    function cookiesService (popup) {
 
-        var template,
-            popover;
+        var instance;
 
-        this.hide         = hide;
         this.show         = show;
-        this.showIfNeeded = showIfNeeded;
 
-        activate();
-
-        ////////////////
-
-        /**
-         * Initialize service
-         */
-        function activate () {
-
-            template = $templateCache.get('views/core/cookies.html');
-        }
-
-        /**
-         * Position popover element
-         * @param target
-         * @param popoverElement
-         */
-        function positionView (target, popoverElement) {
-
-            popoverElement.css({
-                margin: 0,
-                top:    0,
-                left:   0,
-                width:  '100%',
-                height: 'auto'
-            });
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.cookies#hide
-         * @methodOf jwShowcase.core.cookies
-         *
-         * @description
-         * Hide cookies popover.
-         */
-        function hide () {
-
-            if (!popover) {
-                return;
-            }
-
-            popover.remove();
-            popover = null;
-        }
+        ///////////////
 
         /**
          * @ngdoc method
@@ -77,56 +41,18 @@
          * @methodOf jwShowcase.core.cookies
          *
          * @description
-         * Show cookies popover.
-         *
-         * @param {string} message The message shown in the confirmation dialog.
+         * Show cookies popup.
          */
         function show () {
 
-            var scope;
+            if (!instance) {
 
-            // already shown
-            if (popover) {
-                return;
-            }
-
-            scope = $rootScope.$new();
-
-            $controller('CookiesController as vm', {
-                $scope:  scope,
-                cookies: {
-                    hide: hide
-                }
-            });
-
-            popover = $ionicPopover
-                .fromTemplate(template, {
-                    scope:                   scope,
-                    positionView:            positionView,
-                    animation:               'cookies-animation',
-                    hideDelay:               300,
-                    backdropClickToClose:    false,
-                    hardwareBackButtonClose: false
+                instance = popup.show({
+                    controller: 'CookiesController as vm',
+                    templateUrl: 'views/core/cookies.html'
+                }).then(function () {
+                    instance = null;
                 });
-
-            popover
-                .show(document.body);
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.cookies#showIfNeeded
-         * @methodOf jwShowcase.core.cookies
-         *
-         * @description
-         * Show cookies popover if user has not accepted cookies and platform is not Cordova.
-         */
-        function showIfNeeded () {
-
-            var isBrowser = !window.cordova;
-
-            if (config.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
-                show();
             }
         }
     }

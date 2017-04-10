@@ -1,32 +1,29 @@
-<ion-view jw-lazy-load>
-  <ion-content class="has-jw-header">
-    <div class="featured">
-      <div class="jw-row" ng-if="vm.dataStore.featuredFeed && !vm.isMobileScreen">
-        <jw-card-slider feed="vm.dataStore.featuredFeed" featured="true" cols="1" on-card-click="vm.cardClickHandler"
-            class="jw-lazy-load"></jw-card-slider>
-      </div>
-
-      <div class="jw-row" ng-repeat="item in vm.dataStore.featuredFeed.playlist" ng-if="vm.isMobileScreen">
-        <jw-card class="jw-lazy-load" item="item" featured="true" on-click="vm.cardClickHandler"></jw-card>
-      </div>
-    </div>
-
-    <div class="watchProgress jw-expand-animation" ng-if="vm.showWatchProgressFeed()">
-      <jw-card-slider feed="vm.dataStore.watchProgressFeed" featured="false"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
-          on-card-click="vm.cardClickHandler" class="jw-card-slider-animate jw-lazy-load"></jw-card-slider>
-    </div>
-
-    <div class="feed">
-      <jw-card-slider feed="feed" featured="false" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
-          on-card-click="vm.cardClickHandler" ng-repeat="feed in vm.dataStore.feeds"
+<div class="has-jw-header">
+  <div class="featured">
+    <div class="jw-row" ng-if="vm.dataStore.featuredFeed && !vm.isMobileScreen">
+      <jw-card-slider feed="vm.dataStore.featuredFeed" featured="true" cols="1" on-card-click="vm.cardClickHandler"
           class="jw-lazy-load"></jw-card-slider>
     </div>
 
-    <div class="watchlist jw-expand-animation" ng-if="vm.dataStore.watchlistFeed.playlist.length > 0">
-      <jw-card-slider feed="vm.dataStore.watchlistFeed" featured="false" on-card-click="vm.cardClickHandler"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" class="jw-card-slider-animate jw-lazy-load"></jw-card-slider>
+    <div class="jw-row" ng-repeat="item in vm.dataStore.featuredFeed.playlist" ng-if="vm.isMobileScreen">
+      <jw-card class="jw-lazy-load" item="item" featured="true" on-click="vm.cardClickHandler"></jw-card>
     </div>
-    <jw-footer></jw-footer>
-  </ion-content>
-</ion-view>
+  </div>
+
+  <div class="watchProgress jw-expand-animation" ng-if="vm.showWatchProgressFeed()">
+    <jw-card-slider feed="vm.dataStore.watchProgressFeed" featured="false"
+        cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
+        on-card-click="vm.cardClickHandler" class="jw-card-slider-animate jw-lazy-load"></jw-card-slider>
+  </div>
+
+  <div class="feed">
+    <jw-card-slider feed="feed" featured="false" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
+        on-card-click="vm.cardClickHandler" ng-repeat="feed in vm.dataStore.feeds"
+        class="jw-lazy-load"></jw-card-slider>
+  </div>
+
+  <div class="watchlist jw-expand-animation" ng-if="vm.dataStore.watchlistFeed.playlist.length > 0">
+    <jw-card-slider feed="vm.dataStore.watchlistFeed" featured="false" on-card-click="vm.cardClickHandler"
+        cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" class="jw-card-slider-animate jw-lazy-load"></jw-card-slider>
+  </div>
+</div>

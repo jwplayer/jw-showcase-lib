@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Longtail Ad Solutions Inc.
+ * Copyright 2017 Longtail Ad Solutions Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,39 +18,44 @@
 
     angular
         .module('jwShowcase.core')
-        .controller('MenuController', MenuController);
+        .component('jwSidebar', {
+            templateUrl:  'views/core/sidebar.html',
+            controller:   SidebarController,
+            controllerAs: 'vm'
+        });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.MenuController
+     * @name jwShowcase.core.SidebarController
      *
-     * @requires $scope
-     * @requires jwShowcase.core.confirm
-     * @requires jwShowcase.core.menu
+     * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    MenuController.$inject = ['$scope', 'confirm', 'menu', 'dataStore', 'watchlist', 'watchProgress', 'userSettings',
-        'config'];
-    function MenuController ($scope, confirm, menu, dataStore, watchlist, watchProgress, userSettings, config) {
+    SidebarController.$inject = ['popup', 'dataStore', 'watchlist', 'watchProgress', 'userSettings', 'config'];
+    function SidebarController (popup, dataStore, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
 
         vm.feeds     = [];
-        vm.menu      = menu;
         vm.dataStore = dataStore;
         vm.config    = config;
 
         vm.watchlist     = vm.dataStore.watchlistFeed;
         vm.watchProgress = vm.dataStore.watchProgressFeed;
 
-        vm.userSettings = angular.extend({}, userSettings.settings);
+        vm.conserveBandwidth = userSettings.settings.conserveBandwidth;
+        vm.continueWatching  = userSettings.settings.continueWatching;
 
         vm.clearWatchlist     = clearWatchlist;
         vm.clearWatchProgress = clearWatchProgress;
+
+        vm.onChangeHandler = function (type) {
+            userSettings.set(type, vm[type]);
+        };
 
         activate();
 
@@ -74,19 +79,11 @@
             vm.feeds = vm.feeds.sort(function (a, b) {
                 return a.title > b.title;
             });
-
-            $scope.$watch('vm.userSettings.conserveBandwidth', function (value) {
-                userSettings.set('conserveBandwidth', value);
-            }, true);
-
-            $scope.$watch('vm.userSettings.watchProgress', function (value) {
-                userSettings.set('watchProgress', value);
-            }, true);
         }
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.MenuController#clearWatchlist
+         * @name jwShowcase.core.SidebarController#clearWatchlist
          * @methodOf jwShowcase.core.MenuController
          *
          * @description
@@ -94,18 +91,26 @@
          */
         function clearWatchlist () {
 
-            confirm
-                .show('Do you wish to clear your Saved videos list?')
-                .then(function () {
 
-                    watchlist
-                        .clearAll();
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Do you wish to clear your Saved videos list?'
+                    }
+                })
+                .then(function (result) {
+
+                    if (true === result) {
+                        watchlist.clearAll();
+                    }
                 });
         }
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.MenuController#clearWatchProgress
+         * @name jwShowcase.core.SidebarController#clearWatchProgress
          * @methodOf jwShowcase.core.MenuController
          *
          * @description
@@ -113,12 +118,19 @@
          */
         function clearWatchProgress () {
 
-            confirm
-                .show('Do you wish to clear your Continue watching list?')
-                .then(function () {
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Do you wish to clear your Continue watching list?'
+                    }
+                })
+                .then(function (result) {
 
-                    watchProgress
-                        .clearAll();
+                    if (true === result) {
+                        watchProgress.clearAll();
+                    }
                 });
         }
     }

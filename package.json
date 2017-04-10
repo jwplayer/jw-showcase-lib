@@ -1,7 +1,7 @@
 {
   "name": "jw-showcase-lib",
   "description": "JW Showcase library",
-  "version": "3.1.0",
+  "version": "3.2.0-beta",
   "dependencies": {},
   "repository": {
     "url": "https://github.com/jwplayer/jw-showcase-lib.git"

@@ -34,7 +34,16 @@
             .state('root.search', {
                 url:         '/search',
                 controller:  'SearchController as vm',
-                templateUrl: 'views/search/search.html'
+                templateUrl: 'views/search/search.html',
+                scrollTop:   'last',
+                persistent:  true,
+                resolve:     {
+                    searchPlaylist: ['$q', 'config', function ($q, config) {
+                        if (!config.searchPlaylist) {
+                            return $q.reject();
+                        }
+                    }]
+                }
             });
 
         seoProvider

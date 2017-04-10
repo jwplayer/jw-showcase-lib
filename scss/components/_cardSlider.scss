@@ -46,13 +46,6 @@ $featured-slider-max-width: 900px;
         }
     }
 
-    &-flag-hide-text .jw-card {
-        .jw-card-title,
-        .jw-card-description {
-            display: none;
-        }
-    }
-
     &.jw-lazy-load {
 
         .jw-card-poster {
@@ -275,15 +268,6 @@ $featured-slider-max-width: 900px;
     .jw-card-slider-slide {
         @include single-transition(opacity, 0.2s, ease-in, 0s);
         margin: 0 $default-slider-spacing / 2;
-        opacity: 0.3;
-
-        &.is-visible {
-            opacity: 1;
-        }
-
-        &:not(.is-visible) {
-            pointer-events: none;
-        }
 
         &-flag-error {
             opacity: 1;
@@ -337,6 +321,24 @@ $featured-slider-max-width: 900px;
         .jw-card-slider-indicator-dot {
             width: 8px;
             height: 8px;
+        }
+    }
+}
+
+@include tablet-and-larger () {
+
+    .jw-card-slider.jw-card-slider-flag-default {
+
+        .jw-card-slider-slide {
+            opacity: 0.3;
+
+            &.is-visible {
+                opacity: 1;
+            }
+
+            &:not(.is-visible) {
+                pointer-events: none;
+            }
         }
     }
 }

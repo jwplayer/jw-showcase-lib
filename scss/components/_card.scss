@@ -6,7 +6,7 @@
     position: relative;
     font-size: rem(15px);
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &.jw-card-flag-active,
         &:hover {
@@ -20,6 +20,13 @@
     &-flag-toast-open {
         .jw-card-watchlist-button {
             @include transform(scale(0) !important);
+        }
+    }
+
+    &-flag-hide-text {
+        .jw-card-title,
+        .jw-card-description {
+            display: none !important;
         }
     }
 
@@ -221,7 +228,7 @@
 .jw-card.jw-card-flag-default {
     padding-bottom: 39px;
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &:hover {
 

@@ -8,14 +8,21 @@
 
     background-color: $header-bg-color;
 
+    .jw-flag-loading-config & {
+        .jw-header-logo {
+            display: none;
+        }
+    }
+
     //
     // Make header fixed
     //
     &-fixed {
+        @include box-shadow(0 0 15px 0 rgba($black, 0.5));
         position: fixed;
-        width: 100vw;
+        width: 100%;
 
-        z-index: 9;
+        z-index: $header-z-index;
     }
 
     //
@@ -98,10 +105,6 @@
     }
 }
 
-.platform-ios.platform-cordova .jw-header {
-    top: $ios-statusbar-height;
-}
-
 //
 // mediaQueries
 // --------------------------------
@@ -123,9 +126,5 @@
         .jw-header-nav .jw-button-label {
             display: none;
         }
-    }
-
-    .platform-ios.platform-cordova .jw-header {
-        top: $ios-statusbar-height;
     }
 }

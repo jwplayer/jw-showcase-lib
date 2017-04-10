@@ -27,9 +27,11 @@
      *
      * @description
      * Generic button directive which adds `jw-button` className and button effect.
+     *
+     * @requires jwShowcase.core.platform
      */
-    jwButton.$inject = [];
-    function jwButton () {
+    jwButton.$inject = ['platform'];
+    function jwButton (platform) {
         return {
             link:       link,
             restrict:   'E',
@@ -41,15 +43,37 @@
 
         function link (scope, element) {
 
-            element.on('mousedown', function (event) {
+            var listener = platform.isTouch ? 'touchstart' : 'mousedown';
 
-                var effectElement = angular.element('<span class="jw-button-effect"></span>');
+            activate();
+
+            ////////////////
+
+            /**
+             * Initialize directive
+             */
+            function activate () {
+
+                element.on(listener, buttonDownHandler);
+                scope.$on('$destroy', destroyHandler);
+            }
+
+            /**
+             * Handle down event on the button element
+             * @param event
+             */
+            function buttonDownHandler (event) {
+
+                var effectElement = angular.element('<span class="jw-button-effect"></span>'),
+                    touch         = event.touches && event.touches.length && event.touches[0],
+                    changedTouch  = event.changedTouches && event.changedTouches[0],
+                    e             = touch || changedTouch || event;
 
                 angular.element(document.body).append(effectElement);
 
                 effectElement.css({
-                    top:  event.pageY + 'px',
-                    left: event.pageX + 'px'
+                    top:  e.pageY + 'px',
+                    left: e.pageX + 'px'
                 });
 
                 effectElement.addClass('active');
@@ -58,7 +82,15 @@
                 setTimeout(function () {
                     effectElement.remove();
                 }, 310);
-            });
+            }
+
+            /**
+             * Handle destroy event
+             */
+            function destroyHandler () {
+
+                element.off();
+            }
         }
     }
 

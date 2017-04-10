@@ -27,25 +27,23 @@
      * @requires $scope
      * @requires $state
      * @requires $timeout
-     * @requires $ionicHistory
-     * @requires $ionicScrollDelegate
      * @requires jwShowcase.core.apiConsumer
+     * @requires jwShowcase.core.FeedModel
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
-     * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
+     * @requires jwShowcase.core.platform
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout', '$ionicHistory', '$ionicScrollDelegate', '$ionicPopup',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
-        'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, $ionicHistory, $ionicScrollDelegate, $ionicPopup, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, config,
-                              feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item'];
+    function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
+                              watchlist, seo, userSettings, utils, player, platform, config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -108,7 +106,7 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = ionic.Platform.isAndroid() ? 1 : 2;
+                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
             }
 
             $scope.$watch(function () {
@@ -186,14 +184,18 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
-                playlist, sources;
+                isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
+                playlistCopy  = angular.copy(feed.playlist),
+                playlistItem, sources;
 
-            playlist = angular.copy(feed.playlist)
+            playlistCopy = playlistCopy
                 .slice(playlistIndex)
-                .concat(feed.playlist.slice(0, playlistIndex));
+                .concat(playlistCopy.slice(0, playlistIndex));
 
-            return playlist.map(function (current) {
+            return playlistCopy.map(function (current) {
+
+                // make a copy of the playlist item, we don't want to override the original
+                playlistItem = angular.extend({}, current);
 
                 sources = current.sources.filter(function (source) {
 
@@ -205,14 +207,11 @@
                     return 'application/dash+xml' !== source.type;
                 });
 
-                return {
-                    mediaid:     current.mediaid,
-                    title:       current.title,
-                    description: current.description,
+                return angular.extend(playlistItem, {
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     angular.copy(sources),
-                    tracks:      angular.copy(current.tracks)
-                };
+                    sources:     sources,
+                    tracks:      current.tracks
+                });
             });
         }
 
@@ -270,33 +269,23 @@
 
         /**
          * Handle setup error event
-         *
-         * @param {Object} event
          */
-        function onSetupError (event) {
+        function onSetupError () {
 
-            $ionicPopup.show({
-                cssClass: 'jw-dialog',
-                template: '<strong>Oops! Something went wrong. Try again?</strong>',
-                buttons:  [{
-                    text:  'Yes',
-                    type:  'jw-button jw-button-primary',
-                    onTap: function () {
-                        return true;
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Something went wrong while loading the video, try again?'
                     }
-                }, {
-                    text:  'No',
-                    type:  'jw-button jw-button-light',
-                    onTap: function () {
-                        return false;
-                    }
-                }]
-            }).then(function (retry) {
+                })
+                .then(function (result) {
 
-                if (retry) {
-                    $state.reload();
-                }
-            });
+                    if (true === result) {
+                        $state.reload();
+                    }
+                });
 
             vm.loading = false;
             $timeout.cancel(loadingTimeout);
@@ -310,7 +299,7 @@
         function onPlaylistItem (event) {
 
             var playlistItem = playerPlaylist[event.index],
-                stateParams  = $ionicHistory.currentView().stateParams,
+                stateParams  = $state.params,
                 newItem;
 
             if (!angular.isNumber(event.index) || !playlistItem) {
@@ -357,13 +346,19 @@
          */
         function onFirstFrame () {
 
-            var levelsLength = playerLevels.length;
+            var levelsLength;
 
             if (vm.loading) {
                 vm.loading = false;
             }
 
             started = true;
+
+            if (!playerLevels) {
+                return;
+            }
+
+            levelsLength = playerLevels.length;
 
             // hd turned off
             // set quality to last lowest level
@@ -492,7 +487,7 @@
         function cardClickHandler (newItem, clickedOnPlay) {
 
             var playlistIndex,
-                stateParams = $ionicHistory.currentView().stateParams;
+                stateParams = $state.params;
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
@@ -537,7 +532,9 @@
                 });
 
             update();
-            $ionicScrollDelegate.scrollTop(true);
+            window.TweenLite.to(document.body, 0.3, {
+                scrollTop: 0
+            });
         }
 
         /**

@@ -37,8 +37,8 @@
      * The `jwCardPoster` directive is responsible for showing the item poster or thumbnail.
      */
 
-    jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'utils'];
-    function jwCardPoster ($http, $q, dataStore, utils) {
+    jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'platform', 'utils'];
+    function jwCardPoster ($http, $q, dataStore, platform, utils) {
 
         return {
             link:    link,
@@ -69,12 +69,14 @@
 
                 itemPosterUrl = generatePosterUrl();
 
-                // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
-                thumbnailsTrack = jwCard.item.tracks.find(function (track) {
-                    return track.kind === 'thumbnails' || track.kind === 'thumbnail';
-                });
+                if (angular.isArray(jwCard.item.tracks)) {
+                    // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
+                    thumbnailsTrack = jwCard.item.tracks.find(function (track) {
+                        return track.kind === 'thumbnails' || track.kind === 'thumbnail';
+                    });
+                }
 
-                if (jwCard.featured) {
+                if (jwCard.featured && !platform.isTouch) {
 
                     // bind to jwCard element
                     element.parent()
@@ -223,7 +225,7 @@
 
                 var current = findElement('.jw-card-poster.is-active');
 
-                current.parent()[0].insertBefore(posterElement[0], current[0]);
+                element.prepend(posterElement);
                 current.removeClass('is-active');
 
                 setTimeout(function () {

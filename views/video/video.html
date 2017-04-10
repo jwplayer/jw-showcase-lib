@@ -1,38 +1,35 @@
-<ion-view class="jw-video-view" cache-view="false" can-swipe-back="false" jw-lazy-load>
-  <ion-content class="has-jw-header">
-    <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
-      <div class="jw-container">
-        <div class="jw-video-container-aspect">
-          <div class="jw-video-loading">
-            <div class="jw-rotate-animation">
-              <i class="jwy-icon-buffer"></i>
-            </div>
+<div class="has-jw-header">
+  <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
+    <div class="jw-container">
+      <div class="jw-video-container-aspect">
+        <div class="jw-video-loading">
+          <div class="jw-rotate-animation">
+            <i class="jwy-icon-buffer"></i>
           </div>
         </div>
-        <div class="jw-video-container-player">
-          <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
-              on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
-              on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
-              on-ad-impression="vm.onAdImpression"></jw-player>
-        </div>
+      </div>
+      <div class="jw-video-container-player">
+        <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
+            on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
+            on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
+            on-ad-impression="vm.onAdImpression"></jw-player>
       </div>
     </div>
+  </div>
 
-    <jw-toolbar-video item="vm.item"></jw-toolbar-video>
+  <jw-toolbar-video item="vm.item"></jw-toolbar-video>
 
-    <div class="jw-row jw-row-inverse">
-      <jw-video-details item="vm.item"></jw-video-details>
-    </div>
+  <div class="jw-row jw-row-inverse">
+    <jw-video-details item="vm.item"></jw-video-details>
+  </div>
 
-    <div class="jw-row" ng-if="vm.feed">
-      <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate"
-          class="jw-card-slider-flag-now-playing jw-lazy-load" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
-          on-card-click="vm.cardClickHandler" title="More like this"></jw-card-slider>
-    </div>
-    <div class="jw-row" ng-if="vm.recommendationsFeed">
-      <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos" class="jw-lazy-load"
-          cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
-    </div>
-    <jw-footer></jw-footer>
-  </ion-content>
-</ion-view>
+  <div class="jw-row" ng-if="vm.feed">
+    <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate"
+        class="jw-card-slider-flag-now-playing jw-lazy-load" cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}"
+        on-card-click="vm.cardClickHandler" title="More like this"></jw-card-slider>
+  </div>
+  <div class="jw-row" ng-if="vm.recommendationsFeed">
+    <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos" class="jw-lazy-load"
+        cols="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" on-card-click="vm.cardClickHandler"></jw-card-slider>
+  </div>
+</div>

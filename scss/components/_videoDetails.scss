@@ -34,10 +34,6 @@
         line-height: rem(26px);
     }
 
-    .jw-video-description.inactive {
-        padding-bottom: 15px;
-    }
-
     //
     //.jw-video-feed-title,
     //.jw-video-feed-title:first-child {
@@ -53,18 +49,13 @@
 @include mobile-only () {
 
     .jw-video-details {
-        padding: 15px 20px;
-
-        .jw-video-duration {
-            display: block;
-            margin-top: 10px;
-        }
+        padding: 20px;
     }
 }
 
 @include tablet-only () {
 
     .jw-video-details {
-        padding: 15px 90px;
+        padding: 20px 90px;
     }
 }

@@ -46,19 +46,17 @@
      * </ion-view>
      */
 
-    jwLazyLoad.$inject = ['utils'];
-    function jwLazyLoad (utils) {
+    jwLazyLoad.$inject = ['$timeout', 'utils'];
+    function jwLazyLoad ($timeout, utils) {
 
         return {
             link:    link,
-            scope:   false,
-            require: '$ionicScroll'
+            scope:   false
         };
 
-        function link (scope, element, attrs, $ionicScroll) {
+        function link (scope, element, attrs) {
 
-            var contentView     = element[0].querySelector('.ionic-scroll'),
-                updateDebounced = utils.debounce(update, 50);
+            var updateDebounced = utils.debounce(update, 100);
 
             activate();
 
@@ -69,10 +67,11 @@
              */
             function activate () {
 
-                $ionicScroll.$element.on('scroll scroll-resize', updateDebounced);
+                window.addEventListener('scroll', updateDebounced, window.supportsPassive ? {passive: true} : false);
                 scope.$on('$destroy', destroy);
+                scope.$on('$viewContentUpdated', updateDebounced);
 
-                updateDebounced();
+                $timeout(updateDebounced, 500);
             }
 
             /**
@@ -80,7 +79,7 @@
              */
             function destroy () {
 
-                $ionicScroll.$element.off('scroll scroll-resize', updateDebounced);
+                window.removeEventListener('scroll', updateDebounced);
             }
 
             /**
@@ -97,8 +96,8 @@
                     return;
                 }
 
-                scrollPosition = $ionicScroll.getScrollPosition().top;
-                scrollOffset = contentView.offsetHeight + scrollPosition + LAZY_LOAD_OFFSET;
+                scrollPosition = document.body.scrollTop;
+                scrollOffset = document.body.offsetHeight + scrollPosition + LAZY_LOAD_OFFSET;
 
                 angular.forEach(cardElements, function (element) {
 

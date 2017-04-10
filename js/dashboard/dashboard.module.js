@@ -34,7 +34,9 @@
             .state('root.dashboard', {
                 url:         '/',
                 controller:  'DashboardController as vm',
-                templateUrl: 'views/dashboard/dashboard.html'
+                templateUrl: 'views/dashboard/dashboard.html',
+                scrollTop:   'last',
+                persistent:  true
             });
 
         seoProvider

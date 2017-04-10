@@ -26,10 +26,11 @@
      *
      * @requires $timeout
      * @requires $location
+     * @requires popupInstance
      * @requires jwShowcase.core.utils
      */
-    ShareController.$inject = ['$timeout', '$location', 'utils', 'item'];
-    function ShareController ($timeout, $location, utils, item) {
+    ShareController.$inject = ['$timeout', '$location', 'popupInstance', 'utils', 'item'];
+    function ShareController ($timeout, $location, popupInstance, utils, item) {
 
         var vm = this;
 

@@ -53,8 +53,8 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils', 'config'];
-    function cardSliderDirective ($compile, $templateCache, utils, config) {
+    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
+    function cardSliderDirective ($compile, $templateCache, utils) {
 
         return {
             scope:            {
@@ -89,7 +89,6 @@
                 itemsVisible           = 0,
                 itemsMargin            = 1,
                 options                = {
-                    enableFeaturedText:    config.enableFeaturedText,
                     sliderBackgroundColor: null
                 },
                 animation;
@@ -174,10 +173,6 @@
             function feedUpdateHandler (newValue, oldValue) {
 
                 setCustomOptions();
-
-                if (scope.vm.featured) {
-                    element.toggleClass('jw-card-slider-flag-hide-text', !options.enableFeaturedText);
-                }
 
                 // set slider background color
                 element.css('background-color', options.sliderBackgroundColor || '');
@@ -369,7 +364,7 @@
                     slide = findExistingSlide(item) || createSlide(item);
 
                     addClassNamesToSlide(slide);
-                    addSliderToSliderList(slide);
+                    addSlideToSliderList(slide);
 
                     prevNode = slide;
                     itemIndex++;
@@ -396,7 +391,7 @@
                     return slide;
                 }
 
-                function addSliderToSliderList () {
+                function addSlideToSliderList () {
 
                     if (prevNode) {
                         return prevNode.after(slide);
@@ -605,10 +600,12 @@
             /**
              * Handle touchstart event
              * @param {Event} event
+             * @todo detect isAndroid4
              */
             function onTouchStart (event) {
 
-                var coords         = getCoords(event),
+                var isAndroid4     = false,
+                    coords         = getCoords(event),
                     touchContainer = findElement('.jw-card-slider-align')[0];
 
                 touchContainer.addEventListener('touchmove', onTouchMove);
@@ -618,7 +615,7 @@
                 startCoords = coords;
                 element.addClass('is-sliding');
 
-                if (ionic.Platform.isAndroid() && ionic.Platform.version() < 5) {
+                if (true === isAndroid4) {
                     event.preventDefault();
                 }
             }

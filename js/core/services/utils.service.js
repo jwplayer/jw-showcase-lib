@@ -48,6 +48,7 @@
         this.replaceImageSize       = replaceImageSize;
         this.copyToClipboard        = copyToClipboard;
         this.slugify                = slugify;
+        this.secondsToISO8601       = secondsToISO8601;
 
         ////////////////////////
 
@@ -289,6 +290,43 @@
                 .replace(/\-\-+/g, '-')
                 .replace(/^-+/, '')
                 .replace(/-+$/, '');
+        }
+
+        /**
+         * Seconds to ISO8601 duration or date string
+         * @param {Number} input
+         * @param {Boolean} [timeOnly=false]
+         * @returns {string}
+         */
+        function secondsToISO8601 (input, timeOnly) {
+
+            if (!input) {
+                return '';
+            }
+
+            var result  = 'PT',
+                date    = new Date(input ? input * 1000 : 0),
+                hours   = date.getUTCHours(),
+                minutes = date.getUTCMinutes(),
+                seconds = date.getUTCSeconds();
+
+            if (!timeOnly) {
+                return date.toISOString();
+            }
+
+            if (hours > 0) {
+                result += hours + 'H';
+            }
+
+            if (minutes > 0) {
+                result += minutes + 'M';
+            }
+
+            if (seconds > 0) {
+                result += seconds + 'S';
+            }
+
+            return result;
         }
     }
 

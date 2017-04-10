@@ -49,17 +49,29 @@
                         squash: true
                     }
                 },
-                cache:       false
+                scrollTop:   0
             });
 
         seoProvider
-            .state('root.video', ['$state', 'config', 'item', function ($state, config, item) {
+            .state('root.video', ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
+
+                var canonical = $state.href('root.video', {slug: item.$slug}, {absolute: true});
 
                 return {
                     title:       item.title + ' - ' + config.siteName,
                     description: item.description,
                     image:       item.image,
-                    canonical:   $state.href('root.video', {slug: item.$slug}, {absolute: true})
+                    canonical:   canonical,
+                    schema:      {
+                        '@context':   'http://schema.org/',
+                        '@type':      'VideoObject',
+                        '@id':        canonical,
+                        name:         item.title,
+                        description:  item.description,
+                        duration:     utils.secondsToISO8601(item.duration, true),
+                        thumbnailUrl: item.image,
+                        uploadDate:   utils.secondsToISO8601(item.pubdate)
+                    }
                 };
             }]);
 

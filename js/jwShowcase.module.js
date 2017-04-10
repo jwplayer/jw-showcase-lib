@@ -16,8 +16,6 @@
 
 (function () {
 
-    var isFirefox = /firefox/i.test(ionic.Platform.ua);
-
     /**
      * @ngdoc overview
      * @name jwShowcase
@@ -32,14 +30,13 @@
             'jwShowcase.video'
         ])
         .value('config', {
+            contentService:         'https://content.jwplatform.com',
             enableContinueWatching: true,
             enableCookieNotice:     false,
             enableFeaturedText:     true,
             enablePlayerAutoFocus:  true,
             enableHeader:           true
-        })
-        .decorator('$controller', $controllerDecorator)
-        .constant('LIB_VERSION', '3.1.0');
+        });
 
     /**
      * @name jwShowcase.config
@@ -61,27 +58,5 @@
      * @property {string}      featuredPlaylist
      * @property {String[]}    playlist
      */
-
-    // make search depth defaulting to 20 instead of 10
-    ionic.DomUtil.$getParentOrSelfWithClass = ionic.DomUtil.getParentOrSelfWithClass;
-    ionic.DomUtil.getParentOrSelfWithClass = function (elem, className, depth) {
-        return ionic.DomUtil.$getParentOrSelfWithClass(elem, className, depth || 20);
-    };
-
-    /**
-     * Decorate $controller to change the `wheelDampen` in the $ionicScroll controller if the browser is Firefox.
-     */
-    $controllerDecorator.$inject = ['$delegate'];
-    function $controllerDecorator ($delegate) {
-
-        return function (constructor, locals) {
-
-            if (true === isFirefox && '$ionicScroll' === constructor) {
-                locals.scrollViewOptions.wheelDampen = 0.08;
-            }
-
-            return $delegate.apply(null, arguments);
-        };
-    }
 
 }());

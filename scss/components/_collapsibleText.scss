@@ -13,7 +13,8 @@
 
     &.inactive {
         .jw-collapsible-text-toggle {
-            display: none;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
@@ -30,9 +31,10 @@
 
         .jw-button {
             @include transition(transform 0.3s ease 0s);
+            padding: 3px 10px;
 
             .jwy-icon {
-                font-size: rem(24px);
+                font-size: rem(18px);
             }
         }
     }

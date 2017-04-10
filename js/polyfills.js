@@ -340,4 +340,17 @@ if ("document" in self) {
         window.localStorageSupport = false;
     }
 }());
+
+
+(function () {
+    window.supportsPassive = false;
+    try {
+        var opts = Object.defineProperty({}, 'passive', {
+            get: function() {
+                window.supportsPassive = true;
+            }
+        });
+        window.addEventListener("test", null, opts);
+    } catch (e) {}
+}());
 /* jshint ignore:end */

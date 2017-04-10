@@ -12,7 +12,8 @@
     &-subheader {
         position: fixed;
         top: $header-height;
-        width: 100vw;
+        width: 100%;
+        z-index: $toolbar-z-index;
     }
 
     &-video {
@@ -88,10 +89,6 @@
     }
 }
 
-.platform-ios.platform-cordova .jw-toolbar.jw-toolbar-subheader {
-    top: $header-height + $ios-statusbar-height;
-}
-
 @include mobile-only () {
 
     .jw-toolbar {
@@ -115,10 +112,6 @@
         .jw-toolbar-title {
             font-size: rem(16px);
         }
-    }
-
-    .platform-ios.platform-cordova .jw-toolbar.jw-toolbar-subheader {
-        top: $header-height-mobile + $ios-statusbar-height;
     }
 }
 
