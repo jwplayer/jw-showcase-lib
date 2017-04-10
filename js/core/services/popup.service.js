@@ -20,6 +20,11 @@
         .module('jwShowcase.core')
         .service('popup', popup);
 
+    /**
+     * @ngdoc service
+     * @name jwShowcase.core.popup
+     */
+
     popup.$inject = ['$rootScope', '$q', '$controller', '$compile', '$templateCache'];
     function popup ($rootScope, $q, $controller, $compile, $templateCache) {
 
