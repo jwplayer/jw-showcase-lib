@@ -345,13 +345,19 @@
          */
         function onFirstFrame () {
 
-            var levelsLength = playerLevels.length;
+            var levelsLength;
 
             if (vm.loading) {
                 vm.loading = false;
             }
 
             started = true;
+
+            if (!playerLevels) {
+                return;
+            }
+
+            levelsLength = playerLevels.length;
 
             // hd turned off
             // set quality to last lowest level
