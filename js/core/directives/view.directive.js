@@ -279,7 +279,7 @@
                                 }
                                 cached                          = {
                                     element:   clone,
-                                    params:    angular.copy({}, $state.params),
+                                    params:    angular.extend({}, $state.params),
                                     scope:     newScope
                                 };
                                 cached.scope.$persistent        = true;
