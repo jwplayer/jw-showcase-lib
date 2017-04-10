@@ -36,8 +36,7 @@
             enableFeaturedText:     true,
             enablePlayerAutoFocus:  true,
             enableHeader:           true
-        })
-        .constant('LIB_VERSION', '3.1.0');
+        });
 
     /**
      * @name jwShowcase.config
