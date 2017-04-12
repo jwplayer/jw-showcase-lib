@@ -301,11 +301,11 @@
     .jw-card-description {
         display: block;
         display: -webkit-box;
-        max-height: 6 * 18px;
+        max-height: 3 * 18px;
         padding: 0 50px;
         line-height: 18px;
 
-        -webkit-line-clamp: 6;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
     }
 
