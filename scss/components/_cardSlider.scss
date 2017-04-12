@@ -176,15 +176,17 @@ $featured-slider-max-width: 900px;
 
     .jw-card-slider-indicator-dot {
         display: inline-block;
-        width: 10px;
-        height: 10px;
-        margin: 0 4px;
+        width: 9px;
+        height: 9px;
+        margin: 0 3px;
 
         border-radius: 50%;
-        background-color: $gray;
+        background-color: $white;
+        opacity: 0.8;
 
         &.is-active {
             background-color: $primary-color;
+            opacity: 1;
         }
     }
 }
@@ -242,7 +244,7 @@ $featured-slider-max-width: 900px;
 
     .jw-card-info {
         //@include single-transition(opacity, 0.3s, ease, 0s);
-        padding-bottom: 45px;
+        padding-bottom: 47px;
     }
 }
 
@@ -306,21 +308,6 @@ $featured-slider-max-width: 900px;
             .jw-card-slider-align {
                 padding: 0 125px 20px 15px;
             }
-        }
-    }
-}
-
-@include tablet-only () {
-
-    .jw-card-slider.jw-card-slider-flag-featured {
-
-        .jw-card-slider-indicator {
-            padding: 0 13px 16px 0;
-        }
-
-        .jw-card-slider-indicator-dot {
-            width: 8px;
-            height: 8px;
         }
     }
 }
