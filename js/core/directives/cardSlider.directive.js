@@ -287,7 +287,7 @@
             /**
              * Render custom slides
              * @param {string} templateUrl
-             * @parma {number} count
+             * @param {number} count
              */
             function renderCustomSlides (templateUrl, count) {
 
@@ -313,7 +313,7 @@
              */
             function renderLoadingSlides () {
 
-                renderCustomSlides('views/core/cardSliderDummySlide.html', 6);
+                renderCustomSlides('views/core/cardSliderLoadingSlide.html', 6);
 
                 element.addClass('jw-card-slider-flag-loading');
             }
