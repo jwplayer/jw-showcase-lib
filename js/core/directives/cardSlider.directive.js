@@ -75,7 +75,7 @@
 
         function link (scope, element) {
 
-            var sliderList             = findElements('.jw-card-slider-list'),
+            var sliderList             = findElement('.jw-card-slider-list'),
                 resizeHandlerDebounced = utils.debounce(resizeHandler, 100),
                 slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
                 index                  = 0,
@@ -337,7 +337,7 @@
 
                 var itemIndex     = index,
                     totalCols     = itemsVisible + itemsMargin,
-                    prevNode      = null,
+                    nextSliderList = angular.element('<div></div>'),
                     nextSliderMap = [],
                     item, slide;
 
@@ -364,13 +364,17 @@
                     slide = findExistingSlide(item) || createSlide(item);
 
                     addClassNamesToSlide(slide);
-                    addSlideToSliderList(slide);
+                    nextSliderList.append(slide);
 
-                    prevNode = slide;
                     itemIndex++;
                 }
 
                 destroySlides();
+
+                while(sliderList[0].firstChild) {
+                    sliderList[0].removeChild(sliderList[0].firstChild);
+                }
+                sliderList.append(nextSliderList.children());
 
                 sliderMap = nextSliderMap;
 
@@ -389,15 +393,6 @@
                     });
 
                     return slide;
-                }
-
-                function addSlideToSliderList () {
-
-                    if (prevNode) {
-                        return prevNode.after(slide);
-                    }
-
-                    sliderList.prepend(slide);
                 }
 
                 function addClassNamesToSlide () {
