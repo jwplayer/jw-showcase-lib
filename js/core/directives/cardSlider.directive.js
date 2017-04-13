@@ -337,7 +337,7 @@
 
                 var itemIndex     = index,
                     totalCols     = itemsVisible + itemsMargin,
-                    nextSliderList = angular.element('<div></div>'),
+                    nextSliderList = [],
                     nextSliderMap = [],
                     item, slide;
 
@@ -364,17 +364,16 @@
                     slide = findExistingSlide(item) || createSlide(item);
 
                     addClassNamesToSlide(slide);
-                    nextSliderList.append(slide);
+                    nextSliderList.push(slide);
 
                     itemIndex++;
                 }
 
                 destroySlides();
 
-                while(sliderList[0].firstChild) {
-                    sliderList[0].removeChild(sliderList[0].firstChild);
+                for(var i = 0, len = nextSliderList.length; i < len; i++) {
+                    sliderList.append(nextSliderList[i]);
                 }
-                sliderList.append(nextSliderList.children());
 
                 sliderMap = nextSliderMap;
 
@@ -423,11 +422,17 @@
 
                 function destroySlides () {
 
+                    // remove cards in slider
+                    var list = sliderList[0];
+                    while(list.firstChild) {
+                        list.removeChild(list.firstChild);
+                    }
+
+                    // destroy cards $scope from cache
                     sliderMap.forEach(function (item) {
                         if (item.el.scope()) {
                             item.el.scope().$destroy();
                         }
-                        item.el.remove();
                     });
                 }
             }
