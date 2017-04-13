@@ -154,41 +154,6 @@ $featured-slider-max-width: 900px;
             font-size: 2em;
         }
     }
-
-    //
-    // jwCardSliderIndicator
-    // --------------------------------
-
-    .jw-card-slider-indicator {
-        @include transform(translateX(-50%));
-
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        margin: 0;
-        padding: 20px;
-        list-style: none;
-    }
-
-    //
-    // jwCardSliderIndicatorDot
-    // --------------------------------
-
-    .jw-card-slider-indicator-dot {
-        display: inline-block;
-        width: 9px;
-        height: 9px;
-        margin: 0 3px;
-
-        border-radius: 50%;
-        background-color: $white;
-        opacity: 0.8;
-
-        &.is-active {
-            background-color: $primary-color;
-            opacity: 1;
-        }
-    }
 }
 
 //
@@ -243,8 +208,7 @@ $featured-slider-max-width: 900px;
     }
 
     .jw-card-info {
-        //@include single-transition(opacity, 0.3s, ease, 0s);
-        padding-bottom: 47px;
+        padding-bottom: 25px;
     }
 }
 
