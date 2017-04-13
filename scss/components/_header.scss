@@ -9,9 +9,7 @@
     background-color: $header-bg-color;
 
     .jw-flag-loading-config & {
-        .jw-header-logo {
-            display: none;
-        }
+        display: none !important;
     }
 
     //

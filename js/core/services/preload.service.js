@@ -73,7 +73,9 @@
                     document.body.classList.add('jw-flag-no-header');
                 }
 
-                document.body.classList.remove('jw-flag-loading-config');
+                setTimeout(function () {
+                    document.body.classList.remove('jw-flag-loading-config');
+                });
 
                 api.getPlayer(config.player)
                     .then(handlePreloadSuccess, handlePreloadError);
