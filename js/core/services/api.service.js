@@ -238,8 +238,17 @@
          */
         function fixUrl (url) {
 
-            if (angular.isString(url) && 0 === url.indexOf('//')) {
-                return 'https://' + url.substr(2);
+            var protocol = /^https/.test(window.location.href) ? 'https' : 'http';
+
+            if (angular.isString(url)) {
+
+                // url starts with //
+                if (0 === url.indexOf('//')) {
+                    return protocol + '://' + url.substr(2);
+                }
+
+                // replace http(s) with current window protocol
+                return url.replace(/^https?/, protocol);
             }
 
             return url;

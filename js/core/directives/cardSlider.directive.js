@@ -75,7 +75,7 @@
 
         function link (scope, element) {
 
-            var sliderList             = findElements('.jw-card-slider-list'),
+            var sliderList             = findElement('.jw-card-slider-list'),
                 resizeHandlerDebounced = utils.debounce(resizeHandler, 100),
                 slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
                 index                  = 0,
@@ -335,42 +335,32 @@
              */
             function renderSlides () {
 
-                var itemIndex     = index,
-                    totalCols     = itemsVisible + itemsMargin,
-                    prevNode      = null,
-                    nextSliderMap = [],
-                    item, slide;
+                var nextSliderMap = [],
+                    nextSliderList;
 
-                if (leftSlidesVisible) {
-                    itemIndex -= itemsMargin;
-                    totalCols += itemsMargin;
-                }
+                // create visible slides first so these will be used from the cache with priority. E.g. prevents render
+                // of visible cards.
+                nextSliderList = createSlidesForRange(index, itemsVisible);
 
-                if (itemIndex < 0) {
-                    itemIndex += totalItems;
-                }
+                // only if the slider can slide, render the left and right slides
+                if (sliderCanSlide) {
 
-                for (var slideIndex = 0; slideIndex < totalCols; slideIndex++) {
-
-                    if (itemIndex > totalItems - 1) {
-                        if (!sliderCanSlide) {
-                            break;
-                        }
-
-                        itemIndex -= totalItems;
+                    // create slides left from visible slides if user has slided
+                    if (leftSlidesVisible) {
+                        nextSliderList = createSlidesForRange(index - itemsMargin, itemsMargin)
+                            .concat(nextSliderList);
                     }
 
-                    item  = scope.vm.feed.playlist[itemIndex];
-                    slide = findExistingSlide(item) || createSlide(item);
-
-                    addClassNamesToSlide(slide);
-                    addSlideToSliderList(slide);
-
-                    prevNode = slide;
-                    itemIndex++;
+                    // create slides right from visible slides
+                    nextSliderList = nextSliderList
+                        .concat(createSlidesForRange(index + itemsVisible, itemsMargin));
                 }
 
                 destroySlides();
+
+                for(var i = 0, len = nextSliderList.length; i < len; i++) {
+                    sliderList.append(nextSliderList[i]);
+                }
 
                 sliderMap = nextSliderMap;
 
@@ -380,7 +370,39 @@
 
                 ///////////
 
-                function createSlide () {
+                function createSlidesForRange (from, count) {
+
+                    var itemIndex = from,
+                        list      = [],
+                        item, slide;
+
+                    if (itemIndex < 0) {
+                        itemIndex += totalItems;
+                    }
+
+                    for (var slideIndex = 0; slideIndex < count; slideIndex++) {
+
+                        if (itemIndex > totalItems - 1) {
+                            if (!sliderCanSlide) {
+                                break;
+                            }
+
+                            itemIndex = 0;
+                        }
+
+                        item  = scope.vm.feed.playlist[itemIndex];
+                        slide = findExistingSlide(item) || createSlide(item);
+
+                        addClassNamesToSlide(slide, itemIndex);
+                        list.push(slide);
+
+                        itemIndex++;
+                    }
+
+                    return list;
+                }
+
+                function createSlide (item) {
 
                     var slide = compileSlide(item);
                     nextSliderMap.push({
@@ -391,16 +413,7 @@
                     return slide;
                 }
 
-                function addSlideToSliderList () {
-
-                    if (prevNode) {
-                        return prevNode.after(slide);
-                    }
-
-                    sliderList.prepend(slide);
-                }
-
-                function addClassNamesToSlide () {
+                function addClassNamesToSlide (slide, itemIndex) {
 
                     slide.removeClass('first last');
 
@@ -415,7 +428,9 @@
 
                 function findExistingSlide (item) {
 
-                    var mapIndex = sliderMap.length;
+                    var mapIndex = sliderMap.length,
+                        slide;
+
                     while (mapIndex--) {
                         if (sliderMap[mapIndex].key === item.$key) {
                             slide = sliderMap[mapIndex].el;
@@ -428,11 +443,17 @@
 
                 function destroySlides () {
 
+                    // remove cards in slider
+                    var list = sliderList[0];
+                    while(list.firstChild) {
+                        list.removeChild(list.firstChild);
+                    }
+
+                    // destroy cards $scope from cache
                     sliderMap.forEach(function (item) {
                         if (item.el.scope()) {
                             item.el.scope().$destroy();
                         }
-                        item.el.remove();
                     });
                 }
             }
