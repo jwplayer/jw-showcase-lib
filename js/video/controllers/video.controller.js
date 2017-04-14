@@ -28,22 +28,24 @@
      * @requires $state
      * @requires $timeout
      * @requires jwShowcase.core.apiConsumer
+     * @requires jwShowcase.core.FeedModel
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.utils
-     * @requires jwShowcase.core.share
      * @requires jwShowcase.core.player
+     * @requires jwShowcase.core.platform
+     * @requires jwShowcase.core.offline
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout',
-        'apiConsumer', 'FeedModel', 'dataStore', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player',
-        'offline', 'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, apiConsumer,
-                              FeedModel, dataStore, watchProgress, watchlist, seo, userSettings, utils, player, offline,
-                              config, feed, item) {
+    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'offline', 'config', 'feed',
+        'item'];
+    function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
+                              watchlist, seo, userSettings, utils, player, platform, offline, config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -106,7 +108,7 @@
             }
 
             if (!!window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = 1; //ionic.Platform.isAndroid() ? 1 : 2;
+                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
             }
 
             $scope.$watch(function () {
@@ -197,23 +199,27 @@
         function generatePlaylist (feed, item) {
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = false, //ionic.Platform.isAndroid() && ionic.Platform.version() < 5,
-                playlist, sources;
+                isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
+                playlistCopy  = angular.copy(feed.playlist),
+                playlistItem, sources;
 
-            playlist = angular.copy(feed.playlist)
+            playlistCopy = playlistCopy
                 .filter(function (item) {
-                    if (navigator.onLine) {
-                        return true;
-                    }
-
-                    return offline.hasDownloadedItem(item);
+                    return navigator || offline.hasDownloadedItem(item);
                 })
                 .slice(playlistIndex)
-                .concat(feed.playlist.slice(0, playlistIndex));
+                .concat(playlistCopy.slice(0, playlistIndex));
 
-            return playlist.map(function (current) {
+            return playlistCopy.map(function (current) {
+
+                // make a copy of the playlist item, we don't want to override the original
+                playlistItem = angular.extend({}, current);
 
                 sources = current.sources.filter(function (source) {
+
+                    if (!navigator.onLine) {
+                        return source.type === 'video/mp4' && source.width <= 720;
+                    }
 
                     // filter out HLS streams for Android 4
                     if (isAndroid4 && 'application/vnd.apple.mpegurl' === source.type) {
@@ -223,20 +229,11 @@
                     return 'application/dash+xml' !== source.type;
                 });
 
-                if (!navigator.onLine) {
-                    sources = current.sources.find(function (cur) {
-                        return cur.type === 'video/mp4' && cur.width <= 720;
-                    });
-                }
-
-                return {
-                    mediaid:     current.mediaid,
-                    title:       current.title,
-                    description: current.description,
+                return angular.extend(playlistItem, {
                     image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     angular.copy(sources),
-                    tracks:      angular.copy(current.tracks)
-                };
+                    sources:     sources,
+                    tracks:      current.tracks
+                });
             });
         }
 
@@ -294,33 +291,23 @@
 
         /**
          * Handle setup error event
-         *
-         * @param {Object} event
          */
-        function onSetupError (event) {
+        function onSetupError () {
 
-            // $ionicPopup.show({
-            //     cssClass: 'jw-dialog',
-            //     template: '<strong>Oops! Something went wrong. Try again?</strong>',
-            //     buttons:  [{
-            //         text:  'Yes',
-            //         type:  'jw-button jw-button-primary',
-            //         onTap: function () {
-            //             return true;
-            //         }
-            //     }, {
-            //         text:  'No',
-            //         type:  'jw-button jw-button-light',
-            //         onTap: function () {
-            //             return false;
-            //         }
-            //     }]
-            // }).then(function (retry) {
-            //
-            //     if (retry) {
-            //         $state.reload();
-            //     }
-            // });
+            popup
+                .show({
+                    controller:  'ConfirmController as vm',
+                    templateUrl: 'views/core/popups/confirm.html',
+                    resolve:     {
+                        message: 'Something went wrong while loading the video, try again?'
+                    }
+                })
+                .then(function (result) {
+
+                    if (true === result) {
+                        $state.reload();
+                    }
+                });
 
             vm.loading = false;
             $timeout.cancel(loadingTimeout);
@@ -381,13 +368,19 @@
          */
         function onFirstFrame () {
 
-            var levelsLength = playerLevels.length;
+            var levelsLength;
 
             if (vm.loading) {
                 vm.loading = false;
             }
 
             started = true;
+
+            if (!playerLevels) {
+                return;
+            }
+
+            levelsLength = playerLevels.length;
 
             // hd turned off
             // set quality to last lowest level
@@ -561,8 +554,9 @@
                 });
 
             update();
-            // $ionicScrollDelegate.scrollTop(true);
-            document.body.scrollTop = 0;
+            window.TweenLite.to(document.body, 0.3, {
+                scrollTop: 0
+            });
         }
 
         /**

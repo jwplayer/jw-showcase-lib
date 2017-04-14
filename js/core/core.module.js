@@ -28,8 +28,13 @@
         .run(run)
         .config(config);
 
-    config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', 'seoProvider', 'historyProvider'];
-    function config ($stateProvider, $urlMatcherFactoryProvider, seoProvider, historyProvider) {
+    config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', '$touchProvider', 'seoProvider',
+        'historyProvider'];
+    function config ($stateProvider, $urlMatcherFactoryProvider, $touchProvider, seoProvider, historyProvider) {
+
+        if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
+            $touchProvider.ngClickOverrideEnabled(true);
+        }
 
         $urlMatcherFactoryProvider
             .strictMode(false);
@@ -56,13 +61,11 @@
             }]);
     }
 
-    run.$inject = ['history'];
-    function run (history) {
-        history.attach();
-    }
+    run.$inject = ['history', 'platform'];
+    function run (history, platform) {
 
-    if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
-        angular.element(document.body).addClass('platform-touch');
+        history.attach();
+        platform.prepare();
     }
 
 }());

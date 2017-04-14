@@ -75,7 +75,7 @@
 
         function link (scope, element) {
 
-            var sliderList             = findElements('.jw-card-slider-list'),
+            var sliderList             = findElement('.jw-card-slider-list'),
                 resizeHandlerDebounced = utils.debounce(resizeHandler, 100),
                 slideTemplate          = $templateCache.get('views/core/cardSliderSlide.html'),
                 index                  = 0,
@@ -113,9 +113,6 @@
 
                 if (!scope.vm.featured) {
                     scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
-                }
-                else {
-                    findElement('.jw-card-slider-indicator').removeClass('ng-hide');
                 }
 
                 scope.$on('$destroy', destroyHandler);
@@ -287,7 +284,7 @@
             /**
              * Render custom slides
              * @param {string} templateUrl
-             * @parma {number} count
+             * @param {number} count
              */
             function renderCustomSlides (templateUrl, count) {
 
@@ -313,7 +310,7 @@
              */
             function renderLoadingSlides () {
 
-                renderCustomSlides('views/core/cardSliderDummySlide.html', 6);
+                renderCustomSlides('views/core/cardSliderLoadingSlide.html', 6);
 
                 element.addClass('jw-card-slider-flag-loading');
             }
@@ -335,52 +332,73 @@
              */
             function renderSlides () {
 
-                var itemIndex     = index,
-                    totalCols     = itemsVisible + itemsMargin,
-                    prevNode      = null,
-                    nextSliderMap = [],
-                    item, slide;
+                var nextSliderMap = [],
+                    nextSliderList;
 
-                if (leftSlidesVisible) {
-                    itemIndex -= itemsMargin;
-                    totalCols += itemsMargin;
-                }
+                // create visible slides first so these will be used from the cache with priority. E.g. prevents render
+                // of visible cards.
+                nextSliderList = createSlidesForRange(index, itemsVisible);
 
-                if (itemIndex < 0) {
-                    itemIndex += totalItems;
-                }
+                // only if the slider can slide, render the left and right slides
+                if (sliderCanSlide) {
 
-                for (var slideIndex = 0; slideIndex < totalCols; slideIndex++) {
-
-                    if (itemIndex > totalItems - 1) {
-                        if (!sliderCanSlide) {
-                            break;
-                        }
-
-                        itemIndex -= totalItems;
+                    // create slides left from visible slides if user has slided
+                    if (leftSlidesVisible) {
+                        nextSliderList = createSlidesForRange(index - itemsMargin, itemsMargin)
+                            .concat(nextSliderList);
                     }
 
-                    item  = scope.vm.feed.playlist[itemIndex];
-                    slide = findExistingSlide(item) || createSlide(item);
-
-                    addClassNamesToSlide(slide);
-                    addSliderToSliderList(slide);
-
-                    prevNode = slide;
-                    itemIndex++;
+                    // create slides right from visible slides
+                    nextSliderList = nextSliderList
+                        .concat(createSlidesForRange(index + itemsVisible, itemsMargin));
                 }
 
                 destroySlides();
 
+                for(var i = 0, len = nextSliderList.length; i < len; i++) {
+                    sliderList.append(nextSliderList[i]);
+                }
+
                 sliderMap = nextSliderMap;
 
-                updateIndicator();
                 updateVisibleSlides();
                 findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !leftSlidesVisible);
 
                 ///////////
 
-                function createSlide () {
+                function createSlidesForRange (from, count) {
+
+                    var itemIndex = from,
+                        list      = [],
+                        item, slide;
+
+                    if (itemIndex < 0) {
+                        itemIndex += totalItems;
+                    }
+
+                    for (var slideIndex = 0; slideIndex < count; slideIndex++) {
+
+                        if (itemIndex > totalItems - 1) {
+                            if (!sliderCanSlide) {
+                                break;
+                            }
+
+                            itemIndex = 0;
+                        }
+
+                        item  = scope.vm.feed.playlist[itemIndex];
+                        slide = findExistingSlide(item) || createSlide(item);
+
+                        addClassNamesToSlide(slide, itemIndex);
+                        list.push(slide);
+
+                        itemIndex++;
+                    }
+
+                    return list;
+                }
+
+                function createSlide (item) {
 
                     var slide = compileSlide(item);
                     nextSliderMap.push({
@@ -391,16 +409,7 @@
                     return slide;
                 }
 
-                function addSliderToSliderList () {
-
-                    if (prevNode) {
-                        return prevNode.after(slide);
-                    }
-
-                    sliderList.prepend(slide);
-                }
-
-                function addClassNamesToSlide () {
+                function addClassNamesToSlide (slide, itemIndex) {
 
                     slide.removeClass('first last');
 
@@ -415,7 +424,9 @@
 
                 function findExistingSlide (item) {
 
-                    var mapIndex = sliderMap.length;
+                    var mapIndex = sliderMap.length,
+                        slide;
+
                     while (mapIndex--) {
                         if (sliderMap[mapIndex].key === item.$key) {
                             slide = sliderMap[mapIndex].el;
@@ -428,43 +439,19 @@
 
                 function destroySlides () {
 
+                    // remove cards in slider
+                    var list = sliderList[0];
+                    while(list.firstChild) {
+                        list.removeChild(list.firstChild);
+                    }
+
+                    // destroy cards $scope from cache
                     sliderMap.forEach(function (item) {
                         if (item.el.scope()) {
                             item.el.scope().$destroy();
                         }
-                        item.el.remove();
                     });
                 }
-            }
-
-            /**
-             * Update the slider indicator
-             */
-            function updateIndicator () {
-
-                var indicator = findElement('.jw-card-slider-indicator'),
-                    children  = indicator.children();
-
-                if (!scope.vm.featured) {
-                    return;
-                }
-
-                // re-render dots if length mismatches
-                if (children.length !== totalItems) {
-
-                    indicator.html('');
-
-                    for (var i = 0; i < totalItems; i++) {
-                        indicator.append(angular.element('<div class="jw-card-slider-indicator-dot"></div>'));
-                    }
-                }
-
-                // update active dot
-                indicator
-                    .children()
-                    .removeClass('is-active')
-                    .eq(index)
-                    .addClass('is-active');
             }
 
             /**

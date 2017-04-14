@@ -28,18 +28,15 @@
      * @ngdoc controller
      * @name jwShowcase.core.SidebarController
      *
-     * @requires $scope
      * @requires jwShowcase.core.popup
-     * @requires jwShowcase.core.menu
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    SidebarController.$inject = ['$scope', 'popup', 'dataStore', 'watchlist', 'watchProgress', 'userSettings',
-        'config'];
-    function SidebarController ($scope, popup, dataStore, watchlist, watchProgress, userSettings, config) {
+    SidebarController.$inject = ['popup', 'dataStore', 'watchlist', 'watchProgress', 'userSettings', 'config'];
+    function SidebarController (popup, dataStore, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
 
@@ -50,10 +47,15 @@
         vm.watchlist     = vm.dataStore.watchlistFeed;
         vm.watchProgress = vm.dataStore.watchProgressFeed;
 
-        vm.userSettings = angular.extend({}, userSettings.settings);
+        vm.conserveBandwidth = userSettings.settings.conserveBandwidth;
+        vm.continueWatching  = userSettings.settings.continueWatching;
 
         vm.clearWatchlist     = clearWatchlist;
         vm.clearWatchProgress = clearWatchProgress;
+
+        vm.onChangeHandler = function (type) {
+            userSettings.set(type, vm[type]);
+        };
 
         activate();
 
@@ -77,19 +79,11 @@
             vm.feeds = vm.feeds.sort(function (a, b) {
                 return a.title > b.title;
             });
-
-            $scope.$watch('vm.userSettings.conserveBandwidth', function (value) {
-                userSettings.set('conserveBandwidth', value);
-            }, true);
-
-            $scope.$watch('vm.userSettings.watchProgress', function (value) {
-                userSettings.set('watchProgress', value);
-            }, true);
         }
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.MenuController#clearWatchlist
+         * @name jwShowcase.core.SidebarController#clearWatchlist
          * @methodOf jwShowcase.core.MenuController
          *
          * @description
@@ -116,7 +110,7 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.MenuController#clearWatchProgress
+         * @name jwShowcase.core.SidebarController#clearWatchProgress
          * @methodOf jwShowcase.core.MenuController
          *
          * @description

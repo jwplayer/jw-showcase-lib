@@ -28,8 +28,8 @@
      * Animation which animates the height when entering or leaving.
      */
 
-    expandAnimation.$inject = ['$timeout'];
-    function expandAnimation ($timeout) {
+    expandAnimation.$inject = ['$rootScope', '$timeout'];
+    function expandAnimation ($rootScope, $timeout) {
 
         return {
             enter: function (element, done) {
@@ -47,6 +47,7 @@
 
                     $timeout(function () {
                         element.css('height', 'auto');
+                        $rootScope.$broadcast('$viewContentUpdated');
                         done();
                     }, 300);
                 }, 100);

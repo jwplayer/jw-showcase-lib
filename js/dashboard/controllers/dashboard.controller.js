@@ -31,8 +31,8 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'config'];
-    function DashboardController ($state, dataStore, userSettings, config) {
+    DashboardController.$inject = ['$scope', '$state', 'dataStore', 'userSettings', 'config'];
+    function DashboardController ($scope, $state, dataStore, userSettings, config) {
 
         var vm = this;
 
@@ -90,7 +90,7 @@
 
             var itemsLength = dataStore.watchProgressFeed.playlist.length;
 
-            return config.enableContinueWatching && userSettings.settings.watchProgress && itemsLength > 0;
+            return config.enableContinueWatching && userSettings.settings.continueWatching && itemsLength > 0;
         }
     }
 

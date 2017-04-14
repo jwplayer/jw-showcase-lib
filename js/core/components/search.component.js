@@ -22,12 +22,12 @@
      * @module jwShowcase.core
      *
      * @description
-     * Render the header menu element.
+     * Render the search element.
      *
      * @example
      *
      * ```html
-     * <jw-header-menu></jw-header-menu>
+     * <jw-search></jw-search>
      * ```
      */
     angular
@@ -47,9 +47,10 @@
     SearchController.$inject = ['$rootScope', '$state', 'config', 'apiConsumer'];
     function SearchController ($rootScope, $state, config, apiConsumer) {
 
-        var vm = this;
+        var vm        = this,
+            searching = false;
 
-        vm.config   = config;
+        vm.config = config;
 
         vm.searchPhrase    = '';
         vm.searchBarActive = false;
@@ -63,6 +64,9 @@
 
         //////////////////
 
+        /**
+         * Initialize controller
+         */
         function activate () {
 
             $rootScope.$on('$stateChangeSuccess', function (event, toState) {
@@ -74,12 +78,28 @@
             });
         }
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SearchController#closeSearchButtonClickHandler
+         * @methodOf jwShowcase.core.SearchController
+         *
+         * @description
+         * Handle click on the close search button.
+         */
         function closeSearchButtonClickHandler () {
 
             vm.searchBarActive = false;
             vm.searchPhrase    = '';
         }
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SearchController#searchButtonClickHandler
+         * @methodOf jwShowcase.core.SearchController
+         *
+         * @description
+         * Handle click on the search button.
+         */
         function searchButtonClickHandler () {
 
             vm.searchBarActive = true;
@@ -89,6 +109,14 @@
             }, 300);
         }
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SearchController#searchInputKeyupHandler
+         * @methodOf jwShowcase.core.SearchController
+         *
+         * @description
+         * Handle keyup event on the search input element.
+         */
         function searchInputKeyupHandler (event) {
 
             // esc
@@ -105,6 +133,14 @@
             }
         }
 
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SearchController#searchInputChangeHandler
+         * @methodOf jwShowcase.core.SearchController
+         *
+         * @description
+         * Handle change event on the search input element.
+         */
         function searchInputChangeHandler () {
 
             searchAndDisplayResults();
@@ -116,6 +152,12 @@
          */
         function searchAndDisplayResults () {
 
+            if (searching) {
+                return;
+            }
+
+            searching = true;
+
             apiConsumer
                 .getSearchFeed(vm.searchPhrase)
                 .then(function () {
@@ -123,6 +165,10 @@
                     if ($state.$current.name !== 'root.search') {
                         $state.go('root.search');
                     }
+                })
+                .finally(function () {
+                    searching = false;
+                    $rootScope.$broadcast('$viewContentUpdated');
                 });
         }
     }

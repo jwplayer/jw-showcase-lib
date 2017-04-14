@@ -35,7 +35,6 @@ $toolbar-hover-color: $primary-color !default;
 $search-border-color: #cbced5 !default;
 $search-height: 70px !default;
 
-
 $black: #000;
 $white: #fff;
 $gray: #999;
@@ -125,6 +124,17 @@ $card-toast-added-bg-color: $success-color !default;
 // --------------------------------
 
 $featured-slider-bg-color: #111 !default;
+
+//
+// Toggle
+// --------------------------------
+
+$toggle-height: 23px;
+$toggle-width: 45px;
+$toggle-button-size: 25px;
+$toggle-default-color: #d7dce5 !default;
+$toggle-checked-color: #2b3b57 !default;
+$toggle-button-bg-color: #fff;
 
 //
 // Z-index

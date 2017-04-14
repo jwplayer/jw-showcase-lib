@@ -6,7 +6,7 @@
     position: relative;
     font-size: rem(15px);
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &.jw-card-flag-active,
         &:hover {
@@ -228,7 +228,7 @@
 .jw-card.jw-card-flag-default {
     padding-bottom: 39px;
 
-    body:not(.platform-touch) & {
+    body:not(.jw-flag-touch) & {
 
         &:hover {
 
@@ -294,18 +294,18 @@
     }
 
     .jw-card-title {
-        padding: 0 50px 20px;
+        padding: 0 50px 15px;
         line-height: normal;
     }
 
     .jw-card-description {
         display: block;
         display: -webkit-box;
-        max-height: 6 * 18px;
-        padding: 0 150px 0 50px;
+        max-height: 3 * 18px;
+        padding: 0 50px;
         line-height: 18px;
 
-        -webkit-line-clamp: 6;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
     }
 

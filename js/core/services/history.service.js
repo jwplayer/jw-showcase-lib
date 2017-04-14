@@ -47,17 +47,22 @@
 
             function attach () {
 
+                var fromUrl;
+
+                $rootScope.$on('$stateChangeStart', function () {
+                    fromUrl = $location.url();
+                });
+
                 $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
 
-                    var newUrl = $location.url(),
-                        historyIndex;
+                    var historyIndex;
 
                     if (fromState.abstract) {
                         return;
                     }
 
                     historyIndex = self.history.findIndex(function (curr) {
-                        return newUrl === curr[0];
+                        return fromUrl === curr[0];
                     });
 
                     if (historyIndex > -1) {
@@ -67,7 +72,7 @@
                     }
 
                     if (!goingBack) {
-                        add(newUrl, fromState.name, fromParams);
+                        add(fromUrl, fromState.name, angular.copy(fromParams));
                     }
 
                     goingBack = false;

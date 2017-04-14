@@ -32,7 +32,7 @@
     player.$inject = ['$timeout'];
     function player ($timeout) {
 
-        var playerDelegate,
+        var playerInstance,
             self = this;
 
         this.play              = playerMethod('play');
@@ -59,8 +59,8 @@
         function playerMethod (method) {
 
             return function () {
-                if (playerDelegate && angular.isFunction(playerDelegate[method])) {
-                    return playerDelegate[method].apply(playerDelegate, Array.prototype.slice.call(arguments));
+                if (playerInstance && angular.isFunction(playerInstance[method])) {
+                    return playerInstance[method].apply(playerInstance, Array.prototype.slice.call(arguments));
                 }
             };
         }
@@ -72,15 +72,15 @@
          */
         function setPlayer (player) {
 
-            playerDelegate = player;
+            playerInstance = player;
 
-            if (playerDelegate) {
+            if (playerInstance) {
 
-                playerDelegate.on('play', invoke(function () {
+                playerInstance.on('play', invoke(function () {
                     self.paused = false;
                 }));
 
-                playerDelegate.on('pause idle', invoke(function () {
+                playerInstance.on('pause idle', invoke(function () {
                     self.paused = true;
                 }));
             }

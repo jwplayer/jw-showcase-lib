@@ -20,16 +20,10 @@
         .module('jwShowcase.core')
         .run(registerListener);
 
-    registerListener.$inject = ['$rootScope', '$state', 'appStore', 'config'];
-    function registerListener ($rootScope, $state, appStore, config) {
+    registerListener.$inject = ['$rootScope', 'appStore'];
+    function registerListener ($rootScope, appStore) {
 
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-
-            // prevent users going to search page when no searchPlaylist is defined
-            if (toState.name === 'root.search' && !config.searchPlaylist) {
-                event.preventDefault();
-                $state.go('root.dashboard');
-            }
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
 
             if (fromState.scrollTop === 'last') {
                 appStore.scrollTopCache[fromState.name] = document.body.scrollTop;

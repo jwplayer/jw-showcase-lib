@@ -35,7 +35,8 @@
                 url:         '/',
                 controller:  'DashboardController as vm',
                 templateUrl: 'views/dashboard/dashboard.html',
-                scrollTop:   'last'
+                scrollTop:   'last',
+                persistent:  true
             });
 
         seoProvider

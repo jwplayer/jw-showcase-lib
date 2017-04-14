@@ -35,7 +35,15 @@
                 url:         '/search',
                 controller:  'SearchController as vm',
                 templateUrl: 'views/search/search.html',
-                scrollTop:   'last'
+                scrollTop:   'last',
+                persistent:  true,
+                resolve:     {
+                    searchPlaylist: ['$q', 'config', function ($q, config) {
+                        if (!config.searchPlaylist) {
+                            return $q.reject();
+                        }
+                    }]
+                }
             });
 
         seoProvider

@@ -12,34 +12,35 @@
 //
 // Import components
 // --------------------------------
-@import 'components/jwAnimations';
-@import 'components/jwButtons';
-@import 'components/jwCard';
-@import 'components/jwCardGrid';
-@import 'components/jwCardMenu';
-@import 'components/jwCardPoster';
-@import 'components/jwCardSlider';
-@import 'components/jwCollapsibleText';
-@import 'components/jwContent';
-@import 'components/jwCookies';
-@import 'components/jwCover';
-@import 'components/jwFooter';
-@import 'components/jwGrid';
-@import 'components/jwHeader';
-@import 'components/jwIcons';
-@import 'components/jwLoading';
-@import 'components/jwMarkdown';
-@import 'components/jwModal';
-@import 'components/jwOffline';
-@import 'components/jwPlayer';
-@import 'components/jwPopups';
-@import 'components/jwSearch';
-@import 'components/jwSidebar';
-@import 'components/jwText';
-@import 'components/jwToolbar';
-@import 'components/jwVideoContainer';
-@import 'components/jwVideoDetails';
-@import 'components/jwView';
+@import 'components/animations';
+@import 'components/buttons';
+@import 'components/card';
+@import 'components/cardGrid';
+@import 'components/cardMenu';
+@import 'components/cardPoster';
+@import 'components/cardSlider';
+@import 'components/collapsibleText';
+@import 'components/content';
+@import 'components/cookies';
+@import 'components/cover';
+@import 'components/footer';
+@import 'components/grid';
+@import 'components/header';
+@import 'components/icons';
+@import 'components/loading';
+@import 'components/markdown';
+@import 'components/modal';
+@import 'components/offline';
+@import 'components/player';
+@import 'components/popups';
+@import 'components/search';
+@import 'components/sidebar';
+@import 'components/text';
+@import 'components/toggle';
+@import 'components/toolbar';
+@import 'components/videoContainer';
+@import 'components/videoDetails';
+@import 'components/view';
 
 //
 // Import themes
@@ -50,7 +51,7 @@
 //
 // Import skins
 // --------------------------------
-@import 'skins/jwShowcase';
+@import 'skins/showcase';
 
 html,
 body {
