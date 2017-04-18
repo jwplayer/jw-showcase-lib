@@ -84,7 +84,7 @@
                 persist();
 
                 if (download && offline.hasSupport) {
-                    offline.downloadItem(item);
+                    return offline.downloadItem(item);
                 }
             }
         }

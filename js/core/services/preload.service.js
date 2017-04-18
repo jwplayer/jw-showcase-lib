@@ -96,6 +96,7 @@
             showCookiesNotice();
 
             offline.prefetchPlayer(window.jwplayer.version.split('+').shift());
+            offline.prefetchConfig(config);
 
             defer.resolve();
         }

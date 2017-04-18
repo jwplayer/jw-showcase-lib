@@ -39,25 +39,35 @@
 
         this.isOffline = !navigator.onLine;
 
+        this.updateConnectionState = updateConnectionState;
+
         this.downloadItem = function (item) {
 
-            var url = getFileFromItem(item);
+            var urls = getUrlsFromItem(item);
 
-            if (!url) {
+            console.log(urls);
+
+            if (!urls.length) {
                 return Promise.reject();
             }
 
             return openCacheForItem(item).then(function (cache) {
-                return cache.match(url).then(function (cacheItem) {
+                return cache.match(urls).then(function (cacheItem) {
                     if (cacheItem) {
                         return cacheItem;
                     }
 
-                    return window.fetch(url).then(function (response) {
-                        cache.put(url, response);
-                        self.offlineMediaIds.push(item.mediaid);
-                        $rootScope.$apply();
+                    var promises = urls.map(function (url) {
+                        return window.fetch(url).then(function (response) {
+                            return cache.put(url, response);
+                        });
                     });
+
+                    return Promise.all(promises)
+                        .then(function () {
+                            self.offlineMediaIds.push(item.mediaid);
+                            $rootScope.$apply();
+                        });
                 });
             });
         };
@@ -85,22 +95,35 @@
 
         this.hasDownloadedItem = function (item) {
 
-            return window.caches.has('jw-showcase-video-' + item.mediaid);
+            return self.offlineMediaIds.indexOf(item.mediaid) !== -1;
+            // return window.caches.has('jw-showcase-video-' + item.mediaid);
         };
 
         this.prefetchPlayer = function (version) {
 
-            console.log(version);
+            self.send({
+                type:    'prefetchPlayer',
+                version: version
+            });
+        };
 
-            if (this.hasSupport) {
+        this.prefetchConfig = function (config) {
 
-                var data = {
-                    type:    'prefetchPlayer',
-                    version: version
-                };
+            config = angular.copy(config);
 
-                console.log(navigator.serviceWorker);
+            if (config.bannerImage) {
+                config.bannerImage = config.bannerImage.toString();
+            }
 
+            self.send({
+                type:   'prefetchConfig',
+                config: config
+            });
+        };
+
+        this.send = function (data) {
+
+            if (self.hasSupport) {
                 navigator.serviceWorker.ready.then(function (registered) {
                     if (registered.active) {
                         registered.active.postMessage(JSON.stringify(data));
@@ -114,23 +137,49 @@
             return window.caches.open('jw-showcase-video-' + item.mediaid);
         }
 
-        function getFileFromItem (item) {
+        function getUrlsFromItem (item) {
 
-            var source = item.sources.find(function (source) {
-                return source.type === 'video/mp4' && source.width <= 720;
-            });
+            var urls   = [],
+                source = item.sources.find(function (source) {
+                    return source.type === 'video/mp4' && source.width <= 720;
+                });
 
             if (!source) {
-                return null;
+                return [];
             }
 
-            return source.file;
+            urls.push(source.file);
+
+            if (item.image) {
+                urls.push(item.image.replace('720', '1920'));
+            }
+
+            urls.push('https://cdn.jwplayer.com/strips/' + item.mediaid + '-120.jpg');
+
+            if (item.tracks) {
+                urls = urls.concat(item.tracks.map(function (track) {
+                    return track.file;
+                }));
+            }
+
+            return urls;
         }
 
-        if (!navigator.onLine) {
-            document.body.classList.add('jw-flag-offline');
-            self.isOffline = true;
+        function updateConnectionState () {
+
+            console.log(navigator.onLine);
+
+            if (navigator.onLine) {
+                document.body.classList.remove('jw-flag-offline');
+                self.isOffline = false;
+            }
+            else {
+                document.body.classList.add('jw-flag-offline');
+                self.isOffline = true;
+            }
         }
+
+        updateConnectionState();
 
         if (this.hasSupport) {
 
@@ -149,14 +198,12 @@
             navigator.serviceWorker.ready.then(function () {
 
                 window.addEventListener('online', function () {
-                    document.body.classList.remove('jw-flag-offline');
-                    self.isOffline = false;
+                    updateConnectionState();
                     $rootScope.$apply();
                 });
 
                 window.addEventListener('offline', function () {
-                    document.body.classList.add('jw-flag-offline');
-                    self.isOffline = true;
+                    updateConnectionState();
                     $rootScope.$apply();
                 });
             });

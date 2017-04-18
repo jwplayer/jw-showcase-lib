@@ -16,6 +16,11 @@
     .jw-offline-message {
         display: block;
     }
+
+    .jw-button-search {
+        opacity: 0.2;
+        pointer-events: none;
+    }
 }
 
 .jw-offline-message {
@@ -24,7 +29,6 @@
     bottom: 0;
     width: 100%;
     padding: 8px 0;
-    background: $dark-color;
     color: $white;
     text-align: center;
 }

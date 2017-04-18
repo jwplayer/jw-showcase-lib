@@ -264,7 +264,7 @@
              * @param {String} toast.templateUrl    Template url
              * @param {Number} [toast.duration]     Optional duration
              *
-             * @returns {Promise}
+             * @returns {Promise|function}
              */
             function showToast (toast) {
 
@@ -280,8 +280,12 @@
                 // add class to card element
                 element.addClass('jw-card-flag-toast-open');
 
-                // set timeout to remove toast
-                $timeout(function () {
+                if (toast.duration !== -1) {
+                    // set timeout to remove toast
+                    $timeout(closeToast, toast.duration || 1000);
+                }
+
+                function closeToast () {
 
                     defer.notify('before_remove');
 
@@ -291,8 +295,14 @@
                             element.removeClass('jw-card-flag-toast-open');
                             defer.resolve();
                         });
-                }, toast.duration || 1000);
+                }
 
+                if (toast.duration === -1) {
+                    return function () {
+                        closeToast();
+                        return defer.promise;
+                    };
+                }
                 return defer.promise;
             }
         }

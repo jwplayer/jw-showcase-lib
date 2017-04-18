@@ -103,6 +103,10 @@
                 }
             };
 
+            if (!navigator.onLine) {
+                vm.playerSettings.advertising = false;
+            }
+
             if (!window.jwplayer.defaults.skin) {
                 vm.playerSettings.skin = 'jw-showcase';
             }
@@ -200,13 +204,12 @@
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
                 isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
-                playlistCopy  = angular.copy(feed.playlist),
+                playlistCopy  = angular.copy(feed.playlist).filter(function (item) {
+                    return navigator.onLine || offline.hasDownloadedItem(item);
+                }),
                 playlistItem, sources;
 
             playlistCopy = playlistCopy
-                .filter(function (item) {
-                    return navigator || offline.hasDownloadedItem(item);
-                })
                 .slice(playlistIndex)
                 .concat(playlistCopy.slice(0, playlistIndex));
 
@@ -228,6 +231,10 @@
 
                     return 'application/dash+xml' !== source.type;
                 });
+
+                if (!navigator.onLine) {
+                    sources.splice(1);
+                }
 
                 return angular.extend(playlistItem, {
                     image:       utils.replaceImageSize(current.image, 1920),
@@ -523,7 +530,7 @@
             stateParams.slug    = vm.item.$slug;
 
             // update itemFeed and playlist when feed is different
-            if (vm.item.feedid !== itemFeed.feedid) {
+            if (vm.item.feedid !== itemFeed.feedid || playerPlaylist.length !== itemFeed.playlist.length) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();
