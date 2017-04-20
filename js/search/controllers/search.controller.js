@@ -24,8 +24,8 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$state', 'dataStore'];
-    function SearchController ($state, dataStore) {
+    SearchController.$inject = ['$state', 'dataStore', 'platform'];
+    function SearchController ($state, dataStore, platform) {
 
         var vm = this;
 
@@ -52,7 +52,7 @@
                 feedId:    item.feedid,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || !!window.cordova
+                autoStart: clickedOnPlay || platform.isMobile
             });
         }
     }

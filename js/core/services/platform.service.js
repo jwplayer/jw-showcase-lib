@@ -34,6 +34,7 @@
             isAndroid:       osName === 'android',
             isIOS:           osName === 'ios',
             isWindows:       osName === 'windows',
+            isMobile:        ['android', 'ios'].indexOf(osName) > -1,
             browserName:     result.browser.name,
             browserVersion:  result.browser.version,
             platformName:    result.os.name,

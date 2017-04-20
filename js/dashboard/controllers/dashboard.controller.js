@@ -29,10 +29,11 @@
      * @requires $state
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.userSettings
+     * @requires jwShowcase.core.platform
      * @requires jwShowcase.config
      */
-    DashboardController.$inject = ['$scope', '$state', 'dataStore', 'userSettings', 'config'];
-    function DashboardController ($scope, $state, dataStore, userSettings, config) {
+    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform', 'config'];
+    function DashboardController ($state, dataStore, userSettings, platform, config) {
 
         var vm = this;
 
@@ -72,7 +73,7 @@
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || !!window.cordova
+                autoStart: clickedOnPlay || platform.isMobile
             });
         }
 
