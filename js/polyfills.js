@@ -1,5 +1,3 @@
-/* jshint ignore:start */
-
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
 if (!Array.prototype.find) {
     Array.prototype.find = function (predicate) {
@@ -353,4 +351,3 @@ if ("document" in self) {
         window.addEventListener("test", null, opts);
     } catch (e) {}
 }());
-/* jshint ignore:end */
