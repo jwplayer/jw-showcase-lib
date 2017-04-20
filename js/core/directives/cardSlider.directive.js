@@ -129,7 +129,7 @@
 
                 if (loading) {
                     element.addClass('jw-card-slider-flag-loading');
-                    renderLoadingSlides();
+                    // renderLoadingSlides();
                 }
 
                 resizeHandler();

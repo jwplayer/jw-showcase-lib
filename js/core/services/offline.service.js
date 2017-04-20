@@ -167,8 +167,6 @@
 
         function updateConnectionState () {
 
-            console.log(navigator.onLine);
-
             if (navigator.onLine) {
                 document.body.classList.remove('jw-flag-offline');
                 self.isOffline = false;
@@ -192,20 +190,17 @@
                     }
                 });
 
-                $rootScope.$apply();
+                $rootScope.$applyAsync();
             });
 
-            navigator.serviceWorker.ready.then(function () {
+            window.addEventListener('online', function () {
+                updateConnectionState();
+                $rootScope.$applyAsync();
+            });
 
-                window.addEventListener('online', function () {
-                    updateConnectionState();
-                    $rootScope.$apply();
-                });
-
-                window.addEventListener('offline', function () {
-                    updateConnectionState();
-                    $rootScope.$apply();
-                });
+            window.addEventListener('offline', function () {
+                updateConnectionState();
+                $rootScope.$applyAsync();
             });
         }
     }

@@ -140,8 +140,9 @@
                 defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
             };
 
+            script.async = true;
             script.src = config.contentService + '/libraries/' + playerId + '.js';
-            document.head.appendChild(script);
+            document.body.appendChild(script);
 
             return defer.promise;
         };
