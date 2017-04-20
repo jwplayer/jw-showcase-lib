@@ -17,7 +17,8 @@
         .jw-flag-touch & {
 
             .jw-sidebar {
-                overflow: scroll;
+                overflow-x: scroll;
+                overflow-y: hidden;
             }
         }
     }
