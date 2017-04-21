@@ -25,9 +25,10 @@
      * @name jwShowcase.feed.FeedController
      *
      * @requires $scope
+     * @requires jwShowcase.core.platform
      */
-    FeedController.$inject = ['$state', 'feed'];
-    function FeedController ($state, feed) {
+    FeedController.$inject = ['$state', 'platform', 'feed'];
+    function FeedController ($state, platform, feed) {
 
         var vm = this;
 
@@ -53,7 +54,7 @@
                 feedId:    item.$feedid || item.feedid,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || !!window.cordova
+                autoStart: clickedOnPlay || platform.isMobile
             });
         }
     }
