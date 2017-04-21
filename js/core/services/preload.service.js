@@ -77,8 +77,10 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                api.getPlayer(config.player)
-                    .then(handlePreloadSuccess, handlePreloadError);
+                // api.getPlayer(config.player)
+                //     .then(handlePreloadSuccess, handlePreloadError);
+
+                handlePreloadSuccess();
 
                 apiConsumer
                     .loadFeedsFromConfig()
