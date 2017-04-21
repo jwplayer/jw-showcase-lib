@@ -45,8 +45,6 @@
 
             var urls = getUrlsFromItem(item);
 
-            console.log(urls);
-
             if (!urls.length) {
                 return Promise.reject();
             }
