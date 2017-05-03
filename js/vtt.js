@@ -1,4 +1,5 @@
-/* vtt.js - v0.13.0 (https://github.com/mozilla/vtt.js) built on 20-04-2017 */
+/* vtt.js - v0.13.0 (https://github.com/mozilla/vtt.js) built on 03-05-2017 */
+
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -528,6 +529,9 @@
     };
   })();
 
+  var cue = new global.VTTCue(0, 0, '');
+  var middle = cue.align !== 'middle' ? cue.align : 'middle';
+
   // Creates a new ParserError object from an errorData object. The errorData
   // object should have default code and message properties. The default message
   // property can be overriden by passing in a message parameter.
@@ -692,21 +696,21 @@
           settings.percent(k, vals0) ? settings.set("snapToLines", false) : null;
           settings.alt(k, vals0, ["auto"]);
           if (vals.length === 2) {
-            settings.alt("lineAlign", vals[1], ["start", "middle", "end"]);
+            settings.alt("lineAlign", vals[1], ["start", middle, "end"]);
           }
           break;
         case "position":
           vals = v.split(",");
           settings.percent(k, vals[0]);
           if (vals.length === 2) {
-            settings.alt("positionAlign", vals[1], ["start", "middle", "end"]);
+            settings.alt("positionAlign", vals[1], ["start", middle, "end"]);
           }
           break;
         case "size":
           settings.percent(k, v);
           break;
         case "align":
-          settings.alt(k, v, ["start", "middle", "end", "left", "right"]);
+          settings.alt(k, v, ["start", middle, "end", "left", "right"]);
           break;
         }
       }, /:/, /\s/);
@@ -718,12 +722,13 @@
       cue.lineAlign = settings.get("lineAlign", "start");
       cue.snapToLines = settings.get("snapToLines", true);
       cue.size = settings.get("size", 100);
-      cue.align = settings.get("align", "middle");
+      cue.align = settings.get("align", middle);
       cue.position = settings.get("position", cue.position !== "auto" ? cue.position : "auto");
       cue.positionAlign = settings.get("positionAlign", {
         start: "start",
         left: "start",
         middle: "middle",
+        center: "center",
         end: "end",
         right: "end"
       }, cue.align);
