@@ -69,14 +69,18 @@
             vm.feeds = [];
 
             if (angular.isArray(dataStore.feeds)) {
-                vm.feeds = dataStore.feeds.slice();
+
+                vm.feeds = dataStore.feeds
+                    .filter(function (feed) {
+
+                        // skip watchProgress and watchlist feeds
+                        return feed.feedid !== dataStore.watchProgressFeed.feedid &&
+                            feed.feedid !== dataStore.watchlistFeed.feedid;
+                    })
+                    .slice();
             }
 
-            if (dataStore.featuredFeed) {
-                vm.feeds.unshift(dataStore.featuredFeed);
-            }
-
-            vm.feeds = vm.feeds.sort(function (a, b) {
+            vm.feeds.sort(function (a, b) {
                 return a.title > b.title;
             });
         }

@@ -31,32 +31,43 @@
         ])
         .value('config', {
             contentService:         'https://content.jwplatform.com',
-            enableContinueWatching: true,
-            enableCookieNotice:     false,
-            enableFeaturedText:     true,
-            enablePlayerAutoFocus:  true,
-            enableHeader:           true
+            options: {
+                enableContinueWatching: true,
+                enableCookieNotice:     false,
+                enableFeaturedText:     true,
+                enablePlayerAutoFocus:  true,
+                enableHeader:           true
+            }
         });
 
     /**
      * @name jwShowcase.config
-     * @type Object
+     * @type {Object}
      *
-     * @property {string}      player
-     * @property {string}      theme
-     * @property {string}      siteName
-     * @property {string}      description
-     * @property {string}      bannerImage
-     * @property {string}      footerText
-     * @property {string}      backgroundColor
-     * @property {boolean}     enableContinueWatching
-     * @property {boolean}     enableCookieNotice
-     * @property {boolean}     enableFeaturedText
-     * @property {boolean}     enablePlayerAutoFocus
-     * @property {string}      searchPlaylist
-     * @property {string}      recommendationsPlaylist
-     * @property {string}      featuredPlaylist
-     * @property {String[]}    playlist
+     * @property {string}           player
+     * @property {string}           theme
+     * @property {string}           siteName
+     * @property {string}           description
+     * @property {string}           bannerImage
+     * @property {string}           footerText
+     *
+     * @property {string}           searchPlaylist
+     * @property {string}           recommendationsPlaylist
+     *
+     * @property {Object}           assets
+     * @property {string}           assets.banner
+     *
+     * @property {Array}            content
+     * @property {string}           content.playlistId
+     * @property {boolean}          content.featured
+     * @property {number|Object}    content.cols
+     *
+     * @property {Object}           options
+     * @property {string}           options.backgroundColor
+     * @property {boolean}          options.enableContinueWatching
+     * @property {boolean}          options.enableCookieNotice
+     * @property {boolean}          options.enableFeaturedText
+     * @property {boolean}          options.enablePlayerAutoFocus
      */
 
 }());

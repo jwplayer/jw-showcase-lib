@@ -43,48 +43,86 @@
          */
         this.populateFeedModel = function (feed, type) {
 
-            var promise;
+            var customOptions = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview'],
+                promise;
 
-            if (feed && feed.feedid) {
-
-                feed.loading = true;
-
-                if (type === 'recommendations') {
-
-                    promise = api.getRecommendationsFeed(feed.feedid, feed.relatedMediaId)
-                        .then(function (data) {
-                            data.playlist = dataStore.getItems().filter(function (item) {
-                                return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                            });
-                            return data;
-                        });
-                }
-                else {
-                    feed.playlist = [];
-                    promise       = api.getFeed(feed.feedid);
-                }
-
-                feed.promise = promise.then(function (data) {
-
-                    angular.merge(feed, data);
-                    feed.loading = false;
-
-                    return feed;
-                });
-
-                feed.promise.catch(function (error) {
-
-                    feed.error     = error;
-                    feed.loading   = false;
-                    feed.navigable = false;
-
-                    return feed;
-                });
-
-                return feed.promise;
+            if (!feed.feedid) {
+                return $q.reject(new Error('feedid is not defined'));
             }
 
-            return $q.reject(new Error('feedid is not defined'));
+            feed.loading = true;
+
+            if (type === 'recommendations') {
+
+                promise = api.getRecommendationsFeed(feed.feedid, feed.relatedMediaId)
+                    .then(function (data) {
+                        data.playlist = dataStore.getItems().filter(function (item) {
+                            return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
+                        });
+                        return data;
+                    });
+            }
+            else {
+                feed.playlist = [];
+                promise       = api.getFeed(feed.feedid);
+            }
+
+            feed.promise = promise.then(function (data) {
+
+                angular.merge(feed, data);
+                setCustomOptions(feed);
+
+                feed.loading = false;
+
+                return feed;
+            });
+
+            feed.promise.catch(function (error) {
+
+                feed.error     = error;
+                feed.loading   = false;
+                feed.navigable = false;
+
+                return feed;
+            });
+
+            return feed.promise;
+
+            /**
+             * Set custom `showcase.*` options from the feed response
+             */
+            function setCustomOptions () {
+
+                var value;
+
+                angular.forEach(customOptions, function (key) {
+
+                    value = feed['showcase.' + key];
+
+                    if (!angular.isDefined(value)) {
+                        return;
+                    }
+
+                    // convert to boolean
+                    if (value === 'true' || value === 'false') {
+                        feed[key] = value === 'true';
+                        return;
+                    }
+
+                    // convert to object
+                    if (angular.isString(value) && '{' === value[0]) {
+                        try {
+                            feed[key] = JSON.parse(value);
+                        }
+                        catch (e) {
+                            console.log('Error while parsing JSON from feed custom option: ' + e.message);
+                        }
+                        return;
+                    }
+
+                    feed[key] = value;
+                });
+            }
         };
 
         /**
@@ -105,6 +143,7 @@
             // empty searchPhrase
             if (!searchPhrase) {
                 dataStore.searchFeed.playlist = [];
+                return $q.resolve();
             }
 
             promise = api.getSearchFeed(config.searchPlaylist, searchPhrase);
@@ -117,6 +156,8 @@
                     dataStore.searchFeed.playlist = allItems.filter(function (item) {
                         return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
                     });
+                }, function (e) {
+                    console.log(e.message);
                 });
 
             return promise;
@@ -134,20 +175,28 @@
          */
         this.loadFeedsFromConfig = function () {
 
-            var model, promise,
+            var promise,
                 feedPromises = [];
 
-            if (angular.isString(config.featuredPlaylist) && config.featuredPlaylist !== '') {
-                model = new FeedModel(config.featuredPlaylist);
-
-                feedPromises.push(self.populateFeedModel(model));
-                dataStore.featuredFeed = model;
+            if (!angular.isArray(config.content)) {
+                return $q.resolve([]);
             }
 
-            if (angular.isArray(config.playlists)) {
+            dataStore.feeds = config.content.map(function (content) {
 
-                dataStore.feeds = config.playlists.map(function (feedId) {
-                    model   = new FeedModel(feedId);
+                var model;
+
+                if (content.playlistId === dataStore.watchProgressFeed.feedid) {
+                    model = dataStore.watchProgressFeed;
+                }
+
+                if (content.playlistId === dataStore.watchlistFeed.feedid) {
+                    model = dataStore.watchlistFeed;
+                }
+
+                if (!model) {
+
+                    model   = new FeedModel(content.playlistId);
                     promise = self
                         .populateFeedModel(model)
                         .then(null, function (error) {
@@ -158,9 +207,12 @@
                         });
 
                     feedPromises.push(promise);
-                    return model;
-                });
-            }
+                }
+
+                angular.extend(model, content);
+
+                return model;
+            });
 
             return $q.all(feedPromises);
         };

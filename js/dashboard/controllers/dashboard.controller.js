@@ -16,8 +16,6 @@
 
 (function () {
 
-    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
-
     angular
         .module('jwShowcase.dashboard')
         .controller('DashboardController', DashboardController);
@@ -30,17 +28,14 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.platform
-     * @requires jwShowcase.config
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform', 'config'];
-    function DashboardController ($state, dataStore, userSettings, platform, config) {
+    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform'];
+    function DashboardController ($state, dataStore, userSettings, platform) {
 
         var vm = this;
 
-        vm.dataStore             = dataStore;
-        vm.userSettings          = userSettings;
-        vm.showWatchProgressFeed = showWatchProgressFeed;
-        vm.isMobileScreen        = MOBILE_SCREEN;
+        vm.dataStore        = dataStore;
+        vm.getSliderVisible = getSliderVisible;
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -78,21 +73,19 @@
         }
 
         /**
-         * @ngdoc method
-         * @name jwShowcase.dashboard.DashboardController#showWatchProgressFeed
-         * @methodOf jwShowcase.dashboard.DashboardController
          *
-         * @description
-         * Determine if the watch progress feed needs to be shown
-         *
-         * @returns {boolean} True if the watchProgress feed needs to be shown
+         * @param feed
          */
-        function showWatchProgressFeed () {
+        function getSliderVisible (feed) {
 
-            var itemsLength = dataStore.watchProgressFeed.playlist.length;
+            // if its the watchProgress we also need to test for the continueWatching setting
+            if (dataStore.watchProgressFeed.feedid === feed.feedid && !userSettings.settings.continueWatching) {
+                return false;
+            }
 
-            return config.enableContinueWatching && userSettings.settings.continueWatching && itemsLength > 0;
+            return feed.playlist.length > 0;
         }
+
     }
 
 }());

@@ -242,6 +242,14 @@
         }
     }
 
+    &.jw-card-flag-hide-text {
+        padding-bottom: 0;
+
+        .jw-card-info {
+            display: none !important;
+        }
+    }
+
     .jw-card-info-mask {
         @include transition(height 0.2s ease);
         height: 39px;
