@@ -1,5 +1,6 @@
 <div class="has-jw-header">
-  <div class="feed" ng-repeat="feed in vm.dataStore.feeds" ng-if="vm.getSliderVisible(feed)">
+  <div class="feed" ng-repeat="feed in vm.dataStore.feeds" ng-if="vm.getSliderVisible(feed)"
+      ng-class="vm.getSliderRowClassNames(feed)">
     <jw-card-slider feed="feed" featured="feed.featured" on-card-click="vm.cardClickHandler"
         class="jw-lazy-load"></jw-card-slider>
   </div>

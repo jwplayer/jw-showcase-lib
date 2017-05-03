@@ -34,8 +34,9 @@
 
         var vm = this;
 
-        vm.dataStore        = dataStore;
-        vm.getSliderVisible = getSliderVisible;
+        vm.dataStore              = dataStore;
+        vm.getSliderVisible       = getSliderVisible;
+        vm.getSliderRowClassNames = getSliderRowClassNames;
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -73,8 +74,8 @@
         }
 
         /**
-         *
-         * @param feed
+         * Returns true if the slider needs to be visible
+         * @param {jwShowcase.core.feed} feed
          */
         function getSliderVisible (feed) {
 
@@ -86,6 +87,19 @@
             return feed.playlist.length > 0;
         }
 
+        /**
+         * Return classNames for slider row
+         * @param {jwShowcase.core.feed} feed
+         *
+         * @returns {Object}
+         */
+        function getSliderRowClassNames (feed) {
+
+            return {
+                'jw-expand-animation': dataStore.watchProgressFeed.feedid === feed.feedid ||
+                                       dataStore.watchlistFeed.feedid === feed.feedid
+            };
+        }
     }
 
 }());
