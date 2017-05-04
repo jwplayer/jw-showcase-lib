@@ -246,7 +246,7 @@
          */
         function onReady (event) {
 
-            if (config.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
+            if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
                 this.getContainer().focus();
             }
 
@@ -401,7 +401,7 @@
             }
 
             // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress || false === config.enableContinueWatching) {
+            if (false === userSettings.settings.continueWatching || false === config.options.enableContinueWatching) {
                 return;
             }
 

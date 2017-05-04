@@ -72,20 +72,17 @@
 
             function activate () {
 
+                var enableText = true,
+                    feed       = dataStore.getFeed(scope.vm.item.feedid);
+
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (scope.vm.featured) {
+                if (feed) {
+                    enableText = feed.enableText;
+                }
 
-                    var enableFeaturedText = config.enableFeaturedText,
-                        feed = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
-
-                    if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
-                        enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
-                    }
-
-                    if (!enableFeaturedText) {
-                        element.addClass('jw-card-flag-hide-text');
-                    }
+                if (!enableText) {
+                    element.addClass('jw-card-flag-hide-text');
                 }
 
                 findElement('.jw-card-title')

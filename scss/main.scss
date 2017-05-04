@@ -16,6 +16,7 @@
 @import 'components/buttons';
 @import 'components/card';
 @import 'components/cardGrid';
+@import 'components/cardList';
 @import 'components/cardMenu';
 @import 'components/cardPoster';
 @import 'components/cardSlider';
@@ -91,9 +92,5 @@ body {
     input {
         border: 0;
         outline: none;
-    }
-
-    .featured .jw-row:not(:last-child) {
-        margin-bottom: 8px;
     }
 }

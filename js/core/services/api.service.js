@@ -263,6 +263,7 @@
      * @property {string}                   kind           Feed kind
      * @property {jwShowcase.core.item[]}   playlist       Feed playlist
      * @property {string}                   title          Feed title
+     * @property {boolean}                  dynamic        True if the feed is dynamic
      */
 
     /**

@@ -27,15 +27,19 @@
     feedModelFactory.$inject = [];
     function feedModelFactory () {
 
-        function FeedModel (feedId, title, navigable) {
+        function FeedModel (feedId, title, navigable, dynamic) {
 
             this.feedid = feedId;
 
             this.title = title || '';
 
+            this.dynamic = !!dynamic;
+
             this.playlist = [];
 
             this.navigable = angular.isDefined(navigable) ? navigable : true;
+
+            this.featured = false;
 
             this.loading = false;
 
@@ -58,10 +62,10 @@
              */
             this.clone = function () {
 
-                var clone = new FeedModel(this.feedid, this.title, this.navigable);
-                clone.playlist = this.playlist.slice(0);
-                clone.description = this.description;
-                clone.custom = angular.extend({}, this.custom);
+                var clone         = new FeedModel();
+                angular.extend(clone, this);
+                clone.playlist = angular.copy(this.playlist);
+
                 return clone;
             };
         }

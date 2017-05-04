@@ -30,7 +30,10 @@
     configResolverService.$inject = ['$http', '$q'];
     function configResolverService ($http, $q) {
 
-        var configPromise = null;
+        var isDefined     = angular.isDefined,
+            isArray       = angular.isArray,
+            isString      = angular.isString,
+            configPromise = null;
 
         this.getConfig = getConfig;
 
@@ -62,18 +65,23 @@
          * Called after loading config is complete.
          *
          * @param {Object} response
-         * @returns {$q.promise}
+         * @returns {$q.promise|jwShowcase.config}
          */
         function getConfigComplete (response) {
 
+            var config = response.data;
+
             try {
-                validateConfig(response.data);
+                // message from hosted container
+                if (angular.isString(config.message)) {
+                    return $q.reject(new Error(config.message));
+                }
+
+                return validateConfig(config);
             }
             catch (error) {
                 return $q.reject(error);
             }
-
-            return response.data;
         }
 
         /**
@@ -89,21 +97,13 @@
          * Validate config properties
          *
          * @param {Object} config
-         *
          * @throws {Error}
+         * @returns {jwShowcase.config} config
          */
         function validateConfig (config) {
 
-            var required  = ['player', 'theme', 'siteName', 'description', 'bannerImage'],
-                isDefined = angular.isDefined,
-                isArray   = angular.isArray,
-                isString  = angular.isString,
+            var required = ['player', 'theme', 'siteName', 'description'],
                 missing;
-
-            // a message is set in the config
-            if (angular.isString(config.message)) {
-                throw new Error(config.message);
-            }
 
             missing = required
                 .filter(function (value) {
@@ -114,6 +114,31 @@
                 throw new Error('The config file is missing the following properties: ' + missing.join(', '));
             }
 
+            if ('2' !== config.version) {
+
+                // validate as deprecated config
+                validateDeprecatedConfig(config);
+
+                // serialize to v2 config
+                return serializeDeprecatedConfig(config);
+            }
+
+            if (isDefined(config.content) && !isArray(config.content)) {
+                throw new Error('The config file content property should be an array');
+            }
+
+            return config;
+        }
+
+        /**
+         * Validate deprecated config properties
+         *
+         * @param {Object} config
+         * @throws {Error}
+         * @returns {jwShowcase.config}
+         */
+        function validateDeprecatedConfig (config) {
+
             if (isDefined(config.playlists) && !isArray(config.playlists)) {
                 throw new Error('The config file playlists property should be an array');
             }
@@ -121,6 +146,79 @@
             if (isDefined(config.featuredPlaylist) && !isString(config.featuredPlaylist)) {
                 throw new Error('The config file featuredPlaylist property should be a string');
             }
+        }
+
+        /**
+         * Serialize deprecated config to v2 config
+         * @param {Object} config
+         * @returns {jwShowcase.config}
+         */
+        function serializeDeprecatedConfig (config) {
+
+            var fields    = [
+                    'player', 'theme', 'siteName', 'description', 'searchPlaylist', 'recommendationsPlaylist',
+                    'contentService', 'footerText'
+                ],
+                options   = [
+                    'backgroundColor', 'enableCookieNotice', 'enableContinueWatching', 'enablePlayerAutoFocus',
+                    'enableHeader'
+                ],
+                newConfig = {
+                    version: '2',
+                    content: [],
+                    assets:  {
+                        banner: config.bannerImage
+                    },
+                    options: {}
+                },
+                featured;
+
+            if (isArray(config.playlists)) {
+
+                newConfig.content = config.playlists.map(function (id) {
+                    return {
+                        playlistId: id
+                    };
+                });
+            }
+
+            // add featured playlist to content
+            if (config.featuredPlaylist) {
+
+                featured = {
+                    playlistId: config.featuredPlaylist,
+                    featured:   true
+                };
+
+                if (isDefined(config.enableFeaturedText)) {
+                    featured.enableText = config.enableFeaturedText;
+                }
+
+                newConfig.content.unshift(featured);
+            }
+
+            // copy root fields
+            copyValues(fields, config, newConfig);
+
+            // copy options
+            copyValues(options, config, newConfig.options);
+
+            return newConfig;
+        }
+
+        /**
+         * Copy defined keys from source to target
+         * @param {string[]} keys
+         * @param {Object} source
+         * @param {Object} target
+         */
+        function copyValues (keys, source, target) {
+
+            angular.forEach(keys, function (key) {
+                if (angular.isDefined(source[key])) {
+                    target[key] = source[key];
+                }
+            });
         }
     }
 
