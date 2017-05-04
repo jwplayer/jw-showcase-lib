@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'config'];
+        'watchlist', 'utils', 'offline', 'config'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            config) {
+                            offline, config) {
 
         return {
             scope:            {
@@ -85,6 +85,14 @@
                     element.addClass('jw-card-flag-hide-text');
                 }
 
+                if (offline.hasSupport) {
+                    activateOfflineSupport();
+                }
+
+                if (scope.vm.featured) {
+                    activateFeatured();
+                }
+
                 findElement('.jw-card-title')
                     .html(scope.vm.item.title)
                     .attr('href', $state.href('root.video', {
@@ -107,6 +115,42 @@
                 scope.$watch(function () {
                     return watchlist.hasItem(scope.vm.item);
                 }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Activate featured card
+             */
+            function activateFeatured () {
+
+                var enableFeaturedText = config.enableFeaturedText,
+                    feed               = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
+
+                if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
+                    enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
+                }
+
+                if (!enableFeaturedText) {
+                    element.addClass('jw-card-flag-hide-text');
+                }
+            }
+
+            /**
+             * Activate offline support
+             */
+            function activateOfflineSupport () {
+
+                scope.$watch(function () {
+                    return offline.offlineMediaIds.indexOf(scope.vm.item.mediaid) > -1;
+                }, setOfflineAvailable);
+            }
+
+            /**
+             *
+             * @param available
+             */
+            function setOfflineAvailable (available) {
+
+                element.toggleClass('jw-card-flag-offline-available', available);
             }
 
             /**
@@ -230,7 +274,7 @@
              * @param {String} toast.templateUrl    Template url
              * @param {Number} [toast.duration]     Optional duration
              *
-             * @returns {Promise}
+             * @returns {Promise|function}
              */
             function showToast (toast) {
 
@@ -246,8 +290,12 @@
                 // add class to card element
                 element.addClass('jw-card-flag-toast-open');
 
-                // set timeout to remove toast
-                $timeout(function () {
+                if (toast.duration !== -1) {
+                    // set timeout to remove toast
+                    $timeout(closeToast, toast.duration || 1000);
+                }
+
+                function closeToast () {
 
                     defer.notify('before_remove');
 
@@ -257,8 +305,14 @@
                             element.removeClass('jw-card-flag-toast-open');
                             defer.resolve();
                         });
-                }, toast.duration || 1000);
+                }
 
+                if (toast.duration === -1) {
+                    return function () {
+                        closeToast();
+                        return defer.promise;
+                    };
+                }
                 return defer.promise;
             }
         }

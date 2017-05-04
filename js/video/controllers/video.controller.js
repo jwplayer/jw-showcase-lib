@@ -38,12 +38,14 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.player
      * @requires jwShowcase.core.platform
+     * @requires jwShowcase.core.offline
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item'];
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'offline', 'config', 'feed',
+        'item'];
     function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
-                              watchlist, seo, userSettings, utils, player, platform, config, feed, item) {
+                              watchlist, seo, userSettings, utils, player, platform, offline, config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -101,6 +103,10 @@
                 }
             };
 
+            if (!navigator.onLine) {
+                vm.playerSettings.advertising = false;
+            }
+
             if (!window.jwplayer.defaults.skin) {
                 vm.playerSettings.skin = 'jw-showcase';
             }
@@ -112,6 +118,17 @@
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
+
+            $scope.$watch(function () {
+                return offline.isOffline;
+            }, function () {
+                var state = player.getState();
+                if (state !== 'playing' && state !== 'paused') {
+                    playerPlaylist = generatePlaylist(itemFeed, item);
+                    player.load(playerPlaylist);
+                    update();
+                }
+            });
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
@@ -133,7 +150,9 @@
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
-            loadRecommendations();
+            if (navigator.onLine) {
+                loadRecommendations();
+            }
         }
 
         /**
@@ -185,7 +204,9 @@
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
                 isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
-                playlistCopy  = angular.copy(feed.playlist),
+                playlistCopy  = angular.copy(feed.playlist).filter(function (item) {
+                    return navigator.onLine || offline.hasDownloadedItem(item);
+                }),
                 playlistItem, sources;
 
             playlistCopy = playlistCopy
@@ -199,6 +220,10 @@
 
                 sources = current.sources.filter(function (source) {
 
+                    if (!navigator.onLine) {
+                        return source.type === 'video/mp4' && source.width <= 720;
+                    }
+
                     // filter out HLS streams for Android 4
                     if (isAndroid4 && 'application/vnd.apple.mpegurl' === source.type) {
                         return false;
@@ -206,6 +231,10 @@
 
                     return 'application/dash+xml' !== source.type;
                 });
+
+                if (!navigator.onLine) {
+                    sources.splice(1);
+                }
 
                 return angular.extend(playlistItem, {
                     image:       utils.replaceImageSize(current.image, 1920),
@@ -501,7 +530,7 @@
             stateParams.slug    = vm.item.$slug;
 
             // update itemFeed and playlist when feed is different
-            if (vm.item.feedid !== itemFeed.feedid) {
+            if (vm.item.feedid !== itemFeed.feedid || playerPlaylist.length !== itemFeed.playlist.length) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();

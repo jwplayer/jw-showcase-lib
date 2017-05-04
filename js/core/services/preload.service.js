@@ -39,8 +39,8 @@
      */
 
     Preload.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
-        'apiConsumer', 'watchlist', 'watchProgress', 'userSettings'];
-    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist,
+        'apiConsumer', 'offline', 'watchlist', 'watchProgress', 'userSettings'];
+    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, offline, watchlist,
                       watchProgress, userSettings) {
 
         var defer = $q.defer();
@@ -70,8 +70,10 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                api.getPlayer(config.player)
-                    .then(handlePreloadSuccess, handlePreloadError);
+                // api.getPlayer(config.player)
+                //     .then(handlePreloadSuccess, handlePreloadError);
+
+                handlePreloadSuccess();
 
                 apiConsumer
                     .loadFeedsFromConfig()
@@ -87,6 +89,9 @@
 
             userSettings.restore();
             showCookiesNotice();
+
+            offline.prefetchPlayer(window.jwplayer.version.split('+').shift());
+            offline.prefetchConfig(config);
 
             defer.resolve();
         }
