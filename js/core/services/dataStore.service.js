@@ -51,7 +51,7 @@
          * @description
          * The watchlist feed
          */
-        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos');
+        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos', true, true);
 
         /**
          * @ngdoc property
@@ -62,7 +62,7 @@
          * @description
          * The watchProgress feed
          */
-        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching');
+        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching', true, true);
 
         /**
          * @ngdoc property
@@ -121,7 +121,7 @@
             angular.forEach(this.feeds, function (feed) {
 
                 // skip watchProgress and watchlist feeds
-                if (feed.feedid === self.watchProgressFeed.feedid || feed.feedid === self.watchlistFeed.feedid) {
+                if (true === feed.dynamic) {
                     return;
                 }
 

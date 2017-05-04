@@ -54,6 +54,12 @@
         vm.clearWatchProgress = clearWatchProgress;
 
         vm.onChangeHandler = function (type) {
+
+            // empty watchProgress when user disables continueWatching
+            if (type === 'continueWatching' && !vm[type]) {
+                watchProgress.clearAll();
+            }
+
             userSettings.set(type, vm[type]);
         };
 

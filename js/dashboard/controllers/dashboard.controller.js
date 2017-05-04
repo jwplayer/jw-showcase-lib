@@ -16,6 +16,8 @@
 
 (function () {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.dashboard')
         .controller('DashboardController', DashboardController);
@@ -29,14 +31,14 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.platform
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform'];
-    function DashboardController ($state, dataStore, userSettings, platform) {
+    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform', 'config'];
+    function DashboardController ($state, dataStore, userSettings, platform, config) {
 
         var vm = this;
 
         vm.dataStore              = dataStore;
-        vm.getSliderVisible       = getSliderVisible;
-        vm.getSliderRowClassNames = getSliderRowClassNames;
+        vm.config                 = config;
+        vm.isMobileScreen         = MOBILE_SCREEN;
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -71,34 +73,6 @@
                 slug:      item.$slug,
                 autoStart: clickedOnPlay || platform.isMobile
             });
-        }
-
-        /**
-         * Returns true if the slider needs to be visible
-         * @param {jwShowcase.core.feed} feed
-         */
-        function getSliderVisible (feed) {
-
-            // if its the watchProgress we also need to test for the continueWatching setting
-            if (dataStore.watchProgressFeed.feedid === feed.feedid && !userSettings.settings.continueWatching) {
-                return false;
-            }
-
-            return feed.playlist.length > 0;
-        }
-
-        /**
-         * Return classNames for slider row
-         * @param {jwShowcase.core.feed} feed
-         *
-         * @returns {Object}
-         */
-        function getSliderRowClassNames (feed) {
-
-            return {
-                'jw-expand-animation': dataStore.watchProgressFeed.feedid === feed.feedid ||
-                                       dataStore.watchlistFeed.feedid === feed.feedid
-            };
         }
     }
 

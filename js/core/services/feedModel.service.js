@@ -27,11 +27,13 @@
     feedModelFactory.$inject = [];
     function feedModelFactory () {
 
-        function FeedModel (feedId, title, navigable) {
+        function FeedModel (feedId, title, navigable, dynamic) {
 
             this.feedid = feedId;
 
             this.title = title || '';
+
+            this.dynamic = !!dynamic;
 
             this.playlist = [];
 

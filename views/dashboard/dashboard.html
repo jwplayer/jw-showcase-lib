@@ -1,7 +1,14 @@
-<div class="has-jw-header">
-  <div class="feed" ng-repeat="feed in vm.dataStore.feeds" ng-if="vm.getSliderVisible(feed)"
-      ng-class="vm.getSliderRowClassNames(feed)">
-    <jw-card-slider feed="feed" featured="feed.featured" on-card-click="vm.cardClickHandler"
-        class="jw-lazy-load"></jw-card-slider>
+<div class="has-jw-header" ng-switch="vm.featured">
+  <div ng-repeat="feed in ::vm.dataStore.feeds">
+    <jw-card-slider
+        feed="feed"
+        featured="feed.featured"
+        on-card-click="vm.cardClickHandler"
+        ng-class="{ 'jw-expand-animation': feed.dynamic }"
+        ng-if="!(feed.dynamic && !feed.playlist.length) && !(feed.featured && vm.isMobileScreen)"
+    ></jw-card-slider>
+    <div ng-if="feed.featured && vm.isMobileScreen" class="jw-card-list">
+      <jw-card item="item" featured="true" on-click="vm.cardClickHandler" ng-repeat="item in feed.playlist"></jw-card>
+    </div>
   </div>
 </div>
