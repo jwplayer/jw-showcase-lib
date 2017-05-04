@@ -46,6 +46,26 @@ $featured-slider-max-width: 900px;
         }
     }
 
+    &-916 .jw-card .jw-card-aspect {
+        padding-bottom: (16 / 9) * 100%;
+    }
+
+    &-11 .jw-card .jw-card-aspect {
+        padding-bottom: 100%;
+    }
+
+    &-43 .jw-card .jw-card-aspect {
+        padding-bottom: 75%;
+    }
+
+    &-53 .jw-card .jw-card-aspect {
+        padding-bottom: 60%;
+    }
+
+    &-21 .jw-card .jw-card-aspect {
+        padding-bottom: 50%;
+    }
+
     &.jw-lazy-load {
 
         .jw-card-poster {

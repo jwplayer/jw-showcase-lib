@@ -102,6 +102,10 @@
 
                 element.addClass(className);
 
+                if (scope.vm.feed.aspectratio) {
+                    element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
+                }
+
                 if (!scope.vm.featured) {
                     scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
                 }
