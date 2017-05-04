@@ -42,7 +42,7 @@
         vm.unsaveButtonClickHandler = unsaveButtonClickHandler;
         vm.removeButtonClickHandler = removeButtonClickHandler;
 
-        activate();
+        vm.$onInit = activate;
 
         ////////////////////////
 
