@@ -401,7 +401,7 @@
             }
 
             // watchProgress is disabled
-            if (false === userSettings.settings.watchProgress || false === config.options.enableContinueWatching) {
+            if (false === userSettings.settings.continueWatching || false === config.options.enableContinueWatching) {
                 return;
             }
 
