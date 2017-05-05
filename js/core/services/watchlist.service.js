@@ -28,9 +28,10 @@
      *
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.session
+     * @requires jwShowcase.core.serviceWorker
      */
-    watchlist.$inject = ['dataStore', 'session', 'offline'];
-    function watchlist (dataStore, session, offline) {
+    watchlist.$inject = ['dataStore', 'session', 'serviceWorker'];
+    function watchlist (dataStore, session, serviceWorker) {
 
         this.addItem    = addItem;
         this.hasItem    = hasItem;
@@ -64,6 +65,7 @@
          * @propertyOf jwShowcase.core.watchlist
          *
          * @param {jwShowcase.core.item} item
+         * @param {boolean} [download=true]
          *
          * @description
          * Add given item to watchlist
@@ -83,8 +85,8 @@
                 dataStore.watchlistFeed.playlist.unshift(clone);
                 persist();
 
-                if (download && offline.hasSupport) {
-                    return offline.downloadItem(item);
+                if (download && serviceWorker.isSupported()) {
+                    return serviceWorker.downloadItem(item);
                 }
             }
         }
@@ -107,8 +109,8 @@
                 dataStore.watchlistFeed.playlist.splice(index, 1);
                 persist();
 
-                if (offline.hasSupport) {
-                    offline.removeDownloadedItem(item);
+                if (serviceWorker.isSupported()) {
+                    serviceWorker.removeDownloadedItem(item);
                 }
             }
         }

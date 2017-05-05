@@ -28,10 +28,10 @@
      * @requires $timeout
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
-     * @requires jwShowcase.core.offline
+     * @requires jwShowcase.core.serviceWorker
      */
-    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress', 'offline', 'popup'];
-    function CardMenuController ($scope, $timeout, watchlist, watchProgress, offline, popup) {
+    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress', 'serviceWorker', 'popup'];
+    function CardMenuController ($scope, $timeout, watchlist, watchProgress, serviceWorker, popup) {
 
         var vm = this;
 
@@ -93,7 +93,7 @@
          */
         function saveButtonClickHandler () {
 
-            if (!offline.hasSupport) {
+            if (!serviceWorker.isSupported()) {
 
                 vm.jwCard.showToast({
                     templateUrl: 'views/core/toasts/savedVideo.html',

@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'offline', 'config'];
+        'watchlist', 'utils', 'serviceWorker'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            offline, config) {
+                            serviceWorker) {
 
         return {
             scope:            {
@@ -72,25 +72,16 @@
 
             function activate () {
 
-                var enableText = true,
-                    feed       = dataStore.getFeed(scope.vm.item.feedid);
+                var feed       = dataStore.getFeed(scope.vm.item.feedid);
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (feed) {
-                    enableText = feed.enableText;
-                }
-
-                if (!enableText) {
+                if (feed && false === feed.enableText) {
                     element.addClass('jw-card-flag-hide-text');
                 }
 
-                if (offline.hasSupport) {
+                if (serviceWorker.isSupported()) {
                     activateOfflineSupport();
-                }
-
-                if (scope.vm.featured) {
-                    activateFeatured();
                 }
 
                 findElement('.jw-card-title')
@@ -118,34 +109,16 @@
             }
 
             /**
-             * Activate featured card
-             */
-            function activateFeatured () {
-
-                var enableFeaturedText = config.enableFeaturedText,
-                    feed               = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
-
-                if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
-                    enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
-                }
-
-                if (!enableFeaturedText) {
-                    element.addClass('jw-card-flag-hide-text');
-                }
-            }
-
-            /**
              * Activate offline support
              */
             function activateOfflineSupport () {
 
                 scope.$watch(function () {
-                    return offline.offlineMediaIds.indexOf(scope.vm.item.mediaid) > -1;
+                    return serviceWorker.hasDownloadedItem(scope.vm.item);
                 }, setOfflineAvailable);
             }
 
             /**
-             *
              * @param available
              */
             function setOfflineAvailable (available) {

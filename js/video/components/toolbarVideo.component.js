@@ -44,8 +44,8 @@
             }
         });
 
-    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'offline'];
-    function ToolbarVideoController ($scope, popup, watchlist, offline) {
+    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'serviceWorker'];
+    function ToolbarVideoController ($scope, popup, watchlist, serviceWorker) {
 
         var vm = this;
 
@@ -104,8 +104,7 @@
                 return watchlist.removeItem(vm.item);
             }
 
-
-            if (!offline.hasSupport) {
+            if (!serviceWorker.isSupported()) {
                 return watchlist.addItem(vm.item);
             }
 

@@ -47,8 +47,8 @@
      * @example
      *
      * ```
-     * <jw-card-slider feed="vm.feed" cols="1" featured="true"></jw-card-slider>
-     * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="true"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
     cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];

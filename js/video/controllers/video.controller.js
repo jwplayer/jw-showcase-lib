@@ -38,14 +38,15 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.player
      * @requires jwShowcase.core.platform
-     * @requires jwShowcase.core.offline
+     * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'offline', 'config', 'feed',
-        'item'];
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
+        'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
-                              watchlist, seo, userSettings, utils, player, platform, offline, config, feed, item) {
+                              watchlist, seo, userSettings, utils, player, platform, serviceWorker, config, feed,
+                              item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -120,7 +121,7 @@
             }, conserveBandwidthChangeHandler);
 
             $scope.$watch(function () {
-                return offline.isOffline;
+                return serviceWorker.isOnline();
             }, function () {
                 var state = player.getState();
                 if (state !== 'playing' && state !== 'paused') {
@@ -204,10 +205,14 @@
 
             var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
                 isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
-                playlistCopy  = angular.copy(feed.playlist).filter(function (item) {
-                    return navigator.onLine || offline.hasDownloadedItem(item);
-                }),
+                playlistCopy  = angular.copy(feed.playlist),
                 playlistItem, sources;
+
+            if (serviceWorker.isSupported()) {
+                playlistCopy = playlistCopy.filter(function (item) {
+                    return serviceWorker.isOnline() || serviceWorker.hasDownloadedItem(item);
+                });
+            }
 
             playlistCopy = playlistCopy
                 .slice(playlistIndex)

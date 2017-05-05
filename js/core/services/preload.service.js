@@ -32,6 +32,7 @@
      * @param {jwShowcase.core.cookies} cookies
      * @param {jwShowcase.core.api} api
      * @param {jwShowcase.core.apiConsumer} apiConsumer
+     * @param {jwShowcase.core.watchlist} serviceWorker
      * @param {jwShowcase.core.watchlist} watchlist
      * @param {jwShowcase.core.userSettings} userSettings
      *
@@ -39,9 +40,9 @@
      */
 
     Preload.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
-        'apiConsumer', 'offline', 'watchlist', 'watchProgress', 'userSettings'];
-    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, offline, watchlist,
-                      watchProgress, userSettings) {
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings'];
+    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, serviceWorker,
+                      watchlist, watchProgress, userSettings) {
 
         var defer = $q.defer();
 
@@ -70,10 +71,8 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                // api.getPlayer(config.player)
-                //     .then(handlePreloadSuccess, handlePreloadError);
-
-                handlePreloadSuccess();
+                api.getPlayer(config.player)
+                    .then(handlePreloadSuccess, handlePreloadError);
 
                 apiConsumer
                     .loadFeedsFromConfig()
@@ -90,8 +89,10 @@
             userSettings.restore();
             showCookiesNotice();
 
-            offline.prefetchPlayer(window.jwplayer.version.split('+').shift());
-            offline.prefetchConfig(config);
+            if (serviceWorker.isSupported()) {
+                serviceWorker.prefetchPlayer(jwplayer.utils.repo());
+                serviceWorker.prefetchConfig(config);
+            }
 
             defer.resolve();
         }
@@ -135,7 +136,7 @@
                 if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
 
                     // when first feed is featured we place the continue watching slider after that
-                    var index = config.content[0].featured ? 1: 0;
+                    var index = config.content[0].featured ? 1 : 0;
 
                     // insert at index
                     config.content.splice(index, 0, {

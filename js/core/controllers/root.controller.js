@@ -29,11 +29,11 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.appStore
      * @requires jwShowcase.core.seo
-     * @requires jwShowcase.core.offline
+     * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
-    RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'offline', 'config'];
-    function RootController ($scope, $timeout, dataStore, appStore, seo, offline, config) {
+    RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'serviceWorker', 'config'];
+    function RootController ($scope, $timeout, dataStore, appStore, seo, serviceWorker, config) {
 
         var rootVm = this;
 
@@ -66,7 +66,7 @@
          */
         function reconnect () {
 
-            offline.updateConnectionState();
+            serviceWorker.updateConnectionState();
         }
     }
 
