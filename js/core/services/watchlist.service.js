@@ -163,6 +163,12 @@
          */
         function clearAll () {
 
+            if (serviceWorker.isSupported()) {
+                angular.forEach(dataStore.watchlistFeed.playlist, function (item) {
+                    serviceWorker.removeDownloadedItem(item);
+                });
+            }
+
             // empty playlist in dataStore
             dataStore.watchlistFeed.playlist = [];
 
