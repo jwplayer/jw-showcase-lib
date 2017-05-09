@@ -4,17 +4,17 @@
 // --------------------------------
 
 .jw-flag-offline {
+    padding-bottom: 45px;
 
     .jw-card:not(.jw-card-flag-offline-available) {
+        opacity: 0.6;
         pointer-events: none;
-
-        .jw-card-poster {
-            opacity: 0.6;
-        }
+        filter: grayscale(0.5);
     }
 
     .jw-offline-message {
-        display: block;
+        @include transform(translateY(0%));
+        visibility: visible;
     }
 
     .jw-button-search {
@@ -24,11 +24,19 @@
 }
 
 .jw-offline-message {
-    display: none;
+    @include single-transition(transform, 0.2s, ease);
+    @include transform(translateY(100%));
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 8px 0;
+    padding: 14px 0;
     color: $white;
+    font-size: 14px;
     text-align: center;
+    visibility: hidden;
+
+    a {
+        font-weight: bold;
+        text-decoration: underline;
+    }
 }
