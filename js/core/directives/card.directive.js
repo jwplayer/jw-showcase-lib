@@ -77,7 +77,7 @@
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (feed) {
+                if (feed && $state.is('root.dashboard')) {
                     enableText = feed.enableText;
                 }
 

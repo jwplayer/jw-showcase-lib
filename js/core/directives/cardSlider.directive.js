@@ -40,6 +40,7 @@
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
      * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
+     * @requires $state
      * @requires $compile
      * @requires $templateCache
      * @requires jwShowcase.core.utils
@@ -51,8 +52,8 @@
      * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
-    function cardSliderDirective ($compile, $templateCache, utils) {
+    cardSliderDirective.$inject = ['$state', '$compile', '$templateCache', 'utils'];
+    function cardSliderDirective ($state, $compile, $templateCache, utils) {
 
         return {
             scope:            {
@@ -101,10 +102,6 @@
                     loading         = scope.vm.feed.loading;
 
                 element.addClass(className);
-
-                if (scope.vm.feed.aspectratio) {
-                    element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
-                }
 
                 if (!scope.vm.featured) {
                     scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
@@ -164,8 +161,16 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                // set slider background color
-                element.css('background-color', scope.vm.feed.backgroundColor || '');
+                if ($state.is('root.dashboard')) {
+
+                    // set slider background color
+                    element.css('background-color', scope.vm.feed.backgroundColor || '');
+
+                    // set slider aspectratio
+                    if (scope.vm.feed.aspectratio) {
+                        element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
+                    }
+                }
 
                 if (!feedHasChanged(newValue, oldValue)) {
                     return;
@@ -257,10 +262,10 @@
              */
             function getItemsVisible () {
 
-                var cols = scope.vm.feed.cols;
+                var cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
 
-                if (!angular.isDefined(cols)) {
-                    cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
+                if (angular.isDefined(scope.vm.feed.cols) && $state.is('root.dashboard')) {
+                    cols = scope.vm.feed.cols;
                 }
 
                 return angular.isNumber(cols) ? cols : utils.getValueForScreenSize(cols, 1);
