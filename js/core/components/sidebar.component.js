@@ -30,13 +30,15 @@
      *
      * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.sidebar
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    SidebarController.$inject = ['popup', 'dataStore', 'watchlist', 'watchProgress', 'userSettings', 'config'];
-    function SidebarController (popup, dataStore, watchlist, watchProgress, userSettings, config) {
+    SidebarController.$inject = ['popup', 'dataStore', 'sidebar', 'watchlist', 'watchProgress', 'userSettings',
+        'config'];
+    function SidebarController (popup, dataStore, sidebar, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
 
@@ -53,15 +55,8 @@
         vm.clearWatchlist     = clearWatchlist;
         vm.clearWatchProgress = clearWatchProgress;
 
-        vm.onChangeHandler = function (type) {
-
-            // empty watchProgress when user disables continueWatching
-            if (type === 'continueWatching' && !vm[type]) {
-                watchProgress.clearAll();
-            }
-
-            userSettings.set(type, vm[type]);
-        };
+        vm.itemClickHandler = itemClickHandler;
+        vm.toggleChangeHandler = toggleChangeHandler;
 
         activate();
 
@@ -93,8 +88,41 @@
 
         /**
          * @ngdoc method
+         * @name jwShowcase.core.SidebarController#toggleChangeHandler
+         * @methodOf jwShowcase.core.SidebarController
+         *
+         * @description
+         * Handle change event in toggle directive.
+         */
+        function toggleChangeHandler (type) {
+
+            // empty watchProgress when user disables continueWatching
+            if (type === 'continueWatching' && !vm[type]) {
+                watchProgress.clearAll();
+            }
+
+            userSettings.set(type, vm[type]);
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.SidebarController#itemClickHandler
+         * @methodOf jwShowcase.core.SidebarController
+         *
+         * @description
+         * Handle sidebar item click event
+         */
+        function itemClickHandler ($event) {
+
+            if (angular.element($event.currentTarget || $event.target).hasClass('active')) {
+                sidebar.hide();
+            }
+        }
+
+        /**
+         * @ngdoc method
          * @name jwShowcase.core.SidebarController#clearWatchlist
-         * @methodOf jwShowcase.core.MenuController
+         * @methodOf jwShowcase.core.SidebarController
          *
          * @description
          * Show confirmation modal and clear watchlist if the user clicks on 'ok'.
@@ -121,7 +149,7 @@
         /**
          * @ngdoc method
          * @name jwShowcase.core.SidebarController#clearWatchProgress
-         * @methodOf jwShowcase.core.MenuController
+         * @methodOf jwShowcase.core.SidebarController
          *
          * @description
          * Show confirmation modal and clear watchProgress if the user clicks on 'ok'.
