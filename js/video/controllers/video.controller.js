@@ -99,6 +99,7 @@
                 preload:        'metadata',
                 sharing:        false,
                 visualplaylist: false,
+                cast:           {},
                 analytics:      {
                     bi: config.id
                 }
@@ -114,6 +115,7 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
+                vm.playerSettings.cast = false;
             }
 
             $scope.$watch(function () {
