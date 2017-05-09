@@ -38,12 +38,15 @@
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.player
      * @requires jwShowcase.core.platform
+     * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'config', 'feed', 'item'];
+        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
+        'config', 'feed', 'item'];
     function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
-                              watchlist, seo, userSettings, utils, player, platform, config, feed, item) {
+                              watchlist, seo, userSettings, utils, player, platform, serviceWorker, config, feed,
+                              item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -101,6 +104,10 @@
                 }
             };
 
+            if (!navigator.onLine) {
+                vm.playerSettings.advertising = false;
+            }
+
             if (!window.jwplayer.defaults.skin) {
                 vm.playerSettings.skin = 'jw-showcase';
             }
@@ -112,6 +119,17 @@
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
+
+            $scope.$watch(function () {
+                return serviceWorker.isOnline();
+            }, function () {
+                var state = player.getState();
+                if (state !== 'playing' && state !== 'paused') {
+                    playerPlaylist = generatePlaylist(itemFeed, item);
+                    player.load(playerPlaylist);
+                    update();
+                }
+            });
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
@@ -133,7 +151,9 @@
 
             watchProgressItem = watchProgress.getItem(vm.item);
 
-            loadRecommendations();
+            if (navigator.onLine) {
+                loadRecommendations();
+            }
         }
 
         /**
@@ -188,6 +208,12 @@
                 playlistCopy  = angular.copy(feed.playlist),
                 playlistItem, sources;
 
+            if (serviceWorker.isSupported()) {
+                playlistCopy = playlistCopy.filter(function (item) {
+                    return serviceWorker.isOnline() || serviceWorker.hasDownloadedItem(item);
+                });
+            }
+
             playlistCopy = playlistCopy
                 .slice(playlistIndex)
                 .concat(playlistCopy.slice(0, playlistIndex));
@@ -199,6 +225,10 @@
 
                 sources = current.sources.filter(function (source) {
 
+                    if (serviceWorker.isSupported() && !navigator.onLine) {
+                        return source.type === 'video/mp4' && source.width <= 720;
+                    }
+
                     // filter out HLS streams for Android 4
                     if (isAndroid4 && 'application/vnd.apple.mpegurl' === source.type) {
                         return false;
@@ -207,10 +237,14 @@
                     return 'application/dash+xml' !== source.type;
                 });
 
+                if (serviceWorker.isSupported() && !navigator.onLine) {
+                    sources.splice(1);
+                }
+
                 return angular.extend(playlistItem, {
-                    image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     sources,
-                    tracks:      current.tracks
+                    image:   utils.replaceImageSize(current.image, 1920),
+                    sources: sources,
+                    tracks:  current.tracks
                 });
             });
         }
@@ -310,11 +344,6 @@
 
             // same item
             if (!newItem || newItem.mediaid === vm.item.mediaid) {
-                return;
-            }
-
-            // item does not exist in current feed.
-            if (!newItem) {
                 return;
             }
 
@@ -486,8 +515,8 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex,
-                stateParams = $state.params;
+            var playlistIndex = playerPlaylist.findIndex(byMediaId(newItem.mediaid)),
+                stateParams   = $state.params;
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
@@ -500,8 +529,8 @@
             stateParams.feedId  = vm.item.feedid;
             stateParams.slug    = vm.item.$slug;
 
-            // update itemFeed and playlist when feed is different
-            if (vm.item.feedid !== itemFeed.feedid) {
+            // update playlist when item does not exist in current playlist
+            if (playlistIndex === -1) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();

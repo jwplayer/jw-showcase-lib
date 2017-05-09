@@ -2,13 +2,11 @@
 // Import base first since it contains all variables and Compass dependencies
 // --------------------------------
 @import 'base';
-
 //
 // Import mixins
 // --------------------------------
 @import 'mixins/responsive';
 @import 'mixins/utils';
-
 //
 // Import components
 // --------------------------------
@@ -31,6 +29,7 @@
 @import 'components/loading';
 @import 'components/markdown';
 @import 'components/modal';
+@import 'components/offline';
 @import 'components/player';
 @import 'components/popups';
 @import 'components/search';
@@ -41,20 +40,17 @@
 @import 'components/videoContainer';
 @import 'components/videoDetails';
 @import 'components/view';
-
 //
 // Import themes
 // --------------------------------
 @import 'themes/light';
 @import 'themes/dark';
-
 //
 // Import skins
 // --------------------------------
 @import 'skins/showcase';
 
-html,
-body {
+html {
     height: 100%;
     min-height: 100%;
 }
