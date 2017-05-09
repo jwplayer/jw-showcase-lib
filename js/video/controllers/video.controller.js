@@ -520,8 +520,8 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex,
-                stateParams = $state.params;
+            var playlistIndex = playerPlaylist.findIndex(byMediaId(newItem.mediaid)),
+                stateParams   = $state.params;
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
@@ -534,8 +534,8 @@
             stateParams.feedId  = vm.item.feedid;
             stateParams.slug    = vm.item.$slug;
 
-            // update itemFeed and playlist when feed is different
-            if (vm.item.feedid !== itemFeed.feedid || playerPlaylist.length !== itemFeed.playlist.length) {
+            // update playlist when item does not exist in current playlist
+            if (playlistIndex === -1) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();

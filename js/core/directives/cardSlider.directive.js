@@ -409,12 +409,16 @@
                         slide;
 
                     while (mapIndex--) {
-                        if (sliderMap[mapIndex].key === item.$key) {
-                            slide = sliderMap[mapIndex].el;
-                            nextSliderMap.push(sliderMap[mapIndex]);
-                            sliderMap.splice(mapIndex, 1);
-                            return slide;
+
+                        if (sliderMap[mapIndex].key !== item.$key) {
+                            continue;
                         }
+
+                        slide = sliderMap[mapIndex].el;
+                        nextSliderMap.push(sliderMap[mapIndex]);
+                        sliderMap.splice(mapIndex, 1);
+
+                        return slide;
                     }
                 }
 
@@ -463,7 +467,7 @@
 
                 var childScope = scope.$new(false, scope);
 
-                childScope.item = item;
+                childScope.item = angular.copy(item);
 
                 return $compile(angular.element(slideTemplate))(childScope);
             }
