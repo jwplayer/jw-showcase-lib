@@ -225,7 +225,7 @@
 
                 sources = current.sources.filter(function (source) {
 
-                    if (!navigator.onLine) {
+                    if (serviceWorker.isSupported() && !navigator.onLine) {
                         return source.type === 'video/mp4' && source.width <= 720;
                     }
 
@@ -237,14 +237,14 @@
                     return 'application/dash+xml' !== source.type;
                 });
 
-                if (!navigator.onLine) {
+                if (serviceWorker.isSupported() && !navigator.onLine) {
                     sources.splice(1);
                 }
 
                 return angular.extend(playlistItem, {
-                    image:       utils.replaceImageSize(current.image, 1920),
-                    sources:     sources,
-                    tracks:      current.tracks
+                    image:   utils.replaceImageSize(current.image, 1920),
+                    sources: sources,
+                    tracks:  current.tracks
                 });
             });
         }
@@ -344,11 +344,6 @@
 
             // same item
             if (!newItem || newItem.mediaid === vm.item.mediaid) {
-                return;
-            }
-
-            // item does not exist in current feed.
-            if (!newItem) {
                 return;
             }
 
