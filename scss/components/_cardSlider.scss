@@ -27,6 +27,10 @@ $featured-slider-max-width: 900px;
         }
     }
 
+    &-flag-hide-title .jw-card-slider-title {
+        display: none;
+    }
+
     &-flag-now-playing .jw-card-slider-slide.first {
 
         .jw-card-container {
@@ -87,7 +91,7 @@ $featured-slider-max-width: 900px;
     // --------------------------------
 
     .jw-card-slider-title {
-        margin: 20px 90px;
+        margin: 0 90px 20px;
 
         font-size: 21px;
         font-weight: bold;
@@ -238,8 +242,12 @@ $featured-slider-max-width: 900px;
 
 .jw-card-slider.jw-card-slider-flag-default {
 
+    .jw-card-slider-container {
+        padding: 20px 0;
+    }
+
     .jw-card-slider-align {
-        padding: 0 #{90px - $default-slider-spacing / 2} 20px;
+        padding: 0 #{90px - $default-slider-spacing / 2};
     }
 
     .jw-card-slider-list {
@@ -274,24 +282,13 @@ $featured-slider-max-width: 900px;
 
     .jw-card-slider {
 
-        &-flag-featured .jw-card-slider-container {
+        .jw-card-slider-container {
             .jw-card-slider-title {
-                margin: 20px;
+                margin: 0 20px 20px;
             }
 
             .jw-card-slider-align {
                 padding: 0 125px 0 15px;
-            }
-        }
-
-        &-flag-default .jw-card-slider-container {
-
-            .jw-card-slider-title {
-                margin: 20px;
-            }
-
-            .jw-card-slider-align {
-                padding: 0 125px 20px 15px;
             }
         }
     }

@@ -43,7 +43,8 @@
          */
         this.populateFeedModel = function (feed, type) {
 
-            var customOptions = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio'],
+            var customOptions = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio',
+                    'enableTitle'],
                 promise;
 
             if (!feed.feedid) {

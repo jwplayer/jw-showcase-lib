@@ -170,6 +170,10 @@
                     if (scope.vm.feed.aspectratio) {
                         element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
                     }
+
+                    if (angular.isDefined(scope.vm.feed.enableTitle)) {
+                        element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.feed.enableTitle);
+                    }
                 }
 
                 if (!feedHasChanged(newValue, oldValue)) {
