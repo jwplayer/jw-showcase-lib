@@ -136,7 +136,7 @@
                 if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
 
                     // when first feed is featured we place the continue watching slider after that
-                    var index = config.content[0].featured ? 1 : 0;
+                    var index = config.content[0] && config.content[0].featured ? 1 : 0;
 
                     // insert at index
                     config.content.splice(index, 0, {
