@@ -72,11 +72,16 @@
 
             function activate () {
 
-                var feed       = dataStore.getFeed(scope.vm.item.feedid);
+                var feed       = dataStore.getFeed(scope.vm.item.feedid),
+                    enableText = true;
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (feed && false === feed.enableText) {
+                if (feed && $state.is('root.dashboard')) {
+                    enableText = feed.enableText;
+                }
+
+                if (!enableText) {
                     element.addClass('jw-card-flag-hide-text');
                 }
 

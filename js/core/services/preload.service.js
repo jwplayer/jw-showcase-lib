@@ -160,6 +160,10 @@
                         content.enableText = true;
                     }
 
+                    if (!angular.isDefined(content.enableTitle)) {
+                        content.enableTitle = true;
+                    }
+
                     if (!angular.isDefined(content.enablePreview)) {
                         content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
                     }
