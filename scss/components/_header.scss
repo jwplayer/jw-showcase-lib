@@ -7,6 +7,7 @@
     padding: $header-padding;
 
     background-color: $header-bg-color;
+    color: $header-color;
 
     .jw-flag-loading-config & {
         display: none !important;
@@ -77,12 +78,7 @@
     }
 
     .jw-button {
-        color: $header-color;
         vertical-align: middle;
-
-        &:hover {
-            color: $header-hover-color;
-        }
 
         &.jw-button-menu .jwy-icon {
             -webkit-font-smoothing: none;

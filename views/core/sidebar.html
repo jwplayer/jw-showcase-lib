@@ -4,6 +4,7 @@
   <div class="jw-sidebar-content">
     <div class="jw-sidebar-group">
       <jw-button
+          class="jw-button-block jw-button-default"
           ui-sref="root.dashboard()"
           ui-sref-active="active"
           ng-click="vm.itemClickHandler($event)">
@@ -11,6 +12,7 @@
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
       <jw-button
+          class="jw-button-block jw-button-default"
           ui-sref="root.feed({feedId: 'saved-videos'})"
           ui-sref-active="active"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}"
@@ -19,6 +21,7 @@
         <i class="jwy-icon jwy-icon-angle-right"></i>
       </jw-button>
       <jw-button
+          class="jw-button-block jw-button-default"
           ui-sref="root.feed({feedId: 'continue-watching'})"
           ui-sref-active="active"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length || !vm.continueWatching}"
@@ -31,6 +34,7 @@
 
     <div class="jw-sidebar-group">
       <jw-button
+          class="jw-button-block jw-button-default"
           ng-repeat="feed in vm.feeds"
           ui-sref="root.feed({feedId: feed.feedid})"
           ui-sref-active="active"
@@ -41,11 +45,14 @@
     </div>
 
     <div class="jw-sidebar-group">
-      <jw-button ng-click="vm.clearWatchlist()"
+      <jw-button
+          class="jw-button-block jw-button-default"
+          ng-click="vm.clearWatchlist()"
           ng-class="{'jw-button-disabled': !vm.watchlist.playlist.length}">
         <span class="jw-button-label">Clear Saved videos</span>
       </jw-button>
       <jw-button ng-click="vm.clearWatchProgress()"
+          class="jw-button-block jw-button-default"
           ng-if="::vm.config.options.enableContinueWatching"
           ng-class="{'jw-button-disabled': !vm.watchProgress.playlist.length}">
         <span class="jw-button-label">Clear Continue watching</span>
