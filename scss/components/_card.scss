@@ -214,8 +214,15 @@
             text-align: center;
 
             .jw-card-toast-icon {
+                display: inline-block;
                 margin-bottom: 10px;
                 font-size: 3em;
+            }
+
+            .jw-rotate-animation {
+                width: 42px;
+                height: 42px;
+                font-size: 42px;
             }
         }
     }

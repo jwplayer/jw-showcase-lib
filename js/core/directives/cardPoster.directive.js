@@ -72,7 +72,8 @@
              */
             function activate () {
 
-                var watchProgressFeed = scope.vm.item.feedid === dataStore.watchProgressFeed.feedid;
+                var watchProgressFeed = jwCard.item.feedid === dataStore.watchProgressFeed.feedid,
+                    featuredCard      = jwCard.featured;
 
                 itemPosterUrl = generatePosterUrl();
                 feed          = dataStore.getFeed(jwCard.item.feedid);
@@ -91,7 +92,7 @@
                     return switchToDefaultPoster();
                 }
 
-                if (!watchProgressFeed && !platform.isTouch) {
+                if (!watchProgressFeed && !platform.isTouch && featuredCard) {
 
                     // set mouse preview flag to true
                     mousePreview = true;

@@ -48,8 +48,8 @@
      * @example
      *
      * ```
-     * <jw-card-slider feed="vm.feed" cols="1" featured="true"></jw-card-slider>
-     * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="true"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
     cardSliderDirective.$inject = ['$state', '$compile', '$templateCache', 'utils'];
@@ -121,7 +121,7 @@
 
                 if (loading) {
                     element.addClass('jw-card-slider-flag-loading');
-                    renderLoadingSlides();
+                    // renderLoadingSlides();
                 }
 
                 resizeHandler();
@@ -422,12 +422,16 @@
                         slide;
 
                     while (mapIndex--) {
-                        if (sliderMap[mapIndex].key === item.$key) {
-                            slide = sliderMap[mapIndex].el;
-                            nextSliderMap.push(sliderMap[mapIndex]);
-                            sliderMap.splice(mapIndex, 1);
-                            return slide;
+
+                        if (sliderMap[mapIndex].key !== item.$key) {
+                            continue;
                         }
+
+                        slide = sliderMap[mapIndex].el;
+                        nextSliderMap.push(sliderMap[mapIndex]);
+                        sliderMap.splice(mapIndex, 1);
+
+                        return slide;
                     }
                 }
 
@@ -476,7 +480,7 @@
 
                 var childScope = scope.$new(false, scope);
 
-                childScope.item = item;
+                childScope.item = angular.copy(item);
 
                 return $compile(angular.element(slideTemplate))(childScope);
             }
