@@ -5,7 +5,7 @@
     </nav>
     <div class="jw-toolbar-title"></div>
     <nav class="jw-toolbar-nav">
-      <jw-button class="jw-button-watchlist" ng-click="vm.watchlistButtonClickHandler()"
+      <jw-button class="jw-button-watchlist jw-button-default" ng-click="vm.watchlistButtonClickHandler()"
           ng-class="{'is-active': vm.inWatchlist}">
         <small class="jw-button-label is-hidden-mobile">{{ vm.inWatchlist ? 'Unsave video' : 'Save video' }}
         </small>
@@ -13,7 +13,8 @@
           <i class="jwy-icon jwy-icon-{{ vm.inWatchlist ? 'min' : 'plus' }}"></i>
         </i>
       </jw-button>
-      <jw-button class="jw-button-share is-hidden-hybrid-app" ng-click="vm.shareButtonClickHandler($event)">
+      <jw-button class="jw-button-share jw-button-default is-hidden-hybrid-app"
+          ng-click="vm.shareButtonClickHandler($event)">
         <small class="jw-button-label is-hidden-mobile">Share</small>
         <i class="jwy-icon jwy-icon-circle jwy-icon-stack">
           <i class="jwy-icon jwy-icon-share"></i>

@@ -8,6 +8,7 @@
     padding: 0 $toolbar-padding;
 
     background-color: $toolbar-bg-color;
+    color: $toolbar-color;
 
     &-subheader {
         position: fixed;
@@ -52,7 +53,6 @@
         @include align-self(center);
         padding: 5px 0;
 
-        color: $toolbar-color;
         font-size: rem(22px);
         font-weight: bold;
         line-height: 1em;
@@ -69,13 +69,7 @@
 
     .jw-button {
         height: $toolbar-height;
-
-        color: $toolbar-color;
         line-height: $toolbar-height / 2;
-
-        &:hover {
-            color: $toolbar-hover-color;
-        }
 
         > .jwy-icon {
             font-size: 1.5rem;

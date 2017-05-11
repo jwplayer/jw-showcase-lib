@@ -8,29 +8,30 @@
 
     padding: 0.7rem 10px;
 
-    color: $white;
-
     line-height: 1.25;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
     overflow: hidden;
 
-    &.jw-icon-button {
-        min-width: 40px;
-    }
-
-    &.jw-button-block {
+    &-block {
         display: block;
         width: 100%;
         white-space: nowrap;
     }
 
-    &.jw-button-disabled {
-        color: $disabled-color;
+    &-disabled {
         cursor: default;
-        opacity: 0.9;
+        opacity: 0.3;
         pointer-events: none;
+    }
+
+    &-text {
+        padding: 0;
+    }
+
+    &.jw-icon-button {
+        min-width: 40px;
     }
 
     .jw-button-label {
@@ -44,59 +45,34 @@
     }
 }
 
-.jw-button.jw-button-primary,
-.jw-button.jw-button-primary.button,
-.jw-button.jw-button-primary.activated {
-    background-color: $primary-color;
-    color: $white;
+.jw-button.jw-button-default {
+    color: inherit;
 
-    &:hover {
-        color: $white;
-    }
-}
-
-.jw-button.jw-button-hollow,
-.jw-button.jw-button-hollow.button,
-.jw-button.jw-button-hollow.activated {
-    border: 1px solid lighten($main-color, 60%);
-    background-color: transparent;
-    color: $primary-color;
-
-    &:hover {
+    &:hover,
+    &.active {
         color: $primary-color;
     }
 }
 
-.jw-button.jw-button-light,
-.jw-button.jw-button-light.button,
-.jw-button.jw-button-light.activated {
+.jw-button.jw-button-primary {
+    background-color: $primary-color;
+    color: $white;
+}
+
+.jw-button.jw-button-outline-primary {
+    border: 1px solid lighten($main-color, 60%);
+    background-color: transparent;
+    color: $primary-color;
+}
+
+.jw-button.jw-button-light {
     background-color: $light-color;
     color: $text-color;
-
-    &:hover {
-        color: $text-color;
-    }
 }
 
-.jw-button.jw-button-clear,
-.jw-button.jw-button-clear.button,
-.jw-button.jw-button-clear.activated {
-    color: $text-color;
-
-    &:hover {
-        color: $text-color;
-    }
-}
-
-.jw-button.jw-button-main,
-.jw-button.jw-button-main.button,
-.jw-button.jw-button-main.activated {
+.jw-button.jw-button-main {
     background-color: $main-color;
     color: $white;
-
-    &:hover {
-        color: $white;
-    }
 }
 
 .jw-button.jw-button-facebook,
@@ -105,6 +81,7 @@
     width: 45px;
     height: 45px;
     border-radius: 50%;
+    color: $white;
     font-size: 22px;
     line-height: 19px;
 }
