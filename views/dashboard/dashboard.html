@@ -1,5 +1,5 @@
 <div class="has-jw-header" ng-switch="vm.featured">
-  <div ng-repeat="feed in ::vm.dataStore.feeds">
+  <div ng-repeat="feed in ::vm.dataStore.feeds" class="jw-feed-{{ ::feed.feedid }}">
     <jw-card-slider
         feed="feed"
         featured="feed.featured"
