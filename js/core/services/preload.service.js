@@ -55,8 +55,7 @@
             .getConfig()
             .then(function (resolvedConfig) {
 
-                angular.merge(config, resolvedConfig);
-
+                mergeSetValues(config, resolvedConfig);
                 applyConfigDefaults(config);
 
                 if (angular.isString(config.options.backgroundColor) && '' !== config.options.backgroundColor) {
@@ -156,15 +155,15 @@
                 // make sure each content has the default settings
                 config.content = config.content.map(function (content) {
 
-                    if (!angular.isDefined(content.enableText)) {
+                    if (!isSet(content.enableText)) {
                         content.enableText = true;
                     }
 
-                    if (!angular.isDefined(content.enableTitle)) {
+                    if (!isSet(content.enableTitle)) {
                         content.enableTitle = true;
                     }
 
-                    if (!angular.isDefined(content.enablePreview)) {
+                    if (!isSet(content.enablePreview)) {
                         content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
                     }
 
@@ -185,6 +184,34 @@
             return collection.findIndex(function (current) {
                     return current.playlistId === id;
                 }) > -1;
+        }
+
+        /**
+         * Returns true if value is defined and not null
+         * @param {*} value
+         * @returns {boolean}
+         */
+        function isSet (value) {
+            return angular.isDefined(value) && value !== null;
+        }
+
+        /**
+         * Merge values that are defined and not null
+         * @param {Object} destination
+         * @param {Object} source
+         */
+        function mergeSetValues (destination, source) {
+
+            angular.forEach(source, function (value, key) {
+
+                if (angular.isObject(value) && angular.isObject(destination[key])) {
+                    return mergeSetValues(destination[key], value);
+                }
+
+                if (isSet(value)) {
+                    destination[key] = value;
+                }
+            });
         }
     }
 
