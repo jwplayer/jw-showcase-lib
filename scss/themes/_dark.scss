@@ -25,6 +25,10 @@
 
     .jw-toolbar {
         background-color: $theme-dark-bg-color;
+
+        .jw-toolbar-nav:last-child .jw-button {
+            border-color: $black;
+        }
     }
 
     .jw-sidebar,
