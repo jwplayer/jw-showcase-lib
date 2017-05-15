@@ -5,13 +5,14 @@
       <input class="jw-search-input" type="text" placeholder="Type to search..."
           ng-model="vm.searchPhrase" ng-model-options="{ debounce: 500 }"
           ng-keyup="vm.searchInputKeyupHandler($event)" ng-change="vm.searchInputChangeHandler()"/>
-      <jw-button class="jw-icon-button jw-button-close-search" ng-click="vm.closeSearchButtonClickHandler($event)"
+      <jw-button class="jw-icon-button jw-button-close-search jw-button-default"
+          ng-click="vm.closeSearchButtonClickHandler($event)"
           tabindex="0">
         <i class="jwy-icon jwy-icon-cross"></i>
       </jw-button>
     </div>
   </div>
-  <jw-button class="jw-button-search" ng-click="vm.searchButtonClickHandler()" tabindex="0">
+  <jw-button class="jw-button-search jw-button-default" ng-click="vm.searchButtonClickHandler()" tabindex="0">
     <span class="jw-button-label">Search</span> <i class="jwy-icon jwy-icon-search jwy-icon-sm"></i>
   </jw-button>
 </div>

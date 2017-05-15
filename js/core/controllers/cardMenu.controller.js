@@ -28,9 +28,10 @@
      * @requires $timeout
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.watchProgress
+     * @requires jwShowcase.core.serviceWorker
      */
-    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress'];
-    function CardMenuController ($scope, $timeout, watchlist, watchProgress) {
+    CardMenuController.$inject = ['$scope', '$timeout', 'watchlist', 'watchProgress', 'serviceWorker', 'popup'];
+    function CardMenuController ($scope, $timeout, watchlist, watchProgress, serviceWorker, popup) {
 
         var vm = this;
 
@@ -42,7 +43,7 @@
         vm.unsaveButtonClickHandler = unsaveButtonClickHandler;
         vm.removeButtonClickHandler = removeButtonClickHandler;
 
-        activate();
+        vm.$onInit = activate;
 
         ////////////////////////
 
@@ -92,16 +93,54 @@
          */
         function saveButtonClickHandler () {
 
-            vm.jwCard.showToast({
-                templateUrl: 'views/core/toasts/savedVideo.html',
-                duration:    1000
-            }).then(function () {
-                watchlist.addItem(vm.item);
-            });
+            if (!serviceWorker.isSupported()) {
 
-            $timeout(function () {
-                vm.jwCard.closeMenu();
-            }, 500);
+                vm.jwCard.showToast({
+                    templateUrl: 'views/core/toasts/savedVideo.html',
+                    duration:    1000
+                }).then(function () {
+                    watchlist.addItem(vm.item);
+                });
+
+                $timeout(function () {
+                    vm.jwCard.closeMenu();
+                }, 500);
+
+                return;
+            }
+
+            popup
+                .show({
+                    templateUrl: 'views/core/popups/confirm.html',
+                    controller:  'ConfirmController as vm',
+                    resolve:     {
+                        message: 'Media files can use significant storage space on your device. Are you sure you ' +
+                                 'want to download'
+                    }
+                })
+                .then(function (result) {
+                    if (result) {
+
+                        var close = vm.jwCard.showToast({
+                            templateUrl: 'views/core/toasts/downloadingVideo.html',
+                            duration:    -1
+                        });
+
+                        watchlist.addItem(vm.item).then(function () {
+
+                            close().then(function () {
+                                vm.jwCard.showToast({
+                                    templateUrl: 'views/core/toasts/savedVideo.html',
+                                    duration:    1000
+                                });
+                            });
+
+                            $timeout(function () {
+                                vm.jwCard.closeMenu();
+                            }, 500);
+                        });
+                    }
+                });
         }
 
         /**

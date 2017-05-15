@@ -28,9 +28,10 @@
      *
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.session
+     * @requires jwShowcase.core.serviceWorker
      */
-    watchlist.$inject = ['dataStore', 'session'];
-    function watchlist (dataStore, session) {
+    watchlist.$inject = ['dataStore', 'session', 'serviceWorker'];
+    function watchlist (dataStore, session, serviceWorker) {
 
         this.addItem    = addItem;
         this.hasItem    = hasItem;
@@ -64,14 +65,17 @@
          * @propertyOf jwShowcase.core.watchlist
          *
          * @param {jwShowcase.core.item} item
+         * @param {boolean} [download=true]
          *
          * @description
          * Add given item to watchlist
          */
-        function addItem (item) {
+        function addItem (item, download) {
 
             var index = findItemIndex(item),
                 clone;
+
+            download = angular.isDefined(download) ? download : true;
 
             if (index === -1) {
                 clone         = angular.extend({}, item);
@@ -80,6 +84,10 @@
 
                 dataStore.watchlistFeed.playlist.unshift(clone);
                 persist();
+
+                if (download && serviceWorker.isSupported()) {
+                    return serviceWorker.downloadItem(item);
+                }
             }
         }
 
@@ -100,6 +108,10 @@
             if (index !== -1) {
                 dataStore.watchlistFeed.playlist.splice(index, 1);
                 persist();
+
+                if (serviceWorker.isSupported()) {
+                    serviceWorker.removeDownloadedItem(item);
+                }
             }
         }
 
@@ -151,6 +163,12 @@
          */
         function clearAll () {
 
+            if (serviceWorker.isSupported()) {
+                angular.forEach(dataStore.watchlistFeed.playlist, function (item) {
+                    serviceWorker.removeDownloadedItem(item);
+                });
+            }
+
             // empty playlist in dataStore
             dataStore.watchlistFeed.playlist = [];
 
@@ -178,7 +196,7 @@
                     item.feedid = dataStore.watchlistFeed.feedid;
                     item.$feedid = keys.feedid;
 
-                    addItem(item);
+                    addItem(item, false);
                 }
             });
         }

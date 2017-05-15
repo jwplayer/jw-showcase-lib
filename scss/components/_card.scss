@@ -4,6 +4,7 @@
 
 .jw-card {
     position: relative;
+    color: $white;
     font-size: rem(15px);
 
     body:not(.jw-flag-touch) & {
@@ -93,7 +94,6 @@
 
     .jw-card-info {
         @include flex(0 1 auto);
-        color: $white;
     }
 
     .jw-card-duration {
@@ -103,10 +103,6 @@
         padding: 5px 8px;
 
         font-size: rem(14px);
-    }
-
-    .jw-card-text {
-        color: $white;
     }
 
     .jw-card-text-now-playing {
@@ -153,10 +149,6 @@
         line-height: 40px;
         text-align: center;
         cursor: pointer;
-
-        &:hover .jwy-icon {
-            color: $primary-color;
-        }
 
         .jwy-icon {
             vertical-align: middle;
@@ -214,8 +206,15 @@
             text-align: center;
 
             .jw-card-toast-icon {
+                display: inline-block;
                 margin-bottom: 10px;
                 font-size: 3em;
+            }
+
+            .jw-rotate-animation {
+                width: 42px;
+                height: 42px;
+                font-size: 42px;
             }
         }
     }
@@ -239,6 +238,14 @@
             .jw-card-info .jw-card-info-mask {
                 height: 100px;
             }
+        }
+    }
+
+    &.jw-card-flag-hide-text {
+        padding-bottom: 0;
+
+        .jw-card-info {
+            display: none !important;
         }
     }
 

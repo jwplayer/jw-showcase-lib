@@ -3,20 +3,21 @@
 
     background-color: $theme-light-bg-color;
 
-    .pane,
-    .view {
-        background-color: transparent;
-    }
-
     .jw-row-inverse {
         background-color: $inverse-color;
         color: $white;
     }
 
-    .jw-card-slider-title .jw-link,
-    .jw-card-slider-title > div,
-    .jw-card-grid-title {
+    .jw-card {
+        color: $white;
+    }
+
+    .jw-header {
         color: $main-color;
+    }
+
+    .jw-offline-message {
+        background: $primary-color;
     }
 
     .jw-card-slider {
@@ -30,10 +31,13 @@
         }
 
         &-flag-error {
-            .jw-card-slider-title .jw-link,
-            .jw-card-slider-title > div {
+            .jw-card-slider-title {
                 color: $theme-light-slider-title-error-color;
             }
+        }
+
+        .jw-card-slider-title {
+            color: $main-color;
         }
 
         .jw-card-slider-slide {
@@ -60,10 +64,6 @@
 
         .jw-card-info {
             background-color: $white;
-        }
-
-        .jw-card-title,
-        .jw-card-description {
             color: $card-text-color;
         }
     }

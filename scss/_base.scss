@@ -26,11 +26,9 @@ $success-color: #393 !default;
 
 $header-bg-color: #fff !default;
 $header-color: #2b3b57 !default;
-$header-hover-color: #f42957 !default;
 
 $toolbar-bg-color: #292929 !default;
 $toolbar-color: #fff !default;
-$toolbar-hover-color: $primary-color !default;
 
 $search-border-color: #cbced5 !default;
 $search-height: 70px !default;
@@ -71,7 +69,7 @@ $desktop-min-width: $tablet-max-width + 1 !default;
 // --------------------------------
 
 $theme-light-bg-color: #d7dbe6 !default;
-$theme-dark-bg-color: #363636 !default;
+$theme-dark-bg-color: #181818 !default;
 
 $theme-light-slider-slide-loading-bg-color: #979797 !default;
 $theme-dark-slider-slide-loading-bg-color: #1a1a1a !default;
@@ -111,13 +109,6 @@ $card-text-color: #4a4a4a !default;
 // --------------------------------
 
 $popover-text-color: #4a4a4a !default;
-
-//
-// Card toasts
-// --------------------------------
-
-$card-toast-removed-bg-color: $primary-color !default;
-$card-toast-added-bg-color: $success-color !default;
 
 //
 // Card slider

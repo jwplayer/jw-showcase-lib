@@ -32,6 +32,7 @@
      * @param {jwShowcase.core.cookies} cookies
      * @param {jwShowcase.core.api} api
      * @param {jwShowcase.core.apiConsumer} apiConsumer
+     * @param {jwShowcase.core.watchlist} serviceWorker
      * @param {jwShowcase.core.watchlist} watchlist
      * @param {jwShowcase.core.userSettings} userSettings
      *
@@ -39,9 +40,9 @@
      */
 
     Preload.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
-        'apiConsumer', 'watchlist', 'watchProgress', 'userSettings'];
-    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, watchlist,
-                      watchProgress, userSettings) {
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings'];
+    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, serviceWorker,
+                      watchlist, watchProgress, userSettings) {
 
         var defer = $q.defer();
 
@@ -54,22 +55,14 @@
             .getConfig()
             .then(function (resolvedConfig) {
 
-                // apply config
-                angular.forEach(resolvedConfig, function (value, key) {
+                mergeSetValues(config, resolvedConfig);
+                applyConfigDefaults(config);
 
-                    if (key === 'bannerImage') {
-                        config[key] = $sce.trustAsResourceUrl(value);
-                    }
-                    else {
-                        config[key] = value;
-                    }
-                });
-
-                if (angular.isString(config.backgroundColor) && '' !== config.backgroundColor) {
-                    document.body.style.backgroundColor = config.backgroundColor;
+                if (angular.isString(config.options.backgroundColor) && '' !== config.options.backgroundColor) {
+                    document.body.style.backgroundColor = config.options.backgroundColor;
                 }
 
-                if (false === config.enableHeader) {
+                if (false === config.options.enableHeader) {
                     document.body.classList.add('jw-flag-no-header');
                 }
 
@@ -95,6 +88,11 @@
             userSettings.restore();
             showCookiesNotice();
 
+            if (serviceWorker.isSupported()) {
+                serviceWorker.prefetchPlayer(jwplayer.utils.repo());
+                serviceWorker.prefetchConfig(config);
+            }
+
             defer.resolve();
         }
 
@@ -119,9 +117,101 @@
 
             var isBrowser = !window.cordova;
 
-            if (config.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
+            if (config.options.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
                 cookies.show();
             }
+        }
+
+        /**
+         * Apply the config defaults and fixtures
+         * @param config
+         * @returns {*}
+         */
+        function applyConfigDefaults (config) {
+
+            if (angular.isArray(config.content)) {
+
+                // add continue watching feed if its not defined
+                if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
+
+                    // when first feed is featured we place the continue watching slider after that
+                    var index = config.content[0] && config.content[0].featured ? 1 : 0;
+
+                    // insert at index
+                    config.content.splice(index, 0, {
+                        playlistId: 'continue-watching'
+                    });
+                }
+
+                // add saved videos feed if its not defined
+                if (!containsPlaylistId(config.content, 'saved-videos')) {
+
+                    // add as last slider
+                    config.content.push({
+                        playlistId: 'saved-videos'
+                    });
+                }
+
+                // make sure each content has the default settings
+                config.content = config.content.map(function (content) {
+
+                    if (!isSet(content.enableText)) {
+                        content.enableText = true;
+                    }
+
+                    if (!isSet(content.enableTitle)) {
+                        content.enableTitle = true;
+                    }
+
+                    if (!isSet(content.enablePreview)) {
+                        content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
+                    }
+
+                    return content;
+                });
+            }
+
+            return config;
+        }
+
+        /**
+         * Test if collection contains a playlist id
+         * @param collection
+         * @param id
+         * @returns {boolean}
+         */
+        function containsPlaylistId (collection, id) {
+            return collection.findIndex(function (current) {
+                    return current.playlistId === id;
+                }) > -1;
+        }
+
+        /**
+         * Returns true if value is defined and not null
+         * @param {*} value
+         * @returns {boolean}
+         */
+        function isSet (value) {
+            return angular.isDefined(value) && value !== null;
+        }
+
+        /**
+         * Merge values that are defined and not null
+         * @param {Object} destination
+         * @param {Object} source
+         */
+        function mergeSetValues (destination, source) {
+
+            angular.forEach(source, function (value, key) {
+
+                if (angular.isObject(value) && angular.isObject(destination[key])) {
+                    return mergeSetValues(destination[key], value);
+                }
+
+                if (isSet(value)) {
+                    destination[key] = value;
+                }
+            });
         }
     }
 

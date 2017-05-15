@@ -35,6 +35,8 @@
      * @description
      * # jwCardPoster
      * The `jwCardPoster` directive is responsible for showing the item poster or thumbnail.
+     *
+     * @todo changes based on upcoming updates to thumbstrips from feed
      */
 
     jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'platform', 'utils'];
@@ -48,6 +50,9 @@
         function link (scope, element, attrs, jwCard) {
 
             var itemPosterUrl,
+                feed,
+                progressPreview       = false,
+                mousePreview          = false,
                 mouseOver             = false,
                 thumbnailsLoaded      = false,
                 thumbnailsLoading     = false,
@@ -67,16 +72,30 @@
              */
             function activate () {
 
-                itemPosterUrl = generatePosterUrl();
+                var watchProgressFeed = jwCard.item.feedid === dataStore.watchProgressFeed.feedid,
+                    featuredCard      = jwCard.featured;
 
+                itemPosterUrl = generatePosterUrl();
+                feed          = dataStore.getFeed(jwCard.item.feedid);
+
+                // get thumbnailsTrack from playlist item
                 if (angular.isArray(jwCard.item.tracks)) {
+
                     // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
                     thumbnailsTrack = jwCard.item.tracks.find(function (track) {
                         return track.kind === 'thumbnails' || track.kind === 'thumbnail';
                     });
                 }
 
-                if (jwCard.featured && !platform.isTouch) {
+                // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
+                if (!thumbnailsTrack || !feed.enablePreview) {
+                    return switchToDefaultPoster();
+                }
+
+                if (!watchProgressFeed && !platform.isTouch && featuredCard) {
+
+                    // set mouse preview flag to true
+                    mousePreview = true;
 
                     // bind to jwCard element
                     element.parent()
@@ -85,8 +104,12 @@
                 }
 
                 // set watch progress
-                if (scope.vm.item.feedid === dataStore.watchProgressFeed.feedid) {
+                if (watchProgressFeed && feed.enablePreview) {
 
+                    // set progressPreview flag to true
+                    progressPreview = true;
+
+                    // add watcher to listen to progress updates
                     scope.$watch(function () {
                         return jwCard.item.progress;
                     }, function (newVal, oldVal) {
@@ -126,11 +149,6 @@
 
                 mouseOver = true;
 
-                // no thumbnails track available
-                if (!thumbnailsTrack) {
-                    return;
-                }
-
                 // thumbnails are not loaded yet
                 if (!thumbnailsLoaded) {
 
@@ -161,26 +179,24 @@
                 var posterElement;
 
                 // show thumb of current progress when a thumbnailsTrack is defined and feedid is continue watching
-                if (thumbnailsTrack && jwCard.item.feedid === dataStore.watchProgressFeed.feedid) {
+                if (true === progressPreview) {
 
                     if (!thumbnailsLoaded) {
                         return loadThumbnailData(CONTINUE_WATCHING_THUMBNAIL_QUALITY)
                             .then(showItemProgressThumbnail);
                     }
 
-                    showItemProgressThumbnail();
+                    return showItemProgressThumbnail();
                 }
-                else {
 
-                    posterElement = findElement('.jw-card-poster').clone();
-                    posterElement
-                        .css({
-                            'background':     'url(' + itemPosterUrl + ') no-repeat center',
-                            'backgroundSize': 'cover'
-                        });
+                posterElement = findElement('.jw-card-poster').clone();
+                posterElement
+                    .css({
+                        'background':     'url(' + itemPosterUrl + ') no-repeat center',
+                        'backgroundSize': 'cover'
+                    });
 
-                    replacePosterWith(posterElement);
-                }
+                replacePosterWith(posterElement);
             }
 
             /**

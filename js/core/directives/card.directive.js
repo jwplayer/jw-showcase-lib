@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'config'];
+        'watchlist', 'utils', 'serviceWorker'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            config) {
+                            serviceWorker) {
 
         return {
             scope:            {
@@ -72,20 +72,21 @@
 
             function activate () {
 
+                var feed       = dataStore.getFeed(scope.vm.item.feedid),
+                    enableText = true;
+
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (scope.vm.featured) {
+                if (feed && $state.is('root.dashboard')) {
+                    enableText = feed.enableText;
+                }
 
-                    var enableFeaturedText = config.enableFeaturedText,
-                        feed = dataStore.getFeed(scope.vm.item.$feedid || scope.vm.item.feedid);
+                if (!enableText) {
+                    element.addClass('jw-card-flag-hide-text');
+                }
 
-                    if (feed && angular.isDefined(feed['showcase.enableFeaturedText'])) {
-                        enableFeaturedText = feed['showcase.enableFeaturedText'] === 'true';
-                    }
-
-                    if (!enableFeaturedText) {
-                        element.addClass('jw-card-flag-hide-text');
-                    }
+                if (serviceWorker.isSupported()) {
+                    activateOfflineSupport();
                 }
 
                 findElement('.jw-card-title')
@@ -110,6 +111,24 @@
                 scope.$watch(function () {
                     return watchlist.hasItem(scope.vm.item);
                 }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Activate offline support
+             */
+            function activateOfflineSupport () {
+
+                scope.$watch(function () {
+                    return serviceWorker.hasDownloadedItem(scope.vm.item);
+                }, setOfflineAvailable);
+            }
+
+            /**
+             * @param available
+             */
+            function setOfflineAvailable (available) {
+
+                element.toggleClass('jw-card-flag-offline-available', available);
             }
 
             /**
@@ -233,7 +252,7 @@
              * @param {String} toast.templateUrl    Template url
              * @param {Number} [toast.duration]     Optional duration
              *
-             * @returns {Promise}
+             * @returns {Promise|function}
              */
             function showToast (toast) {
 
@@ -249,8 +268,12 @@
                 // add class to card element
                 element.addClass('jw-card-flag-toast-open');
 
-                // set timeout to remove toast
-                $timeout(function () {
+                if (toast.duration !== -1) {
+                    // set timeout to remove toast
+                    $timeout(closeToast, toast.duration || 1000);
+                }
+
+                function closeToast () {
 
                     defer.notify('before_remove');
 
@@ -260,8 +283,14 @@
                             element.removeClass('jw-card-flag-toast-open');
                             defer.resolve();
                         });
-                }, toast.duration || 1000);
+                }
 
+                if (toast.duration === -1) {
+                    return function () {
+                        closeToast();
+                        return defer.promise;
+                    };
+                }
                 return defer.promise;
             }
         }

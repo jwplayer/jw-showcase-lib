@@ -29,10 +29,11 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.appStore
      * @requires jwShowcase.core.seo
+     * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
-    RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'config'];
-    function RootController ($scope, $timeout, dataStore, appStore, seo, config) {
+    RootController.$inject = ['$scope', '$timeout', 'dataStore', 'appStore', 'seo', 'serviceWorker', 'config'];
+    function RootController ($scope, $timeout, dataStore, appStore, seo, serviceWorker, config) {
 
         var rootVm = this;
 
@@ -40,6 +41,7 @@
         rootVm.dataStore = dataStore;
         rootVm.appStore  = appStore;
         rootVm.config    = config;
+        rootVm.reconnect = reconnect;
 
         activate();
 
@@ -57,6 +59,14 @@
                     appStore.loading = false;
                 }, 50);
             });
+        }
+
+        /**
+         * Retry connection
+         */
+        function reconnect () {
+
+            serviceWorker.updateConnectionState();
         }
     }
 

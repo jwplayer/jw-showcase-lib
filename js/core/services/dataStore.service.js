@@ -29,16 +29,7 @@
     dataStoreService.$inject = ['FeedModel'];
     function dataStoreService (FeedModel) {
 
-        /**
-         * @ngdoc property
-         * @name jwShowcase.core.dataStore#featuredFeed
-         * @propertyOf jwShowcase.core.dataStore
-         *
-         * @type {jwShowcase.core.feed}
-         * @description
-         * The featured feed is stored in this property
-         */
-        this.featuredFeed = null;
+        var self = this;
 
         /**
          * @ngdoc property
@@ -60,7 +51,7 @@
          * @description
          * The watchlist feed
          */
-        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos');
+        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos', true, true);
 
         /**
          * @ngdoc property
@@ -71,7 +62,7 @@
          * @description
          * The watchProgress feed
          */
-        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching');
+        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching', true, true);
 
         /**
          * @ngdoc property
@@ -127,11 +118,13 @@
 
             var items = [];
 
-            if (this.featuredFeed) {
-                items = items.concat(this.featuredFeed.playlist);
-            }
-
             angular.forEach(this.feeds, function (feed) {
+
+                // skip watchProgress and watchlist feeds
+                if (true === feed.dynamic) {
+                    return;
+                }
+
                 items = items.concat(feed.playlist);
             });
 
@@ -158,17 +151,7 @@
          */
         this.getFeed = function (feedId) {
 
-            var allFeeds = this.feeds,
-                feed;
-
-            if (this.featuredFeed) {
-                allFeeds = allFeeds.concat([this.featuredFeed]);
-            }
-
-            // concat watchlist and watchProgress feeds
-            allFeeds = allFeeds.concat([this.watchlistFeed, this.watchProgressFeed]);
-
-            return allFeeds.find(function (feed) {
+            return this.feeds.find(function (feed) {
                 return feed.feedid === feedId;
             });
 

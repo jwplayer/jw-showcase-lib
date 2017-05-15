@@ -57,7 +57,6 @@
         function link (scope, element, attrs) {
 
             var updateDebounced = utils.debounce(update, 100);
-
             activate();
 
             /////////////////////////
@@ -70,8 +69,7 @@
                 window.addEventListener('scroll', updateDebounced, window.supportsPassive ? {passive: true} : false);
                 scope.$on('$destroy', destroy);
                 scope.$on('$viewContentUpdated', updateDebounced);
-
-                $timeout(updateDebounced, 500);
+                scope.$on('$viewContentLoaded', updateDebounced);
             }
 
             /**

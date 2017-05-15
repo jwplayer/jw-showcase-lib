@@ -30,17 +30,15 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.platform
-     * @requires jwShowcase.config
      */
     DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform', 'config'];
     function DashboardController ($state, dataStore, userSettings, platform, config) {
 
         var vm = this;
 
-        vm.dataStore             = dataStore;
-        vm.userSettings          = userSettings;
-        vm.showWatchProgressFeed = showWatchProgressFeed;
-        vm.isMobileScreen        = MOBILE_SCREEN;
+        vm.dataStore              = dataStore;
+        vm.config                 = config;
+        vm.isMobileScreen         = MOBILE_SCREEN;
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -75,23 +73,6 @@
                 slug:      item.$slug,
                 autoStart: clickedOnPlay || platform.isMobile
             });
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.dashboard.DashboardController#showWatchProgressFeed
-         * @methodOf jwShowcase.dashboard.DashboardController
-         *
-         * @description
-         * Determine if the watch progress feed needs to be shown
-         *
-         * @returns {boolean} True if the watchProgress feed needs to be shown
-         */
-        function showWatchProgressFeed () {
-
-            var itemsLength = dataStore.watchProgressFeed.playlist.length;
-
-            return config.enableContinueWatching && userSettings.settings.continueWatching && itemsLength > 0;
         }
     }
 

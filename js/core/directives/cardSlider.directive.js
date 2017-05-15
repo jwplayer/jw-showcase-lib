@@ -16,6 +16,9 @@
 
 (function () {
 
+    var DEFAULT_COLS          = {'xs': 1, 'sm': 2, 'md': 3, 'lg': 4, 'xl': 5};
+    var DEFAULT_COLS_FEATURED = 1;
+
     angular
         .module('jwShowcase.core')
         .directive('jwCardSlider', cardSliderDirective);
@@ -33,15 +36,11 @@
      * @scope
      *
      * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
-     * @param {Object|number=}          cols            How many columns should be visible. Can either be a fixed number
-     *                                                  or an object with responsive columns (e.g. `{sm: 2, md: 4}`).
-     *                                                  Available sizes; xs, sm, md, lg and xl.
-     *
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
-     * @param {object=}                 delegate        Exposes a small api to control the cardSlider.
      * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
+     * @requires $state
      * @requires $compile
      * @requires $templateCache
      * @requires jwShowcase.core.utils
@@ -49,21 +48,19 @@
      * @example
      *
      * ```
-     * <jw-card-slider feed="vm.feed" cols="1" featured="true"></jw-card-slider>
-     * <jw-card-slider feed="vm.feed" cols="{xs: 2, sm: 3}" featured="false" heading="'Videos'"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="true"></jw-card-slider>
+     * <jw-card-slider feed="vm.feed" featured="false" heading="'Videos'"></jw-card-slider>
      * ```
      */
-    cardSliderDirective.$inject = ['$compile', '$templateCache', 'utils'];
-    function cardSliderDirective ($compile, $templateCache, utils) {
+    cardSliderDirective.$inject = ['$state', '$compile', '$templateCache', 'utils'];
+    function cardSliderDirective ($state, $compile, $templateCache, utils) {
 
         return {
             scope:            {
                 feed:        '=',
-                cols:        '=',
                 featured:    '=',
                 onCardClick: '=',
-                title:       '@',
-                delegate:    '=?'
+                title:       '@'
             },
             replace:          true,
             controller:       angular.noop,
@@ -88,9 +85,6 @@
                 totalItems             = 0,
                 itemsVisible           = 0,
                 itemsMargin            = 1,
-                options                = {
-                    sliderBackgroundColor: null
-                },
                 animation;
 
             scope.vm.slideLeft  = slideLeft;
@@ -106,8 +100,6 @@
                 var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
                     className       = 'jw-card-slider-flag-' + classNameSuffix,
                     loading         = scope.vm.feed.loading;
-
-                setCustomOptions();
 
                 element.addClass(className);
 
@@ -129,7 +121,7 @@
 
                 if (loading) {
                     element.addClass('jw-card-slider-flag-loading');
-                    renderLoadingSlides();
+                    // renderLoadingSlides();
                 }
 
                 resizeHandler();
@@ -169,10 +161,20 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                setCustomOptions();
+                if ($state.is('root.dashboard')) {
 
-                // set slider background color
-                element.css('background-color', options.sliderBackgroundColor || '');
+                    // set slider background color
+                    element.css('background-color', scope.vm.feed.backgroundColor || '');
+
+                    // set slider aspectratio
+                    if (scope.vm.feed.aspectratio) {
+                        element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
+                    }
+
+                    if (angular.isDefined(scope.vm.feed.enableTitle)) {
+                        element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.feed.enableTitle);
+                    }
+                }
 
                 if (!feedHasChanged(newValue, oldValue)) {
                     return;
@@ -187,28 +189,6 @@
                 element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
 
                 resizeHandler(true);
-            }
-
-            /**
-             * Set custom options from feed
-             */
-            function setCustomOptions () {
-
-                var custom;
-
-                angular.forEach(options, function (val, key) {
-
-                    custom = scope.vm.feed['showcase.' + key];
-
-                    if (angular.isDefined(custom)) {
-                        if ('true' === custom || 'false' === custom) {
-                            options[key] = 'true' === custom;
-                        }
-                        else {
-                            options[key] = custom;
-                        }
-                    }
-                });
             }
 
             /**
@@ -246,8 +226,7 @@
              */
             function resizeHandler (forceRender) {
 
-                var newItemsVisible = angular.isNumber(scope.vm.cols) ? scope.vm.cols :
-                        utils.getValueForScreenSize(scope.vm.cols, 1),
+                var newItemsVisible = getItemsVisible(),
                     needsRender     = newItemsVisible !== itemsVisible;
 
                 itemsVisible   = newItemsVisible;
@@ -279,6 +258,21 @@
                 }
 
                 moveSlider(0, false);
+            }
+
+            /**
+             * Get items items visible
+             * @returns {string|number|Object|string|Number}
+             */
+            function getItemsVisible () {
+
+                var cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
+
+                if (angular.isDefined(scope.vm.feed.cols) && $state.is('root.dashboard')) {
+                    cols = scope.vm.feed.cols;
+                }
+
+                return angular.isNumber(cols) ? cols : utils.getValueForScreenSize(cols, 1);
             }
 
             /**
@@ -355,7 +349,7 @@
 
                 destroySlides();
 
-                for(var i = 0, len = nextSliderList.length; i < len; i++) {
+                for (var i = 0, len = nextSliderList.length; i < len; i++) {
                     sliderList.append(nextSliderList[i]);
                 }
 
@@ -428,12 +422,16 @@
                         slide;
 
                     while (mapIndex--) {
-                        if (sliderMap[mapIndex].key === item.$key) {
-                            slide = sliderMap[mapIndex].el;
-                            nextSliderMap.push(sliderMap[mapIndex]);
-                            sliderMap.splice(mapIndex, 1);
-                            return slide;
+
+                        if (sliderMap[mapIndex].key !== item.$key) {
+                            continue;
                         }
+
+                        slide = sliderMap[mapIndex].el;
+                        nextSliderMap.push(sliderMap[mapIndex]);
+                        sliderMap.splice(mapIndex, 1);
+
+                        return slide;
                     }
                 }
 
@@ -441,7 +439,7 @@
 
                     // remove cards in slider
                     var list = sliderList[0];
-                    while(list.firstChild) {
+                    while (list.firstChild) {
                         list.removeChild(list.firstChild);
                     }
 
@@ -482,7 +480,7 @@
 
                 var childScope = scope.$new(false, scope);
 
-                childScope.item = item;
+                childScope.item = angular.copy(item);
 
                 return $compile(angular.element(slideTemplate))(childScope);
             }

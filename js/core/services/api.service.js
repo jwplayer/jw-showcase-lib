@@ -140,8 +140,9 @@
                 defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
             };
 
+            script.async = true;
             script.src = config.contentService + '/libraries/' + playerId + '.js';
-            document.head.appendChild(script);
+            document.body.appendChild(script);
 
             return defer.promise;
         };
@@ -263,6 +264,7 @@
      * @property {string}                   kind           Feed kind
      * @property {jwShowcase.core.item[]}   playlist       Feed playlist
      * @property {string}                   title          Feed title
+     * @property {boolean}                  dynamic        True if the feed is dynamic
      */
 
     /**
