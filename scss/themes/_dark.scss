@@ -10,10 +10,6 @@
 
     .jw-card {
 
-        .jw-card-title {
-            color: $white;
-        }
-
         .jw-card-menu {
             background-color: $black;
         }
@@ -84,6 +80,13 @@
     }
 
     .jw-card.jw-card-flag-default {
+
+        &:hover {
+            .jw-card-info {
+                background-color: $white;
+                color: $dark-color;
+            }
+        }
 
         .jw-card-info {
             background-color: $black;
