@@ -563,7 +563,7 @@
                 });
 
             update();
-            window.TweenLite.to(document.body, 0.3, {
+            window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
                 scrollTop: 0
             });
         }
