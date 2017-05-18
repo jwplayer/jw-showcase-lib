@@ -1,4 +1,3 @@
-
 @mixin mobile-only {
     @media screen and (max-width: $mobile-max-width) {
         @content;
@@ -77,5 +76,9 @@
 }
 
 .jw-flag-cordova .is-hidden-hybrid-app {
+    display: none !important;
+}
+
+.jw-flag-mobile .is-hidden-mobile-device {
     display: none !important;
 }
