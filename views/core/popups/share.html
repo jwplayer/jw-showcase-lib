@@ -11,7 +11,7 @@
     </jw-button>
   </div>
   <div class="jw-popup-buttons jw-share-link">
-    <jw-button class="jw-button-outline-primary jw-button-block" ng-click="vm.copyUrl()">
+    <jw-button class="jw-button-outline-primary jw-button-block is-hidden-mobile-device" ng-click="vm.copyUrl()">
     <span
         class="jw-button-label{{ vm.copyResult.success ? ' jw-text-success' : '' }}">{{ vm.copyResult.text || 'Copy link' }}</span>
     </jw-button>
