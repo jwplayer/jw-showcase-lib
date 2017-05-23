@@ -355,6 +355,8 @@
             stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
             stateParams.slug    = $stateParams.slug = newItem.$slug;
 
+            $state.$current.locals.globals.item = newItem;
+
             // update state, but don't notify
             $state
                 .go('root.video', {
@@ -532,11 +534,15 @@
             stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
             stateParams.slug    = $stateParams.slug = vm.item.$slug;
 
+            $state.$current.locals.globals.item = newItem;
+
             // update playlist when item does not exist in current playlist
             if (playlistIndex === -1) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();
+
+                $state.$current.locals.globals.feed = vm.feed;
 
                 playerPlaylist = generatePlaylist(itemFeed, vm.item);
                 player.load(playerPlaylist);
