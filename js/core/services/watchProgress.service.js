@@ -230,11 +230,19 @@
          * @param {jwShowcase.core.item} a
          * @param {jwShowcase.core.item} b
          *
-         * @returns {boolean}
+         * @returns {number}
          */
         function sortOnLastWatched (a, b) {
 
-            return a.lastWatched < b.lastWatched;
+            if (a.lastWatched < b.lastWatched) {
+                return 1;
+            }
+
+            if (a.lastWatched > b.lastWatched) {
+                return -1;
+            }
+
+            return 0;
         }
     }
 
