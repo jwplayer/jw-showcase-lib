@@ -26,6 +26,7 @@
      *
      * @requires $scope
      * @requires $state
+     * @requires $stateParams
      * @requires $timeout
      * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.FeedModel
@@ -41,12 +42,12 @@
      * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
+    VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore',
+        'popup', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
         'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
-                              watchlist, seo, userSettings, utils, player, platform, serviceWorker, config, feed,
-                              item) {
+    function VideoController ($scope, $state, $stateParams, $timeout, apiConsumer, FeedModel, dataStore, popup,
+                              watchProgress, watchlist, seo, userSettings, utils, player, platform, serviceWorker,
+                              config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -350,9 +351,9 @@
             }
 
             // update $viewHistory
-            stateParams.feedId  = newItem.feedid;
-            stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = newItem.$slug;
+            stateParams.feedId  = $stateParams.feedId = newItem.feedid;
+            stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
+            stateParams.slug    = $stateParams.slug = newItem.$slug;
 
             // update state, but don't notify
             $state
@@ -527,9 +528,9 @@
 
             vm.item = angular.extend({}, newItem);
 
-            stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = vm.item.feedid;
-            stateParams.slug    = vm.item.$slug;
+            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
+            stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
+            stateParams.slug    = $stateParams.slug = vm.item.$slug;
 
             // update playlist when item does not exist in current playlist
             if (playlistIndex === -1) {
