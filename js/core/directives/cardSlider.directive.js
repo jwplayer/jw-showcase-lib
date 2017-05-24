@@ -124,6 +124,8 @@
                     // renderLoadingSlides();
                 }
 
+                leftSlidesVisible = scope.vm.featured;
+
                 resizeHandler();
             }
 
@@ -234,8 +236,6 @@
                 sliderCanSlide = totalItems > itemsVisible;
 
                 sliderList.attr('class', 'jw-card-slider-list slides-' + itemsVisible);
-
-                leftSlidesVisible = scope.vm.featured;
 
                 if (!sliderCanSlide) {
                     index             = 0;

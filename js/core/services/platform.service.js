@@ -23,10 +23,11 @@
     platform.$inject = [];
     function platform () {
 
-        var isTouch = 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch),
-            parser  = new window.UAParser(),
-            result  = parser.getResult(),
-            osName  = result.os.name.toLowerCase();
+        var isTouch  = 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch),
+            parser   = new window.UAParser(),
+            result   = parser.getResult(),
+            osName   = result.os.name.toLowerCase(),
+            isMobile = ['android', 'ios'].indexOf(osName) > -1;
 
         return {
             prepare:         prepare,
@@ -34,7 +35,7 @@
             isAndroid:       osName === 'android',
             isIOS:           osName === 'ios',
             isWindows:       osName === 'windows',
-            isMobile:        ['android', 'ios'].indexOf(osName) > -1,
+            isMobile:        isMobile,
             browserName:     result.browser.name,
             browserVersion:  result.browser.version,
             platformName:    result.os.name,
@@ -43,7 +44,7 @@
 
         function prepare () {
 
-            var body   = angular.element(document.body);
+            var body = angular.element(document.body);
 
             if (true === isTouch) {
                 body.addClass('jw-flag-touch');
@@ -58,6 +59,10 @@
 
             if (osName === 'ios') {
                 body.addClass('jw-flag-ios');
+            }
+
+            if (isMobile) {
+                body.addClass('jw-flag-mobile');
             }
         }
     }

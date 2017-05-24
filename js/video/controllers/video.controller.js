@@ -26,6 +26,7 @@
      *
      * @requires $scope
      * @requires $state
+     * @requires $stateParams
      * @requires $timeout
      * @requires jwShowcase.core.apiConsumer
      * @requires jwShowcase.core.FeedModel
@@ -41,12 +42,12 @@
      * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore', 'popup',
-        'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
+    VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore',
+        'popup', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
         'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $timeout, apiConsumer, FeedModel, dataStore, popup, watchProgress,
-                              watchlist, seo, userSettings, utils, player, platform, serviceWorker, config, feed,
-                              item) {
+    function VideoController ($scope, $state, $stateParams, $timeout, apiConsumer, FeedModel, dataStore, popup,
+                              watchProgress, watchlist, seo, userSettings, utils, player, platform, serviceWorker,
+                              config, feed, item) {
 
         var vm                     = this,
             lastPos                = 0,
@@ -350,9 +351,11 @@
             }
 
             // update $viewHistory
-            stateParams.feedId  = newItem.feedid;
-            stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = newItem.$slug;
+            stateParams.feedId  = $stateParams.feedId = newItem.feedid;
+            stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
+            stateParams.slug    = $stateParams.slug = newItem.$slug;
+
+            $state.$current.locals.globals.item = newItem;
 
             // update state, but don't notify
             $state
@@ -527,15 +530,19 @@
 
             vm.item = angular.extend({}, newItem);
 
-            stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = vm.item.feedid;
-            stateParams.slug    = vm.item.$slug;
+            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
+            stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
+            stateParams.slug    = $stateParams.slug = vm.item.$slug;
+
+            $state.$current.locals.globals.item = newItem;
 
             // update playlist when item does not exist in current playlist
             if (playlistIndex === -1) {
 
                 itemFeed = dataStore.getFeed(vm.item.feedid);
                 vm.feed  = itemFeed.clone();
+
+                $state.$current.locals.globals.feed = vm.feed;
 
                 playerPlaylist = generatePlaylist(itemFeed, vm.item);
                 player.load(playerPlaylist);
@@ -563,7 +570,7 @@
                 });
 
             update();
-            window.TweenLite.to(document.body, 0.3, {
+            window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
                 scrollTop: 0
             });
         }
