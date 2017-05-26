@@ -2,6 +2,41 @@
 // jwSidebarLayout
 // --------------------------------
 
+// TODO this should be moved to the light-rail element
+.jw-sidebar-layout.jw-flag-right-rail-enabled {
+    .jw-video-container {
+        padding: 0;
+        .jw-container {
+            display: flex;
+            max-width: 100%;
+            padding: 0;
+
+            .jw-player-col {
+                flex: 1 0;
+            }
+
+            .jw-right-rail-col {
+                width: 30%;
+                position: relative;
+            }
+        }
+
+
+        .jw-toolbar-row-bg {
+            display: none;
+        }
+
+    }
+}
+
+@include desktop-only () {
+    .jw-sidebar-layout.jw-flag-right-rail-enabled .jw-video-container {
+        .jw-container {
+            padding: 0 84px !important;
+        }
+    }
+}
+
 .jw-sidebar-layout {
 
     &-flag-opened {

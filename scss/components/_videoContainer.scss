@@ -8,6 +8,34 @@
 
     background-color: $black;
 
+    .jw-container {
+    }
+
+    .jw-video-row {
+        position: relative;
+    }
+
+    .jw-toolbar-row {
+        position: relative;
+    }
+
+    .jw-toolbar-row-bg {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+
+        margin-left: -100%;
+        margin-right: -100%;
+
+        height: $toolbar-height;
+        min-height: $toolbar-height;
+
+        background-color: $toolbar-bg-color;
+        color: $toolbar-color;
+    }
+
     &.is-loading {
 
         .jw-video-loading {
@@ -45,7 +73,7 @@
 @include mobile-only-landscape () {
 
     .jw-video-container .jw-container {
-        max-height: calc(100vh - #{$header-height-mobile});
+        max-height: calc(100vh - #{($header-height-mobile - $toolbar-height)});
         overflow: hidden;
 
         .jwplayer.jw-flag-aspect-mode {

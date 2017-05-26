@@ -5,10 +5,14 @@
 .jw-toolbar {
     height: $toolbar-height;
     min-height: $toolbar-height;
-    padding: 0 $toolbar-padding;
+    padding: 0 0 0 $toolbar-padding;
 
     background-color: $toolbar-bg-color;
     color: $toolbar-color;
+
+    position: relative;
+
+    z-index: 11;
 
     &-subheader {
         position: fixed;
@@ -114,8 +118,6 @@
     .jw-toolbar {
 
         &-video {
-            padding: 0 90px;
-
             .jw-toolbar-container {
                 max-width: $container-width-tablet;
                 margin: 0 auto;

@@ -1,23 +1,38 @@
 <div class="has-jw-header">
-  <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
+  <div class="jw-video-container">
     <div class="jw-container">
-      <div class="jw-video-container-aspect">
-        <div class="jw-video-loading">
-          <div class="jw-rotate-animation">
-            <i class="jwy-icon-buffer"></i>
+      <div class="jw-player-col">
+
+        <div class="jw-video-row">
+          <div class="jw-video-container-aspect">
+            <div class="jw-video-loading">
+              <div class="jw-rotate-animation">
+                <i class="jwy-icon-buffer"></i>
+              </div>
+            </div>
+          </div>
+          <div class="jw-video-container-player">
+            <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
+                on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
+                on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
+                on-ad-impression="vm.onAdImpression"></jw-player>
           </div>
         </div>
+
+        <div class="jw-toolbar-row">
+          <jw-toolbar-video item="vm.item"></jw-toolbar-video>
+          <div class="jw-toolbar-row-bg"></div>
+        </div>
+
+
       </div>
-      <div class="jw-video-container-player">
-        <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
-            on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
-            on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
-            on-ad-impression="vm.onAdImpression"></jw-player>
+
+      <div class="jw-right-rail-col" ng-if="vm.hasSideRail">
+        <jw-rail playlist="vm.feed.playlist"></jw-rail>
       </div>
+
     </div>
   </div>
-
-  <jw-toolbar-video item="vm.item"></jw-toolbar-video>
 
   <div class="jw-row jw-row-inverse">
     <jw-video-details item="vm.item"></jw-video-details>

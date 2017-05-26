@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  **/
 
-(function () {
+(function() {
 
     angular
         .module('jwShowcase.video')
@@ -66,6 +66,8 @@
         vm.recommendationsFeed = null;
         vm.loading             = true;
 
+        vm.hasSideRail         = config.options.rightRail.enabled;
+
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
         vm.onTime         = onTime;
@@ -116,16 +118,16 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
-                vm.playerSettings.cast = false;
+                vm.playerSettings.cast                  = false;
             }
 
-            $scope.$watch(function () {
+            $scope.$watch(function() {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
 
-            $scope.$watch(function () {
+            $scope.$watch(function() {
                 return serviceWorker.isOnline();
-            }, function () {
+            }, function() {
                 var state = player.getState();
                 if (state !== 'playing' && state !== 'paused') {
                     playerPlaylist = generatePlaylist(itemFeed, item);
@@ -134,7 +136,7 @@
                 }
             });
 
-            loadingTimeout = $timeout(function () {
+            loadingTimeout = $timeout(function() {
                 vm.loading = false;
             }, 2000);
 
@@ -183,11 +185,11 @@
 
             apiConsumer
                 .populateFeedModel(vm.recommendationsFeed, 'recommendations')
-                .then(function (recommendationsFeed) {
+                .then(function(recommendationsFeed) {
 
                     // filter duplicate video's
                     if (angular.isArray(recommendationsFeed.playlist)) {
-                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
+                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function(item) {
                             return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
@@ -212,7 +214,7 @@
                 playlistItem, sources;
 
             if (serviceWorker.isSupported()) {
-                playlistCopy = playlistCopy.filter(function (item) {
+                playlistCopy = playlistCopy.filter(function(item) {
                     return serviceWorker.isOnline() || serviceWorker.hasDownloadedItem(item);
                 });
             }
@@ -221,12 +223,12 @@
                 .slice(playlistIndex)
                 .concat(playlistCopy.slice(0, playlistIndex));
 
-            return playlistCopy.map(function (current) {
+            return playlistCopy.map(function(current) {
 
                 // make a copy of the playlist item, we don't want to override the original
                 playlistItem = angular.extend({}, current);
 
-                sources = current.sources.filter(function (source) {
+                sources = current.sources.filter(function(source) {
 
                     if (serviceWorker.isSupported() && !navigator.onLine) {
                         return source.type === 'video/mp4' && source.width <= 720;
@@ -317,7 +319,7 @@
                         message: 'Something went wrong while loading the video, try again?'
                     }
                 })
-                .then(function (result) {
+                .then(function(result) {
 
                     if (true === result) {
                         $state.reload();
@@ -351,9 +353,9 @@
             }
 
             // update $viewHistory
-            stateParams.feedId  = $stateParams.feedId = newItem.feedid;
+            stateParams.feedId = $stateParams.feedId = newItem.feedid;
             stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = $stateParams.slug = newItem.$slug;
+            stateParams.slug = $stateParams.slug = newItem.$slug;
 
             $state.$current.locals.globals.item = newItem;
 
@@ -367,7 +369,7 @@
                 }, {
                     notify: false
                 })
-                .then(function () {
+                .then(function() {
                     seo.update();
                 });
 
@@ -531,8 +533,8 @@
             vm.item = angular.extend({}, newItem);
 
             stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
-            stateParams.slug    = $stateParams.slug = vm.item.$slug;
+            stateParams.feedId = $stateParams.feedId = vm.item.feedid;
+            stateParams.slug = $stateParams.slug = vm.item.$slug;
 
             $state.$current.locals.globals.item = newItem;
 
@@ -565,7 +567,7 @@
                 }, {
                     notify: false
                 })
-                .then(function () {
+                .then(function() {
                     seo.update();
                 });
 
@@ -581,7 +583,7 @@
          */
         function byMediaId (mediaId) {
 
-            return function (cursor) {
+            return function(cursor) {
                 return cursor.mediaid === mediaId;
             };
         }

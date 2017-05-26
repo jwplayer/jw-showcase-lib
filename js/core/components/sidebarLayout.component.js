@@ -31,13 +31,13 @@
      *
      * @requires jwShowcase.core.sidebar
      */
-    SidebarLayoutController.$inject = ['sidebar'];
-    function SidebarLayoutController (sidebar) {
+    SidebarLayoutController.$inject = ['sidebar', 'config'];
+    function SidebarLayoutController (sidebar, config) {
 
         var vm = this;
 
         vm.sidebar = sidebar;
-
+        vm.rightRail = config.options.rightRail;
         vm.backdropClickHandler = backdropClickHandler;
         vm.swipeLeftHandler     = swipeLeftHandler;
 

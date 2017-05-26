@@ -1,0 +1,38 @@
+<div class="jw-side-rail">
+    <div class="jw-side-rail-header">
+        {{vm.title}}
+    </div>
+    <ul class="jw-side-rail-items">
+        <li class="jw-side-rail-item" ng-repeat="playlistItem in vm.playlist">
+            <div class="jw-side-rail-col jw-side-rail-col-left">
+                <div class="jw-side-rail-poster">
+                    <div class="jw-side-rail-poster-aspect">
+
+                    </div>
+                    <div class="jw-side-rail-poster-content" style="background-image: url('{{playlistItem.image}}')">
+
+                    </div>
+                </div>
+            </div>
+            <div class="jw-side-rail-col jw-side-rail-col-right">
+                <h3 class="jw-side-rail-title">
+                    {{playlistItem.title}}
+                </h3>
+
+            </div>
+            <!--<div class="jw-side-rail-item-poster">-->
+                <!--<div class="jw-side-rail-item-poster-aspect">-->
+
+                <!--</div>-->
+                <!--<div class="jw-side-rail-item-poster-content">-->
+                    <!--{{playlistItem}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="jw-side-rail-item-details">-->
+                <!--<h3 class="jw-side-rail-item-details-title">-->
+
+                <!--</h3>-->
+            <!--</div>-->
+        </li>
+    </ul>
+</div>
