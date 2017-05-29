@@ -4,7 +4,6 @@
 
 .jw-card {
     position: relative;
-    color: $white;
     font-size: rem(15px);
 
     body:not(.jw-flag-touch) & {
@@ -181,20 +180,6 @@
     .jw-card-toast {
         @include cover();
 
-        &.jw-card-toast-primary {
-            background-color: $primary-color;
-            color: $white;
-        }
-
-        &.jw-card-toast-success {
-            background-color: $success-color;
-            color: $white;
-
-            .jwy-icon-stack .jwy-icon {
-                color: $success-color;
-            }
-        }
-
         .jw-card-toast-container {
             @include transform(translateY(-50%));
 
@@ -274,8 +259,6 @@
         left: 0;
         width: 0;
         height: 4px;
-
-        background: $primary-color;
     }
 
 }
