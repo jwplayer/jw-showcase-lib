@@ -1,4 +1,10 @@
-.jw-theme-dark {
+
+.#{theme-name('dark')} {
+
+    // import theme mixin
+    @import '../mixins/theme';
+
+    // override variables
     $body-bg: #181818;
 
     $btn-light-bg: #5b6064;
@@ -26,9 +32,6 @@
 
     $footer-color: $white;
 
-    @import '../components/theme';
-
-    background-color: $body-bg;
-    color: $body-color;
-    font-family: $body-font-family;
+    // create theme rules
+    @include theme();
 }

@@ -1,7 +1,9 @@
-.jw-theme-light {
-    @import '../components/theme';
 
-    background-color: $body-bg;
-    color: $body-color;
-    font-family: $body-font-family;
+.#{theme-name('light')} {
+
+    // import theme mixin
+    @import '../mixins/theme';
+
+    // create theme rules
+    @include theme();
 }

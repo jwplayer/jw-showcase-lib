@@ -25,3 +25,7 @@
 @function rem($size-in-pixels) {
     @return #{$size-in-pixels / $body-font-size}rem;
 }
+
+@function theme-name($name) {
+    @return 'jw-theme-#{$name}';
+}
