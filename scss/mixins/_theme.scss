@@ -403,8 +403,11 @@
         background-color: $header-bg;
         color: $header-color;
 
-        .jw-button:hover {
-            color: $header-hover-color;
+        // Only declare rule if toolbar hover color differs from primary color.
+        @if $header-hover-color != $primary-color {
+            .jw-button:hover {
+                color: $header-hover-color;
+            }
         }
     }
 
@@ -530,8 +533,11 @@
         background-color: $toolbar-bg;
         color: $toolbar-color;
 
-        .jw-button:hover {
-            color: $toolbar-hover-color;
+        // Only declare rule if toolbar hover color differs from primary color.
+        @if $toolbar-hover-color != $primary-color {
+            .jw-button:hover {
+                color: $toolbar-hover-color;
+            }
         }
 
         .jw-toolbar-nav:last-child .jw-button {
