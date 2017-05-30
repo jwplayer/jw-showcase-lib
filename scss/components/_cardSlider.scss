@@ -102,10 +102,6 @@ $featured-slider-max-width: 900px;
             text-decoration: none;
             cursor: pointer;
 
-            &:hover {
-                color: $primary-color;
-            }
-
             > span,
             > .jwy-icon {
                 vertical-align: middle;
@@ -154,7 +150,6 @@ $featured-slider-max-width: 900px;
         position: absolute;
         top: 50%;
 
-        color: $main-color;
         cursor: pointer;
 
         &-flag-left {
@@ -163,10 +158,6 @@ $featured-slider-max-width: 900px;
 
         &-flag-right {
             right: 10px;
-        }
-
-        &:hover:not(.is-disabled) .jwy-icon {
-            color: $primary-color;
         }
 
         &.is-disabled {
@@ -185,7 +176,6 @@ $featured-slider-max-width: 900px;
 // --------------------------------
 
 .jw-card-slider.jw-card-slider-flag-featured {
-    background-color: $featured-slider-bg-color;
 
     .jw-card-slider-button.jw-card-slider-button-flag-right {
         margin-left: 40px;

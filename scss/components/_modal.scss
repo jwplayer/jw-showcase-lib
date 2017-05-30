@@ -4,7 +4,6 @@
 // --------------------------------
 
 .jw-modal {
-    background-color: $light-color;
     background-size: cover;
     z-index: $view-z-index + 100;
 
@@ -24,7 +23,6 @@
     .jw-modal-message {
         padding: 10px 20px;
 
-        color: $black;
         font-size: 1.75rem;
         font-weight: 300;
         line-height: normal;

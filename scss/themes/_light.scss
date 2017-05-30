@@ -1,70 +1,9 @@
 
-.jw-theme-light {
+.#{theme-name('light')} {
 
-    background-color: $theme-light-bg-color;
+    // import theme mixin
+    @import '../mixins/theme';
 
-    .jw-row-inverse {
-        background-color: $inverse-color;
-        color: $white;
-    }
-
-    .jw-card {
-        color: $white;
-    }
-
-    .jw-header {
-        color: $main-color;
-    }
-
-    .jw-offline-message {
-        background: $primary-color;
-    }
-
-    .jw-card-slider {
-
-        &-flag-default {
-            border-bottom: 1px solid rgba($main-color, 0.2);
-        }
-
-        &-flag-default.jw-card-slider-button {
-            color: $black;
-        }
-
-        &-flag-error {
-            .jw-card-slider-title {
-                color: $theme-light-slider-title-error-color;
-            }
-        }
-
-        .jw-card-slider-title {
-            color: $main-color;
-        }
-
-        .jw-card-slider-slide {
-
-            &-flag-loading {
-                background: $white;
-
-                .jw-card-aspect {
-                    background: $main-color;
-                }
-            }
-
-            &-flag-error {
-                background: $white;
-
-                .jw-card-aspect {
-                    background: $theme-light-slider-slide-loading-bg-color;
-                }
-            }
-        }
-    }
-
-    .jw-card.jw-card-flag-default {
-
-        .jw-card-info {
-            background-color: $white;
-            color: $card-text-color;
-        }
-    }
+    // create theme rules
+    @include theme();
 }

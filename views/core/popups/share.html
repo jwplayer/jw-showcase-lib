@@ -1,17 +1,17 @@
 <div class="jw-popup jw-popup-share">
   <div class="jw-popup-buttons">
-    <jw-button class="jw-icon-button jw-button-facebook" ng-href="{{ vm.facebookShareLink }}" target="_blank">
+    <jw-button class="jw-button-circle jw-button-facebook" ng-href="{{ vm.facebookShareLink }}" target="_blank">
       <i class="jwy-icon jwy-icon-facebook"></i>
     </jw-button>
-    <jw-button class="jw-icon-button jw-button-twitter" ng-href="{{ vm.twitterShareLink }}" target="_blank">
+    <jw-button class="jw-button-circle jw-button-twitter" ng-href="{{ vm.twitterShareLink }}" target="_blank">
       <i class="jwy-icon jwy-icon-twitter"></i>
     </jw-button>
-    <jw-button class="jw-icon-button jw-button-mail" ng-href="{{ vm.emailShareLink }}">
+    <jw-button class="jw-button-circle jw-button-dark" ng-href="{{ vm.emailShareLink }}">
       <i class="jwy-icon jwy-icon-envelop"></i>
     </jw-button>
   </div>
   <div class="jw-popup-buttons jw-share-link">
-    <jw-button class="jw-button-outline-primary jw-button-block is-hidden-mobile-device" ng-click="vm.copyUrl()">
+    <jw-button class="jw-button-border-light jw-button-default jw-button-block is-hidden-mobile-device" ng-click="vm.copyUrl()">
     <span
         class="jw-button-label{{ vm.copyResult.success ? ' jw-text-success' : '' }}">{{ vm.copyResult.text || 'Copy link' }}</span>
     </jw-button>

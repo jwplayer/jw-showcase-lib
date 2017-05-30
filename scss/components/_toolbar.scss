@@ -7,9 +7,6 @@
     min-height: $toolbar-height;
     padding: 0 $toolbar-padding;
 
-    background-color: $toolbar-bg-color;
-    color: $toolbar-color;
-
     &-subheader {
         position: fixed;
         top: $header-height;
@@ -37,14 +34,6 @@
 
         &:last-child {
             text-align: right;
-
-            .jw-button {
-                border-right: 1px solid lighten($toolbar-bg-color, 5%);
-
-                &:first-child {
-                    border-left: 1px solid lighten($toolbar-bg-color, 5%);
-                }
-            }
         }
     }
 
