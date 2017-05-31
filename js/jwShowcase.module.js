@@ -27,6 +27,7 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.tag',
             'jwShowcase.video'
         ])
         .value('config', {

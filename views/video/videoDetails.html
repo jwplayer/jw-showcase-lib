@@ -12,7 +12,7 @@
 
       <ul class="jw-video-tags">
         <li ng-repeat="tag in vm.item.$tags">
-          <a class="jw-video-tag">{{ ::tag }}</a>
+          <a class="jw-video-tag" ui-sref="root.tag({tag: tag})">{{ ::tag }}</a>
         </li>
       </ul>
     </div>
