@@ -6,8 +6,6 @@
     position: relative;
     width: 100%;
 
-    background-color: $black;
-
     .jw-container {
     }
 
@@ -31,9 +29,6 @@
 
         height: $toolbar-height;
         min-height: $toolbar-height;
-
-        background-color: $toolbar-bg-color;
-        color: $toolbar-color;
     }
 
     &.is-loading {

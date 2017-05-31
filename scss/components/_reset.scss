@@ -1,0 +1,34 @@
+//
+// reset
+// --------------------------------
+
+html {
+    @include text-size-adjust(100%);
+    -webkit-tap-highlight-color: transparent;
+}
+
+img {
+    border: 0;
+}
+
+*,
+*::before,
+*::after {
+    @include box-sizing(border-box);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a,
+button,
+input {
+    border: 0;
+    outline: none;
+}
+
+*:focus {
+    outline: none;
+}

@@ -3,7 +3,7 @@
 // --------------------------------
 
 .jw-loading {
-    background-color: $light-color;
+    background-color: $white;
     z-index: $loading-z-index;
 
     &.ng-hide-add {
@@ -21,9 +21,8 @@
         @include center-self();
 
         .jwy-icon-buffer {
-            color: $primary-color;
+            color: $gray;
             font-size: 5em;
         }
     }
 }
-

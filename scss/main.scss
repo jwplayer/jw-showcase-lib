@@ -1,10 +1,22 @@
 //
-// Import base first since it contains all variables and Compass dependencies
+// Compass imports
 // --------------------------------
-@import 'base';
+@import 'compass/css3/animation';
+@import 'compass/css3/images';
+@import 'compass/css3/box-shadow';
+@import 'compass/css3/box-sizing';
+@import 'compass/css3/flexbox';
+@import 'compass/css3/transform';
+@import 'compass/css3/transition';
+@import 'compass/css3/user-interface';
+//
+// Import variables
+// --------------------------------
+@import 'variables';
 //
 // Import mixins
 // --------------------------------
+@import 'mixins/buttons';
 @import 'mixins/responsive';
 @import 'mixins/utils';
 //
@@ -33,23 +45,20 @@
 @import 'components/player';
 @import 'components/popups';
 @import 'components/rail';
+@import 'components/reset';
 @import 'components/search';
 @import 'components/sidebar';
-@import 'components/text';
 @import 'components/toggle';
 @import 'components/toolbar';
 @import 'components/videoContainer';
 @import 'components/videoDetails';
 @import 'components/view';
+@import 'components/visibility';
 //
 // Import themes
 // --------------------------------
 @import 'themes/light';
 @import 'themes/dark';
-//
-// Import skins
-// --------------------------------
-@import 'skins/showcase';
 
 html {
     height: 100%;
@@ -63,36 +72,10 @@ body {
     margin: 0;
     padding: 0;
 
-    color: $text-color-base;
-    font-family: $font-family-base;
-    font-size: $font-size-base;
+    font-size: $body-font-size;
 
     -webkit-font-smoothing: antialiased;
 
     overflow-x: hidden;
     overflow-y: scroll;
-
-    img {
-        border: 0;
-    }
-
-    * {
-        @include box-sizing(border-box);
-    }
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    a,
-    button,
-    input {
-        border: 0;
-        outline: none;
-    }
-
-    *:focus {
-        outline: none;
-    }
 }

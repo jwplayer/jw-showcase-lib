@@ -1,15 +1,3 @@
-$white: #fff !default;
-$black: #000 !default;
-
-$gray-lighter: #eee !default;
-$gray-light: #d7dbe6 !default;
-$gray: #999 !default;
-$gray-dark: #363636 !default;
-
-$red: #f42957 !default;
-$blue: #2b3b57 !default;
-$green: #393 !default;
-
 .jw-side-rail {
   width: auto;
   position: absolute;
@@ -25,9 +13,6 @@ $green: #393 !default;
 
     font-size: 14px;
     font-weight: 800;
-
-    background-color: $white;
-    color: $black;
   }
 
 
@@ -49,15 +34,11 @@ $green: #393 !default;
     @include display-flex;
     padding: 20px;
     cursor: pointer;
-
-    background-color: $gray-light;
     transition: background-color 0.15s ease-in, box-shadow 0.15s ease-in;
 
     &:hover {
-      background-color: $gray-lighter;
-
       .jw-side-rail-poster-content {
-        box-shadow: 0 2px 4px rgba($black, 0.5);
+        box-shadow: 0 2px 4px rgba(#000000, 0.5);
       }
     }
   }
