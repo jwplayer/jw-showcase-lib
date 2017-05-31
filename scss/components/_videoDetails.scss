@@ -3,7 +3,7 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 20px 0;
+    padding: 25px 0 0;
 
     color: $white;
     line-height: 1.4em;
@@ -28,18 +28,25 @@
     }
 
     .jw-video-title {
-        margin-bottom: 15px;
         font-size: rem(22px);
-        font-weight: bold;
         line-height: rem(26px);
     }
 
-    //
-    //.jw-video-feed-title,
-    //.jw-video-feed-title:first-child {
-    //    margin: 2em 0;
-    //    text-align: center;
-    //}
+    .jw-video-tags {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+
+            .jw-video-tag {
+                padding: 3px 7px;
+            }
+        }
+    }
 }
 
 //
@@ -49,13 +56,13 @@
 @include mobile-only () {
 
     .jw-video-details {
-        padding: 20px;
+        padding: 20px 20px 0;
     }
 }
 
 @include tablet-only () {
 
     .jw-video-details {
-        padding: 20px 90px;
+        padding: 20px 90px 0;
     }
 }

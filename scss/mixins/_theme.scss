@@ -140,7 +140,11 @@
 
     // VideoDetails
     $video-details-bg: #444 !default;
-
+    $video-details-tag-bg: $dark-color !default;
+    $video-details-tag-hover-bg: darken($dark-color, 5%) !default;
+    $video-details-tag-color: $white !default;
+    $video-details-tag-hover-color: $white !default;
+    $video-details-tag-shadow: 0 1px 0 $black !default;
     //
     // Body
     // --------------------------------
@@ -560,6 +564,17 @@
 
     .jw-video-details {
         background-color: $video-details-bg;
+
+        .jw-video-tag {
+            @include box-shadow($video-details-tag-shadow);
+            background-color: $video-details-tag-bg;
+            color: $video-details-tag-color;
+
+            &:hover {
+                background-color: $video-details-tag-hover-bg;
+                color: $video-details-tag-hover-color;
+            }
+        }
     }
 
     //
