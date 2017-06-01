@@ -37,7 +37,8 @@
                 enableCookieNotice:     false,
                 enableFeaturedText:     true,
                 enablePlayerAutoFocus:  true,
-                enableHeader:           true
+                enableHeader:           true,
+                enableTags:             false
             }
         });
 

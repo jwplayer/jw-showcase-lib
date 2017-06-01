@@ -10,7 +10,7 @@
         <jw-markdown ng-model="vm.item.description" class="jw-markdown"></jw-markdown>
       </p>
 
-      <ul class="jw-video-tags">
+      <ul class="jw-video-tags" ng-if="::vm.config.options.enableTags">
         <li ng-repeat="tag in vm.item.$tags track by $index">
           <a class="jw-video-tag" ui-sref="root.tag({tag: tag})">{{ ::tag }}</a>
         </li>
