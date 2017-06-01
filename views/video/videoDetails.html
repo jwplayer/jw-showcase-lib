@@ -11,7 +11,7 @@
       </p>
 
       <ul class="jw-video-tags">
-        <li ng-repeat="tag in vm.item.$tags">
+        <li ng-repeat="tag in vm.item.$tags track by $index">
           <a class="jw-video-tag" ui-sref="root.tag({tag: tag})">{{ ::tag }}</a>
         </li>
       </ul>
