@@ -28,7 +28,7 @@
       </div>
 
       <div class="jw-right-rail-col" ng-if="vm.hasSideRail">
-        <jw-rail playlist="vm.feed.playlist"></jw-rail>
+        <jw-rail playlist="vm.feed.playlist" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
       </div>
 
     </div>

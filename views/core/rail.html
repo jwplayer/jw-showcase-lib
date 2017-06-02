@@ -3,36 +3,22 @@
         {{vm.title}}
     </div>
     <ul class="jw-side-rail-items">
-        <li class="jw-side-rail-item" ng-repeat="playlistItem in vm.playlist">
+        <li class="jw-side-rail-item"
+            ng-repeat="playlistItem in vm.playlist"
+            ng-click="vm.onItemClick({newItem: playlistItem, clickedOnPlay: false})">
             <div class="jw-side-rail-col jw-side-rail-col-left">
                 <div class="jw-side-rail-poster">
                     <div class="jw-side-rail-poster-aspect">
-
                     </div>
                     <div class="jw-side-rail-poster-content" style="background-image: url('{{playlistItem.image}}')">
-
                     </div>
                 </div>
             </div>
             <div class="jw-side-rail-col jw-side-rail-col-right">
                 <h3 class="jw-side-rail-title">
-                    {{playlistItem.title}}
+                    {{playlistItem.title}} <span class="jw-side-rail-title-now-playing-tag" ng-if="$first"> -- Now Playing</span>
                 </h3>
-
             </div>
-            <!--<div class="jw-side-rail-item-poster">-->
-                <!--<div class="jw-side-rail-item-poster-aspect">-->
-
-                <!--</div>-->
-                <!--<div class="jw-side-rail-item-poster-content">-->
-                    <!--{{playlistItem}}-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="jw-side-rail-item-details">-->
-                <!--<h3 class="jw-side-rail-item-details-title">-->
-
-                <!--</h3>-->
-            <!--</div>-->
         </li>
     </ul>
 </div>

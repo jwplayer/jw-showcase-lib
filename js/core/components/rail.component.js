@@ -37,7 +37,8 @@
             controller:   RailController,
             templateUrl:  'views/core/rail.html',
             bindings: {
-                playlist: '='
+                playlist: '=',
+                onItemClick: '&'
             }
         });
 
@@ -50,8 +51,7 @@
     RailController.$inject = ['config'];
     function RailController (config) {
 
-        var vm        = this,
-            searching = false;
+        var vm        = this;
 
         vm.title     = config.options.rightRail.title;
     }
