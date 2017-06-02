@@ -133,8 +133,8 @@ $featured-slider-max-width: 900px;
         .jw-card-slider-slide {
             display: inline-block;
             position: relative;
-            white-space: normal;
             vertical-align: top;
+            white-space: normal;
         }
     }
 
@@ -161,8 +161,8 @@ $featured-slider-max-width: 900px;
         }
 
         &.is-disabled {
-            cursor: default;
             opacity: 0.3;
+            cursor: default;
         }
 
         .jwy-icon {

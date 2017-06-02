@@ -1,85 +1,76 @@
 .jw-side-rail {
-  width: auto;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-
-  &-header {
-    @include display-flex();
-    @include align-items(center);
-    width: 100%;
-    height: 40px;
-    padding: 0 20px;
-
-    font-size: 14px;
-    font-weight: 800;
-  }
-
-
-
-  &-items {
-    display: block;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
     position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-  }
-
-  &-item {
-    @include display-flex;
-    padding: 20px;
-    cursor: pointer;
-    transition: background-color 0.15s ease-in, box-shadow 0.15s ease-in;
-
-    &:hover {
-      .jw-side-rail-poster-content {
-        box-shadow: 0 2px 4px rgba(#000000, 0.5);
-      }
-    }
-  }
-
-  &-col {
-    width: 50%;
-  }
-
-  &-col-left {
-    padding-right: 10px;
-  }
-
-  &-col-right {
-    padding-left: 10px;
-  }
-
-  &-poster {
     width: 100%;
-    position: relative;
+    height: 100%;
 
-    &-aspect {
-      padding-top: (9/16) * 100%;
+    &-header {
+        @include display-flex();
+        @include align-items(center);
+        width: 100%;
+        height: 40px;
+        padding: 0 20px;
+
+        font-size: 14px;
+        font-weight: 800;
     }
 
-    &-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-position: center center;
-      background-size: cover;
+    &-items {
+        display: block;
+        position: absolute;
 
+        top: 40px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        list-style-type: none;
     }
-  }
 
-  &-title {
-    font-size: 16px;
-    line-height: 20px;
+    &-item {
+        @include display-flex;
+        padding: 20px;
+        transition: background-color 0.15s ease-in, box-shadow 0.15s ease-in;
+        cursor: pointer;
+    }
 
-    margin: 0;
-    padding: 0;
-  }
+    &-col {
+        width: 50%;
+    }
+
+    &-col-left {
+        padding-right: 10px;
+    }
+
+    &-col-right {
+        padding-left: 10px;
+    }
+
+    &-poster {
+        position: relative;
+        width: 100%;
+
+        &-aspect {
+            padding-top: (9 / 16) * 100%;
+        }
+
+        &-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-position: center center;
+            background-size: cover;
+
+        }
+    }
+
+    &-title {
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+        line-height: 20px;
+    }
 }

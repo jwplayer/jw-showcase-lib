@@ -108,6 +108,7 @@
     $rail-item-bg: $gray-light !default;
     $rail-item-color: $secondary-color !default;
     $rail-item-bg-hover: $gray-lighter !default;
+    $rail-hover-poster-shadow: 0 2px 4px rgba($black, 0.5);
 
     // Modal
 
@@ -247,7 +248,8 @@
 
         &:not(.is-active) {
             &:hover .jwy-icon-stack {
-                color:  $toolbar-color;
+                color: $toolbar-color;
+
                 .jwy-icon {
                     color: $primary-color;
                 }
@@ -265,7 +267,8 @@
     .jw-button-share {
 
         &:hover .jwy-icon-stack {
-            color:  $toolbar-color;
+            color: $toolbar-color;
+
             .jwy-icon {
                 color: $primary-color;
             }
@@ -438,10 +441,10 @@
     // --------------------------------
 
     .jw-side-rail {
-       .jw-side-rail-header {
-           background-color: $rail-header-bg;
-           color: $rail-header-color;
-       }
+        .jw-side-rail-header {
+            background-color: $rail-header-bg;
+            color: $rail-header-color;
+        }
 
         .jw-side-rail-item {
             background-color: $rail-item-bg;
@@ -449,6 +452,10 @@
 
             &:hover {
                 background-color: $rail-item-bg-hover;
+
+                .jw-side-rail-poster-content {
+                    box-shadow: $rail-hover-poster-shadow;
+                }
             }
         }
     }

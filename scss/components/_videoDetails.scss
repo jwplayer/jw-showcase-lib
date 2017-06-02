@@ -66,12 +66,13 @@
 
 .jw-sidebar-layout.jw-flag-right-rail-enabled {
     .jw-video-details {
-        padding-left: 0;
         padding-right: 0;
+        padding-left: 0;
+
         .jw-container {
             max-width: 100%;
 
-            .jw-collapsible-text-content{
+            .jw-collapsible-text-content {
                 padding-right: 30%;
             }
         }
@@ -79,9 +80,9 @@
 }
 
 @include desktop-only () {
-        .jw-video-details {
-            .jw-container {
-                padding: 0 84px !important;
-            }
+    .jw-video-details {
+        .jw-container {
+            padding: 0 84px !important;
         }
     }
+}

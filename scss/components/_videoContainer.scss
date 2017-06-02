@@ -6,9 +6,6 @@
     position: relative;
     width: 100%;
 
-    .jw-container {
-    }
-
     .jw-video-row {
         position: relative;
     }
@@ -19,16 +16,16 @@
 
     .jw-toolbar-row-bg {
         position: absolute;
+        z-index: 10;
+        right: 0;
         bottom: 0;
         left: 0;
-        right: 0;
-        z-index: 10;
-
-        margin-left: -100%;
-        margin-right: -100%;
 
         height: $toolbar-height;
         min-height: $toolbar-height;
+
+        margin-right: -100%;
+        margin-left: -100%;
     }
 
     &.is-loading {
@@ -91,6 +88,7 @@
 .jw-sidebar-layout.jw-flag-right-rail-enabled {
     .jw-video-container {
         padding: 0;
+
         .jw-container {
             @include display-flex;
             max-width: 100%;
@@ -101,8 +99,8 @@
             }
 
             .jw-right-rail-col {
-                width: 30%;
                 position: relative;
+                width: 30%;
             }
         }
 
