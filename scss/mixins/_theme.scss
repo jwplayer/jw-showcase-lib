@@ -37,6 +37,9 @@
     $btn-play-icon-color: $primary-color !default;
     $btn-play-border-color: $white !default;
 
+    $btn-icon-active-color: $primary-color !default;
+    $btn-icon-nested-active-color: $white !default;
+
     $btn-effect-bg: rgba($secondary-color, 0.1) !default;
 
     // Card
@@ -101,14 +104,6 @@
 
     $video-container-bg: $light-color !default;
 
-    // Rail
-
-    $rail-header-bg: $white !default;
-    $rail-header-color: $secondary-color !default;
-    $rail-item-bg: $gray-light !default;
-    $rail-item-color: $secondary-color !default;
-    $rail-item-bg-hover: $gray-lighter !default;
-
     // Modal
 
     $modal-bg: $light-color !default;
@@ -168,6 +163,20 @@
 
     .jw-button {
 
+        &.is-active .jwy-icon-stack {
+            color: $btn-icon-active-color;
+
+            .jwy-icon {
+                color: $btn-icon-nested-active-color;
+            }
+        }
+
+        &:not(.is-active) {
+            .jwy-icon-stack .jwy-icon {
+                color: $btn-icon-nested-active-color;
+            }
+        }
+
         &-default {
             &:hover,
             &.active {
@@ -225,54 +234,6 @@
 
         &-effect {
             background-color: $btn-effect-bg;
-        }
-    }
-
-    .jw-button-watchlist {
-
-        &.is-active {
-
-            &:hover .jwy-icon-stack .jwy-icon {
-                color: $toolbar-color;
-            }
-
-            .jwy-icon-stack {
-                color: $primary-color;
-
-                .jwy-icon {
-                    color: $toolbar-color;
-                }
-            }
-        }
-
-        &:not(.is-active) {
-            &:hover .jwy-icon-stack {
-                color:  $toolbar-color;
-                .jwy-icon {
-                    color: $primary-color;
-                }
-
-            }
-
-            .jwy-icon-stack {
-                .jwy-icon {
-                    color: $toolbar-bg;
-                }
-            }
-        }
-    }
-
-    .jw-button-share {
-
-        &:hover .jwy-icon-stack {
-            color:  $toolbar-color;
-            .jwy-icon {
-                color: $primary-color;
-            }
-        }
-
-        .jwy-icon-stack .jwy-icon {
-            color: $toolbar-bg;
         }
     }
 
@@ -434,26 +395,6 @@
     }
 
     //
-    // Rail
-    // --------------------------------
-
-    .jw-side-rail {
-       .jw-side-rail-header {
-           background-color: $rail-header-bg;
-           color: $rail-header-color;
-       }
-
-        .jw-side-rail-item {
-            background-color: $rail-item-bg;
-            color: $rail-item-color;
-
-            &:hover {
-                background-color: $rail-item-bg-hover;
-            }
-        }
-    }
-
-    //
     // Loading
     // --------------------------------
 
@@ -588,10 +529,6 @@
             &:first-child {
                 border-left: $toolbar-nav-border;
             }
-        }
-
-        .jw-button-label {
-            color: rgba($toolbar-color, 0.65);
         }
     }
 
