@@ -37,6 +37,7 @@
     $btn-play-icon-color: $primary-color !default;
     $btn-play-border-color: $white !default;
 
+    $btn-icon-nested-color: $white;
     $btn-icon-active-color: $primary-color !default;
     $btn-icon-nested-active-color: $white !default;
 
@@ -173,7 +174,7 @@
 
         &:not(.is-active) {
             .jwy-icon-stack .jwy-icon {
-                color: $btn-icon-nested-active-color;
+                color: $btn-icon-nested-color;
             }
         }
 
