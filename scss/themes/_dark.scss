@@ -13,6 +13,8 @@
     $toolbar-bg: #262626;
     $toolbar-color: $white;
 
+    $btn-icon-nested-color: $toolbar-bg;
+
     $sidebar-bg: #262626;
     $sidebar-color: $white;
 
@@ -24,8 +26,8 @@
 
     $card-info-bg: $black;
     $card-info-color: $white;
-    $card-info-hover-bg: $white;
-    $card-info-hover-color: $black;
+    $card-info-hover-bg: $card-info-bg;
+    $card-info-hover-color: $card-info-color;
 
     $card-menu-bg: $black;
 
