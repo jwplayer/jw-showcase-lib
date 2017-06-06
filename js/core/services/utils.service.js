@@ -232,7 +232,7 @@
 
             matches = url.match(/-(\d+)\.(\w+)$/);
 
-            if (matches.length === 3) {
+            if (angular.isArray(matches) && matches.length === 3) {
                 url = url.replace(matches[0], matches[0].replace(matches[1], width));
             }
 
