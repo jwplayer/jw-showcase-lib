@@ -37,6 +37,10 @@
     $btn-play-icon-color: $primary-color !default;
     $btn-play-border-color: $white !default;
 
+    $btn-icon-nested-color: $white;
+    $btn-icon-active-color: $primary-color !default;
+    $btn-icon-nested-active-color: $white !default;
+
     $btn-effect-bg: rgba($secondary-color, 0.1) !default;
 
     // Card
@@ -97,6 +101,10 @@
     $search-color: inherit !default;
     $search-border: 1px solid $light-color !default;
 
+    // Video
+
+    $video-container-bg: $light-color !default;
+
     // Modal
 
     $modal-bg: $light-color !default;
@@ -130,8 +138,8 @@
 
     // Toolbar
 
-    $toolbar-bg: #292929 !default;
-    $toolbar-color: $white !default;
+    $toolbar-bg: $white !default;
+    $toolbar-color: $secondary-color !default;
     $toolbar-hover-color: $primary-color !default;
     $toolbar-nav-border: 1px solid lighten($toolbar-bg, 5%) !default;
 
@@ -139,7 +147,8 @@
     $row-inverse-color: $white !default;
 
     // VideoDetails
-    $video-details-bg: #444 !default;
+    $video-details-bg: $light-color !default;
+    $video-details-color: $secondary-color !default;
 
     //
     // Body
@@ -154,6 +163,20 @@
     // --------------------------------
 
     .jw-button {
+
+        &.is-active .jwy-icon-stack {
+            color: $btn-icon-active-color;
+
+            .jwy-icon {
+                color: $btn-icon-nested-active-color;
+            }
+        }
+
+        &:not(.is-active) {
+            .jwy-icon-stack .jwy-icon {
+                color: $btn-icon-nested-color;
+            }
+        }
 
         &-default {
             &:hover,
@@ -212,53 +235,6 @@
 
         &-effect {
             background-color: $btn-effect-bg;
-        }
-    }
-
-    .jw-button-watchlist {
-
-        &.is-active {
-
-            &:hover .jwy-icon-stack .jwy-icon {
-                color: $white;
-            }
-
-            .jwy-icon-stack {
-                color: $primary-color;
-
-                .jwy-icon {
-                    color: $white;
-                }
-            }
-        }
-
-        &:not(.is-active) {
-            &:hover .jwy-icon-stack .jwy-icon {
-                color: $primary-color;
-            }
-
-            .jwy-icon-stack {
-                color: $white;
-
-                .jwy-icon {
-                    color: $secondary-color;
-                }
-            }
-        }
-    }
-
-    .jw-button-share {
-
-        &:hover .jwy-icon-stack {
-            color: $white;
-
-            .jwy-icon {
-                color: $primary-color;
-            }
-        }
-
-        .jwy-icon-stack .jwy-icon {
-            color: $secondary-color;
         }
     }
 
@@ -412,6 +388,14 @@
     }
 
     //
+    // Video
+    // --------------------------------
+
+    .jw-video-container {
+        background-color: $video-container-bg;
+    }
+
+    //
     // Loading
     // --------------------------------
 
@@ -549,6 +533,11 @@
         }
     }
 
+    .jw-toolbar-row-bg {
+        background-color: $toolbar-bg;
+        color: $toolbar-color;
+    }
+
     .jw-row-inverse {
         background-color: $row-inverse-bg;
         color: $row-inverse-color;
@@ -560,6 +549,7 @@
 
     .jw-video-details {
         background-color: $video-details-bg;
+        color: $video-details-color;
     }
 
     //
