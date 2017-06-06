@@ -71,7 +71,15 @@
 
         .jw-container {
             max-width: 100%;
+            padding: 0 84px !important;
+        }
+    }
+}
 
+
+@include desktop-only () {
+    .jw-sidebar-layout.jw-flag-right-rail-enabled .jw-video-details {
+        .jw-container {
             .jw-collapsible-text-content {
                 padding-right: 30%;
             }
@@ -79,10 +87,8 @@
     }
 }
 
-@include desktop-only () {
-    .jw-video-details {
-        .jw-container {
-            padding: 0 84px !important;
-        }
+@include mobile-only () {
+    .jw-sidebar-layout.jw-flag-right-rail-enabled .jw-video-details .jw-container {
+        padding: 0 15px !important;
     }
 }
