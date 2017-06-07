@@ -26,6 +26,7 @@
 .jw-offline-message {
     @include single-transition(transform, 0.2s, ease);
     @include transform(translateY(100%));
+    visibility: hidden;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -33,7 +34,6 @@
     color: $white;
     font-size: 14px;
     text-align: center;
-    visibility: hidden;
 
     a {
         font-weight: bold;
