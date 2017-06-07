@@ -9,7 +9,8 @@
     body:not(.jw-flag-touch) & {
 
         &.jw-card-flag-active,
-        &:hover {
+        &:hover,
+        .jw-card-container:focus {
             .jw-card-controls {
                 opacity: 1;
             }
@@ -214,11 +215,9 @@
 
     body:not(.jw-flag-touch) & {
 
-        &:hover {
-
-            .jw-card-container {
-                background-color: rgba($black, 0.6);
-            }
+        &:hover .jw-card-container,
+        .jw-card-container:focus {
+            background-color: rgba($black, 0.6);
 
             .jw-card-info .jw-card-info-mask {
                 height: 100px;
@@ -270,7 +269,8 @@
 .jw-card.jw-card-flag-featured {
     font-size: 32px;
 
-    &:hover .jw-card-container {
+    &:hover .jw-card-container,
+    .jw-card-container:focus {
         background-color: transparent;
     }
 

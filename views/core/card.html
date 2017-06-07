@@ -4,7 +4,10 @@
     <div class="jw-card-poster is-active is-loading"></div>
   </div>
 
-  <div class="jw-card-container">
+  <div class="jw-card-container"
+      ng-click="vm.containerClickHandler($event)"
+      role="button"
+      tabindex="0">
     <div class="jw-card-controls">
       <div class="jw-card-controls-align">
         <a class="jw-button jw-card-play-button jw-button-play">
@@ -25,7 +28,11 @@
     </div>
   </div>
 
-  <jw-button class="jw-card-menu-button jw-button-default">
+  <jw-button
+      class="jw-card-menu-button jw-button-default"
+      ng-click="vm.menuButtonClickHandler($event)"
+      aria-label="open card menu"
+      tabindex="0">
     <i class="jwy-icon jwy-icon-more jwy-icon-rotate-90"></i>
   </jw-button>
 
