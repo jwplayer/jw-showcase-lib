@@ -46,7 +46,24 @@
             .state('root', {
                 abstract:    true,
                 resolve:     {
-                    preload: 'preload'
+                    configure: ['configResolver', 'config', function (configResolver, config) {
+                        return configResolver.getConfig().then(function () {
+                            if (config.options.useSigning || config.options.useAuthentication) {
+                                if (!config.options.firebase) {
+                                    throw new Error('Missing firebase options.');
+                                }
+
+                                firebase.initializeApp(config.options.firebase);
+                            } else {
+                                config.options.firebase = false;
+                            }
+
+                            return arguments[0];
+                        });
+                    }],
+                    bootstrap: ['configure', 'bootstrap', function(configure, bootstrap) {
+                        return bootstrap;
+                    }]
                 },
                 templateUrl: 'views/core/root.html'
             });

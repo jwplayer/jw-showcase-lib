@@ -22,6 +22,7 @@
      */
     angular
         .module('jwShowcase', [
+            'firebase',
             'jwShowcase.core',
             'jwShowcase.error',
             'jwShowcase.dashboard',
