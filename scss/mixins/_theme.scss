@@ -322,10 +322,10 @@
         &-flag-default {
             border-bottom: $card-slider-border-bottom;
 
-            .jw-card-slider-button {
+            .jw-card-slider-controls {
                 color: $card-slider-button-color;
 
-                &:hover:not(.is-disabled) {
+                .jw-card-slider-button:hover:not(.is-disabled) {
                     color: $card-slider-button-hover-color;
                 }
             }
@@ -334,10 +334,10 @@
         &-flag-featured {
             background-color: $card-slider-featured-bg;
 
-            .jw-card-slider-button {
+            .jw-card-slider-controls {
                 color: $card-slider-featured-button-color;
 
-                &:hover:not(.is-disabled) {
+                .jw-card-slider-button:hover:not(.is-disabled) {
                     color: $card-slider-featured-button-hover-color;
                 }
             }
@@ -595,7 +595,8 @@
         .jw-toggle.jw-off {
             color: $white;
 
-            &:hover {
+            &:hover,
+            &:focus {
                 color: $primary-color;
             }
         }

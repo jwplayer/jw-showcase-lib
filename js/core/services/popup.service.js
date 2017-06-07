@@ -25,15 +25,31 @@
      * @name jwShowcase.core.popup
      */
 
-    popup.$inject = ['$rootScope', '$q', '$controller', '$compile', '$templateCache'];
-    function popup ($rootScope, $q, $controller, $compile, $templateCache) {
+    popup.$inject = ['$rootScope', '$document', '$q', '$controller', '$compile', '$templateCache'];
+    function popup ($rootScope, $document, $q, $controller, $compile, $templateCache) {
 
         var popups        = [],
             popupsElement = null;
 
         this.show = show;
 
+        activate();
+
         ////////////////
+
+        /**
+         * Initialize popup service
+         */
+        function activate () {
+
+            $document.on('keyup', function (evt) {
+                if (27 === evt.which && popups.length) {
+                    closeMostTopPopup();
+                    evt.preventDefault();
+                    evt.stopImmediatePropagation();
+                }
+            });
+        }
 
         /**
          * @name jwShowcase.core.popup.options
@@ -90,6 +106,7 @@
 
             updatePopupsVisibility();
             movePopupToTarget(instance);
+            focusFirstElement(instance);
         }
 
         /**
@@ -123,6 +140,20 @@
         }
 
         /**
+         * Focus the first element with tabindex 0
+         * @param instance
+         */
+        function focusFirstElement (instance) {
+
+            var element = instance.element[0].querySelectorAll('[tabindex="0"]')[0];
+
+            if (element) {
+                instance.focusElement = document.activeElement;
+                element.focus();
+            }
+        }
+
+        /**
          * Remove popup from view
          * @param {PopupInstance} instance
          */
@@ -137,6 +168,11 @@
                 });
 
                 instance.element.remove();
+
+                // refocus previous element after closing popup
+                if (instance.focusElement) {
+                    instance.focusElement.focus();
+                }
 
                 if (index > -1) {
                     popups.splice(index, 1);
@@ -221,6 +257,8 @@
         function PopupInstance (options) {
 
             var instance = this;
+
+            this.focusElement = null;
 
             this.options = options;
 

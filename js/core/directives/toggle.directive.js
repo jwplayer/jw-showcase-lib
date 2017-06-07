@@ -53,6 +53,7 @@
             function activate () {
 
                 ctrl.$render = function () {
+                    toggle.attr('aria-pressed', ctrl.$viewValue);
                     toggle.toggleClass('jw-toggle-flag-checked', ctrl.$viewValue);
                 };
 
@@ -65,6 +66,13 @@
                     cancel: swipeCancelHandler,
                     move:   swipeMoveHandler,
                     end:    swipeEndHandler
+                });
+
+                element.on('keyup', function (evt) {
+                    if (13 === evt.which) {
+                        ctrl.$setViewValue(!ctrl.$viewValue);
+                        ctrl.$render();
+                    }
                 });
 
                 scope.$on('$destroy', destroyHandler);
@@ -122,6 +130,7 @@
                         toValue = !ctrl.$viewValue;
                     }
 
+                    toggle.attr('aria-pressed', toValue);
                     toggle.toggleClass('jw-toggle-flag-checked', toValue);
                     ctrl.$setViewValue(toValue);
                 }
