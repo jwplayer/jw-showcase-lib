@@ -13,7 +13,7 @@
 
     // Body
 
-    $body-bg: $gray-light !default;
+    $body-bg: #d6dbe5 !default;
     $body-color: $dark-color !default;
     $body-font-family: Helvetica Neue, Helvetica, Arial, sans-serif !default;
 
@@ -67,8 +67,8 @@
 
     $card-slider-title-color: $secondary-color !default;
     $card-slider-error-title-color: #979797 !default;
-    $card-slider-border-bottom: 1px solid rgba($secondary-color, 0.2) !default;
-    $card-slider-button-color: $secondary-color !default;
+    $card-slider-border-bottom: 1px solid rgba(#333333, 0.2) !default;
+    $card-slider-button-color: $white !default;
     $card-slider-button-hover-color: $primary-color !default;
 
     $card-slider-featured-bg: #111 !default;
@@ -103,7 +103,7 @@
 
     // Video
 
-    $video-container-bg: $light-color !default;
+    $video-container-bg: #e2e5ec !default;
 
     // Modal
 
@@ -147,7 +147,7 @@
     $row-inverse-color: $white !default;
 
     // VideoDetails
-    $video-details-bg: $light-color !default;
+    $video-details-bg: #e2e5ec !default;
     $video-details-color: $secondary-color !default;
 
     //
