@@ -5,17 +5,18 @@
     @import '../mixins/theme';
 
     // override variables
-    $body-bg: #2c374a;
+    $body-bg: #2a374c;
 
     $btn-light-bg: #5b6064;
     $btn-light-color: $white;
 
-    $toolbar-bg: #2c374a;
+    $toolbar-bg: #2a374c;
     $toolbar-color: $white;
 
     $btn-icon-nested-color: $toolbar-bg;
+    $btn-light-bg: #354560;
 
-    $sidebar-bg: #38455e;
+    $sidebar-bg: #2a374c;
     $sidebar-color: $white;
 
     $toggle-default-color: $black;
@@ -23,20 +24,21 @@
 
     $card-slider-title-color: $white;
     $card-slider-button-color: $white;
+    $card-slider-odd-bg-color: #354560;
 
-    $card-info-bg: #1f273d;
+    $card-info-bg: #1e273f;
     $card-info-color: $white;
-    $card-info-hover-bg: #1f273d;
+    $card-info-hover-bg: #1e273f;
     $card-info-hover-color: $white;
 
     $card-menu-bg: #2c374a;
 
-    $header-bg: #1f273d;
+    $header-bg: #1e273f;
     $header-color: $white;
 
-    $video-container-bg: #38455e;
+    $video-container-bg: #354560;
 
-    $video-details-bg: #38455e;
+    $video-details-bg: #354560;
     $video-details-color: $white;
 
     $footer-color: $white;
