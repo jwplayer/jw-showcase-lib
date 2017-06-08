@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  **/
 
-(function () {
+(function() {
 
     angular
         .module('jwShowcase.core')
@@ -24,13 +24,27 @@
      * @ngdoc service
      * @name jwShowcase.core.session
      */
-    session.$inject = [];
-    function session () {
+    session.$inject = ['$firebaseObject', '$firebaseArray', 'auth', 'config'];
+    function session($firebaseObject, $firebaseArray, auth, config) {
+
+        var db;
 
         this.save  = save;
         this.load  = load;
+        this.watch = watch;
         this.clear = clear;
 
+        if (config.options.firebase) {
+            var database = auth.getIdentity().then(function(identity) {
+                if (!identity) {
+                    return;
+                }
+
+                db = firebase.database();
+
+                return $firebaseObject(db.ref(identity.uid)).$loaded();
+            });
+        }
         ////////////////
 
         /**
@@ -44,12 +58,35 @@
          * @param {string}  key             The key to load.
          * @param {*}       defaultValue    This value is returned when key does not exist.
          */
-        function load (key, defaultValue) {
+        function load(key, defaultValue) {
+            return isLocal().then(function (local) {
+                if (local) {
+                    return loadLocal(key, defaultValue);
+                }
 
+                return database.then(function($db) {
+                    return $db[key.replace(/^jwshowcase\./, '')];
+                });
+            });
+        }
+
+        function isLocal() {
+            if (!config.options.firebase) {
+                return Promise.resolve(true);
+            }
+
+            return auth.getIdentity().then(function (identity) {
+                return !identity;
+            }).catch(function () {
+              return true;
+            });
+        }
+
+        function loadLocal(key, defaultValue) {
             var value;
 
             if (!window.localStorageSupport) {
-                return defaultValue;
+                return Promise.resolve(defaultValue);
             }
 
             value = window.localStorage.getItem(key);
@@ -67,7 +104,35 @@
                 }
             }
 
-            return value;
+            return Promise.resolve(value);
+        }
+
+        function watch(key, callback, collection) {
+
+            if (!config.options.firebase) {
+                return;
+            }
+
+            auth.getIdentity().then(function(identity) {
+                if (!identity) {
+                    return;
+                }
+
+                database.then(function() {
+                    var refPath = db.ref(identity.uid + '/' + key.replace(/^jwshowcase\./, ''));
+                    var $ref;
+
+                    if (collection) {
+                        $ref = $firebaseArray(refPath);
+                    } else {
+                        $ref = $firebaseObject(refPath);
+                    }
+
+                    $ref.$watch(function() {
+                        callback($ref);
+                    });
+                });
+            });
         }
 
         /**
@@ -81,25 +146,32 @@
          * @param {string}  key      Key to identify the value.
          * @param {*}       value    Value to store.
          */
-        function save (key, value) {
+        function save(key, value) {
+            return isLocal().then(function (local) {
+                if (!local) {
+                    return database.then(function($db) {
+                        $db[key.replace(/^jwshowcase\./, '')] = value;
 
-            if (!window.localStorageSupport) {
-                return;
-            }
-
-            if (angular.isObject(value) || angular.isArray(value)) {
-
-                try {
-                    window.localStorage.setItem(key, JSON.stringify(value));
-                }
-                catch (e) {
-                    // noop
+                        return $db.$save();
+                    });
                 }
 
-                return;
-            }
+                if (!window.localStorageSupport) {
+                    return;
+                }
 
-            window.localStorage.setItem(key, value);
+                if (angular.isObject(value) || angular.isArray(value)) {
+
+                    try {
+                        value = JSON.stringify(value);
+                    }
+                    catch (e) {
+                        // noop
+                    }
+                }
+
+                window.localStorage.setItem(key, value);
+            });
         }
 
         /**
@@ -112,7 +184,7 @@
          *
          * @param {string}  key             The key to clear.
          */
-        function clear (key) {
+        function clear(key) {
 
             if (!window.localStorageSupport) {
                 return;
