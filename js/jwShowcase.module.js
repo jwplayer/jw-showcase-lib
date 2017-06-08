@@ -27,6 +27,7 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.tag',
             'jwShowcase.video'
         ])
         .value('config', {
@@ -36,7 +37,8 @@
                 enableCookieNotice:     false,
                 enableFeaturedText:     true,
                 enablePlayerAutoFocus:  true,
-                enableHeader:           true
+                enableHeader:           true,
+                enableTags:             false
             }
         });
 
