@@ -77,7 +77,7 @@
 
         /////////////////
 
-        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'preload'];
+        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'bootstrap'];
         function resolveFeed ($stateParams, $q, dataStore) {
 
             var feed = dataStore.getFeed($stateParams.feedId);
