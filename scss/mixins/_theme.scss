@@ -150,7 +150,11 @@
     // VideoDetails
     $video-details-bg: #e2e5ec !default;
     $video-details-color: $secondary-color !default;
-
+    $video-details-tag-bg: $dark-color !default;
+    $video-details-tag-hover-bg: darken($dark-color, 5%) !default;
+    $video-details-tag-color: $white !default;
+    $video-details-tag-hover-color: $white !default;
+    $video-details-tag-shadow: 0 1px 0 $black !default;
     //
     // Body
     // --------------------------------
@@ -295,10 +299,10 @@
         &-flag-default {
             border-bottom: $card-slider-border-bottom;
 
-            .jw-card-slider-button {
+            .jw-card-slider-controls {
                 color: $card-slider-button-color;
 
-                &:hover:not(.is-disabled) {
+                .jw-card-slider-button:hover:not(.is-disabled) {
                     color: $card-slider-button-hover-color;
                 }
             }
@@ -307,10 +311,10 @@
         &-flag-featured {
             background-color: $card-slider-featured-bg;
 
-            .jw-card-slider-button {
+            .jw-card-slider-controls {
                 color: $card-slider-featured-button-color;
 
-                &:hover:not(.is-disabled) {
+                .jw-card-slider-button:hover:not(.is-disabled) {
                     color: $card-slider-featured-button-hover-color;
                 }
             }
@@ -551,6 +555,17 @@
     .jw-video-details {
         background-color: $video-details-bg;
         color: $video-details-color;
+
+        .jw-video-tag {
+            @include box-shadow($video-details-tag-shadow);
+            background-color: $video-details-tag-bg;
+            color: $video-details-tag-color;
+
+            &:hover {
+                background-color: $video-details-tag-hover-bg;
+                color: $video-details-tag-hover-color;
+            }
+        }
     }
 
     //
@@ -571,7 +586,8 @@
         .jw-toggle.jw-off {
             color: $white;
 
-            &:hover {
+            &:hover,
+            &:focus {
                 color: $primary-color;
             }
         }
