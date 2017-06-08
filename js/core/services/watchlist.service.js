@@ -40,7 +40,17 @@
         this.persist    = persist;
         this.clearAll   = clearAll;
 
+        activate();
+
         ////////////////
+
+        function activate() {
+            session.watch(LOCAL_STORAGE_KEY, function(data) {
+                dataStore.watchlistFeed.playlist = [];
+
+                enhanceItems(data);
+            }, true);
+        }
 
         /**
          * @param {jwShowcase.core.item} item
@@ -70,7 +80,7 @@
          * @description
          * Add given item to watchlist
          */
-        function addItem (item, download) {
+        function addItem (item, download, skipPersist) {
 
             var index = findItemIndex(item),
                 clone;
@@ -83,7 +93,9 @@
                 clone.feedid  = dataStore.watchlistFeed.feedid;
 
                 dataStore.watchlistFeed.playlist.unshift(clone);
-                persist();
+                if (!skipPersist) {
+                    persist();
+                }
 
                 if (download && serviceWorker.isSupported()) {
                     return serviceWorker.downloadItem(item);
@@ -176,6 +188,27 @@
             session.clear(LOCAL_STORAGE_KEY);
         }
 
+        function enhanceItems (data, skipPersist) {
+
+            if (!data) {
+                return;
+            }
+
+            return data.map(function (keys) {
+                var item = dataStore.getItem(keys.mediaid, keys.feedid);
+
+                if (!item) {
+                    return;
+                }
+
+                item.feedid = dataStore.watchlistFeed.feedid;
+                item.$feedid = keys.feedid;
+
+                addItem(item, false, true);
+            });
+        }
+
+
         /**
          * @ngdoc property
          * @name jwShowcase.core.watchlist#restore
@@ -186,18 +219,8 @@
          */
         function restore () {
 
-            var data = session.load(LOCAL_STORAGE_KEY, []);
-
-            data.map(function (keys) {
-                var item = dataStore.getItem(keys.mediaid, keys.feedid);
-
-                if (item) {
-
-                    item.feedid = dataStore.watchlistFeed.feedid;
-                    item.$feedid = keys.feedid;
-
-                    addItem(item, false);
-                }
+            return session.load(LOCAL_STORAGE_KEY, []).then(function (data) {
+                enhanceItems(data);
             });
         }
     }
