@@ -1,0 +1,13 @@
+<div class="jw-user-badge">
+
+
+    <div ng-if="vm.identity">
+        <button ng-click="vm.logout()">uitloggen</button>
+    </div>
+
+    <div ng-if="!vm.identity">
+        <button ng-click="vm.login()">Login</button>
+        <button ng-click="vm.signup()">signup</button>
+        <button ng-click="vm.facebook()">Facebook</button>
+    </div>
+</div>
