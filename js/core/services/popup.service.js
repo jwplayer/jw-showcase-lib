@@ -118,7 +118,8 @@
             var target = instance.options.target,
                 targetRect,
                 left, top,
-                width, height, pageWidth;
+                width, height, pageWidth,
+                transformValue;
 
             if (!target) {
                 return;
@@ -130,12 +131,18 @@
             height     = instance.element[0].offsetHeight;
 
             // prevent overflow
-            left = Math.min(pageWidth - (width / 2), Math.max(width / 2, targetRect.left));
-            top  = Math.max(height / 2, targetRect.top);
+            left = Math.min(pageWidth - (width / 2), Math.max(width / 2, targetRect.left - (width / 2)));
+            top  = Math.max(height / 2, targetRect.top - (height / 2));
+
+            transformValue = 'translate(' + left + 'px, ' + top + 'px)';
 
             instance.element.css({
-                top:  top + 'px',
-                left: left + 'px'
+                '-moz-transform':    transformValue,
+                '-ms-transform':     transformValue,
+                '-webkit-transform': transformValue,
+                'transform':         transformValue,
+                'top':               0,
+                'left':              0
             });
         }
 
@@ -269,7 +276,19 @@
             this.close = function (resolve) {
                 removePopupFromView(instance);
                 this.defer.resolve(resolve);
+                $document.off('scroll', handleScroll);
             };
+
+            /**
+             * Handle document scroll event
+             */
+            function handleScroll () {
+
+                movePopupToTarget(instance);
+            }
+
+            // attach scroll event listener
+            $document.on('scroll', handleScroll);
         }
     }
 
