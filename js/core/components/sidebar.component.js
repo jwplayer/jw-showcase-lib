@@ -36,10 +36,18 @@
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.config
      */
-    SidebarController.$inject = ['popup', 'dataStore', 'sidebar', 'watchlist', 'watchProgress', 'userSettings',
-        'config'];
-    function SidebarController (popup, dataStore, sidebar, watchlist, watchProgress, userSettings, config) {
+    SidebarController.$inject = [
+        '$scope',
+        'popup',
+        'dataStore',
+        'sidebar',
+        'watchlist',
+        'watchProgress',
+        'userSettings',
+        'config'
+    ];
 
+    function SidebarController ($scope, popup, dataStore, sidebar, watchlist, watchProgress, userSettings, config) {
         var vm = this;
 
         vm.feeds     = [];
@@ -84,6 +92,14 @@
             vm.feeds.sort(function (a, b) {
                 return a.title > b.title;
             });
+
+            // instead of $watch, use settings properties
+            $scope.$watch(function () {
+                return userSettings.settings;
+            }, function (settings) {
+                vm.conserveBandwidth = settings.conserveBandwidth;
+                vm.continueWatching = settings.continueWatching;
+            }, true);
         }
 
         /**
