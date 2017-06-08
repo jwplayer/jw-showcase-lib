@@ -44,7 +44,18 @@
         this.restore    = restore;
         this.clearAll   = clearAll;
 
+        activate();
+
         ////////////////
+
+        function activate () {
+
+            session.watch(LOCAL_STORAGE_KEY, function (items) {
+
+                dataStore.watchProgressFeed.playlist = [];
+                enhanceItems(items);
+            }, true);
+        }
 
         /**
          * @param {jwShowcase.core.item} item
@@ -172,22 +183,15 @@
             session.save(LOCAL_STORAGE_KEY, data);
         }
 
-        /**
-         * @ngdoc property
-         * @name jwShowcase.core.watchProgress#restore
-         * @propertyOf jwShowcase.core.watchProgress
-         *
-         * @description
-         * Restores watchProgress from localStorage
-         */
-        function restore () {
+        function enhanceItems(items) {
 
-            var time = +new Date();
+            if (!angular.isArray(items)) {
+                return;
+            }
 
-            session.load(LOCAL_STORAGE_KEY, [])
-                .filter(isValid)
+            return items.filter(isValid)
                 .sort(sortOnLastWatched)
-                .map(function (keys) {
+                .map(function(keys) {
 
                     // dataStore#getItem already returns a clone of the item
                     var item = dataStore.getItem(keys.mediaid, keys.feedid);
@@ -201,27 +205,32 @@
                         dataStore.watchProgressFeed.playlist.push(item);
                     }
                 });
+        }
 
-            /**
-             * Test if the given item from localStorage is valid
-             *
-             * @param {Object} item
-             * @returns {boolean}
-             */
-            function isValid (item) {
+        function restore() {
+            return session.load(LOCAL_STORAGE_KEY, []).then(enhanceItems);
+        }
 
-                // item contains keys
-                if (!item.mediaid || !item.feedid) {
-                    return false;
-                }
+        /**
+         * Test if the given item from localStorage is valid
+         *
+         * @param {Object} item
+         * @returns {boolean}
+         */
+        function isValid(item) {
+            var time = +new Date();
 
-                if (item.progress < MIN_PROGRESS || item.progress > MAX_PROGRESS) {
-                    return false;
-                }
-
-                // filter out older items older than lifetime
-                return time - item.lastWatched < LIFETIME;
+            // item contains keys
+            if (!item.mediaid || !item.feedid) {
+                return false;
             }
+
+            if (item.progress < MIN_PROGRESS || item.progress > MAX_PROGRESS) {
+                return false;
+            }
+
+            // filter out older items older than lifetime
+            return time - item.lastWatched < LIFETIME;
         }
 
         /**
