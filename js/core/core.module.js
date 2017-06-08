@@ -47,19 +47,7 @@
                 abstract:    true,
                 resolve:     {
                     configure: ['configResolver', 'config', function (configResolver, config) {
-                        return configResolver.getConfig().then(function () {
-                            if (config.options.useSigning || config.options.useAuthentication) {
-                                if (!config.options.firebase) {
-                                    throw new Error('Missing firebase options.');
-                                }
-
-                                firebase.initializeApp(config.options.firebase);
-                            } else {
-                                config.options.firebase = false;
-                            }
-
-                            return arguments[0];
-                        });
+                        return configResolver.getConfig();
                     }],
                     bootstrap: ['configure', 'bootstrap', function(configure, bootstrap) {
                         return bootstrap;
