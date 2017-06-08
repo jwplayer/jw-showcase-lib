@@ -547,7 +547,7 @@
                 playerPlaylist = generatePlaylist(itemFeed, vm.item);
                 player.load(playerPlaylist);
 
-                if (clickedOnPlay || window.cordova) {
+                if (clickedOnPlay || platform.isMobile) {
                     player.play(true);
                 }
             }

@@ -142,7 +142,6 @@
                     '.jw-button-share:hover .jwy-icon-stack .jwy-icon',
                     '.jw-button-watchlist.is-active .jwy-icon-stack',
                     '.jw-button-watchlist:not(.is-active):hover .jwy-icon-stack .jwy-icon',
-                    '.jw-card-slider-button:hover',
                     '.jw-cookies-title',
                     '.jw-loading .jw-loading-icon .jwy-icon',
                     '.jw-skin-jw-showcase .jw-button-color:hover',

@@ -355,8 +355,10 @@
 
                 sliderMap = nextSliderMap;
 
-                updateVisibleSlides();
-                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !leftSlidesVisible);
+                setTimeout(updateVisibleSlides);
+                findElement('.jw-card-slider-button-flag-left')
+                    .toggleClass('is-disabled', !leftSlidesVisible)
+                    .attr('tabindex', leftSlidesVisible ? '0' : '-1');
 
                 ///////////
 
@@ -467,7 +469,10 @@
                 }
 
                 angular.forEach(findElement('.jw-card-slider-list').children(), function (slide, slideIndex) {
-                    slide.classList.toggle('is-visible', slideIndex >= from && slideIndex < to);
+                    var visible = slideIndex >= from && slideIndex < to;
+                    slide.classList.toggle('is-visible', visible);
+                    slide.querySelector('.jw-card-container').setAttribute('tabindex', visible ? '0' : '-1');
+                    slide.querySelector('.jw-card-menu-button').setAttribute('tabindex', visible ? '0' : '-1');
                 });
             }
 

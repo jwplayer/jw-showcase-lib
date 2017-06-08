@@ -44,12 +44,13 @@
             }
         });
 
-    VideoDetailsController.$inject = ['$scope', 'popup', 'watchlist'];
-    function VideoDetailsController ($scope, popup, watchlist) {
+    VideoDetailsController.$inject = ['$scope', 'popup', 'watchlist', 'config'];
+    function VideoDetailsController ($scope, popup, watchlist, config) {
 
         var vm = this;
 
         vm.inWatchlist = false;
+        vm.config      = config;
 
         vm.shareButtonClickHandler     = shareButtonClickHandler;
         vm.watchlistButtonClickHandler = watchlistButtonClickHandler;
