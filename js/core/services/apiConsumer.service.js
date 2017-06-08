@@ -65,7 +65,7 @@
             }
             else {
                 feed.playlist = [];
-                promise       = api.getFeed(feed.feedid);
+                promise       = api.getFeed(feed.feedUri);
             }
 
             feed.promise = promise.then(function (data) {
@@ -197,7 +197,7 @@
 
                 if (!model) {
 
-                    model   = new FeedModel(content.playlistId);
+                    model   = new FeedModel(content.playlistId, null, null, null, content.playlistUri);
                     promise = self
                         .populateFeedModel(model)
                         .then(null, function (error) {
