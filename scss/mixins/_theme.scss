@@ -76,6 +76,8 @@
     $card-slider-featured-button-color: $white !default;
     $card-slider-featured-button-hover-color: $primary-color !default;
 
+    $card-slider-odd-bg-color: $body-bg !default;
+
     $card-slider-loading-bg: $black !default;
     $card-slider-loading-card-bg: $secondary-color !default;
 
@@ -103,6 +105,7 @@
     $search-border: 1px solid $light-color !default;
 
     // Video
+
 
     $video-container-bg: #e2e5ec !default;
 
@@ -148,6 +151,7 @@
     $row-inverse-color: $white !default;
 
     // VideoDetails
+
     $video-details-bg: #e2e5ec !default;
     $video-details-color: $secondary-color !default;
 
@@ -295,6 +299,14 @@
     //
     // CardSlider
     // --------------------------------
+
+
+    .jw-row:nth-child(2n+3) {
+        .jw-card-slider {
+            background-color: $card-slider-odd-bg-color;
+        }
+    }
+
 
     .jw-card-slider {
 
