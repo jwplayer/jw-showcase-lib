@@ -16,6 +16,8 @@
 
 (function() {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.video')
         .controller('VideoController', VideoController);
@@ -79,6 +81,8 @@
         vm.onAdImpression = onAdImpression;
 
         vm.cardClickHandler = cardClickHandler;
+
+        vm.isMobileScreen         = MOBILE_SCREEN;
 
         activate();
 

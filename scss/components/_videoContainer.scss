@@ -124,11 +124,3 @@
         }
     }
 }
-
-@include mobile-only {
-    .jw-sidebar-layout.jw-flag-right-rail-enabled {
-        .jw-right-rail-col {
-            display: none;
-        }
-    }
-}

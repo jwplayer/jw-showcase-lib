@@ -27,7 +27,7 @@
 
       </div>
 
-      <div class="jw-right-rail-col" ng-if="vm.hasSideRail">
+      <div class="jw-right-rail-col" ng-if="vm.hasSideRail && !vm.isMobileScreen">
         <jw-rail playlist="vm.feed.playlist" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
       </div>
 
@@ -38,7 +38,7 @@
     <jw-video-details item="vm.item"></jw-video-details>
   </div>
 
-  <div class="jw-row" ng-if="vm.feed">
+  <div class="jw-row" ng-if="vm.feed && vm.isMobileScreen">
     <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" title="More like this"
         class="jw-card-slider-flag-now-playing jw-lazy-load" on-card-click="vm.cardClickHandler"></jw-card-slider>
   </div>
