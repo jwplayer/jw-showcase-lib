@@ -53,7 +53,6 @@
 
         var vm        = this;
 
-        vm.title     = config.options.rightRail.title;
     }
 
 }());
