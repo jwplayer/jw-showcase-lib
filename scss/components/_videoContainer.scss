@@ -16,7 +16,6 @@
 
     .jw-toolbar-row-bg {
         position: absolute;
-        z-index: 10;
         right: 0;
         bottom: 0;
         left: 0;
@@ -26,6 +25,7 @@
 
         margin-right: -100%;
         margin-left: -100%;
+        z-index: 10;
     }
 
     &.is-loading {

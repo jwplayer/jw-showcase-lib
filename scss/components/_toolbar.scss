@@ -4,17 +4,17 @@
 
 .jw-toolbar {
     position: relative;
-    z-index: 11;
 
     height: $toolbar-height;
     min-height: $toolbar-height;
     padding: 0 0 0 $toolbar-padding;
+    z-index: 11;
 
     &-subheader {
         position: fixed;
-        z-index: $toolbar-z-index;
         top: $header-height;
         width: 100%;
+        z-index: $toolbar-z-index;
     }
 
     &-video {
@@ -45,7 +45,6 @@
         @include align-self(center);
         padding: 5px 0;
 
-        overflow: hidden;
         font-size: rem(22px);
         font-weight: bold;
         line-height: 1em;
@@ -53,6 +52,7 @@
 
         text-overflow: ellipsis;
         white-space: nowrap;
+        overflow: hidden;
 
         &.left {
             text-align: left;
