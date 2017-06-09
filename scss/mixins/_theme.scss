@@ -13,7 +13,7 @@
 
     // Body
 
-    $body-bg: $gray-light !default;
+    $body-bg: #d6dbe5 !default;
     $body-color: $dark-color !default;
     $body-font-family: Helvetica Neue, Helvetica, Arial, sans-serif !default;
 
@@ -36,6 +36,10 @@
 
     $btn-play-icon-color: $primary-color !default;
     $btn-play-border-color: $white !default;
+
+    $btn-icon-nested-color: $white !default;
+    $btn-icon-active-color: $primary-color !default;
+    $btn-icon-nested-active-color: $white !default;
 
     $btn-effect-bg: rgba($secondary-color, 0.1) !default;
 
@@ -63,8 +67,9 @@
 
     $card-slider-title-color: $secondary-color !default;
     $card-slider-error-title-color: #979797 !default;
-    $card-slider-border-bottom: 1px solid rgba($secondary-color, 0.2) !default;
-    $card-slider-button-color: $secondary-color !default;
+    $card-slider-border-bottom-color: rgba(#333, 0.2) !default;
+    $card-slider-border-bottom: 1px solid $card-slider-border-bottom-color !default;
+    $card-slider-button-color: $white !default;
     $card-slider-button-hover-color: $primary-color !default;
 
     $card-slider-featured-bg: #111 !default;
@@ -96,6 +101,10 @@
     $search-bg: $header-bg !default;
     $search-color: inherit !default;
     $search-border: 1px solid $light-color !default;
+
+    // Video
+
+    $video-container-bg: #e2e5ec !default;
 
     // Modal
 
@@ -130,8 +139,8 @@
 
     // Toolbar
 
-    $toolbar-bg: #292929 !default;
-    $toolbar-color: $white !default;
+    $toolbar-bg: $white !default;
+    $toolbar-color: $secondary-color !default;
     $toolbar-hover-color: $primary-color !default;
     $toolbar-nav-border: 1px solid lighten($toolbar-bg, 5%) !default;
 
@@ -139,7 +148,8 @@
     $row-inverse-color: $white !default;
 
     // VideoDetails
-    $video-details-bg: #444 !default;
+    $video-details-bg: #e2e5ec !default;
+    $video-details-color: $secondary-color !default;
     $video-details-tag-bg: $dark-color !default;
     $video-details-tag-hover-bg: darken($dark-color, 5%) !default;
     $video-details-tag-color: $white !default;
@@ -158,6 +168,20 @@
     // --------------------------------
 
     .jw-button {
+
+        &.is-active .jwy-icon-stack {
+            color: $btn-icon-active-color;
+
+            .jwy-icon {
+                color: $btn-icon-nested-active-color;
+            }
+        }
+
+        &:not(.is-active) {
+            .jwy-icon-stack .jwy-icon {
+                color: $btn-icon-nested-color;
+            }
+        }
 
         &-default {
             &:hover,
@@ -216,53 +240,6 @@
 
         &-effect {
             background-color: $btn-effect-bg;
-        }
-    }
-
-    .jw-button-watchlist {
-
-        &.is-active {
-
-            &:hover .jwy-icon-stack .jwy-icon {
-                color: $white;
-            }
-
-            .jwy-icon-stack {
-                color: $primary-color;
-
-                .jwy-icon {
-                    color: $white;
-                }
-            }
-        }
-
-        &:not(.is-active) {
-            &:hover .jwy-icon-stack .jwy-icon {
-                color: $primary-color;
-            }
-
-            .jwy-icon-stack {
-                color: $white;
-
-                .jwy-icon {
-                    color: $secondary-color;
-                }
-            }
-        }
-    }
-
-    .jw-button-share {
-
-        &:hover .jwy-icon-stack {
-            color: $white;
-
-            .jwy-icon {
-                color: $primary-color;
-            }
-        }
-
-        .jwy-icon-stack .jwy-icon {
-            color: $secondary-color;
         }
     }
 
@@ -416,6 +393,14 @@
     }
 
     //
+    // Video
+    // --------------------------------
+
+    .jw-video-container {
+        background-color: $video-container-bg;
+    }
+
+    //
     // Loading
     // --------------------------------
 
@@ -553,6 +538,11 @@
         }
     }
 
+    .jw-toolbar-row-bg {
+        background-color: $toolbar-bg;
+        color: $toolbar-color;
+    }
+
     .jw-row-inverse {
         background-color: $row-inverse-bg;
         color: $row-inverse-color;
@@ -564,6 +554,7 @@
 
     .jw-video-details {
         background-color: $video-details-bg;
+        color: $video-details-color;
 
         .jw-video-tag {
             @include box-shadow($video-details-tag-shadow);
