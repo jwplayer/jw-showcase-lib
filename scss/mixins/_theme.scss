@@ -150,11 +150,13 @@
     // VideoDetails
     $video-details-bg: #e2e5ec !default;
     $video-details-color: $secondary-color !default;
+
     $video-details-tag-bg: $dark-color !default;
     $video-details-tag-hover-bg: darken($dark-color, 5%) !default;
     $video-details-tag-color: $white !default;
     $video-details-tag-hover-color: $white !default;
     $video-details-tag-shadow: 0 1px 0 $black !default;
+
     //
     // Body
     // --------------------------------

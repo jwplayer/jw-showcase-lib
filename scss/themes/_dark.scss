@@ -10,9 +10,12 @@
     $btn-light-bg: #5b6064;
     $btn-light-color: $white;
 
-    $toolbar-bg: #1a1a1a;
+    $toolbar-bg: #333;
+    $toolbar-color: $white;
 
-    $sidebar-bg: #1a1a1a;
+    $btn-icon-nested-color: $toolbar-bg;
+
+    $sidebar-bg: #333;
     $sidebar-color: $white;
 
     $toggle-default-color: $black;
@@ -20,15 +23,22 @@
 
     $card-slider-title-color: $white;
     $card-slider-button-color: $white;
+    $card-slider-border-bottom-color: #333;
 
     $card-info-bg: $black;
     $card-info-color: $white;
-    $card-info-hover-bg: $white;
-    $card-info-hover-color: $black;
+    $card-info-hover-bg: $card-info-bg;
+    $card-info-hover-color: $card-info-color;
 
     $card-menu-bg: $black;
 
+    $header-bg: $black;
+    $header-color: $white;
+
+    $video-container-bg: $black;
+
     $video-details-bg: $black;
+    $video-details-color: $white;
 
     $footer-color: $white;
 
