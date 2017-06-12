@@ -2,18 +2,20 @@
     <div class="jw-side-rail-header">
         Up next
     </div>
-    <ul class="jw-side-rail-items">
-        <li class="jw-side-rail-item"
-            ng-repeat="playlistItem in vm.playlist"
-            ng-click="vm.onItemClick({newItem: playlistItem, clickedOnPlay: false})">
-            <div class="jw-side-rail-item-aspect">
-                <img ng-src="{{playlistItem.image}}" alt="{{playlistItem.name}} poster image" class="jw-side-rail-item-image">
-                <div class="jw-side-rail-item-overlay">
-                    <h3 class="jw-side-rail-item-title">
-                        {{playlistItem.title}}
-                    </h3>
+    <jw-iscroll class="jw-side-rail-scroll-wrapper">
+        <ul class="jw-side-rail-items">
+            <li class="jw-side-rail-item"
+                ng-repeat="playlistItem in vm.playlist"
+                ng-click="vm.onItemClick({newItem: playlistItem, clickedOnPlay: false})">
+                <div class="jw-side-rail-item-aspect">
+                    <img ng-src="{{playlistItem.image}}" alt="{{playlistItem.name}} poster image" class="jw-side-rail-item-image">
+                    <div class="jw-side-rail-item-overlay">
+                        <h3 class="jw-side-rail-item-title">
+                            {{playlistItem.title}}
+                        </h3>
+                    </div>
                 </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </jw-iscroll>
 </div>
