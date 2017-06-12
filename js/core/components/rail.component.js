@@ -36,8 +36,8 @@
             controllerAs: 'vm',
             controller:   RailController,
             templateUrl:  'views/core/rail.html',
-            bindings: {
-                playlist: '=',
+            bindings:     {
+                feed:        '=',
                 onItemClick: '&'
             }
         });
@@ -45,13 +45,35 @@
     /**
      * @ngdoc controller
      * @name jwShowcase.core.RailController
-     *
-     * @requires jwShowcase.config
      */
-    RailController.$inject = ['config'];
-    function RailController (config) {
+    RailController.$inject = [];
+    function RailController () {
 
-        var vm        = this;
+        var vm = this;
+
+        vm.itemClickHandler = itemClickHandler;
+        vm.scrollDelegate   = undefined;
+
+        //////////
+
+        /**
+         * Handle click event on item
+         * @param item
+         */
+        function itemClickHandler (item) {
+
+            if (!angular.isFunction(vm.onItemClick)) {
+                return;
+            }
+
+            // call function
+            vm.onItemClick({newItem: item, clickedOnPlay: false});
+
+            // scroll back to top
+            if (vm.scrollDelegate) {
+                vm.scrollDelegate.scrollTo(0, 0, 300);
+            }
+        }
 
     }
 
