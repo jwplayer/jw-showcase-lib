@@ -23,12 +23,24 @@
     <jw-video-details item="vm.item"></jw-video-details>
   </div>
 
-  <div class="jw-row" ng-if="vm.feed">
-    <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" title="More like this"
-        class="jw-card-slider-flag-now-playing jw-lazy-load" on-card-click="vm.cardClickHandler"></jw-card-slider>
+  <div class="jw-row" ng-if="vm.activeFeed">
+    <jw-card-slider
+        feed="vm.activeFeed"
+        featured="false"
+        title="Up Next"
+        class="jw-card-slider-flag-now-playing jw-lazy-load"
+        first-item="vm.item"
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
-  <div class="jw-row" ng-if="vm.recommendationsFeed">
-    <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos" class="jw-lazy-load"
-         on-card-click="vm.cardClickHandler"></jw-card-slider>
+
+  <div class="jw-row" ng-if="vm.extraFeed">
+    <jw-card-slider
+        feed="vm.extraFeed"
+        featured="false"
+        title="Related Videos"
+        class="jw-lazy-load"
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
 </div>

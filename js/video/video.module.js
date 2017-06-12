@@ -39,8 +39,9 @@
                 controller:  'VideoController as vm',
                 templateUrl: 'views/video/video.html',
                 resolve:     {
-                    feed: resolveFeed,
-                    item: resolveItem
+                    feed:            resolveFeed,
+                    item:            resolveItem,
+                    recommendations: resolveRecommendations
                 },
                 params:      {
                     autoStart: false,
@@ -82,17 +83,33 @@
 
             var feed = dataStore.getFeed($stateParams.feedId);
 
-            // if the feed is loading wait for the promise to resolve.
-            if (feed.loading) {
-                return feed.promise;
+            if (!feed) {
+                return $q.reject();
             }
 
-            return feed || $q.reject();
+            return feed.promise.then(function (res) {
+                return res.clone();
+            });
         }
 
         resolveItem.$inject = ['$stateParams', '$q', 'feed'];
         function resolveItem ($stateParams, $q, feed) {
             return feed.findItem($stateParams.mediaId) || $q.reject();
+        }
+
+        resolveRecommendations.$inject = ['$stateParams', 'config', 'apiConsumer', 'FeedModel'];
+        function resolveRecommendations ($stateParams, config, apiConsumer, FeedModel) {
+            if (config.recommendationsPlaylist) {
+                var recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+
+                recommendationsFeed.relatedMediaId = $stateParams.mediaId;
+
+                return apiConsumer.populateFeedModel(recommendationsFeed, 'recommendations').then(function () {
+                    return recommendationsFeed;
+                }).catch(function () {
+
+                });
+            }
         }
     }
 
