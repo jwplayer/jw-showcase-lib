@@ -1,3 +1,7 @@
+
+//
+// jwRightRail
+// --------------------------------
 .jw-side-rail {
     position: absolute;
     width: 100%;
@@ -73,9 +77,14 @@
             left: 20px;
 
             margin: 0;
-            font-size: 17px;
-            line-height: 17px;
+            font-size: rem(17px);
+            line-height: rem(17px);
         }
+    }
+}
 
+@include mobile-and-tablet () {
+    .jw-side-rail-item-title {
+        font-size: rem(14px);
     }
 }
