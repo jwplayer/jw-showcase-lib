@@ -59,37 +59,3 @@
         padding: 20px 90px;
     }
 }
-
-//
-// Right rail flag set
-// --------------------------------
-
-.jw-video-layout.jw-video-layout-flag-right-rail {
-    .jw-video-details {
-        padding-right: 0;
-        padding-left: 0;
-
-        .jw-container {
-            max-width: 100%;
-            margin: 0 84px !important;
-        }
-    }
-}
-
-@include desktop-only () {
-    .jw-video-layout.jw-video-layout-flag-right-rail .jw-video-details {
-        .jw-container {
-            padding-right: 30%;
-
-            .jw-collapsible-text .jw-collapsible-text-toggle {
-                width: 170%;
-            }
-        }
-    }
-}
-
-@include mobile-only () {
-    .jw-video-layout.jw-video-layout-flag-right-rail .jw-video-details .jw-container {
-        margin: 0 15px !important;
-    }
-}
