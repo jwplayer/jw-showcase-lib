@@ -31,18 +31,50 @@
      *
      * @requires jwShowcase.core.sidebar
      */
-    SidebarLayoutController.$inject = ['sidebar', 'config'];
-    function SidebarLayoutController (sidebar, config) {
+
+    SidebarLayoutController.$inject = ['$scope', '$element', '$animate', 'sidebar', 'config'];
+    function SidebarLayoutController ($scope, $element, $animate, sidebar, config) {
 
         var vm = this;
+        var focusElement;
 
         vm.sidebar = sidebar;
         vm.rightRail = config.options.rightRail;
         vm.backdropClickHandler = backdropClickHandler;
         vm.swipeLeftHandler     = swipeLeftHandler;
 
+        activate();
+
         ///////////////
 
+        /**
+         * Initialize
+         */
+        function activate () {
+
+            var firstChild = $element[0].firstChild;
+
+            $scope.$watch('vm.sidebar.opened', function (currentValue, prevValue) {
+
+                if (currentValue === prevValue) {
+                    return;
+                }
+
+                $animate[currentValue ? 'addClass' : 'removeClass'](firstChild, 'jw-sidebar-layout-flag-opened')
+                    .then(function () {
+                        if (currentValue) {
+                            focusElement = document.activeElement;
+                            $element[0].querySelectorAll('.jw-sidebar .jw-button')[0].focus();
+                            return;
+                        }
+
+                        if (focusElement) {
+                            focusElement.focus();
+                            focusElement = null;
+                        }
+                    });
+            });
+        }
 
         /**
          * @ngdoc method

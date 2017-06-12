@@ -174,12 +174,17 @@
                 feed.playlist = feed.playlist
                     .map(function (item, index) {
 
-                        if (!item.feedId) {
+                        if (!item.feedid) {
                             item.feedid = feed.feedid;
                         }
 
                         item.$key  = index + item.mediaid;
                         item.$slug = utils.slugify(item.title);
+                        item.$tags = [];
+
+                        if (angular.isString(item.tags)) {
+                            item.$tags = item.tags.split(',');
+                        }
 
                         return item;
                     })

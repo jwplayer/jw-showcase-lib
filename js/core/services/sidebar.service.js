@@ -59,11 +59,11 @@
          */
         function toggle () {
 
-            if (this.opened) {
-                this.hide();
+            if (self.opened) {
+                self.hide();
             }
             else {
-                this.show();
+                self.show();
             }
         }
 
@@ -77,10 +77,13 @@
          */
         function hide () {
 
-            this.opened = false;
+            self.opened = false;
 
             angular.element(document.body)
                 .removeClass('jw-flag-sidebar-opened');
+
+            angular.element(document)
+                .off('keyup', keyupHandler);
         }
 
         /**
@@ -93,10 +96,32 @@
          */
         function show () {
 
-            this.opened = true;
+            self.opened = true;
 
             angular.element(document.body)
                 .addClass('jw-flag-sidebar-opened');
+
+            angular.element(document)
+                .on('keyup', keyupHandler);
+        }
+
+        /**
+         * Handle keyup events from document
+         * @param evt
+         */
+        function keyupHandler (evt) {
+
+            if (evt.which !== 27) {
+                return;
+            }
+
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+
+            // hide sidebar
+            $rootScope.$apply(function () {
+                hide();
+            });
         }
     }
 

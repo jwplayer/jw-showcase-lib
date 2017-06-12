@@ -1,12 +1,20 @@
 <div class="jw-video-details">
   <div class="jw-container">
-    <div class="jw-video-title">
+    <h2 class="jw-video-title">
       {{ vm.item.title | limitTo:100 }}
       <div class="jw-video-duration"><span>{{ vm.item | videoDuration }}</span></div>
-    </div>
+    </h2>
 
     <div class="jw-video-description" jw-collapsible-text="4.2em" jw-collapsible-text-watch="vm.item.description">
-      <jw-markdown ng-model="vm.item.description" class="jw-markdown"></jw-markdown>
+      <p>
+        <jw-markdown ng-model="vm.item.description" class="jw-markdown"></jw-markdown>
+      </p>
+
+      <ul class="jw-video-tags" ng-if="::vm.config.options.enableTags">
+        <li ng-repeat="tag in vm.item.$tags track by $index">
+          <a class="jw-video-tag" ui-sref="root.tag({tag: tag})">{{ ::tag }}</a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
