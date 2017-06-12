@@ -109,10 +109,7 @@
 
     $rail-header-bg: $white !default;
     $rail-header-color: $secondary-color !default;
-    $rail-item-bg: $gray-light !default;
-    $rail-item-color: $secondary-color !default;
-    $rail-item-bg-hover: $gray-lighter !default;
-    $rail-hover-poster-shadow: 0 2px 4px rgba($black, 0.5);
+    $rail-item-color: $white;
 
     // Modal
 
@@ -156,6 +153,7 @@
     $row-inverse-color: $white !default;
 
     // VideoDetails
+
     $video-details-bg: $light-color !default;
     $video-details-color: $secondary-color !default;
 
@@ -415,16 +413,7 @@
         }
 
         .jw-side-rail-item {
-            background-color: $rail-item-bg;
             color: $rail-item-color;
-
-            &:hover {
-                background-color: $rail-item-bg-hover;
-
-                .jw-side-rail-poster-content {
-                    box-shadow: $rail-hover-poster-shadow;
-                }
-            }
         }
     }
 
