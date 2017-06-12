@@ -85,7 +85,7 @@
 // Right rail flag set
 // --------------------------------
 
-.jw-video-container.jw-flag-right-rail-enabled {
+.jw-video-layout.jw-video-layout-flag-right-rail .jw-video-container {
     padding: 0;
 
     .jw-container {
@@ -109,7 +109,7 @@
 }
 
 @include desktop-only () {
-    .jw-video-container.jw-flag-right-rail-enabled {
+    .jw-video-layout.jw-video-layout-flag-right-rail .jw-video-container {
 
         .jw-container {
             padding: 0 84px !important;
