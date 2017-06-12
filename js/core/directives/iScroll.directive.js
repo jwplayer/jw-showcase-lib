@@ -31,12 +31,19 @@
             link: link
         };
 
-        function link(scope, element, attrs, options) {
+        function link(scope, element) {
+            var instance = null;
             $timeout(function () {
-                var instance = new IScroll(element[0], {
+                instance = new IScroll(element[0], {
                     mouseWheel: true,
                     scrollbars: true
                 });
+            });
+
+            scope.$on('$destroy', function() {
+                if (instance) {
+                    instance.destroy();
+                }
             });
         }
     }
