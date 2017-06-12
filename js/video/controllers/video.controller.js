@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  **/
 
-(function() {
+(function () {
 
     var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
 
@@ -125,13 +125,13 @@
                 vm.playerSettings.cast                  = false;
             }
 
-            $scope.$watch(function() {
+            $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
 
-            $scope.$watch(function() {
+            $scope.$watch(function () {
                 return serviceWorker.isOnline();
-            }, function() {
+            }, function () {
                 var state = player.getState();
                 if (state !== 'playing' && state !== 'paused') {
                     playerPlaylist = generatePlaylist(itemFeed, item);
@@ -140,7 +140,7 @@
                 }
             });
 
-            loadingTimeout = $timeout(function() {
+            loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
 
@@ -189,11 +189,11 @@
 
             apiConsumer
                 .populateFeedModel(vm.recommendationsFeed, 'recommendations')
-                .then(function(recommendationsFeed) {
+                .then(function (recommendationsFeed) {
 
                     // filter duplicate video's
                     if (angular.isArray(recommendationsFeed.playlist)) {
-                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function(item) {
+                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
                             return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
@@ -218,7 +218,7 @@
                 playlistItem, sources;
 
             if (serviceWorker.isSupported()) {
-                playlistCopy = playlistCopy.filter(function(item) {
+                playlistCopy = playlistCopy.filter(function (item) {
                     return serviceWorker.isOnline() || serviceWorker.hasDownloadedItem(item);
                 });
             }
@@ -227,12 +227,12 @@
                 .slice(playlistIndex)
                 .concat(playlistCopy.slice(0, playlistIndex));
 
-            return playlistCopy.map(function(current) {
+            return playlistCopy.map(function (current) {
 
                 // make a copy of the playlist item, we don't want to override the original
                 playlistItem = angular.extend({}, current);
 
-                sources = current.sources.filter(function(source) {
+                sources = current.sources.filter(function (source) {
 
                     if (serviceWorker.isSupported() && !navigator.onLine) {
                         return source.type === 'video/mp4' && source.width <= 720;
@@ -323,7 +323,7 @@
                         message: 'Something went wrong while loading the video, try again?'
                     }
                 })
-                .then(function(result) {
+                .then(function (result) {
 
                     if (true === result) {
                         $state.reload();
@@ -373,7 +373,7 @@
                 }, {
                     notify: false
                 })
-                .then(function() {
+                .then(function () {
                     seo.update();
                 });
 
@@ -571,7 +571,7 @@
                 }, {
                     notify: false
                 })
-                .then(function() {
+                .then(function () {
                     seo.update();
                 });
 
@@ -587,7 +587,7 @@
          */
         function byMediaId (mediaId) {
 
-            return function(cursor) {
+            return function (cursor) {
                 return cursor.mediaid === mediaId;
             };
         }

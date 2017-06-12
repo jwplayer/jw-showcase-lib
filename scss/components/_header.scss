@@ -17,6 +17,7 @@
         @include box-shadow(0 0 15px 0 rgba($black, 0.5));
         position: fixed;
         width: 100%;
+
         z-index: $header-z-index;
     }
 
