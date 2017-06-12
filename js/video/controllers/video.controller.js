@@ -68,7 +68,7 @@
         vm.recommendationsFeed = null;
         vm.loading             = true;
 
-        vm.hasSideRail         = config.options.rightRail.enabled;
+        vm.hasRightRail    = config.options.rightRail.enabled && !MOBILE_SCREEN;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -81,8 +81,6 @@
         vm.onAdImpression = onAdImpression;
 
         vm.cardClickHandler = cardClickHandler;
-
-        vm.isMobileScreen         = MOBILE_SCREEN;
 
         activate();
 

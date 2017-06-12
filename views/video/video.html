@@ -1,6 +1,6 @@
 <div class="has-jw-header">
   <div class="jw-video-layout"
-      ng-class="{'jw-video-layout-flag-right-rail': vm.hasSideRail}">
+      ng-class="{'jw-video-layout-flag-right-rail': vm.hasRightRail}">
     <div class="jw-video-container">
       <div class="jw-container">
         <div class="jw-player-col">
@@ -31,7 +31,7 @@
             <div class="jw-toolbar-row-bg"></div>
           </div>
         </div>
-        <div class="jw-right-rail-col" ng-if="vm.hasSideRail && !vm.isMobileScreen">
+        <div class="jw-right-rail-col" ng-if="vm.hasRightRail">
           <jw-rail feed="vm.feed" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
         </div>
       </div>
@@ -40,7 +40,7 @@
       <jw-video-details item="vm.item"></jw-video-details>
     </div>
   </div>
-  <div class="jw-row" ng-if="vm.feed && vm.isMobileScreen">
+  <div class="jw-row" ng-if="vm.feed && !vm.hasRightRail">
     <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" title="More like this"
         class="jw-card-slider-flag-now-playing jw-lazy-load"
         on-card-click="vm.cardClickHandler"></jw-card-slider>
