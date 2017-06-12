@@ -17,5 +17,12 @@
         .jw-scroll-content {
             width: 100%;
         }
+
+        // scss-lint:disable SelectorFormat
+        .iScrollVerticalScrollbar,
+        .iScrollHorizontalScrollbar {
+            z-index: $view-z-index !important;
+        }
+        // scss-lint:enable SelectorFormat
     }
 }
