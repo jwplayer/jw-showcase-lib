@@ -85,38 +85,34 @@
 // Right rail flag set
 // --------------------------------
 
-.jw-sidebar-layout.jw-flag-right-rail-enabled {
-    .jw-video-container {
+.jw-video-container.jw-flag-right-rail-enabled {
+    padding: 0;
+
+    .jw-container {
+        @include display-flex;
+        max-width: 100%;
         padding: 0;
 
-        .jw-container {
-            @include display-flex;
-            max-width: 100%;
-            padding: 0;
-
-            .jw-player-col {
-                flex: 1 0;
-            }
-
-            .jw-right-rail-col {
-                position: relative;
-                width: 30%;
-            }
+        .jw-player-col {
+            flex: 1 0;
         }
 
-        .jw-toolbar-row-bg {
-            display: none;
+        .jw-right-rail-col {
+            position: relative;
+            width: 30%;
         }
+    }
 
+    .jw-toolbar-row-bg {
+        display: none;
     }
 }
 
 @include desktop-only () {
-    .jw-sidebar-layout.jw-flag-right-rail-enabled {
-        .jw-video-container {
-            .jw-container {
-                padding: 0 84px !important;
-            }
+    .jw-video-container.jw-flag-right-rail-enabled {
+
+        .jw-container {
+            padding: 0 84px !important;
         }
 
         .jw-toolbar-container {

@@ -3,7 +3,7 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 25px 0 0;
+    padding: 20px 0;
 
     color: $white;
     line-height: 1.4em;
@@ -28,29 +28,18 @@
     }
 
     .jw-video-title {
+        margin-bottom: 15px;
         font-size: rem(22px);
+        font-weight: bold;
         line-height: rem(26px);
     }
 
-    .jw-video-description p:last-child {
-        margin: 0;
-    }
-
-    .jw-video-tags {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-        > li {
-            display: inline-block;
-            margin-right: 5px;
-            margin-bottom: 5px;
-
-            .jw-video-tag {
-                padding: 3px 7px;
-            }
-        }
-    }
+    //
+    //.jw-video-feed-title,
+    //.jw-video-feed-title:first-child {
+    //    margin: 2em 0;
+    //    text-align: center;
+    //}
 }
 
 //
@@ -60,14 +49,14 @@
 @include mobile-only () {
 
     .jw-video-details {
-        padding: 20px 20px 0;
+        padding: 20px;
     }
 }
 
 @include tablet-only () {
 
     .jw-video-details {
-        padding: 20px 90px 0;
+        padding: 20px 90px;
     }
 }
 
@@ -75,7 +64,7 @@
 // Right rail flag set
 // --------------------------------
 
-.jw-sidebar-layout.jw-flag-right-rail-enabled {
+.jw-video-container.jw-flag-right-rail-enabled {
     .jw-video-details {
         padding-right: 0;
         padding-left: 0;
@@ -89,7 +78,7 @@
 
 
 @include desktop-only () {
-    .jw-sidebar-layout.jw-flag-right-rail-enabled .jw-video-details {
+    .jw-video-container.jw-flag-right-rail-enabled .jw-video-details {
         .jw-container {
             .jw-collapsible-text-content {
                 padding-right: 30%;
@@ -99,7 +88,7 @@
 }
 
 @include mobile-only () {
-    .jw-sidebar-layout.jw-flag-right-rail-enabled .jw-video-details .jw-container {
+    .jw-video-container.jw-flag-right-rail-enabled .jw-video-details .jw-container {
         padding: 0 15px !important;
     }
 }
