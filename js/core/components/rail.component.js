@@ -18,16 +18,16 @@
 
     /**
      * @ngdoc component
-     * @name jwSearch
+     * @name jwRail
      * @module jwShowcase.core
      *
      * @description
-     * Render the search element.
+     * Render the rail element.
      *
      * @example
      *
      * ```html
-     * <jw-search></jw-search>
+     * <jw-rail feed="vm.feed" on-item-click="vm.itemClickHandler()"></jw-rail>
      * ```
      */
     angular
