@@ -37,7 +37,8 @@
             controller:   RailController,
             templateUrl:  'views/core/rail.html',
             bindings:     {
-                feed:        '=',
+                feed:        '<',
+                firstItem:   '<',
                 onItemClick: '&'
             }
         });
@@ -53,8 +54,30 @@
 
         vm.itemClickHandler = itemClickHandler;
         vm.scrollDelegate   = undefined;
+        vm.playlist         = [];
+
+        vm.$onChanges = changeHandler;
 
         //////////
+
+        /**
+         * Handle changes in component bindings
+         */
+        function changeHandler () {
+
+            if (!vm.firstItem) {
+                vm.playlist = vm.feed.playlist;
+                return;
+            }
+
+            var firstItemIndex = vm.feed.playlist.findIndex(function (item) {
+                return item.mediaid === vm.firstItem.mediaid;
+            });
+
+            vm.playlist = vm.feed.playlist
+                .slice(firstItemIndex)
+                .concat(vm.feed.playlist.slice(0, firstItemIndex));
+        }
 
         /**
          * Handle click event on item

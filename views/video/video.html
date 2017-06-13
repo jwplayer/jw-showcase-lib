@@ -37,7 +37,11 @@
       </div>
 
       <div class="jw-video-layout-rail" ng-if="vm.hasRightRail">
-        <jw-rail feed="vm.activeFeed" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
+        <jw-rail
+            feed="vm.activeFeed"
+            first-item="vm.item"
+            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)">
+        </jw-rail>
       </div>
     </div>
 
