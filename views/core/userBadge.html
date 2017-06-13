@@ -1,13 +1,5 @@
 <div class="jw-user-badge">
-    {{vm.identity}}
-
-    <div ng-if="vm.identity">
-        <button ng-click="vm.logout()">uitloggen</button>
-    </div>
-
-    <div ng-if="!vm.identity">
-        <button ng-click="vm.login()">Login</button>
-        <button ng-click="vm.signup()">signup</button>
-        <button ng-click="vm.facebook()">Facebook</button>
-    </div>
+    <jw-button class="jw-button-menu jw-button-default" ng-click="vm.menuButtonClickHandler()" tabindex="0">
+        <span class="jw-button-label">Log in</span> <i class="jwy-icon jwy-icon-user"></i>
+    </jw-button>
 </div>
