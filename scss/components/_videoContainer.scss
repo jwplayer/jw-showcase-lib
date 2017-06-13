@@ -6,28 +6,6 @@
     position: relative;
     width: 100%;
 
-    .jw-video-row {
-        position: relative;
-    }
-
-    .jw-toolbar-row {
-        position: relative;
-    }
-
-    .jw-toolbar-row-bg {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-
-        height: $toolbar-height;
-        min-height: $toolbar-height;
-
-        margin-right: -100%;
-        margin-left: -100%;
-        z-index: 10;
-    }
-
     &.is-loading {
 
         .jw-video-loading {
@@ -65,19 +43,12 @@
 
 @include mobile-only-landscape () {
 
-    .jw-video-container .jw-container {
-        max-height: calc(100vh - #{($header-height-mobile - $toolbar-height)});
+    .jw-video-container {
+        max-height: calc(100vh - #{($header-height-mobile)});
         overflow: hidden;
 
         .jwplayer.jw-flag-aspect-mode {
             height: 100% !important;
         }
-    }
-}
-
-@include tablet-only () {
-
-    .jw-video-container {
-        padding: 0 90px;
     }
 }

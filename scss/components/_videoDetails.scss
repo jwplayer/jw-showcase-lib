@@ -33,29 +33,4 @@
         font-weight: bold;
         line-height: rem(26px);
     }
-
-    //
-    //.jw-video-feed-title,
-    //.jw-video-feed-title:first-child {
-    //    margin: 2em 0;
-    //    text-align: center;
-    //}
-}
-
-//
-// mediaQueries
-// --------------------------------
-
-@include mobile-only () {
-
-    .jw-video-details {
-        padding: 20px;
-    }
-}
-
-@include tablet-only () {
-
-    .jw-video-details {
-        padding: 20px 90px;
-    }
 }

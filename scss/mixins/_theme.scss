@@ -104,10 +104,6 @@
     $search-color: inherit !default;
     $search-border: 1px solid $light-color !default;
 
-    // Video
-
-    $video-container-bg: #e2e5ec !default;
-
     // Rail
 
     $rail-header-bg: $white !default;
@@ -155,9 +151,13 @@
     $row-inverse-bg: #444 !default;
     $row-inverse-color: $white !default;
 
+    // Video
+
+    $video-layout-bg: #e2e5ec !default;
+
     // VideoDetails
 
-    $video-details-bg: #e2e5ec !default;
+    $video-details-bg: transparent !default;
     $video-details-color: $secondary-color !default;
 
     $video-details-tag-bg: $dark-color !default;
@@ -415,8 +415,8 @@
     // Video
     // --------------------------------
 
-    .jw-video-container {
-        background-color: $video-container-bg;
+    .jw-video-layout {
+        background-color: $video-layout-bg;
     }
 
     //

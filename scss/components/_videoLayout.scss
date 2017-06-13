@@ -2,51 +2,37 @@
 // jwVideoLayout
 // --------------------------------
 
-.jw-video-layout.jw-video-layout-flag-right-rail {
+.jw-video-layout {
+    padding: 0 90px;
 
-    .jw-video-container {
+    .jw-video-layout-row {
+        max-width: $container-width-desktop;
+        margin: 0 auto;
+    }
 
-        .jw-container {
-            @include display-flex();
+    &-flag-right-rail {
+
+        .jw-video-layout-row {
             max-width: $container-width-desktop + 224;
+        }
 
-            .jw-player-col {
+        .jw-video-layout-row {
+            @include display-flex();
+
+            .jw-video-layout-player {
                 @include flex(1 0);
             }
 
-            .jw-right-rail-col {
+            .jw-video-layout-rail {
                 position: relative;
                 width: 30%;
             }
         }
-    }
 
-    .jw-video-details,
-    .jw-video-container {
-        padding-right: 90px;
-        padding-left: 90px;
-
-        .jw-container {
-            max-width: $container-width-desktop + 224;
-        }
-    }
-
-    .jw-video-details {
-        .jw-video-title,
-        .jw-video-description {
-            padding-right: 30%;
-        }
-    }
-}
-
-@include tablet-only () {
-
-    .jw-video-layout.jw-video-layout-flag-right-rail {
-
-        .jw-video-details,
-        .jw-video-container {
-            .jw-container {
-                max-width: $container-width-tablet + 224;
+        .jw-video-details {
+            .jw-video-title,
+            .jw-video-description {
+                padding-right: 30%;
             }
         }
     }
@@ -54,20 +40,11 @@
 
 @include mobile-only () {
 
-    .jw-video-layout.jw-video-layout-flag-right-rail {
+    .jw-video-layout {
+        padding: 0;
+    }
 
-        .jw-video-container {
-            padding-right: 0;
-            padding-left: 0;
-        }
-
-        .jw-video-details {
-            padding-right: 20px;
-            padding-left: 20px;
-
-            .jw-container {
-                max-width: $container-width-tablet + 224;
-            }
-        }
+    .jw-video-layout-row:not(:first-child) {
+        padding: 0 20px;
     }
 }
