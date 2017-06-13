@@ -22,7 +22,7 @@
     AuthService.$inject = ['$firebaseAuth', 'config'];
 
     function AuthService($firebaseAuth, config) {
-        if (!config.options.firebase) {
+        if (!config.options.useAuthentication) {
             return;
         }
 

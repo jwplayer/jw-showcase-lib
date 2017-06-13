@@ -39,8 +39,12 @@
         });
 
     // DISCLAIMER: Example file. I know it's messy. Don't judge me.
-    AuthController.$inject = ['auth'];
-    function AuthController(auth) {
+    AuthController.$inject = ['auth', 'config'];
+    function AuthController(auth, config) {
+        if(!config.options.useAuthentication) {
+            return;
+        }
+
         var firebaseAuth = auth.firebaseAuth;
         var vm           = this;
 
