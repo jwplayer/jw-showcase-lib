@@ -3,7 +3,12 @@
   <div class="jw-side-rail-scroll-wrapper">
     <jw-scroll delegate="vm.scrollDelegate">
       <ul class="jw-side-rail-items">
-        <li class="jw-side-rail-item" ng-repeat="item in vm.feed.playlist" ng-click="vm.itemClickHandler(item)">
+        <li class="jw-side-rail-item"
+            ng-repeat="item in vm.feed.playlist"
+            ng-click="vm.itemClickHandler(item)"
+            tabindex="0"
+            role="button"
+            aria-label="{{ ::item.title }}">
           <div class="jw-side-rail-item-aspect">
             <img ng-src="{{ ::item.image }}" alt="{{ ::item.name}} poster image" class="jw-side-rail-item-image">
             <div class="jw-side-rail-item-overlay">
