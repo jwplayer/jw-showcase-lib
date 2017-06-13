@@ -40,7 +40,14 @@
         display: block;
         cursor: pointer;
 
+        // first element is the currently playing item
+        &:first-child {
+            display: none;
+        }
+
+        &:focus,
         &:hover {
+
             .jw-side-rail-item-overlay {
                 background-color: rgba($black, 0);
             }
