@@ -97,19 +97,24 @@
             return feed.findItem($stateParams.mediaId) || $q.reject();
         }
 
-        resolveRecommendations.$inject = ['$stateParams', 'config', 'apiConsumer', 'FeedModel'];
-        function resolveRecommendations ($stateParams, config, apiConsumer, FeedModel) {
-            if (config.recommendationsPlaylist) {
-                var recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+        resolveRecommendations.$inject = ['$stateParams', 'config', 'apiConsumer', 'FeedModel', 'item'];
+        function resolveRecommendations ($stateParams, config, apiConsumer, FeedModel, item) {
 
-                recommendationsFeed.relatedMediaId = $stateParams.mediaId;
-
-                return apiConsumer.populateFeedModel(recommendationsFeed, 'recommendations').then(function () {
-                    return recommendationsFeed;
-                }).catch(function () {
-
-                });
+            if (!config.recommendationsPlaylist) {
+                return;
             }
+
+            var recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+
+            recommendationsFeed.relatedMediaId = $stateParams.mediaId;
+
+            return apiConsumer.populateFeedModel(recommendationsFeed, 'recommendations').then(function () {
+                recommendationsFeed.playlist.unshift(item);
+                return recommendationsFeed;
+            }).catch(function () {
+                // when this recommendations request fails, don't prevent the video page from loading
+                return undefined;
+            });
         }
     }
 

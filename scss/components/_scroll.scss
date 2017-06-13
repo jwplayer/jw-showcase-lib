@@ -1,0 +1,28 @@
+//
+// jwScroll
+// --------------------------------
+
+.jw-scroll {
+    width: 100%;
+    height: 100%;
+
+    .jw-flag-mobile & {
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    body:not(.jw-flag-mobile) & {
+        overflow: hidden;
+
+        .jw-scroll-content {
+            width: 100%;
+        }
+
+        // scss-lint:disable SelectorFormat
+        .iScrollVerticalScrollbar,
+        .iScrollHorizontalScrollbar {
+            z-index: $view-z-index !important;
+        }
+        // scss-lint:enable SelectorFormat
+    }
+}

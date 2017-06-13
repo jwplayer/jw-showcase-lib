@@ -38,7 +38,10 @@
                 enableFeaturedText:     true,
                 enablePlayerAutoFocus:  true,
                 enableHeader:           true,
-                enableTags:             false
+                enableTags:             false,
+                rightRail: {
+                    enabled: false
+                }
             }
         });
 

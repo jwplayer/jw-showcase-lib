@@ -16,6 +16,8 @@
 
 (function () {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.video')
         .controller('VideoController', VideoController);
@@ -80,6 +82,12 @@
          * @type {jwShowcase.core.feed}
          */
         vm.extraFeed = null;
+
+        /**
+         * Is true when the right rail is visible
+         * @type {boolean}
+         */
+        vm.hasRightRail = config.options.rightRail.enabled && !MOBILE_SCREEN;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -163,25 +171,18 @@
          */
         function updateFeeds () {
 
+            // by default use the feed playlist as activeFeed and show the recommendations feed below
+            vm.activeFeed     = feed;
+            vm.extraFeed      = recommendations;
+            vm.extraFeedTitle = 'Related Videos';
+
             // set activeFeed pointer to the recommendations feed when useRecommendationPlaylist is true and
             // recommendations exists
             if (config.options.useRecommendationPlaylist && recommendations) {
-
-                // if recommendations are used for the playlist the current item must be added in order to generate the
-                // player playlist and show the 'Currently playing' item in the slider.
-                if (!recommendations.playlist.find(byMediaId(vm.item.mediaid))) {
-                    recommendations.playlist.unshift(vm.item);
-                }
-
-                vm.activeFeed = recommendations;
-                vm.extraFeed  = feed;
-
-                return;
+                vm.activeFeed     = recommendations;
+                vm.extraFeed      = feed;
+                vm.extraFeedTitle = vm.extraFeed.title;
             }
-
-            // by default use the feed playlist as activeFeed and show the recommendations feed below
-            vm.activeFeed = feed;
-            vm.extraFeed  = recommendations;
         }
 
         /**
@@ -213,6 +214,7 @@
                 .then(function () {
                     seo.update();
                 });
+
         }
 
         /**
@@ -410,7 +412,6 @@
             levels = event.levels;
         }
 
-
         /**
          * Handle complete event
          */
@@ -526,7 +527,6 @@
                 return;
             }
 
-            // navigate to item which is not in current playlist
             if (playlistIndex === -1) {
 
                 return $state.go('root.video', {

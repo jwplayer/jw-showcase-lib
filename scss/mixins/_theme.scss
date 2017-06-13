@@ -104,10 +104,11 @@
     $search-color: inherit !default;
     $search-border: 1px solid $light-color !default;
 
-    // Video
+    // Rail
 
-
-    $video-container-bg: #e2e5ec !default;
+    $rail-header-bg: $white !default;
+    $rail-header-color: $secondary-color !default;
+    $rail-item-color: $white;
 
     // Modal
 
@@ -150,9 +151,13 @@
     $row-inverse-bg: #444 !default;
     $row-inverse-color: $white !default;
 
+    // Video
+
+    $video-layout-bg: #e2e5ec !default;
+
     // VideoDetails
 
-    $video-details-bg: #e2e5ec !default;
+    $video-details-bg: transparent !default;
     $video-details-color: $secondary-color !default;
 
     $video-details-tag-bg: $dark-color !default;
@@ -410,8 +415,23 @@
     // Video
     // --------------------------------
 
-    .jw-video-container {
-        background-color: $video-container-bg;
+    .jw-video-layout {
+        background-color: $video-layout-bg;
+    }
+
+    //
+    // Rail
+    // --------------------------------
+
+    .jw-side-rail {
+        .jw-side-rail-header {
+            background-color: $rail-header-bg;
+            color: $rail-header-color;
+        }
+
+        .jw-side-rail-item {
+            color: $rail-item-color;
+        }
     }
 
     //
@@ -550,6 +570,25 @@
                 border-left: $toolbar-nav-border;
             }
         }
+
+        .jw-button-label {
+            color: rgba($toolbar-color, 0.65);
+        }
+    }
+
+    .jw-toolbar-row-bg {
+        background-color: $toolbar-bg;
+        color: $toolbar-color;
+    }
+
+    .jw-toolbar-row-bg {
+        background-color: $toolbar-bg;
+        color: $toolbar-color;
+    }
+
+    .jw-toolbar-row-bg {
+        background-color: $toolbar-bg;
+        color: $toolbar-color;
     }
 
     .jw-toolbar-row-bg {
@@ -589,7 +628,11 @@
     .jwplayer.jw-skin-jw-showcase {
 
         .jw-background-color {
-            background-color: rgba($dark-color, .9);
+            background-color: rgba($dark-color, 0.9);
+        }
+
+        .jw-controlbar {
+            background-color: rgba($black, 0.2);
         }
 
         .jw-progress {

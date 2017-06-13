@@ -3,7 +3,7 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 25px 0 0;
+    padding: 20px 0;
 
     color: $white;
     line-height: 1.4em;
@@ -28,12 +28,10 @@
     }
 
     .jw-video-title {
+        margin-bottom: 15px;
         font-size: rem(22px);
+        font-weight: bold;
         line-height: rem(26px);
-    }
-
-    .jw-video-description p:last-child {
-        margin: 0;
     }
 
     .jw-video-tags {
@@ -50,23 +48,5 @@
                 padding: 3px 7px;
             }
         }
-    }
-}
-
-//
-// mediaQueries
-// --------------------------------
-
-@include mobile-only () {
-
-    .jw-video-details {
-        padding: 20px 20px 0;
-    }
-}
-
-@include tablet-only () {
-
-    .jw-video-details {
-        padding: 20px 90px 0;
     }
 }

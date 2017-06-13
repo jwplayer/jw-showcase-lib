@@ -64,6 +64,7 @@
     @include single-transition(transform, 0.2s, cubic-bezier(0.52, 0.51, 0.2, 1));
     @include transform(translateX(-100%));
     position: fixed;
+
     top: 0;
     width: 370px;
     max-width: 100%;

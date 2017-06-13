@@ -23,10 +23,15 @@
 
         position: relative;
         overflow: hidden;
+
+        > :last-child {
+            margin-bottom: 0;
+        }
     }
 
     .jw-collapsible-text-toggle {
-        line-height: 30px;
+        height: 15px;
+        line-height: 15px;
         text-align: center;
 
         .jw-button {
