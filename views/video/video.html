@@ -37,7 +37,7 @@
       </div>
 
       <div class="jw-video-layout-rail" ng-if="vm.hasRightRail">
-        <jw-rail feed="vm.feed" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
+        <jw-rail feed="vm.activeFeed" on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"></jw-rail>
       </div>
     </div>
 
@@ -47,14 +47,23 @@
 
   </div>
 
-  <div class="jw-row" ng-if="vm.feed && !vm.hasRightRail">
-    <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" title="More like this"
+  <div class="jw-row" ng-if="vm.activeFeed && !vm.hasRightRail">
+    <jw-card-slider
+        feed="vm.activeFeed"
+        featured="false"
+        title="Next Up"
         class="jw-card-slider-flag-now-playing jw-lazy-load"
-        on-card-click="vm.cardClickHandler"></jw-card-slider>
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
 
-  <div class="jw-row" ng-if="vm.recommendationsFeed">
-    <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos" class="jw-lazy-load"
-        on-card-click="vm.cardClickHandler"></jw-card-slider>
+  <div class="jw-row" ng-if="vm.extraFeed">
+    <jw-card-slider
+        feed="vm.extraFeed"
+        featured="false"
+        title="{{ vm.extraFeedTitle }}"
+        class="jw-lazy-load"
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
 </div>

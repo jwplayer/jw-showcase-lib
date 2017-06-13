@@ -38,6 +38,7 @@
      * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
+     * @param {jwShowcase.core.item}    firstItem       Item which should be shown first.
      * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
      * @requires $state
@@ -60,6 +61,7 @@
                 feed:        '=',
                 featured:    '=',
                 onCardClick: '=',
+                firstItem:   '=',
                 title:       '@'
             },
             replace:          true,
@@ -111,9 +113,12 @@
                 window.addEventListener('resize', resizeHandlerDebounced);
                 findElement('.jw-card-slider-align')[0].addEventListener('touchstart', onTouchStart, false);
 
-                scope.$watch(function () {
-                    return scope.vm.feed;
-                }, feedUpdateHandler, true);
+                scope.$watch('vm.feed', feedUpdateHandler, true);
+                scope.$watch('vm.firstItem', function (firstItem) {
+                    if (firstItem) {
+                        resizeHandler(true);
+                    }
+                }, true);
 
                 if (scope.vm.feed) {
                     totalItems = scope.vm.feed.playlist.length;
@@ -326,8 +331,19 @@
              */
             function renderSlides () {
 
-                var nextSliderMap = [],
+                var playlist = scope.vm.feed.playlist,
+                    nextSliderMap = [],
                     nextSliderList;
+
+                if (scope.vm.firstItem) {
+                    var firstItemIndex = scope.vm.feed.playlist.findIndex(function (item) {
+                        return item.mediaid === scope.vm.firstItem.mediaid;
+                    });
+
+                    playlist = playlist
+                        .slice(firstItemIndex)
+                        .concat(playlist.slice(0, firstItemIndex));
+                }
 
                 // create visible slides first so these will be used from the cache with priority. E.g. prevents render
                 // of visible cards.
@@ -382,7 +398,7 @@
                             itemIndex = 0;
                         }
 
-                        item  = scope.vm.feed.playlist[itemIndex];
+                        item  = playlist[itemIndex];
                         slide = findExistingSlide(item, visible) || createSlide(item);
 
                         addClassNamesToSlide(slide, itemIndex, visible);

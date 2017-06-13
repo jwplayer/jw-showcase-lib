@@ -33,15 +33,16 @@
         .value('config', {
             contentService: 'https://content.jwplatform.com',
             options:        {
-                enableContinueWatching: true,
-                enableCookieNotice:     false,
-                enableFeaturedText:     true,
-                enablePlayerAutoFocus:  true,
-                enableHeader:           true,
-                enableTags:             false,
-                rightRail: {
+                enableContinueWatching:    true,
+                enableCookieNotice:        false,
+                enableFeaturedText:        true,
+                enablePlayerAutoFocus:     true,
+                enableHeader:              true,
+                enableTags:                false,
+                rightRail:                 {
                     enabled: false
-                }
+                },
+                useRecommendationPlaylist: false
             }
         });
 
