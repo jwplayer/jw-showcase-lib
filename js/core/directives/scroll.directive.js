@@ -48,8 +48,9 @@
 
         function link (scope, element) {
 
-            var jsScrolling = !platform.isMobile;
-            var instance    = null;
+            var scrollElement = angular.element(element[0].firstChild);
+            var jsScrolling   = !platform.isMobile;
+            var instance      = null;
 
             activate();
 
@@ -79,6 +80,8 @@
 
                 if (instance) {
                     instance.destroy();
+
+                    scrollElement.off('keyup', keyupEventHandler);
                 }
 
                 scope.delegate = null;
@@ -89,12 +92,40 @@
              */
             function initializeIScroll () {
 
-                instance = new window.IScroll(element[0].firstChild, {
+                instance = new window.IScroll(scrollElement[0], {
                     disableMouse:   true,
                     disablePointer: true,
                     mouseWheel:     true,
                     scrollbars:     true
                 });
+
+                scrollElement.on('keyup', keyupEventHandler);
+            }
+
+            /**
+             * Handle keyup event to restore scroll position while using the tab key to go through content
+             * @param event
+             */
+            function keyupEventHandler (event) {
+
+                // only listen to tab key
+                if (event.which !== 9) {
+                    return;
+                }
+
+                setTimeout(function () {
+                    var oldScrollY = this.scrollTop,
+                        oldScrollX = this.scrollLeft;
+
+                    if (oldScrollY || oldScrollX) {
+                        this.scrollTop  = 0;
+                        this.scrollLeft = 0;
+                        instance.scrollBy(-oldScrollX, -oldScrollY);
+                    }
+                    else {
+                        instance.scrollToElement(document.activeElement);
+                    }
+                }, 0);
             }
 
             /**
