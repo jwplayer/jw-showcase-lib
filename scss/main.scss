@@ -45,13 +45,16 @@
 @import 'components/offline';
 @import 'components/player';
 @import 'components/popups';
+@import 'components/rail';
 @import 'components/reset';
+@import 'components/scroll';
 @import 'components/search';
 @import 'components/sidebar';
 @import 'components/toggle';
 @import 'components/toolbar';
 @import 'components/videoContainer';
 @import 'components/videoDetails';
+@import 'components/videoLayout';
 @import 'components/view';
 @import 'components/visibility';
 //
@@ -60,7 +63,6 @@
 @import 'themes/light';
 @import 'themes/dark';
 @import 'themes/blue';
-
 
 html {
     height: 100%;

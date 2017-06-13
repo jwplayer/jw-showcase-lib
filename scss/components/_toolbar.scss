@@ -5,7 +5,7 @@
 .jw-toolbar {
     height: $toolbar-height;
     min-height: $toolbar-height;
-    padding: 0 $toolbar-padding;
+    padding: 0 0 0 $toolbar-padding;
 
     &-subheader {
         position: fixed;
@@ -102,38 +102,12 @@
     }
 }
 
-@include tablet-only () {
-
-    .jw-toolbar {
-
-        &-video {
-            padding: 0 90px;
-
-            .jw-toolbar-container {
-                max-width: $container-width-tablet;
-                margin: 0 auto;
-            }
-        }
-    }
-}
-
 @include tablet-and-larger () {
 
     .jw-toolbar {
 
         &-video .jw-toolbar-nav:first-child .jw-button {
             margin-left: -$toolbar-padding;
-        }
-    }
-}
-
-@include desktop-only () {
-
-    .jw-toolbar {
-
-        &-video .jw-toolbar-container {
-            max-width: $container-width-desktop;
-            margin: 0 auto;
         }
     }
 }

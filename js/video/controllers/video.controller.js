@@ -16,6 +16,8 @@
 
 (function () {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.video')
         .controller('VideoController', VideoController);
@@ -57,6 +59,7 @@
             itemFeed               = feed,
             loadingRecommendations = false,
             playerPlaylist         = [],
+            recommendationsFeedModel,
             playerLevels,
             watchProgressItem,
             loadingTimeout;
@@ -65,6 +68,8 @@
         vm.feed                = feed.clone();
         vm.recommendationsFeed = null;
         vm.loading             = true;
+
+        vm.hasRightRail = config.options.rightRail.enabled && !MOBILE_SCREEN;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -116,7 +121,7 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
-                vm.playerSettings.cast = false;
+                vm.playerSettings.cast                  = false;
             }
 
             $scope.$watch(function () {
@@ -175,14 +180,14 @@
 
             loadingRecommendations = true;
 
-            if (!vm.recommendationsFeed) {
-                vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+            if (!recommendationsFeedModel) {
+                recommendationsFeedModel = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
             }
 
-            vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
+            recommendationsFeedModel.relatedMediaId = vm.item.mediaid;
 
             apiConsumer
-                .populateFeedModel(vm.recommendationsFeed, 'recommendations')
+                .populateFeedModel(recommendationsFeedModel, 'recommendations')
                 .then(function (recommendationsFeed) {
 
                     // filter duplicate video's
@@ -191,6 +196,8 @@
                             return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
                     }
+
+                    vm.recommendationsFeed = recommendationsFeed.playlist.length ? recommendationsFeed : null;
 
                     loadingRecommendations = false;
                 });
@@ -351,9 +358,9 @@
             }
 
             // update $viewHistory
-            stateParams.feedId  = $stateParams.feedId = newItem.feedid;
+            stateParams.feedId = $stateParams.feedId = newItem.feedid;
             stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = $stateParams.slug = newItem.$slug;
+            stateParams.slug = $stateParams.slug = newItem.$slug;
 
             $state.$current.locals.globals.item = newItem;
 
@@ -410,7 +417,6 @@
 
             playerLevels = event.levels;
         }
-
 
         /**
          * Handle complete event
@@ -531,8 +537,8 @@
             vm.item = angular.extend({}, newItem);
 
             stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
-            stateParams.slug    = $stateParams.slug = vm.item.$slug;
+            stateParams.feedId = $stateParams.feedId = vm.item.feedid;
+            stateParams.slug = $stateParams.slug = vm.item.$slug;
 
             $state.$current.locals.globals.item = newItem;
 
