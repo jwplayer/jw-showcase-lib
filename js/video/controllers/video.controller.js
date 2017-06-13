@@ -59,6 +59,7 @@
             itemFeed               = feed,
             loadingRecommendations = false,
             playerPlaylist         = [],
+            recommendationsFeedModel,
             playerLevels,
             watchProgressItem,
             loadingTimeout;
@@ -68,7 +69,7 @@
         vm.recommendationsFeed = null;
         vm.loading             = true;
 
-        vm.hasRightRail    = config.options.rightRail.enabled && !MOBILE_SCREEN;
+        vm.hasRightRail = config.options.rightRail.enabled && !MOBILE_SCREEN;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -179,14 +180,14 @@
 
             loadingRecommendations = true;
 
-            if (!vm.recommendationsFeed) {
-                vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
+            if (!recommendationsFeedModel) {
+                recommendationsFeedModel = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
             }
 
-            vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
+            recommendationsFeedModel.relatedMediaId = vm.item.mediaid;
 
             apiConsumer
-                .populateFeedModel(vm.recommendationsFeed, 'recommendations')
+                .populateFeedModel(recommendationsFeedModel, 'recommendations')
                 .then(function (recommendationsFeed) {
 
                     // filter duplicate video's
@@ -194,6 +195,10 @@
                         recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
                             return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
                         });
+                    }
+
+                    if (recommendationsFeed.playlist.length) {
+                        vm.recommendationsFeed = recommendationsFeed;
                     }
 
                     loadingRecommendations = false;
@@ -414,7 +419,6 @@
 
             playerLevels = event.levels;
         }
-
 
         /**
          * Handle complete event
