@@ -628,7 +628,11 @@
     .jwplayer.jw-skin-jw-showcase {
 
         .jw-background-color {
-            background-color: rgba($dark-color, .9);
+            background-color: rgba($dark-color, 0.9);
+        }
+
+        .jw-controlbar {
+            background-color: rgba($black, 0.2);
         }
 
         .jw-progress {

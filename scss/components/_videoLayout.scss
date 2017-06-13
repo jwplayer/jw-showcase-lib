@@ -6,14 +6,14 @@
     padding: 0 90px;
 
     .jw-video-layout-row {
-        max-width: $container-width-desktop;
+        max-width: $video-layout-width;
         margin: 0 auto;
     }
 
     &-flag-right-rail {
 
         .jw-video-layout-row {
-            max-width: $container-width-desktop + 224;
+            max-width: $video-layout-right-rail-width;
         }
 
         .jw-video-layout-row {
