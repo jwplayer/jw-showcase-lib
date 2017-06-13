@@ -104,12 +104,6 @@
     $search-color: inherit !default;
     $search-border: 1px solid $light-color !default;
 
-    // Rail
-
-    $rail-header-bg: $white !default;
-    $rail-header-color: $secondary-color !default;
-    $rail-item-color: $white;
-
     // Modal
 
     $modal-bg: $light-color !default;
@@ -129,6 +123,17 @@
     $popup-backdrop-bg: rgba(#000, 0.4) !default;
     $popup-bg: $white !default;
     $popup-color: #4a4a4a !default;
+
+    // Rail
+
+    $rail-header-bg: $white !default;
+    $rail-header-color: $secondary-color !default;
+    $rail-item-color: $white;
+
+    // Scroll
+
+    $scroll-track-bg: $white !default;
+    $scroll-indicator-bg: rgba($secondary-color, 0.75) !default;
 
     // Sidebar
 
@@ -195,7 +200,8 @@
         }
 
         &-default {
-            &:hover,
+
+            &:not(.is-disabled):hover,
             &.active {
                 color: $btn-primary-bg;
             }
@@ -474,6 +480,23 @@
         .jw-popup-title {
             color: $popup-color;
         }
+    }
+
+    //
+    // Scroll
+    //
+    .jw-scroll {
+
+        // scss-lint:disable SelectorFormat
+        .iScrollVerticalScrollbar {
+            background: $scroll-track-bg;
+
+            .iScrollIndicator {
+                border: 2px solid $scroll-track-bg;
+                background-color: $scroll-indicator-bg;
+            }
+        }
+        // scss-lint:enable SelectorFormat
     }
 
     //

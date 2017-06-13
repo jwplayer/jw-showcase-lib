@@ -16,12 +16,29 @@
 
         .jw-scroll-content {
             width: 100%;
+            padding-right: 12px;
         }
 
         // scss-lint:disable SelectorFormat
         .iScrollVerticalScrollbar,
         .iScrollHorizontalScrollbar {
             z-index: $view-z-index !important;
+        }
+
+        .iScrollVerticalScrollbar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 12px;
+            height: 100%;
+
+            .iScrollIndicator {
+                position: relative;
+                left: 0;
+                width: 12px;
+                min-height: 80px;
+                border-radius: 6px;
+            }
         }
         // scss-lint:enable SelectorFormat
     }

@@ -96,7 +96,7 @@
                     disableMouse:   true,
                     disablePointer: true,
                     mouseWheel:     true,
-                    scrollbars:     true
+                    scrollbars:     'custom'
                 });
 
                 scrollElement.on('keyup', keyupEventHandler);
