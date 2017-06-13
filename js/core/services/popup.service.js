@@ -131,7 +131,7 @@
             height     = instance.element[0].offsetHeight;
 
             // prevent overflow
-            left = Math.min(pageWidth - (width / 2), Math.max(width / 2, targetRect.left - (width / 2)));
+            left = Math.min(pageWidth - width, Math.max(width / 2, targetRect.left - (width / 2)));
             top  = Math.max(height / 2, targetRect.top - (height / 2));
 
             transformValue = 'translate(' + left + 'px, ' + top + 'px)';
