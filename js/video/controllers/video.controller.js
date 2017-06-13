@@ -197,9 +197,7 @@
                         });
                     }
 
-                    if (recommendationsFeed.playlist.length) {
-                        vm.recommendationsFeed = recommendationsFeed;
-                    }
+                    vm.recommendationsFeed = recommendationsFeed.playlist.length ? recommendationsFeed : null;
 
                     loadingRecommendations = false;
                 });
