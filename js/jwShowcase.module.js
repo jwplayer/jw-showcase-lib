@@ -27,16 +27,22 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.tag',
             'jwShowcase.video'
         ])
         .value('config', {
-            contentService:         'https://content.jwplatform.com',
-            options: {
-                enableContinueWatching: true,
-                enableCookieNotice:     false,
-                enableFeaturedText:     true,
-                enablePlayerAutoFocus:  true,
-                enableHeader:           true
+            contentService: 'https://content.jwplatform.com',
+            options:        {
+                enableContinueWatching:    true,
+                enableCookieNotice:        false,
+                enableFeaturedText:        true,
+                enablePlayerAutoFocus:     true,
+                enableHeader:              true,
+                enableTags:                false,
+                rightRail:                 {
+                    enabled: false
+                },
+                useRecommendationPlaylist: false
             }
         });
 
@@ -44,30 +50,41 @@
      * @name jwShowcase.config
      * @type {Object}
      *
-     * @property {string}           player
-     * @property {string}           theme
-     * @property {string}           siteName
-     * @property {string}           description
-     * @property {string}           bannerImage
-     * @property {string}           footerText
+     * @property {string}               version
+     * @property {string}               player
+     * @property {string}               theme
+     * @property {string}               siteName
+     * @property {string}               description
+     * @property {string}               bannerImage
+     * @property {string}               footerText
      *
-     * @property {string}           searchPlaylist
-     * @property {string}           recommendationsPlaylist
+     * @property {string}               searchPlaylist
+     * @property {string}               recommendationsPlaylist
      *
-     * @property {Object}           assets
-     * @property {string}           assets.banner
+     * @property {Object}               assets
+     * @property {string}               assets.banner
      *
-     * @property {Array}            content
-     * @property {string}           content.playlistId
-     * @property {boolean}          content.featured
-     * @property {number|Object}    content.cols
+     * @property {jwShowcase.content[]} content
      *
-     * @property {Object}           options
-     * @property {string}           options.backgroundColor
-     * @property {boolean}          options.enableContinueWatching
-     * @property {boolean}          options.enableCookieNotice
-     * @property {boolean}          options.enableFeaturedText
-     * @property {boolean}          options.enablePlayerAutoFocus
+     * @property {Object}               options
+     * @property {string}               options.backgroundColor
+     * @property {string}               options.highlightColor
+     * @property {boolean}              options.enableContinueWatching
+     * @property {boolean}              options.enableCookieNotice
+     * @property {boolean}              options.enablePlayerAutoFocus
+     */
+
+    /**
+     * @name jwShowcase.content
+     * @type {Object}
+     *
+     * @property {string}           playlistId
+     * @property {boolean}          featured
+     * @property {number|Object}    cols
+     * @property {boolean}          enableText
+     * @property {boolean}          enableTitle
+     * @property {boolean}          enablePreview
+     * @property {string}           backgroundColor
      */
 
 }());

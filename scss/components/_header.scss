@@ -6,9 +6,6 @@
     height: $header-height;
     padding: $header-padding;
 
-    background-color: $header-bg-color;
-    color: $header-color;
-
     .jw-flag-loading-config & {
         display: none !important;
     }

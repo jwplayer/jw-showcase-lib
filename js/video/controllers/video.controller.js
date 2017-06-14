@@ -16,6 +16,8 @@
 
 (function () {
 
+    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
+
     angular
         .module('jwShowcase.video')
         .controller('VideoController', VideoController);
@@ -28,8 +30,6 @@
      * @requires $state
      * @requires $stateParams
      * @requires $timeout
-     * @requires jwShowcase.core.apiConsumer
-     * @requires jwShowcase.core.FeedModel
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.watchProgress
@@ -42,29 +42,52 @@
      * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.config
      */
-    VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'apiConsumer', 'FeedModel', 'dataStore',
-        'popup', 'watchProgress', 'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker',
-        'config', 'feed', 'item'];
-    function VideoController ($scope, $state, $stateParams, $timeout, apiConsumer, FeedModel, dataStore, popup,
+    VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
+        'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker', 'config', 'feed', 'item',
+        'recommendations'];
+    function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup,
                               watchProgress, watchlist, seo, userSettings, utils, player, platform, serviceWorker,
-                              config, feed, item) {
+                              config, feed, item, recommendations) {
 
-        var vm                     = this,
-            lastPos                = 0,
-            resumed                = false,
-            started                = false,
-            requestQualityChange   = false,
-            itemFeed               = feed,
-            loadingRecommendations = false,
-            playerPlaylist         = [],
-            playerLevels,
+        var vm                   = this,
+            lastPos              = 0,
+            resumed              = false,
+            started              = false,
+            requestQualityChange = false,
+            playlist             = [],
+            levels,
             watchProgressItem,
             loadingTimeout;
 
-        vm.item                = item;
-        vm.feed                = feed.clone();
-        vm.recommendationsFeed = null;
-        vm.loading             = true;
+        /**
+         * Current playing item
+         * @type {jwShowcase.core.item}
+         */
+        vm.item = item;
+
+        /**
+         * Loading flag
+         * @type {boolean}
+         */
+        vm.loading = true;
+
+        /**
+         * Feed which is being used as playlist for the player.
+         * @type {jwShowcase.core.feed}
+         */
+        vm.activeFeed = null;
+
+        /**
+         * Additional feed which can be recommendations or the item feed.
+         * @type {jwShowcase.core.feed}
+         */
+        vm.extraFeed = null;
+
+        /**
+         * Is true when the right rail is visible
+         * @type {boolean}
+         */
+        vm.hasRightRail = config.options.rightRail.enabled && !MOBILE_SCREEN;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -87,7 +110,9 @@
          */
         function activate () {
 
-            playerPlaylist = generatePlaylist(itemFeed, item);
+            updateFeeds();
+
+            playlist = generatePlaylist(vm.activeFeed, item);
 
             vm.playerSettings = {
                 width:          '100%',
@@ -95,7 +120,7 @@
                 aspectratio:    '16:9',
                 ph:             4,
                 autostart:      $state.params.autoStart,
-                playlist:       playerPlaylist,
+                playlist:       playlist,
                 related:        false,
                 preload:        'metadata',
                 sharing:        false,
@@ -105,6 +130,10 @@
                     bi: config.id
                 }
             };
+
+            if (angular.isDefined(config.options.cast)) {
+                vm.playerSettings.cast = config.options.cast;
+            }
 
             if (!navigator.onLine) {
                 vm.playerSettings.advertising = false;
@@ -116,7 +145,7 @@
 
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
-                vm.playerSettings.cast = false;
+                vm.playerSettings.cast                  = false;
             }
 
             $scope.$watch(function () {
@@ -128,8 +157,8 @@
             }, function () {
                 var state = player.getState();
                 if (state !== 'playing' && state !== 'paused') {
-                    playerPlaylist = generatePlaylist(itemFeed, item);
-                    player.load(playerPlaylist);
+                    playlist = generatePlaylist(vm.activeFeed, vm.item);
+                    player.load(playlist);
                     update();
                 }
             });
@@ -142,58 +171,54 @@
         }
 
         /**
-         * Update controller
+         * Update feeds
          */
-        function update () {
+        function updateFeeds () {
 
-            var itemIndex = itemFeed.playlist.findIndex(byMediaId(vm.item.mediaid));
+            // by default use the feed playlist as activeFeed and show the recommendations feed below
+            vm.activeFeed     = feed;
+            vm.extraFeed      = recommendations;
+            vm.extraFeedTitle = 'Related Videos';
 
-            vm.feed.playlist = itemFeed.playlist
-                .slice(itemIndex)
-                .concat(itemFeed.playlist.slice(0, itemIndex));
-
-            watchProgressItem = watchProgress.getItem(vm.item);
-
-            if (navigator.onLine) {
-                loadRecommendations();
+            // set activeFeed pointer to the recommendations feed when useRecommendationPlaylist is true and
+            // recommendations exists
+            if (config.options.useRecommendationPlaylist && recommendations) {
+                vm.activeFeed     = recommendations;
+                vm.extraFeed      = feed;
+                vm.extraFeedTitle = vm.extraFeed.title;
             }
         }
 
         /**
-         * Load recommendations
+         * Update controller
          */
-        function loadRecommendations () {
+        function update () {
 
-            if (!config.recommendationsPlaylist) {
-                vm.recommendationsFeed = null;
-                return;
-            }
+            watchProgressItem = watchProgress.getItem(vm.item);
+        }
 
-            if (loadingRecommendations) {
-                return;
-            }
+        function updateStateSilently () {
 
-            loadingRecommendations = true;
+            var stateParams = $state.params;
 
-            if (!vm.recommendationsFeed) {
-                vm.recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
-            }
+            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
+            stateParams.feedId = $stateParams.feedId = vm.item.feedid;
+            stateParams.slug = $stateParams.slug = vm.item.$slug;
 
-            vm.recommendationsFeed.relatedMediaId = vm.item.mediaid;
+            $state.$current.locals.globals.item = vm.item;
 
-            apiConsumer
-                .populateFeedModel(vm.recommendationsFeed, 'recommendations')
-                .then(function (recommendationsFeed) {
-
-                    // filter duplicate video's
-                    if (angular.isArray(recommendationsFeed.playlist)) {
-                        recommendationsFeed.playlist = recommendationsFeed.playlist.filter(function (item) {
-                            return itemFeed.playlist.findIndex(byMediaId(item.mediaid)) === -1;
-                        });
-                    }
-
-                    loadingRecommendations = false;
+            $state
+                .go('root.video', {
+                    feedId:  vm.item.feedid,
+                    mediaId: vm.item.mediaid,
+                    slug:    vm.item.$slug
+                }, {
+                    notify: false
+                })
+                .then(function () {
+                    seo.update();
                 });
+
         }
 
         /**
@@ -263,11 +288,11 @@
                 toQuality = 0;
 
             // nothing to do
-            if (!playerLevels) {
+            if (!levels) {
                 return;
             }
 
-            levelsLength = playerLevels.length;
+            levelsLength = levels.length;
 
             if (true === value) {
                 toQuality = levelsLength > 2 ? levelsLength - 2 : levelsLength;
@@ -335,43 +360,23 @@
          */
         function onPlaylistItem (event) {
 
-            var playlistItem = playerPlaylist[event.index],
-                stateParams  = $state.params,
+            var playlistItem = playlist[event.index],
                 newItem;
 
             if (!angular.isNumber(event.index) || !playlistItem) {
                 return;
             }
 
-            newItem = dataStore.getItem(playlistItem.mediaid, itemFeed.feedid);
+            newItem = dataStore.getItem(playlistItem.mediaid, playlistItem.feedid);
 
-            // same item
+            // return if item doesn't exist or its the same item
             if (!newItem || newItem.mediaid === vm.item.mediaid) {
                 return;
             }
 
-            // update $viewHistory
-            stateParams.feedId  = $stateParams.feedId = newItem.feedid;
-            stateParams.mediaId = $stateParams.mediaId = newItem.mediaid;
-            stateParams.slug    = $stateParams.slug = newItem.$slug;
-
-            $state.$current.locals.globals.item = newItem;
-
-            // update state, but don't notify
-            $state
-                .go('root.video', {
-                    feedId:    newItem.feedid,
-                    mediaId:   newItem.mediaid,
-                    slug:      newItem.$slug,
-                    autoStart: true
-                }, {
-                    notify: false
-                })
-                .then(function () {
-                    seo.update();
-                });
-
             vm.item = newItem;
+
+            updateStateSilently();
             update();
         }
 
@@ -388,11 +393,11 @@
 
             started = true;
 
-            if (!playerLevels) {
+            if (!levels) {
                 return;
             }
 
-            levelsLength = playerLevels.length;
+            levelsLength = levels.length;
 
             // hd turned off
             // set quality to last lowest level
@@ -408,9 +413,8 @@
          */
         function onLevels (event) {
 
-            playerLevels = event.levels;
+            levels = event.levels;
         }
-
 
         /**
          * Handle complete event
@@ -520,56 +524,32 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex = playerPlaylist.findIndex(byMediaId(newItem.mediaid)),
-                stateParams   = $state.params;
+            var playlistIndex = playlist.findIndex(byMediaId(newItem.mediaid));
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
                 return;
             }
 
-            vm.item = angular.extend({}, newItem);
-
-            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId  = $stateParams.feedId = vm.item.feedid;
-            stateParams.slug    = $stateParams.slug = vm.item.$slug;
-
-            $state.$current.locals.globals.item = newItem;
-
-            // update playlist when item does not exist in current playlist
             if (playlistIndex === -1) {
 
-                itemFeed = dataStore.getFeed(vm.item.feedid);
-                vm.feed  = itemFeed.clone();
-
-                $state.$current.locals.globals.feed = vm.feed;
-
-                playerPlaylist = generatePlaylist(itemFeed, vm.item);
-                player.load(playerPlaylist);
-
-                if (clickedOnPlay || window.cordova) {
-                    player.play(true);
-                }
-            }
-            else {
-                playlistIndex = playerPlaylist.findIndex(byMediaId(vm.item.mediaid));
-                player.playlistItem(playlistIndex);
-            }
-
-            $state
-                .go('root.video', {
-                    feedId:    vm.item.feedid,
-                    mediaId:   vm.item.mediaid,
-                    slug:      vm.item.$slug,
+                return $state.go('root.video', {
+                    feedId:    newItem.feedid,
+                    mediaId:   newItem.mediaid,
+                    slug:      newItem.$slug,
                     autoStart: clickedOnPlay
-                }, {
-                    notify: false
-                })
-                .then(function () {
-                    seo.update();
                 });
+            }
 
+            // update current item and set playlistItem
+            vm.item = angular.extend({}, newItem);
+
+            playlistIndex = playlist.findIndex(byMediaId(vm.item.mediaid));
+            player.playlistItem(playlistIndex);
+
+            updateStateSilently();
             update();
+
             window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
                 scrollTop: 0
             });

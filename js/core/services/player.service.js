@@ -44,6 +44,7 @@
         this.setCurrentQuality = playerMethod('setCurrentQuality');
         this.load              = playerMethod('load');
         this.setPlayer         = setPlayer;
+        this.getPlayer         = getPlayer;
 
         this.paused      = true;
         this.currentTime = 0;
@@ -66,7 +67,7 @@
         }
 
         /**
-         * (Un)set player delegate
+         * (Un)set player instance
          *
          * @param player
          */
@@ -84,6 +85,15 @@
                     self.paused = true;
                 }));
             }
+        }
+
+        /**
+         * Get player instance
+         * @returns {*}
+         */
+        function getPlayer () {
+
+            return playerInstance;
         }
 
         /**

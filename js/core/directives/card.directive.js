@@ -63,8 +63,10 @@
 
         function link (scope, element) {
 
-            scope.vm.showToast = showToast;
-            scope.vm.closeMenu = closeMenu;
+            scope.vm.showToast              = showToast;
+            scope.vm.closeMenu              = closeMenu;
+            scope.vm.menuButtonClickHandler = menuButtonClickHandler;
+            scope.vm.containerClickHandler  = containerClickHandler;
 
             activate();
 
@@ -89,6 +91,9 @@
                     activateOfflineSupport();
                 }
 
+                findElement('.jw-card-container')
+                    .attr('aria-label', 'play video ' + scope.vm.item.title);
+
                 findElement('.jw-card-title')
                     .html(scope.vm.item.title)
                     .attr('href', $state.href('root.video', {
@@ -97,9 +102,6 @@
                         slug:    scope.vm.item.$slug
                     }));
                 findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
-
-                findElement('.jw-card-container').on('click', containerClickHandler);
-                findElement('.jw-card-menu-button').on('click', menuButtonClickHandler);
 
                 // set watch progress
                 if (scope.vm.item.feedid === 'continue-watching') {
@@ -137,7 +139,6 @@
             function destroyDirectiveHandler () {
 
                 findElement('.jw-card-container').off();
-                findElement('.jw-card-menu-button').off();
             }
 
             /**
@@ -167,7 +168,10 @@
             /**
              * Handle click on the menu button
              */
-            function menuButtonClickHandler () {
+            function menuButtonClickHandler (event) {
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
 
                 showMenu();
             }
@@ -226,7 +230,12 @@
 
                 if (!cardMenu.length) {
                     cardMenu = $compile('<jw-card-menu item="vm.item"></jw-card-menu>')(scope.$new());
-                    $animate.enter(cardMenu, element, findElement('.jw-card-toasts'));
+                    $animate
+                        .enter(cardMenu, element, findElement('.jw-card-toasts'))
+                        .then(function () {
+                            // focus first button in menu
+                            cardMenu[0].querySelectorAll('.jw-button')[0].focus();
+                        });
                     element.addClass('jw-card-flag-menu-open');
                 }
             }
@@ -242,6 +251,9 @@
                     cardMenu.scope().$destroy();
                     $animate.leave(cardMenu);
                     element.removeClass('jw-card-flag-menu-open');
+
+                    // bring focus back to menu button
+                    findElement('.jw-card-menu-button')[0].focus();
                 }
             }
 

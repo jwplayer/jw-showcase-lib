@@ -1,110 +1,56 @@
 
-.jw-theme-dark {
+.#{theme-name('dark')} {
 
-    background-color: $theme-dark-bg-color;
+    // import theme mixin
+    @import '../mixins/theme';
 
-    .jw-row-inverse {
-        background-color: $black;
-        color: $white;
-    }
+    // override variables
+    $body-bg: #181818;
 
-    .jw-card {
+    $btn-light-bg: #5b6064;
+    $btn-light-color: $white;
 
-        .jw-card-menu {
-            background-color: $black;
-        }
-    }
+    $toolbar-bg: #333;
+    $toolbar-color: $white;
 
-    .jw-offline-message {
-        background: $primary-color;
-    }
+    $btn-icon-nested-color: $toolbar-bg;
 
-    .jw-header {
-        color: $black;
-    }
+    $sidebar-bg: #333;
+    $sidebar-color: $white;
 
-    .jw-toolbar {
-        background-color: $theme-dark-bg-color;
+    $toggle-default-color: $black;
+    $toggle-checked-color: $black;
 
-        .jw-toolbar-nav:last-child .jw-button {
-            border-color: $black;
-        }
-    }
+    $card-slider-title-color: $white;
+    $card-slider-button-color: $white;
+    $card-slider-border-bottom-color: #333;
 
-    .jw-sidebar,
-    .jw-sidebar .jw-header {
-        background-color: $dark-color;
-        color: $white;
-    }
+    $card-info-bg: $black;
+    $card-info-color: $white;
+    $card-info-hover-bg: $card-info-bg;
+    $card-info-hover-color: $card-info-color;
 
-    .jw-card-slider {
+    $card-menu-bg: $black;
 
-        &-flag-default {
-            border-bottom: 1px solid darken($dark-color, 5%);
-        }
+    $header-bg: $black;
+    $header-color: $white;
 
-        &-flag-error {
-            .jw-card-slider-title .jw-link,
-            .jw-card-slider-title > div {
-                color: $theme-dark-slider-title-error-color;
-            }
-        }
+    $video-layout-bg: $black;
 
-        .jw-card-slider-button {
-            color: $white;
-        }
+    $scroll-track-bg: $gray-darker;
+    $scroll-indicator-bg: #7f899a;
 
-        .jw-card-slider-title {
-            color: $white;
-        }
+    $rail-header-bg: #3c3c3c;
+    $rail-header-color: $white;
+    $rail-item-bg: #262626;
+    $rail-item-color: $white;
+    $rail-item-bg-hover: #3c3c3c;
 
-        .jw-card-slider-slide {
+    $video-details-bg: $black;
+    $video-details-color: $white;
 
-            &-flag-loading {
-                background: $black;
+    $footer-color: $white;
 
-                .jw-card-aspect {
-                    background: $main-color;
-                }
-            }
-
-            &-flag-error {
-                background: $black;
-
-                .jw-card-aspect {
-                    background: $theme-dark-slider-slide-loading-bg-color;
-                }
-            }
-        }
-    }
-
-    .jw-card,
-    .jw-card-grid-title {
-        color: $white;
-    }
-
-    .jw-card.jw-card-flag-default {
-
-        &:hover {
-            .jw-card-info {
-                background-color: $white;
-                color: $dark-color;
-            }
-        }
-
-        .jw-card-info {
-            background-color: $black;
-        }
-    }
-
-    .jw-toggle,
-    .jw-toggle.jw-toggle-flag-checked {
-        .jw-toggle-track {
-            background: $black;
-        }
-    }
-
-    .jw-footer {
-        color: $white;
-    }
+    // create theme rules
+    @include theme();
 }

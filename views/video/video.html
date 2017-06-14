@@ -1,34 +1,74 @@
 <div class="has-jw-header">
-  <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
-    <div class="jw-container">
-      <div class="jw-video-container-aspect">
-        <div class="jw-video-loading">
-          <div class="jw-rotate-animation">
-            <i class="jwy-icon-buffer"></i>
+
+  <div class="jw-video-layout" ng-class="{'jw-video-layout-flag-right-rail': vm.hasRightRail}">
+    <div class="jw-video-layout-row">
+
+      <div class="jw-video-layout-player">
+
+        <div class="jw-row">
+          <div class="jw-video-container" ng-class="{'is-loading': vm.loading}">
+            <div class="jw-video-container-aspect">
+              <div class="jw-video-loading">
+                <div class="jw-rotate-animation">
+                  <i class="jwy-icon-buffer"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="jw-video-container-player">
+              <jw-player settings="vm.playerSettings"
+                  on-playlist-item="vm.onPlaylistItem"
+                  on-time="vm.onTime"
+                  on-complete="vm.onComplete"
+                  on-first-frame="vm.onFirstFrame"
+                  on-levels="vm.onLevels"
+                  on-ready="vm.onReady"
+                  on-error="vm.onError"
+                  on-setup-error="vm.onSetupError"
+                  on-ad-impression="vm.onAdImpression">
+              </jw-player>
+            </div>
           </div>
         </div>
+
+        <div class="jw-row">
+          <jw-toolbar-video item="vm.item"></jw-toolbar-video>
+        </div>
       </div>
-      <div class="jw-video-container-player">
-        <jw-player settings="vm.playerSettings" on-playlist-item="vm.onPlaylistItem" on-time="vm.onTime"
-            on-complete="vm.onComplete" on-first-frame="vm.onFirstFrame" on-levels="vm.onLevels"
-            on-ready="vm.onReady" on-error="vm.onError" on-setup-error="vm.onSetupError"
-            on-ad-impression="vm.onAdImpression"></jw-player>
+
+      <div class="jw-video-layout-rail" ng-if="vm.hasRightRail">
+        <jw-rail
+            feed="vm.activeFeed"
+            first-item="vm.item"
+            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)">
+        </jw-rail>
       </div>
     </div>
+
+    <div class="jw-video-layout-row">
+      <jw-video-details item="vm.item"></jw-video-details>
+    </div>
+
   </div>
 
-  <jw-toolbar-video item="vm.item"></jw-toolbar-video>
-
-  <div class="jw-row jw-row-inverse">
-    <jw-video-details item="vm.item"></jw-video-details>
+  <div class="jw-row" ng-if="vm.activeFeed && !vm.hasRightRail">
+    <jw-card-slider
+        feed="vm.activeFeed"
+        first-item="vm.item"
+        featured="false"
+        title="Next Up"
+        class="jw-card-slider-flag-now-playing jw-lazy-load"
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
 
-  <div class="jw-row" ng-if="vm.feed">
-    <jw-card-slider feed="vm.feed" featured="false" delegate="vm.feedCardSliderDelegate" title="More like this"
-        class="jw-card-slider-flag-now-playing jw-lazy-load" on-card-click="vm.cardClickHandler"></jw-card-slider>
-  </div>
-  <div class="jw-row" ng-if="vm.recommendationsFeed">
-    <jw-card-slider feed="vm.recommendationsFeed" featured="false" title="Related videos" class="jw-lazy-load"
-         on-card-click="vm.cardClickHandler"></jw-card-slider>
+  <div class="jw-row" ng-if="vm.extraFeed">
+    <jw-card-slider
+        feed="vm.extraFeed"
+        featured="false"
+        title="{{ vm.extraFeedTitle }}"
+        class="jw-lazy-load"
+        on-card-click="vm.cardClickHandler">
+    </jw-card-slider>
   </div>
 </div>

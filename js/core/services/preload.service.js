@@ -24,7 +24,6 @@
      * Preload application data
      *
      * @param {$q} $q
-     * @param {$sce} $sce
      * @param {$state} $state
      * @param {jwShowcase.core.appStore} appStore
      * @param {jwShowcase.config} config
@@ -35,14 +34,15 @@
      * @param {jwShowcase.core.watchlist} serviceWorker
      * @param {jwShowcase.core.watchlist} watchlist
      * @param {jwShowcase.core.userSettings} userSettings
+     * @param {jwShowcase.core.utils} utils
      *
      * @returns {$q.promise}
      */
 
-    Preload.$inject = ['$q', '$sce', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
-        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings'];
-    function Preload ($q, $sce, $state, appStore, config, configResolver, cookies, api, apiConsumer, serviceWorker,
-                      watchlist, watchProgress, userSettings) {
+    Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api',
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'utils'];
+    function Preload ($q, $state, appStore, config, configResolver, cookies, api, apiConsumer, serviceWorker,
+                      watchlist, watchProgress, userSettings, utils) {
 
         var defer = $q.defer();
 
@@ -64,6 +64,10 @@
 
                 if (false === config.options.enableHeader) {
                     document.body.classList.add('jw-flag-no-header');
+                }
+
+                if (config.options.highlightColor) {
+                    setHighlightColor(config.options.highlightColor);
                 }
 
                 setTimeout(function () {
@@ -120,6 +124,35 @@
             if (config.options.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
                 cookies.show();
             }
+        }
+
+        function setHighlightColor (color) {
+
+            var bgClassNames    = [
+                    '.jw-button-primary',
+                    '.jw-card-watch-progress',
+                    '.jw-card-toast-primary',
+                    '.jw-offline-message',
+                    '.jw-skin-jw-showcase .jw-progress'
+                ],
+                colorClassNames = [
+                    '.jw-button-default:hover',
+                    '.jw-button-default.active',
+                    '.jw-button-play .jwy-icon',
+                    '.jw-button-share:hover .jwy-icon-stack .jwy-icon',
+                    '.jw-button-watchlist.is-active .jwy-icon-stack',
+                    '.jw-button-watchlist:not(.is-active):hover .jwy-icon-stack .jwy-icon',
+                    '.jw-cookies-title',
+                    '.jw-loading .jw-loading-icon .jwy-icon',
+                    '.jw-skin-jw-showcase .jw-button-color:hover',
+                    '.jw-skin-jw-showcase .jw-toggle.jw-off:hover',
+                    '.jw-skin-jw-showcase .jw-toggle:not(.jw-off)'
+                ];
+
+            utils.addStylesheetRules([
+                [bgClassNames.join(','), ['background-color', color, true]],
+                [colorClassNames.join(','), ['color', color, true]]
+            ]);
         }
 
         /**

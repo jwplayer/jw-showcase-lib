@@ -38,6 +38,7 @@
      * @param {jwShowcase.core.feed}    feed            Feed which will be displayed in the slider.
      * @param {boolean=}                featured        Featured slider flag
      * @param {function=}               onCardClick     Function which is being called when the user clicks on a card.
+     * @param {jwShowcase.core.item}    firstItem       Item which should be shown first.
      * @param {string=}                 title           Overrule title from {@link jwShowcase.core.feed}
      *
      * @requires $state
@@ -60,6 +61,7 @@
                 feed:        '=',
                 featured:    '=',
                 onCardClick: '=',
+                firstItem:   '=',
                 title:       '@'
             },
             replace:          true,
@@ -111,9 +113,12 @@
                 window.addEventListener('resize', resizeHandlerDebounced);
                 findElement('.jw-card-slider-align')[0].addEventListener('touchstart', onTouchStart, false);
 
-                scope.$watch(function () {
-                    return scope.vm.feed;
-                }, feedUpdateHandler, true);
+                scope.$watch('vm.feed', feedUpdateHandler, true);
+                scope.$watch('vm.firstItem', function (firstItem) {
+                    if (firstItem) {
+                        resizeHandler(true);
+                    }
+                }, true);
 
                 if (scope.vm.feed) {
                     totalItems = scope.vm.feed.playlist.length;
@@ -326,12 +331,23 @@
              */
             function renderSlides () {
 
-                var nextSliderMap = [],
+                var playlist = scope.vm.feed.playlist,
+                    nextSliderMap = [],
                     nextSliderList;
+
+                if (scope.vm.firstItem) {
+                    var firstItemIndex = scope.vm.feed.playlist.findIndex(function (item) {
+                        return item.mediaid === scope.vm.firstItem.mediaid;
+                    });
+
+                    playlist = playlist
+                        .slice(firstItemIndex)
+                        .concat(playlist.slice(0, firstItemIndex));
+                }
 
                 // create visible slides first so these will be used from the cache with priority. E.g. prevents render
                 // of visible cards.
-                nextSliderList = createSlidesForRange(index, itemsVisible);
+                nextSliderList = createSlidesForRange(index, itemsVisible, true);
 
                 // only if the slider can slide, render the left and right slides
                 if (sliderCanSlide) {
@@ -355,12 +371,14 @@
 
                 sliderMap = nextSliderMap;
 
-                updateVisibleSlides();
-                findElement('.jw-card-slider-button-flag-left').toggleClass('is-disabled', !leftSlidesVisible);
+                setTimeout(updateVisibleSlides);
+                findElement('.jw-card-slider-button-flag-left')
+                    .toggleClass('is-disabled', !leftSlidesVisible)
+                    .attr('tabindex', leftSlidesVisible ? '0' : '-1');
 
                 ///////////
 
-                function createSlidesForRange (from, count) {
+                function createSlidesForRange (from, count, visible) {
 
                     var itemIndex = from,
                         list      = [],
@@ -380,10 +398,10 @@
                             itemIndex = 0;
                         }
 
-                        item  = scope.vm.feed.playlist[itemIndex];
-                        slide = findExistingSlide(item) || createSlide(item);
+                        item  = playlist[itemIndex];
+                        slide = findExistingSlide(item, visible) || createSlide(item);
 
-                        addClassNamesToSlide(slide, itemIndex);
+                        addClassNamesToSlide(slide, itemIndex, visible);
                         list.push(slide);
 
                         itemIndex++;
@@ -413,12 +431,13 @@
                     else if (itemIndex === totalItems - 1) {
                         slide.addClass('last');
                     }
-
                 }
 
-                function findExistingSlide (item) {
+                function findExistingSlide (item, visible) {
 
                     var mapIndex = sliderMap.length,
+                        candidates = [],
+                        useIndex,
                         slide;
 
                     while (mapIndex--) {
@@ -427,12 +446,32 @@
                             continue;
                         }
 
-                        slide = sliderMap[mapIndex].el;
-                        nextSliderMap.push(sliderMap[mapIndex]);
-                        sliderMap.splice(mapIndex, 1);
-
-                        return slide;
+                        candidates.push(mapIndex);
                     }
+
+                    // no candidates found return undefined
+                    if (!candidates.length) {
+                        return;
+                    }
+
+                    // if item will become visible, search for items that were previously visible first to prevent
+                    // blinks
+                    if (true === visible) {
+                        useIndex = candidates.find(function (index) {
+                            return sliderMap[index].el[0].classList.contains('is-visible');
+                        });
+                    }
+
+                    // fallback to first candidate
+                    if (!angular.isNumber(useIndex)) {
+                        useIndex = candidates[0];
+                    }
+
+                    slide = sliderMap[useIndex].el;
+                    nextSliderMap.push(sliderMap[useIndex]);
+                    sliderMap.splice(useIndex, 1);
+
+                    return slide;
                 }
 
                 function destroySlides () {
@@ -467,7 +506,10 @@
                 }
 
                 angular.forEach(findElement('.jw-card-slider-list').children(), function (slide, slideIndex) {
-                    slide.classList.toggle('is-visible', slideIndex >= from && slideIndex < to);
+                    var visible = slideIndex >= from && slideIndex < to;
+                    slide.classList.toggle('is-visible', visible);
+                    slide.querySelector('.jw-card-container').setAttribute('tabindex', visible ? '0' : '-1');
+                    slide.querySelector('.jw-card-menu-button').setAttribute('tabindex', visible ? '0' : '-1');
                 });
             }
 
