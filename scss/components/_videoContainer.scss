@@ -6,8 +6,6 @@
     position: relative;
     width: 100%;
 
-    background-color: $black;
-
     &.is-loading {
 
         .jw-video-loading {
@@ -21,6 +19,7 @@
 
     .jw-video-container-aspect {
         padding-top: 56.25%;
+        background: $black;
     }
 
     .jw-video-container-player {
@@ -44,19 +43,12 @@
 
 @include mobile-only-landscape () {
 
-    .jw-video-container .jw-container {
-        max-height: calc(100vh - #{$header-height-mobile});
+    .jw-video-container {
+        max-height: calc(100vh - #{($header-height-mobile)});
         overflow: hidden;
 
         .jwplayer.jw-flag-aspect-mode {
             height: 100% !important;
         }
-    }
-}
-
-@include tablet-only () {
-
-    .jw-video-container {
-        padding: 0 90px;
     }
 }

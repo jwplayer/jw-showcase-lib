@@ -33,6 +33,7 @@
     function apiConsumerService ($q, config, api, dataStore, FeedModel) {
 
         var self = this;
+        var allFeedsPromise;
 
         /**
          * @ngdoc method
@@ -127,6 +128,33 @@
         };
 
         /**
+         *
+         * @param {string} tag
+         * @returns {Promise<jwShowcase.core.feed>}
+         */
+        this.getFeedForTag = function (tag) {
+
+            var defer = $q.defer(),
+                feed  = new FeedModel(tag, tag, true, true);
+
+            // not a string or empty
+            if (!angular.isString(tag) || !tag) {
+                return $q.resolve(feed);
+            }
+
+            // wait for feeds to be resolved
+            allFeedsPromise.then(function () {
+                feed.playlist = dataStore.getItems().filter(function (item) {
+                    return item.$tags.indexOf(tag) !== -1;
+                });
+
+                defer.resolve(feed);
+            });
+
+            return defer.promise;
+        };
+
+        /**
          * @ngdoc method
          * @name jwShowcase.core.apiConsumer#getSearchFeed
          * @methodOf jwShowcase.core.apiConsumer
@@ -215,7 +243,9 @@
                 return model;
             });
 
-            return $q.all(feedPromises);
+            allFeedsPromise = $q.all(feedPromises);
+
+            return allFeedsPromise;
         };
 
         /**

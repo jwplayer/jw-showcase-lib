@@ -23,11 +23,9 @@
     top: 50%;
     left: 50%;
     padding: 30px;
-    background: $white;
 
     .jw-popup-title {
         margin-bottom: 15px;
-        color: $popover-text-color;
         text-align: center;
     }
 
@@ -57,18 +55,6 @@
                     margin-bottom: 15px;
                 }
             }
-
-            .jw-button.jw-button-social-facebook {
-                background-color: $facebook;
-            }
-
-            .jw-button.jw-button-social-twitter {
-                background-color: $twitter;
-            }
-
-            .jw-button.jw-button-social-google {
-                background-color: $google;
-            }
         }
     }
 
@@ -87,12 +73,12 @@
     }
 
     .jw-button.jw-button-log-in {
-        background-color: $primary-color;
+
     }
 
     .jw-button.jw-button-sign-up {
         border: 1px solid rgba($black, 0.3);
-        color: $black;
+
     }
 
     &-share {

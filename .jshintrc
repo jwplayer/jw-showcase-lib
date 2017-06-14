@@ -61,6 +61,7 @@
         "prompt": false,
         "jwplayer": false,
         "$": false,
-        "UAParser": false
+        "UAParser": false,
+        "IScroll": false
     }
 }

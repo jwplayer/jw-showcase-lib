@@ -66,11 +66,21 @@
             }]);
     }
 
-    run.$inject = ['history', 'platform'];
-    function run (history, platform) {
+    run.$inject = ['$document', 'history', 'platform'];
+    function run ($document, history, platform) {
 
         history.attach();
         platform.prepare();
+
+        $document.on('keyup', function (evt) {
+            if (9 === evt.which) {
+                document.body.classList.remove('jw-flag-no-focus');
+            }
+        });
+
+        $document.on('click', function () {
+            document.body.classList.add('jw-flag-no-focus');
+        });
     }
 
 }());

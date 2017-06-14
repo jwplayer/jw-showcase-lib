@@ -4,10 +4,23 @@
 
 .jw-sidebar-layout {
 
+    &-flag-opened-add-active,
+    &-flag-opened-remove-active {
+        .jw-sidebar {
+            visibility: visible !important;
+        }
+    }
+
+    &-flag-opened-add,
+    &-flag-opened-remove {
+        @include single-transition(all, 0.2s, ease);
+    }
+
     &-flag-opened {
 
         .jw-sidebar {
             @include transform(translateX(0%));
+            visibility: visible;
         }
 
         .jw-sidebar-backdrop {
@@ -51,14 +64,14 @@
     @include single-transition(transform, 0.2s, cubic-bezier(0.52, 0.51, 0.2, 1));
     @include transform(translateX(-100%));
     position: fixed;
+
     top: 0;
     width: 370px;
     max-width: 100%;
     height: auto;
     max-height: 100vh;
 
-    background: $white;
-    color: $main-color;
+    visibility: hidden;
     z-index: $sidebar-z-index;
 
     overflow-x: hidden;

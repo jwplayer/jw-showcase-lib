@@ -39,8 +39,8 @@
      * @todo changes based on upcoming updates to thumbstrips from feed
      */
 
-    jwCardPoster.$inject = ['$http', '$q', 'dataStore', 'platform', 'utils'];
-    function jwCardPoster ($http, $q, dataStore, platform, utils) {
+    jwCardPoster.$inject = ['$q', 'dataStore', 'platform', 'utils', 'Thumbstrip'];
+    function jwCardPoster ($q, dataStore, platform, utils, Thumbstrip) {
 
         return {
             link:    link,
@@ -54,14 +54,10 @@
                 progressPreview       = false,
                 mousePreview          = false,
                 mouseOver             = false,
-                thumbnailsLoaded      = false,
-                thumbnailsLoading     = false,
-                thumbnailsTrack       = null,
-                thumbnails            = [],
+                thumbstrip            = new Thumbstrip(),
                 thumbnailIndex        = 0,
-                thumbnailsPerRow      = 0,
                 thumbnailsAutoTimeout = null,
-                thumbnailsImage       = null;
+                thumbnailsTrack;
 
             activate();
 
@@ -75,21 +71,13 @@
                 var watchProgressFeed = jwCard.item.feedid === dataStore.watchProgressFeed.feedid,
                     featuredCard      = jwCard.featured;
 
-                itemPosterUrl = generatePosterUrl();
-                feed          = dataStore.getFeed(jwCard.item.feedid);
-
-                // get thumbnailsTrack from playlist item
-                if (angular.isArray(jwCard.item.tracks)) {
-
-                    // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
-                    thumbnailsTrack = jwCard.item.tracks.find(function (track) {
-                        return track.kind === 'thumbnails' || track.kind === 'thumbnail';
-                    });
-                }
+                itemPosterUrl   = generatePosterUrl();
+                thumbnailsTrack = getThumbnailsTrack();
+                feed            = dataStore.getFeed(jwCard.item.feedid);
 
                 // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
                 if (!thumbnailsTrack || !feed.enablePreview) {
-                    return switchToDefaultPoster();
+                    return showDefaultPoster();
                 }
 
                 if (!watchProgressFeed && !platform.isTouch && featuredCard) {
@@ -114,12 +102,12 @@
                         return jwCard.item.progress;
                     }, function (newVal, oldVal) {
                         if (newVal !== oldVal) {
-                            showItemProgressThumbnail();
+                            showProgressThumbnail();
                         }
                     });
                 }
 
-                switchToDefaultPoster();
+                showDefaultPoster();
             }
 
             /**
@@ -147,20 +135,17 @@
              */
             function cardMouseEnterHandler () {
 
+                var quality = jwCard.featured ? FEATURED_CARD_THUMBNAIL_QUALITY : DEFAULT_CARD_THUMBNAIL_QUALITY;
+
                 mouseOver = true;
 
                 // thumbnails are not loaded yet
-                if (!thumbnailsLoaded) {
-
-                    return loadThumbnailData()
-                        .then(function () {
-                            clearTimeout(thumbnailsAutoTimeout);
-                            thumbnailsAutoTimeout = setTimeout(updateToNextThumbnail, 200);
-                        });
-                }
-
-                clearTimeout(thumbnailsAutoTimeout);
-                thumbnailsAutoTimeout = setTimeout(updateToNextThumbnail, THUMBNAIL_AUTOMATIC_TIMEOUT);
+                thumbstrip
+                    .load(thumbnailsTrack.file, quality)
+                    .then(function () {
+                        clearTimeout(thumbnailsAutoTimeout);
+                        thumbnailsAutoTimeout = setTimeout(showNextThumbnail, THUMBNAIL_AUTOMATIC_TIMEOUT);
+                    });
             }
 
             /**
@@ -169,24 +154,24 @@
             function cardMouseLeaveHandler () {
 
                 mouseOver = false;
+
+                // reset index
+                thumbnailIndex = 0;
             }
 
             /**
              * Replace current poster with default item poster
              */
-            function switchToDefaultPoster () {
+            function showDefaultPoster () {
 
                 var posterElement;
 
                 // show thumb of current progress when a thumbnailsTrack is defined and feedid is continue watching
                 if (true === progressPreview) {
 
-                    if (!thumbnailsLoaded) {
-                        return loadThumbnailData(CONTINUE_WATCHING_THUMBNAIL_QUALITY)
-                            .then(showItemProgressThumbnail);
-                    }
-
-                    return showItemProgressThumbnail();
+                    return thumbstrip
+                        .load(thumbnailsTrack.file, CONTINUE_WATCHING_THUMBNAIL_QUALITY)
+                        .then(showProgressThumbnail);
                 }
 
                 posterElement = findElement('.jw-card-poster').clone();
@@ -196,16 +181,25 @@
                         'backgroundSize': 'cover'
                     });
 
-                replacePosterWith(posterElement);
+                replacePosterElement(posterElement);
             }
 
             /**
              * Show thumbnail closes to the item's progress
              */
-            function showItemProgressThumbnail () {
+            function showProgressThumbnail () {
 
-                thumbnailIndex = Math.floor(thumbnails.length * jwCard.item.progress);
-                showThumbnail(thumbnails[thumbnailIndex]);
+                var position = jwCard.item.progress * jwCard.item.duration;
+
+                thumbstrip
+                    .getThumbnails()
+                    .then(function (thumbnails) {
+                        return thumbnails.find(function (item) {
+                            return item.start < position && item.end >= position;
+                        });
+                    })
+                    .then(preloadImage)
+                    .then(showThumbnail);
             }
 
             /**
@@ -214,30 +208,48 @@
              */
             function showThumbnail (thumb) {
 
-                var posterElement, x, y;
+                var posterElement,
+                    x, y, w;
 
                 if (!thumb) {
                     return;
                 }
 
                 posterElement = findElement('.jw-card-poster.is-active').clone();
-                x             = thumb[0] / (thumbnailsImage.width - thumb[2]) * 100;
-                y             = thumb[1] / (thumbnailsImage.height - thumb[3]) * 100;
 
+                // if thumb contains media fragment {@link https://www.w3.org/TR/media-frags/#naming-space}
+                if (thumb.xywh.length) {
+
+                    if (thumb.xywh[0] === 'pixel') {
+                        x = thumb.xywh[1] / (thumb.image.width - thumb.xywh[3]) * 100;
+                        y = thumb.xywh[2] / (thumb.image.height - thumb.xywh[4]) * 100;
+                        w = (100 * (thumb.image.width / thumb.xywh[3]));
+                    }
+
+                    posterElement.css({
+                        'background':         'url(' + thumb.image.src + ') no-repeat',
+                        'backgroundSize':     w + '%',
+                        'backgroundPosition': x + '% ' + y + '%'
+                    });
+
+                    return replacePosterElement(posterElement);
+                }
+
+                // show the full thumbnail
                 posterElement.css({
-                    'background':         'url(' + thumbnailsImage.src + ') no-repeat',
-                    'backgroundSize':     (100 * thumbnailsPerRow) + '%',
-                    'backgroundPosition': x + '% ' + y + '%'
+                    'background':         'url(' + thumb.image.src + ') no-repeat',
+                    'backgroundSize':     'cover',
+                    'backgroundPosition': 'center'
                 });
 
-                replacePosterWith(posterElement);
+                replacePosterElement(posterElement);
             }
 
             /**
              * Replace current poster with given poster element
              * @param {Object} posterElement
              */
-            function replacePosterWith (posterElement) {
+            function replacePosterElement (posterElement) {
 
                 var current = findElement('.jw-card-poster.is-active');
 
@@ -249,105 +261,35 @@
                 }, 300);
             }
 
-            /**
-             * Load thumbnail WebVTT and image data
-             * @param {number} [quality=120]
-             * @returns {$q.promise}
-             */
-            function loadThumbnailData (quality) {
-
-                var thumbnailsFile,
-                    thumbnailRequest = $q.defer(),
-                    thumbnailsTrackRequest;
-
-                thumbnailsLoading = true;
-
-                quality = quality || (scope.vm.featured ? FEATURED_CARD_THUMBNAIL_QUALITY :
-                        DEFAULT_CARD_THUMBNAIL_QUALITY);
-
-                thumbnailsFile = utils.replaceImageSize(thumbnailsTrack.file, quality);
-
-                thumbnailsImage         = new Image();
-                thumbnailsImage.onload  = function () {
-                    thumbnailRequest.resolve();
-                };
-                thumbnailsImage.onerror = function () {
-                    thumbnailRequest.reject();
-                };
-
-                thumbnailsTrackRequest = $http
-                    .get(thumbnailsFile)
-                    .then(thumbnailTrackLoaded);
-
-                thumbnailsImage.crossOrigin = '';
-                thumbnailsImage.src         = thumbnailsFile.replace('.vtt', '.jpg');
-
-                return $q.all([thumbnailsTrackRequest, thumbnailRequest.promise])
-                    .then(function () {
-                        thumbnailsLoading = false;
-                        thumbnailsLoaded  = true;
-                    });
-            }
-
-            /**
-             * This function gets called when the thumbnail track file is loaded
-             * @param {Object} response
-             * @returns {$q.promise}
-             */
-            function thumbnailTrackLoaded (response) {
-
-                var parser = new WebVTT.Parser(window, WebVTT.StringDecoder()),
-                    defer  = $q.defer();
-
-                parser.oncue = function (cue) {
-                    var matches = cue.text.match(/#xywh=(\d+),(\d+),(\d+),(\d+)/);
-                    thumbnails.push(matches.slice(1, 5));
-                };
-
-                parser.onflush = function () {
-                    if (thumbnails.length > 0) {
-                        thumbnailsPerRow = 0;
-
-                        while (thumbnails[thumbnailsPerRow][1] === '0') {
-                            thumbnailsPerRow++;
-                        }
-                    }
-
-                    defer.resolve();
-                };
-
-                parser.onparsingerror = function () {
-                    thumbnails = [];
-                    defer.reject('vtt parse error');
-                };
-
-                parser.parse(response.data);
-                parser.flush();
-
-                return defer.promise;
-            }
 
             /**
              * Update to the next thumbnail, this functions repeats itself after the THUMBNAIL_AUTOMATIC_INTERVAL
              * timeout.
              */
-            function updateToNextThumbnail () {
+            function showNextThumbnail () {
 
                 if (!mouseOver) {
-                    switchToDefaultPoster();
+                    showDefaultPoster();
                     return;
                 }
 
                 thumbnailIndex = thumbnailIndex + 1;
 
-                if (thumbnailIndex >= thumbnails.length - 1) {
-                    thumbnailIndex = 0;
-                }
+                thumbstrip
+                    .getThumbnails()
+                    .then(function (thumbnails) {
 
-                showThumbnail(thumbnails[thumbnailIndex]);
+                        if (thumbnailIndex >= thumbnails.length - 1) {
+                            thumbnailIndex = 0;
+                        }
+
+                        return thumbnails[thumbnailIndex];
+                    })
+                    .then(preloadImage)
+                    .then(showThumbnail);
 
                 clearTimeout(thumbnailsAutoTimeout);
-                thumbnailsAutoTimeout = setTimeout(updateToNextThumbnail, THUMBNAIL_AUTOMATIC_INTERVAL);
+                thumbnailsAutoTimeout = setTimeout(showNextThumbnail, THUMBNAIL_AUTOMATIC_INTERVAL);
             }
 
             /**
@@ -364,6 +306,48 @@
                 }
 
                 return utils.replaceImageSize(jwCard.item.image, width);
+            }
+
+            /**
+             * Get thumbnails track from current item
+             *
+             * @returns {Object|undefined}
+             */
+            function getThumbnailsTrack () {
+
+                // get thumbnailsTrack from playlist item
+                if (angular.isArray(jwCard.item.tracks)) {
+
+                    // in the old feed api the kind is called `thumbnails` while the new feed api uses `thumbnail`.
+                    return jwCard.item.tracks.find(function (track) {
+                        return track.kind === 'thumbnails' || track.kind === 'thumbnail';
+                    });
+                }
+            }
+
+            /**
+             * Preload image
+             * @param {Object} data
+             * @returns {Promise<Object>}
+             */
+            function preloadImage (data) {
+
+                var defer = $q.defer();
+
+                if (!data) {
+                    return $q.reject();
+                }
+
+                var img = new Image();
+
+                img.onload = function () {
+                    data.image = img;
+                    defer.resolve(data);
+                };
+
+                img.src = data.imageUrl;
+
+                return defer.promise;
             }
         }
     }

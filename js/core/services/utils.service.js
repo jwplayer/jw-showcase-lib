@@ -49,6 +49,8 @@
         this.copyToClipboard        = copyToClipboard;
         this.slugify                = slugify;
         this.secondsToISO8601       = secondsToISO8601;
+        this.memoize                = memoize;
+        this.addStylesheetRules     = addStylesheetRules;
 
         ////////////////////////
 
@@ -230,7 +232,7 @@
 
             matches = url.match(/-(\d+)\.(\w+)$/);
 
-            if (matches.length === 3) {
+            if (angular.isArray(matches) && matches.length === 3) {
                 url = url.replace(matches[0], matches[0].replace(matches[1], width));
             }
 
@@ -327,6 +329,62 @@
             }
 
             return result;
+        }
+
+        /**
+         * Memoize result of a function
+         * @param {Function} fn
+         * @returns {Function}
+         */
+        function memoize (fn) {
+            var result;
+
+            return function () {
+                if (result) {
+                    return result;
+                }
+                result = fn.apply(this, Array.prototype.slice.call(arguments));
+                return result;
+            };
+        }
+
+        /**
+         * Create a styleSheet and memoize
+         */
+        var createStyleSheet = memoize(function () {
+
+            var styleEl = document.createElement('style');
+            document.head.appendChild(styleEl);
+
+            return styleEl.sheet;
+        });
+
+        /**
+         * Add styleSheet rules to document
+         * {@link https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/insertRule}.
+         *
+         * @param {Array} rules Accepts an array of JSON-encoded declarations
+         */
+        function addStylesheetRules (rules) {
+
+            var styleSheet = createStyleSheet();
+
+            for (var i = 0, rl = rules.length; i < rl; i++) {
+                var j = 1, rule = rules[i], selector = rules[i][0], propStr = '';
+                // If the second argument of a rule is an array of arrays, correct our variables.
+                if (Object.prototype.toString.call(rule[1][0]) === '[object Array]') {
+                    rule = rule[1];
+                    j    = 0;
+                }
+
+                for (var pl = rule.length; j < pl; j++) {
+                    var prop = rule[j];
+                    propStr += prop[0] + ':' + prop[1] + (prop[2] ? ' !important' : '') + ';\n';
+                }
+
+                // Insert CSS Rule
+                styleSheet.insertRule(selector + '{' + propStr + '}', styleSheet.cssRules.length);
+            }
         }
     }
 
