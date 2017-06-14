@@ -39,14 +39,28 @@
         });
 
     // DISCLAIMER: Example file. I know it's messy. Don't judge me.
-    AuthController.$inject = ['auth', 'config'];
-    function AuthController(auth, config) {
+    AuthController.$inject = ['auth', 'config', 'popup'];
+    function AuthController(auth, config, popup) {
+        var vm = this;
+        vm.userBadgeClickHandler = userBadgeClickHandler;
+
+
+        function userBadgeClickHandler (event) {
+
+            popup.show({
+                controller: 'LoginController as vm',
+                templateUrl: 'views/core/popups/login.html'
+            });
+        }
+
+
+
+
         if(!config.options.useAuthentication) {
             return;
         }
 
         var firebaseAuth = auth.firebaseAuth;
-        var vm           = this;
 
         firebaseAuth.$onAuthStateChanged(function(firebaseUser) {
             vm.identity = firebaseUser ? firebaseUser : null;

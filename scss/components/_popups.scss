@@ -31,12 +31,68 @@
         text-align: center;
     }
 
+    .jw-popup-text {
+        line-height: 1.4em;
+        text-align: center;
+    }
+
     .jw-popup-buttons {
         text-align: center;
 
         &:not(:last-child) {
             margin-bottom: 15px;
         }
+    }
+
+    &-login {
+        .jw-login-social-buttons,
+        .jw-form {
+            width: 60%;
+            margin-left: 20%;
+
+            .jw-button {
+                color: $white;
+
+                &:not(:last-child) {
+                    margin-bottom: 15px;
+                }
+            }
+
+            .jw-button.jw-button-social-facebook {
+                background-color: $facebook;
+            }
+
+            .jw-button.jw-button-social-twitter {
+                background-color: $twitter;
+            }
+
+            .jw-button.jw-button-social-google {
+                background-color: $google;
+            }
+        }
+    }
+
+    .jw-button-row {
+        @include display-flex;
+        @include align-items(center);
+
+        .jw-button,
+        .jw-button:not(:last-child),
+        .jw-between-text {
+            @include flex(1 1 100%);
+            margin-top: 0;
+            margin-bottom: 0;
+            text-align: center;
+        }
+    }
+
+    .jw-button.jw-button-log-in {
+        background-color: $primary-color;
+    }
+
+    .jw-button.jw-button-sign-up {
+        border: 1px solid rgba($black, 0.3);
+        color: $black;
     }
 
     &-share {

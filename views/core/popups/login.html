@@ -1,0 +1,42 @@
+<div class="jw-popup jw-popup-login">
+    <h3 class="jw-popup-title">Sign in</h3>
+    <p class="jw-popup-text">Signing in allows to continue watching op multiple devices. Also your personal setting and
+        preferences will be stored for further use.</p>
+    <div class="jw-popup-buttons jw-login-social-buttons">
+        <jw-button class="jw-button jw-button-social-facebook jw-button-block" ng-click="vm.copyUrl()">
+            <span class="jw-button-label">Login with Facebook</span>
+        </jw-button>
+
+        <jw-button class="jw-button jw-button-social-twitter jw-button-block" ng-click="vm.copyUrl()">
+            <span class="jw-button-label">Login with Twitter</span>
+        </jw-button>
+
+        <jw-button class="jw-button jw-button-social-google jw-button-block" ng-click="vm.copyUrl()">
+            <span class="jw-button-label">Login with Google</span>
+        </jw-button>
+    </div>
+    <p class="jw-popup-text">
+        Or login with email
+    </p>
+    <form class="jw-form">
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="email" class="jw-form-control" id="email" placeholder="Enter email" ng-model="user.email"
+                   floating-label>
+        </div>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="user.password"
+                   floating-label>
+        </div>
+        <div class="jw-button-row jw-button-block jw-popup-buttons">
+            <jw-button type="submit" class="jw-button jw-button-log-in">
+                <span class="jw-button-label">Log in</span>
+            </jw-button>
+            <p class="jw-between-text">of</p>
+            <jw-button class="jw-button jw-button-sign-up">
+                <span class="jw-button-label">Sign up</span>
+            </jw-button>
+        </div>
+
+
+    </form>
+</div>
