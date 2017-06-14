@@ -84,7 +84,13 @@
 
                     // remove player instance after timeout
                     $timeout(function () {
-                        player.setPlayer(null);
+
+                        // only remove player when the service instance is this player instance. Otherwise we could
+                        // potentially unset an already set player because this is wrapped in a timeout.
+                        if (player.getPlayer() === playerInstance) {
+                            player.setPlayer(null);
+                        }
+
                         if (playerInstance) {
                             playerInstance.remove();
                         }
