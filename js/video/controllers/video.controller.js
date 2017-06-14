@@ -131,6 +131,10 @@
                 }
             };
 
+            if (angular.isDefined(config.options.cast)) {
+                vm.playerSettings.cast = config.options.cast;
+            }
+
             if (!navigator.onLine) {
                 vm.playerSettings.advertising = false;
             }
