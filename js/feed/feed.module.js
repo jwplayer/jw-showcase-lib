@@ -60,7 +60,7 @@
             var feed = dataStore.getFeed($stateParams.feedId);
 
             // if the feed is loading wait for the promise to resolve.
-            if (feed.loading) {
+            if (feed && feed.loading) {
                 return feed.promise;
             }
 

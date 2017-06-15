@@ -16,7 +16,6 @@
         @include single-transition(background, 0.2s, ease-out);
         height: 100%;
         border-radius: $toggle-height / 2;
-        background: $toggle-default-color;
     }
 
     &-button {
@@ -28,20 +27,11 @@
         width: $toggle-button-size;
         height: $toggle-button-size;
 
-        border: 1px solid $toggle-default-color;
+        border: 1px solid;
         border-radius: 50%;
-        background: $toggle-button-bg-color;
     }
 
-    &-flag-checked {
-
-        .jw-toggle-track {
-            background: $toggle-checked-color;
-        }
-
-        .jw-toggle-button {
-            left: calc(100% - #{$toggle-button-size});
-            border-color: $toggle-checked-color;
-        }
+    &-flag-checked .jw-toggle-button {
+        left: calc(100% - #{$toggle-button-size});
     }
 }

@@ -5,10 +5,7 @@
 .jw-toolbar {
     height: $toolbar-height;
     min-height: $toolbar-height;
-    padding: 0 $toolbar-padding;
-
-    background-color: $toolbar-bg-color;
-    color: $toolbar-color;
+    padding: 0 0 0 $toolbar-padding;
 
     &-subheader {
         position: fixed;
@@ -37,14 +34,6 @@
 
         &:last-child {
             text-align: right;
-
-            .jw-button {
-                border-right: 1px solid lighten($toolbar-bg-color, 5%);
-
-                &:first-child {
-                    border-left: 1px solid lighten($toolbar-bg-color, 5%);
-                }
-            }
         }
     }
 
@@ -73,6 +62,10 @@
 
         > .jwy-icon {
             font-size: 1.5rem;
+        }
+
+        > .jw-button-label {
+            opacity: 0.65;
         }
     }
 
@@ -109,38 +102,12 @@
     }
 }
 
-@include tablet-only () {
-
-    .jw-toolbar {
-
-        &-video {
-            padding: 0 90px;
-
-            .jw-toolbar-container {
-                max-width: $container-width-tablet;
-                margin: 0 auto;
-            }
-        }
-    }
-}
-
 @include tablet-and-larger () {
 
     .jw-toolbar {
 
         &-video .jw-toolbar-nav:first-child .jw-button {
             margin-left: -$toolbar-padding;
-        }
-    }
-}
-
-@include desktop-only () {
-
-    .jw-toolbar {
-
-        &-video .jw-toolbar-container {
-            max-width: $container-width-desktop;
-            margin: 0 auto;
         }
     }
 }

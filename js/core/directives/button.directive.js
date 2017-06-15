@@ -41,9 +41,10 @@
             transclude: true
         };
 
-        function link (scope, element) {
+        function link (scope, element, attr) {
 
-            var listener = platform.isTouch ? 'touchstart' : 'mousedown';
+            var tabindex,
+                listener = platform.isTouch ? 'touchstart' : 'mousedown';
 
             activate();
 
@@ -54,8 +55,19 @@
              */
             function activate () {
 
+                tabindex = element.attr('tabindex') || 0;
+
                 element.on(listener, buttonDownHandler);
                 scope.$on('$destroy', destroyHandler);
+
+                if (attr.isDisabled) {
+                    scope.$watch(attr.isDisabled, function (disabled) {
+                        element.attr('tabindex', disabled ? -1 : tabindex);
+                        element.toggleClass('jw-button-disabled', disabled);
+                        element.attr('aria-disabled', disabled);
+                    });
+                }
+
             }
 
             /**

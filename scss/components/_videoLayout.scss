@@ -1,0 +1,50 @@
+//
+// jwVideoLayout
+// --------------------------------
+
+.jw-video-layout {
+    padding: 0 90px;
+
+    .jw-video-layout-row {
+        max-width: $video-layout-width;
+        margin: 0 auto;
+    }
+
+    &-flag-right-rail {
+
+        .jw-video-layout-row {
+            max-width: $video-layout-right-rail-width;
+        }
+
+        .jw-video-layout-row {
+            @include display-flex();
+
+            .jw-video-layout-player {
+                @include flex(1 0);
+            }
+
+            .jw-video-layout-rail {
+                position: relative;
+                width: 30%;
+            }
+        }
+
+        .jw-video-details {
+            .jw-video-title,
+            .jw-video-description {
+                padding-right: 30%;
+            }
+        }
+    }
+}
+
+@include mobile-only () {
+
+    .jw-video-layout {
+        padding: 0;
+    }
+
+    .jw-video-layout-row:not(:first-child) {
+        padding: 0 20px;
+    }
+}
