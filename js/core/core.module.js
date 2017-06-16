@@ -50,6 +50,7 @@
                         return configResolver.getConfig();
                     }],
                     bootstrap: ['configure', 'bootstrap', function(configure, bootstrap) {
+                        console.log('Ohjaweeeeel');
                         return bootstrap;
                     }]
                 },

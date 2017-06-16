@@ -26,13 +26,18 @@
      *
      * @requires popupInstance
      */
-    LoginController.$inject = ['popupInstance'];
-    function LoginController (popupInstance) {
+    LoginController.$inject = ['auth', 'popupInstance', 'config'];
+    function LoginController (auth, popupInstance, config) {
 
         var vm = this;
 
+        vm.providers = config.options.authenticationProviders;
+        vm.user = {};
+
         vm.acceptButtonClickHandler = acceptButtonClickHandler;
         vm.declineButtonClickHandler = declineButtonClickHandler;
+        vm.logInWithProvider = logInWithProvider;
+        vm.logInWithEmail = logInWithEmail;
 
         ////////////////
 
@@ -48,6 +53,21 @@
                 .close(false);
         }
 
+        function logInWithProvider(provider) {
+            auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.error(error);
+            });
+        }
+
+        function logInWithEmail(email, password) {
+            auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.error(error);
+            });
+        }
     }
 
 }());

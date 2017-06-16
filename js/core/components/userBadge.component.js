@@ -49,7 +49,10 @@
 
             popup.show({
                 controller: 'LoginController as vm',
-                templateUrl: 'views/core/popups/login.html'
+                templateUrl: 'views/core/popups/login.html',
+                resolve: {
+                    config: config
+                }
             });
         }
 

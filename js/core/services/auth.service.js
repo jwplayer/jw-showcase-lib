@@ -27,7 +27,6 @@
         }
 
         var auth = $firebaseAuth();
-
         this.firebaseAuth = auth;
 
         this.getIdentity = function() {
