@@ -27,6 +27,7 @@
     session.$inject = ['$firebaseObject', '$firebaseArray', 'auth', 'config'];
     function session($firebaseObject, $firebaseArray, auth, config) {
 
+        var throttle, rerun;
         var db;
 
         this.save  = save;
@@ -135,6 +136,20 @@
             });
         }
 
+        function applyThrottle($db) {
+            $db.$save();
+
+            throttle = setTimeout(function() {
+                if (rerun) {
+                    rerun = false;
+
+                    applyThrottle($db);
+                } else {
+                    throttle = null;
+                }
+            }, 10000);
+        }
+
         /**
          * @ngdoc method
          * @name jwShowcase.core.session#save
@@ -146,13 +161,28 @@
          * @param {string}  key      Key to identify the value.
          * @param {*}       value    Value to store.
          */
-        function save(key, value) {
+        function save(key, value, shouldThrottle) {
             return isLocal().then(function (local) {
                 if (!local) {
                     return database.then(function($db) {
                         $db[key.replace(/^jwshowcase\./, '')] = value;
 
-                        return $db.$save();
+                        if (!shouldThrottle) {
+                            clearTimeout(throttle);
+
+                            throttle = null;
+                            rerun = false;
+
+                            return $db.save();
+                        }
+
+                        if (throttle) {
+                            rerun = true;
+
+                            return;
+                        }
+
+                        applyThrottle($db);
                     });
                 }
 
