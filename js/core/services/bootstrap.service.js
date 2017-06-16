@@ -39,9 +39,9 @@
      * @returns {$q.promise}
      */
 
-    Bootstrap.$inject = ['$q', 'auth', '$state', 'appStore', 'config', 'cookies', 'api',
+    Bootstrap.$inject = ['$q', '$state', 'appStore', 'config', 'cookies', 'api',
         'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings'];
-    function Bootstrap ($q, auth, $state, appStore, config, cookies, api, apiConsumer, serviceWorker,
+    function Bootstrap ($q, $state, appStore, config, cookies, api, apiConsumer, serviceWorker,
                       watchlist, watchProgress, userSettings) {
 
         var defer = $q.defer();
