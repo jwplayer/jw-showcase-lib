@@ -494,6 +494,12 @@
         .jw-popup-title {
             color: $popup-color;
         }
+
+        .jw-errors-row {
+            background-color: rgba($red, 0.9);
+            color: $white;
+            font-weight: 900;
+        }
     }
 
     //
