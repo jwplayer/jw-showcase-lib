@@ -26,47 +26,45 @@
      *
      * @requires popupInstance
      */
-    LoginController.$inject = ['auth', 'popupInstance', 'config'];
-    function LoginController (auth, popupInstance, config) {
+    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup'];
+    function LoginController (auth, popupInstance, config, popup) {
 
         var vm = this;
 
         vm.providers = config.options.authenticationProviders;
         vm.user = {};
+        vm.errors = [];
 
-        vm.acceptButtonClickHandler = acceptButtonClickHandler;
-        vm.declineButtonClickHandler = declineButtonClickHandler;
         vm.logInWithProvider = logInWithProvider;
         vm.logInWithEmail = logInWithEmail;
-
-        ////////////////
-
-        function acceptButtonClickHandler () {
-
-            popupInstance
-                .close(true);
-        }
-
-        function declineButtonClickHandler () {
-
-            popupInstance
-                .close(false);
-        }
+        vm.signUp = signUp;
 
         function logInWithProvider(provider) {
             auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {
-                console.log(result);
+                popupInstance.close(true);
             }).catch(function (error) {
-                console.error(error);
+                vm.errors.push(error);
             });
         }
 
         function logInWithEmail(email, password) {
             auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
-                console.log(result);
-            }).catch(function (error) {
-                console.error(error);
+                popupInstance.close(true);
+            }).catch(function () {
+                vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
             });
+        }
+
+        function signUp() {
+                popup.show({
+                    controller: 'SignupController as vm',
+                    templateUrl: 'views/core/popups/signup.html',
+                    resolve: {
+                        config: config
+                    }
+                });
+            popupInstance.close(true);
+
         }
     }
 
