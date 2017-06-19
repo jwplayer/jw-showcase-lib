@@ -41,37 +41,57 @@
     // DISCLAIMER: Example file. I know it's messy. Don't judge me.
     AuthController.$inject = ['auth', 'config', 'popup'];
     function AuthController(auth, config, popup) {
-        var vm = this;
-        vm.userBadgeClickHandler = userBadgeClickHandler;
 
-
-        function userBadgeClickHandler (event) {
-
-            popup.show({
-                controller: 'LoginController as vm',
-                templateUrl: 'views/core/popups/login.html',
-                resolve: {
-                    config: config
-                }
-            });
-        }
-
-
-
-
+        // Is triggered when useAuthentication in config is false
         if(!config.options.useAuthentication) {
             return;
         }
 
+        var vm = this;
+        vm.identity = null;
+        vm.dropdownOpen = false;
+
+        vm.userBadgeClickHandler = userBadgeClickHandler;
+        vm.logout = logout;
+
+
         var firebaseAuth = auth.firebaseAuth;
 
+        function userBadgeClickHandler (event) {
+            if (vm.identity) {
+                vm.dropdownOpen = !vm.dropdownOpen;
+            } else {
+                popup.show({
+                    controller: 'LoginController as vm',
+                    templateUrl: 'views/core/popups/login.html',
+                    resolve: {
+                        config: config
+                    }
+                });
+            }
+
+        }
+
+        function logout() {
+            firebaseAuth.$signOut();
+            vm.dropdownOpen = false;
+        }
+
         firebaseAuth.$onAuthStateChanged(function(firebaseUser) {
+            console.log(firebaseUser);
             vm.identity = firebaseUser ? firebaseUser : null;
         });
 
-        this.logout = function() {
-            firebaseAuth.$signOut();
-        };
+
+
+
+
+
+
+
+
+
+
 
         this.login = function() {
             var credentials = collectCredentials();
