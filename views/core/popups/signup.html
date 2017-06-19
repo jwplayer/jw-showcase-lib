@@ -1,0 +1,29 @@
+<div class="jw-popup jw-popup-login">
+    <h3 class="jw-popup-title">Sign up</h3>
+    <p class="jw-popup-text">Create a JW Showcase account to enjoy our service on multiple devices.</p>
+    <form class="jw-form" name="signUpForm" ng-submit="vm.signUp(vm.user.email, vm.user.password)" novalidate>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="email" class="jw-form-control" id="email" placeholder="Enter email" ng-model="vm.user.email"
+                   floating-label required>
+        </div>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
+                   floating-label required>
+        </div>
+
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" class="jw-form-control" id="password" placeholder="Confirm password" ng-model="vm.user.passwordConfirm"
+                   floating-label required compare-to="vm.user.password">
+        </div>
+        <div class="jw-button-row jw-button-block jw-popup-buttons">
+            <button type="submit" class="jw-button jw-button-primary" ng-disabled="!vm.isPasswordTheSame(vm.user.password, vm.user.passwordConfirm) || signUpForm.$invalid">
+                <span class="jw-button-label">Sign Up</span>
+            </button>
+        </div>
+    </form>
+    <div class="jw-errors-row" ng-if="vm.errors.length > 0">
+        <div class="jw-error" ng-repeat="error in vm.errors">
+            Error: <i>{{error.message}}</i>
+        </div>
+    </div>
+</div>

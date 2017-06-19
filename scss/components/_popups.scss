@@ -42,6 +42,11 @@
         }
     }
 
+    .jw-errors-row {
+        margin: 15px -30px -30px;
+        padding: 15px 30px;
+    }
+
     &-login {
         .jw-login-social-buttons,
         .jw-form {
@@ -69,6 +74,11 @@
             margin-top: 0;
             margin-bottom: 0;
             text-align: center;
+        }
+
+        .jw-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
         }
     }
 
