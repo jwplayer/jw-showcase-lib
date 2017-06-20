@@ -52,6 +52,7 @@
         vm.dropdownOpen = false;
 
         vm.userBadgeClickHandler = userBadgeClickHandler;
+        vm.showAccountInfo = showAccountInfo;
         vm.logout = logout;
 
 
@@ -72,67 +73,23 @@
 
         }
 
+        function showAccountInfo() {
+            popup.show({
+                controller: 'AccountInfoController as vm',
+                templateUrl: 'views/core/popups/accountInfo.html',
+                resolve: {
+                    user: vm.identity
+                }
+
+            });
+        }
+
         function logout() {
             auth.logout();
         }
 
         firebaseAuth.$onAuthStateChanged(function(firebaseUser) {
-            console.log(firebaseUser);
             vm.identity = firebaseUser ? firebaseUser : null;
         });
-
-        this.login = function() {
-            var credentials = collectCredentials();
-
-            if (!credentials) {
-                return;
-            }
-
-            firebaseAuth.$signInWithEmailAndPassword(credentials.email, credentials.password).then(function(user) {
-                if (!user.emailVerified) {
-                    alert('You have not verified your email address yet');
-
-                    firebaseAuth.$signOut();
-                }
-            }).catch(console.error);
-        };
-
-        this.facebook = function() {
-            firebaseAuth.$signInWithPopup('facebook')
-                .then(function(firebaseUser) {
-                    console.log('Signed in as:', firebaseUser.uid, firebaseUser);
-                })
-                .catch(function(error) {
-                    console.log('Authentication failed:', error);
-                });
-        };
-
-        this.signup = function() {
-            var credentials = collectCredentials();
-
-            if (!credentials) {
-                return;
-            }
-
-            firebaseAuth.$createUserWithEmailAndPassword(credentials.email, credentials.password).then(function(user) {
-                firebaseAuth.$signOut();
-                user.sendEmailVerification();
-            });
-        };
-
-        function collectCredentials() {
-
-            var email = prompt('email');
-
-            if (!/.*?@videodock\.com$/i.test(email)) {
-                alert('invalid email');
-
-                return null;
-            }
-
-            var password = prompt('password');
-
-            return {email: email, password: password};
-        }
     }
 }());
