@@ -101,6 +101,14 @@
         }
     }
 
+    &-alert {
+        width: 400px;
+
+        .jw-button {
+            min-width: 65px;
+        }
+    }
+
     &-cookies {
         @include transform(none);
         top: 0;
