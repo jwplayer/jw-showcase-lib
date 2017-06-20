@@ -32,6 +32,8 @@
             popupsElement = null;
 
         this.show = show;
+        this.alert = alert;
+        this.confirm = confirm;
 
         activate();
 
@@ -80,6 +82,36 @@
             }
 
             $q.reject('failed to create popup');
+        }
+
+        /**
+         * Show an alert
+         *
+         * @param {String} message
+         */
+        function alert (message) {
+            return show({
+                controller: 'AlertController as vm',
+                templateUrl: 'views/core/popups/alert.html',
+                resolve: {
+                    message: message
+                }
+            });
+        }
+
+        /**
+         * Show an confirmation popup
+         *
+         * @param {String} message
+         */
+        function confirm (message) {
+            return show({
+                controller:  'ConfirmController as vm',
+                templateUrl: 'views/core/popups/confirm.html',
+                resolve:  {
+                    message: message
+                }
+            });
         }
 
         /**
