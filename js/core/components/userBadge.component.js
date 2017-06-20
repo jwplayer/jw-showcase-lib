@@ -73,25 +73,13 @@
         }
 
         function logout() {
-            firebaseAuth.$signOut();
-            vm.dropdownOpen = false;
+            auth.logout();
         }
 
         firebaseAuth.$onAuthStateChanged(function(firebaseUser) {
             console.log(firebaseUser);
             vm.identity = firebaseUser ? firebaseUser : null;
         });
-
-
-
-
-
-
-
-
-
-
-
 
         this.login = function() {
             var credentials = collectCredentials();

@@ -43,6 +43,7 @@
 
         this.logout = function() {
             auth.$signOut();
+            window.location.reload();
         };
 
         this.getToken = function() {

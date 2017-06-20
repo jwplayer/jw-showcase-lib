@@ -1,11 +1,7 @@
+
+
 .jw-form-group {
     margin-bottom: 30px;
-}
-
-.jw-floating-label-wrapper {
-    position: relative;
-
-
 
     .jw-form-control {
         width: 100%;
@@ -17,6 +13,15 @@
     .jw-form-control:focus {
         outline: none;
     }
+
+    &-warnings {
+        margin-top: 6px;
+        color: $red;
+    }
+}
+
+.jw-floating-label-wrapper {
+    position: relative;
 
     .jw-floating-label {
         position: absolute;

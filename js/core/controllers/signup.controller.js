@@ -34,31 +34,26 @@
         vm.providers = config.options.authenticationProviders;
 
         vm.user = {};
-
-        vm.errors = [];
+        vm.errors = {};
 
         vm.signUp = signUp;
-        vm.isPasswordTheSame = isPasswordTheSame;
+        vm.errorsPresent = errorsPresent;
 
         function signUp(email, password) {
             auth.firebaseAuth.$createUserWithEmailAndPassword(email, password)
                 .then(function(firebaseUser) {
+                    auth.firebaseAuth.$signOut();
+                    firebaseUser.sendEmailVerification();
                     popupInstance.close(true);
+                    alert('A confirmation link has been sent to your email address.');
                 }).catch(function(error) {
-                vm.errors.push(error);
+                    vm.errors[error.code] = error.message;
             });
         }
 
-        function isPasswordTheSame(password, secondPassword) {
-            if (secondPassword && secondPassword.length > 0 && password !== secondPassword) {
-                if(!vm.errors || !vm.errors[0] || vm.errors[0].message !== 'Passwords should be the same') {
-                    vm.errors[0] = {message: 'Passwords should be the same'};
-                }
-            } else {
-                vm.errors = [];
-            }
 
-            return password === secondPassword;
+        function errorsPresent(obj) {
+           return Object.keys(obj).length > 0;
         }
 
     }

@@ -50,7 +50,13 @@
         function logInWithEmail(email, password) {
             auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
                 popupInstance.close(true);
+
+                if (!result.emailVerified) {
+                    alert('You have not verified your email address yet');
+                    auth.firebaseAuth.$signOut();
+                }
             }).catch(function () {
+                vm.errors = [];
                 vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
             });
         }

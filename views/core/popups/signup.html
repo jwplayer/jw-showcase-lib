@@ -3,27 +3,49 @@
     <p class="jw-popup-text">Create a JW Showcase account to enjoy our service on multiple devices.</p>
     <form class="jw-form" name="signUpForm" ng-submit="vm.signUp(vm.user.email, vm.user.password)" novalidate>
         <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="email" class="jw-form-control" id="email" placeholder="Enter email" ng-model="vm.user.email"
+            <input type="email" name="email" class="jw-form-control" id="email" placeholder="Email address" ng-model="vm.user.email"
                    floating-label required>
-        </div>
-        <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
-                   floating-label required>
+            <div class="jw-form-group-warnings">
+                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.required" class="jw-form-group-warning">
+                    <b>Warning:</b> An email address is required to sign up
+                </p>
+                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.email" class="jw-form-group-warning">
+                    <b>Warning:</b> The email address is not a valid email address
+                </p>
+            </div>
         </div>
 
         <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="password" class="jw-form-control" id="password" placeholder="Confirm password" ng-model="vm.user.passwordConfirm"
+            <input type="password" name="password" class="jw-form-control" id="password" placeholder="Password"  ng-minlength="6" ng-model="vm.user.password"
+                   floating-label required>
+            <div class="jw-form-group-warnings">
+                <p ng-if="signUpForm.password.$dirty && signUpForm.password.$error.required" class="jw-form-group-warning">
+                    <b>Warning:</b> A password is required to sign up
+                </p>
+                <p ng-if="signUpForm.password.$dirty && signUpForm.password.$error.minlength" class="jw-form-group-warning">
+                    <b>Warning:</b> A password has to have at least 6 characters
+                </p>
+            </div>
+        </div>
+
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" name="passwordConfirm" class="jw-form-control" id="passwordconfirm" placeholder="Confirm password" ng-model="vm.user.passwordConfirm"
                    floating-label required compare-to="vm.user.password">
+            <div class="jw-form-group-warnings">
+                <p ng-if="signUpForm.passwordConfirm.$dirty && signUpForm.passwordConfirm.$error.compareTo" class="jw-form-group-warning">
+                    <b>Warning:</b> Passwords don't match
+                </p>
+            </div>
         </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-primary" ng-disabled="!vm.isPasswordTheSame(vm.user.password, vm.user.passwordConfirm) || signUpForm.$invalid">
+            <button type="submit" class="jw-button jw-button-primary" ng-disabled="signUpForm.$invalid">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>
     </form>
-    <div class="jw-errors-row" ng-if="vm.errors.length > 0">
+    <div class="jw-errors-row" ng-if="vm.errorsPresent(vm.errors)">
         <div class="jw-error" ng-repeat="error in vm.errors">
-            Error: <i>{{error.message}}</i>
+            Error: <i>{{error}}</i>
         </div>
     </div>
 </div>

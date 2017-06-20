@@ -115,3 +115,10 @@
     width: 100%;
     height: 100%;
 }
+
+@include mobile-only () {
+
+    .jw-popup {
+        width: 100%;
+    }
+}
