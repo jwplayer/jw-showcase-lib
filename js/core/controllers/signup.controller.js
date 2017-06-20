@@ -46,14 +46,9 @@
                     auth.firebaseAuth.$signOut();
                     firebaseUser.sendEmailVerification();
 
-                    popup.show({
-                        controller: 'AlertController as vm',
-                        templateUrl: 'views/core/popups/alert.html',
-                        resolve: {
-                            message: 'Thank you for signing up. We sent you an email to verify that you entered your ' +
-                            'email address correctly. Please click the link in the email to verify your account.'
-                        }
-                    });
+                    popup.alert('Thank you for signing up. We sent you an email to verify that you entered your ' +
+                                'email address correctly. Please click the link in the email to verify your account.');
+
                     popupInstance.close(true);
 
                 }).catch(function(error) {
