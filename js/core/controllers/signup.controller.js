@@ -26,8 +26,8 @@
      *
      * @requires popupInstance
      */
-    SignupController.$inject = ['auth', 'popupInstance', 'config'];
-    function SignupController (auth, popupInstance, config) {
+    SignupController.$inject = ['auth', 'popupInstance', 'popup', 'config'];
+    function SignupController (auth, popupInstance, popup, config) {
 
         var vm = this;
 
@@ -42,10 +42,20 @@
         function signUp(email, password) {
             auth.firebaseAuth.$createUserWithEmailAndPassword(email, password)
                 .then(function(firebaseUser) {
+
                     auth.firebaseAuth.$signOut();
                     firebaseUser.sendEmailVerification();
+
+                    popup.show({
+                        controller: 'AlertController as vm',
+                        templateUrl: 'views/core/popups/alert.html',
+                        resolve: {
+                            message: 'Thank you for signing up. We sent you an email to verify that you entered your ' +
+                            'email address correctly. Please click the link in the email to verify your account.'
+                        }
+                    });
                     popupInstance.close(true);
-                    alert('A confirmation link has been sent to your email address.');
+
                 }).catch(function(error) {
                     vm.errors[error.code] = error.message;
             });
