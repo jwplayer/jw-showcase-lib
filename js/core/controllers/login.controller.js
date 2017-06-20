@@ -52,7 +52,13 @@
                 popupInstance.close(true);
 
                 if (!result.emailVerified) {
-                    alert('You have not verified your email address yet');
+                    popup.show({
+                        controller: 'AlertController as vm',
+                        templateUrl: 'views/core/popups/alert.html',
+                        resolve: {
+                            message: 'You have not verified your email address yet.'
+                        }
+                    });
                     auth.firebaseAuth.$signOut();
                 }
             }).catch(function () {
