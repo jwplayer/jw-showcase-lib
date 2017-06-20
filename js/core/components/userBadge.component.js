@@ -38,7 +38,6 @@
             templateUrl : 'views/core/userBadge.html'
         });
 
-    // DISCLAIMER: Example file. I know it's messy. Don't judge me.
     AuthController.$inject = ['auth', 'config', 'popup'];
     function AuthController(auth, config, popup) {
 
