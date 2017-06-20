@@ -67,7 +67,8 @@
                     controller: 'SignupController as vm',
                     templateUrl: 'views/core/popups/signup.html',
                     resolve: {
-                        config: config
+                        config: config,
+                        user: vm.user
                     }
                 });
             popupInstance.close(true);

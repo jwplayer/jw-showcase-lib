@@ -26,14 +26,14 @@
      *
      * @requires popupInstance
      */
-    SignupController.$inject = ['auth', 'popupInstance', 'popup', 'config'];
-    function SignupController (auth, popupInstance, popup, config) {
+    SignupController.$inject = ['auth', 'popupInstance', 'popup', 'config', 'user'];
+    function SignupController (auth, popupInstance, popup, config, user) {
 
         var vm = this;
 
         vm.providers = config.options.authenticationProviders;
 
-        vm.user = {};
+        vm.user = user;
         vm.errors = {};
 
         vm.signUp = signUp;
