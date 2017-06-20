@@ -37,8 +37,12 @@
                 </p>
             </div>
         </div>
+        <div class="jw-form-group jw-form-group-">
+            <input type="checkbox" ng-model="vm.user.agreedToTerms">
+            <span>By signing up I agree to have read and agree to the terms and conditions</span>
+        </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-primary" ng-disabled="signUpForm.$invalid">
+            <button type="submit" class="jw-button jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>
