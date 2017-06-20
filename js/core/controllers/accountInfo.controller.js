@@ -31,7 +31,7 @@
 
         var vm = this;
 
-        vm.user = angular.copy(user);
+        vm.user = user;
         vm.errors = {};
 
         vm.saveUser = saveUser;

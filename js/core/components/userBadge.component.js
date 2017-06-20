@@ -74,6 +74,7 @@
         }
 
         function showAccountInfo() {
+            vm.dropdownOpen = false;
             popup.show({
                 controller: 'AccountInfoController as vm',
                 templateUrl: 'views/core/popups/accountInfo.html',
@@ -85,6 +86,7 @@
         }
 
         function logout() {
+            vm.dropdownOpen = false;
             auth.logout();
         }
 
