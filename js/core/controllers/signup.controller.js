@@ -41,26 +41,24 @@
 
         function signUp(email, password) {
             auth.firebaseAuth.$createUserWithEmailAndPassword(email, password)
-                .then(function(firebaseUser) {
+                .then(function (firebaseUser) {
 
                     auth.firebaseAuth.$signOut();
                     firebaseUser.sendEmailVerification();
 
                     popup.alert('Thank you for signing up. We sent you an email to verify that you entered your ' +
-                                'email address correctly. Please click the link in the email to verify your account.');
+                        'email address correctly. Please click the link in the email to verify your account.');
 
                     popupInstance.close(true);
 
-                }).catch(function(error) {
-                    vm.errors[error.code] = error.message;
+                }).catch(function (error) {
+                vm.errors[error.code] = error.message;
             });
         }
-
 
         function errorsPresent(obj) {
            return Object.keys(obj).length > 0;
         }
 
     }
-
 }());
