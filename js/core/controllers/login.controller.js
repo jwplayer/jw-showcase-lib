@@ -42,6 +42,7 @@
         function logInWithProvider(provider) {
             auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {
                 popupInstance.close(true);
+                window.location.reload();
             }).catch(function (error) {
                 vm.errors.push(error);
             });
@@ -54,6 +55,8 @@
                 if (!result.emailVerified) {
                     popup.alert('You have not verified your email address yet.');
                     auth.firebaseAuth.$signOut();
+                } else {
+                    window.location.reload();
                 }
 
             }).catch(function () {
