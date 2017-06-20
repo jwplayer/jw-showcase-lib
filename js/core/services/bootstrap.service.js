@@ -60,7 +60,6 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                // @todo settings and all other restores will become async. Take that into consideration for this method
                 api.getPlayer(config.player)
                     .then(handlePreloadSuccess, handlePreloadError);
 
