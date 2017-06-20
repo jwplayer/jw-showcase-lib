@@ -54,7 +54,7 @@
 
         ////////////
 
-        resolveFeed.$inject = ['$stateParams', 'apiConsumer', 'preload'];
+        resolveFeed.$inject = ['$stateParams', 'apiConsumer', 'bootstrap'];
         function resolveFeed ($stateParams, apiConsumer) {
             return apiConsumer.getFeedForTag($stateParams.tag);
         }

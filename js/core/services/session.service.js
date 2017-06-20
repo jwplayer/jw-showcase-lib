@@ -36,12 +36,18 @@
         this.clear = clear;
 
         if (config.options.firebase) {
+
+            if (typeof auth.getIdentity !== 'function') {
+                return;
+            }
+
             var database = auth.getIdentity().then(function(identity) {
                 if (!identity) {
                     return;
                 }
 
                 db = firebase.database();
+
 
                 return $firebaseObject(db.ref(identity.uid)).$loaded();
             });
@@ -114,6 +120,9 @@
                 return;
             }
 
+            if (typeof auth.getIdentity !== 'function') {
+                return;
+            }
             auth.getIdentity().then(function(identity) {
                 if (!identity) {
                     return;
@@ -173,7 +182,7 @@
                             throttle = null;
                             rerun = false;
 
-                            return $db.save();
+                            return $db.$save();
                         }
 
                         if (throttle) {

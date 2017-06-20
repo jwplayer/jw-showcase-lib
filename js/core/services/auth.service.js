@@ -22,12 +22,11 @@
     AuthService.$inject = ['$firebaseAuth', 'config'];
 
     function AuthService($firebaseAuth, config) {
-        if (!config.options.firebase) {
+        if (!config.options.useAuthentication) {
             return;
         }
 
         var auth = $firebaseAuth();
-
         this.firebaseAuth = auth;
 
         this.getIdentity = function() {
@@ -44,6 +43,7 @@
 
         this.logout = function() {
             auth.$signOut();
+            window.location.reload();
         };
 
         this.getToken = function() {

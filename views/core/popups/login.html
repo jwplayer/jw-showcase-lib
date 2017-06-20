@@ -1,0 +1,41 @@
+<div class="jw-popup jw-popup-login">
+    <h3 class="jw-popup-title">Log in</h3>
+    <p class="jw-popup-text">Logging in allows to continue watching op multiple devices. Also your personal settings and
+        preferences will be stored for further use.</p>
+    <div class="jw-popup-buttons jw-login-social-buttons">
+        <jw-button  ng-repeat="provider in vm.providers"
+                    ng-click="vm.logInWithProvider(provider)"
+                    class="jw-button jw-button-{{provider}} jw-button-block"
+        >
+            <span class="jw-button-label">Login with {{provider | capitalize}}</span>
+        </jw-button>
+
+    </div>
+    <p class="jw-popup-text">
+        Or login with email
+    </p>
+    <form class="jw-form" ng-submit="vm.logInWithEmail(vm.user.email, vm.user.password)" novalidate>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="email" class="jw-form-control" id="email" placeholder="Enter email" ng-model="vm.user.email"
+                   floating-label>
+        </div>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
+                   floating-label>
+        </div>
+        <div class="jw-button-row jw-button-block jw-popup-buttons">
+            <button type="submit" class="jw-button jw-button-primary">
+                <span class="jw-button-label">Log in</span>
+            </button>
+            <p class="jw-between-text">of</p>
+            <jw-button class="jw-button jw-button-secondary" ng-click="vm.signUp()">
+                <span class="jw-button-label">Sign up</span>
+            </jw-button>
+        </div>
+    </form>
+    <div class="jw-errors-row" ng-if="vm.errors.length > 0">
+        <div class="jw-error" ng-repeat="error in vm.errors">
+            Error: <i>{{error.message}}</i>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+.jw-form-group {
+    margin-bottom: 30px;
+
+    .jw-form-control {
+        width: 100%;
+        padding: 12px 1px;
+        border-bottom: 1px solid rgba($black, 0.3);
+        font-size: 16px;
+    }
+
+    .jw-form-control:focus {
+        outline: none;
+    }
+
+    &-warnings {
+        margin-top: 6px;
+        color: $red;
+    }
+
+    &-label {
+        color: rgba($black, 0.5);
+        font-size: 13px;
+    }
+
+    &-text-center {
+        display: block;
+        text-align: center;
+        text-decoration: underline;
+        opacity: 0.5;
+    }
+}
+
+.jw-floating-label-wrapper {
+    position: relative;
+
+    .jw-floating-label {
+        position: absolute;
+        top: 12px;
+        left: 1px;
+        transition: 0.2s ease all;
+        color: rgba($black, 0.3);
+        font-size: 16px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .jw-form-control:focus ~ .jw-floating-label,
+    .jw-form-control:not(.jw-input-empty) ~ .jw-floating-label {
+        top: -13px;
+        left: 0;
+        color: rgba($black, 0.5);
+        font-size: 13px;
+        opacity: 1;
+    }
+
+    .jw-form-control:focus ~ .jw-floating-label {
+        color: rgba($black, 1);
+        font-weight: bold;
+    }
+
+    .jw-form-control.jw-input-empty ~ .jw-floating-label {
+        opacity: 1;
+    }
+}

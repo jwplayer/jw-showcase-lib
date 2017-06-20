@@ -38,72 +38,59 @@
             templateUrl : 'views/core/userBadge.html'
         });
 
-    // DISCLAIMER: Example file. I know it's messy. Don't judge me.
-    AuthController.$inject = ['auth'];
-    function AuthController(auth) {
+    AuthController.$inject = ['auth', 'config', 'popup'];
+    function AuthController(auth, config, popup) {
+
+        // Is triggered when useAuthentication in config is false
+        if(!config.options.useAuthentication) {
+            return;
+        }
+
+        var vm = this;
+        vm.identity = null;
+        vm.dropdownOpen = false;
+
+        vm.userBadgeClickHandler = userBadgeClickHandler;
+        vm.showAccountInfo = showAccountInfo;
+        vm.logout = logout;
+
+
         var firebaseAuth = auth.firebaseAuth;
-        var vm           = this;
+
+        function userBadgeClickHandler (event) {
+            if (vm.identity) {
+                vm.dropdownOpen = !vm.dropdownOpen;
+            } else {
+                popup.show({
+                    controller: 'LoginController as vm',
+                    templateUrl: 'views/core/popups/login.html',
+                    resolve: {
+                        config: config
+                    }
+                });
+            }
+
+        }
+
+        function showAccountInfo() {
+            vm.dropdownOpen = false;
+            popup.show({
+                controller: 'AccountInfoController as vm',
+                templateUrl: 'views/core/popups/accountInfo.html',
+                resolve: {
+                    user: vm.identity
+                }
+
+            });
+        }
+
+        function logout() {
+            vm.dropdownOpen = false;
+            auth.logout();
+        }
 
         firebaseAuth.$onAuthStateChanged(function(firebaseUser) {
             vm.identity = firebaseUser ? firebaseUser : null;
         });
-
-        this.logout = function() {
-            firebaseAuth.$signOut();
-        };
-
-        this.login = function() {
-            var credentials = collectCredentials();
-
-            if (!credentials) {
-                return;
-            }
-
-            firebaseAuth.$signInWithEmailAndPassword(credentials.email, credentials.password).then(function(user) {
-                if (!user.emailVerified) {
-                    alert('You have not verified your email address yet');
-
-                    firebaseAuth.$signOut();
-                }
-            }).catch(console.error);
-        };
-
-        this.facebook = function() {
-            firebaseAuth.$signInWithPopup('facebook')
-                .then(function(firebaseUser) {
-                    console.log('Signed in as:', firebaseUser.uid, firebaseUser);
-                })
-                .catch(function(error) {
-                    console.log('Authentication failed:', error);
-                });
-        };
-
-        this.signup = function() {
-            var credentials = collectCredentials();
-
-            if (!credentials) {
-                return;
-            }
-
-            firebaseAuth.$createUserWithEmailAndPassword(credentials.email, credentials.password).then(function(user) {
-                firebaseAuth.$signOut();
-                user.sendEmailVerification();
-            });
-        };
-
-        function collectCredentials() {
-
-            var email = prompt('email');
-
-            if (!/.*?@videodock\.com$/i.test(email)) {
-                alert('invalid email');
-
-                return null;
-            }
-
-            var password = prompt('password');
-
-            return {email: email, password: password};
-        }
     }
 }());

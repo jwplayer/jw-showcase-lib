@@ -46,7 +46,13 @@
 
     &-label {
         display: inline-block;
+        font-size: initial;
         vertical-align: middle;
+    }
+
+    &-chevon {
+        font-size: 40px;
+        line-height: 0;
     }
 
     .jwy-icon {
