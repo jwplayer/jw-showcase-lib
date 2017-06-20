@@ -43,7 +43,7 @@
             auth.firebaseAuth.$updatePassword(newPassword).then(function() {
                 popup.alert('Password updated!');
             }).catch(function(error) {
-
+                popup.alert('Password could not be updated');
             });
         }
 
