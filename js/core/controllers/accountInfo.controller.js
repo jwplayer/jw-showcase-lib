@@ -52,11 +52,16 @@
             popup.confirm('Are you sure you want to delete your account? Everything you have saved will be lost')
                 .then(function (result) {
                     if (result) {
-                        auth.firebaseAuth.$deleteUser().then(function() {
-                            popup.alert('Account deleted!');
-                        }).catch(function(error) {
-                            popup.alert('Account could not be deleted');
-                        });
+                        auth.firebaseAuth.$deleteUser()
+                            .then(function() {
+                                return popup.alert('Account deleted!');
+                            })
+                            .then(function() {
+                                window.location.reload();
+                            })
+                            .catch(function(error) {
+                                popup.alert('Account could not be deleted. Try again later.');
+                            });
                     }
                 });
         }
