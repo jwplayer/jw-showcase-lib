@@ -36,9 +36,11 @@
         this.clear = clear;
 
         if (config.options.firebase) {
+
             if (typeof auth.getIdentity !== 'function') {
                 return;
             }
+
             var database = auth.getIdentity().then(function(identity) {
                 if (!identity) {
                     return;
