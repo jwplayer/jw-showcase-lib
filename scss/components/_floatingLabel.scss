@@ -18,6 +18,18 @@
         margin-top: 6px;
         color: $red;
     }
+
+    &-label {
+        color: rgba($black, 0.5);
+        font-size: 13px;
+    }
+
+    &-text-center {
+        display: block;
+        text-align: center;
+        text-decoration: underline;
+        opacity: 0.5;
+    }
 }
 
 .jw-floating-label-wrapper {
