@@ -50,13 +50,13 @@
     function jwLazyLoad ($timeout, utils) {
 
         return {
-            link:    link,
-            scope:   false
+            link:  link,
+            scope: false
         };
 
         function link (scope, element, attrs) {
 
-            var updateDebounced = utils.debounce(update, 100);
+            var updateDebounced = utils.debounce(update, 150);
             activate();
 
             /////////////////////////
@@ -85,7 +85,8 @@
              */
             function update () {
 
-                var cardElements = findElements('.jw-lazy-load'),
+                var cardElements    = findElements('.jw-lazy-load'),
+                    pageHeight,
                     visibleElements = [],
                     scrollPosition,
                     scrollOffset;
@@ -94,8 +95,9 @@
                     return;
                 }
 
+                pageHeight     = window.innerHeight || document.documentElement.clientHeight;
                 scrollPosition = document.body.scrollTop;
-                scrollOffset = document.body.offsetHeight + scrollPosition + LAZY_LOAD_OFFSET;
+                scrollOffset   = pageHeight + scrollPosition + LAZY_LOAD_OFFSET;
 
                 angular.forEach(cardElements, function (element) {
 
