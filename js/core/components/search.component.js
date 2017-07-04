@@ -152,24 +152,9 @@
          */
         function searchAndDisplayResults () {
 
-            if (searching) {
-                return;
-            }
-
-            searching = true;
-
-            apiConsumer
-                .getSearchFeed(vm.searchPhrase)
-                .then(function () {
-
-                    if ($state.$current.name !== 'root.search') {
-                        $state.go('root.search');
-                    }
-                })
-                .finally(function () {
-                    searching = false;
-                    $rootScope.$broadcast('$viewContentUpdated');
-                });
+            $state.go('root.search', {
+                q: vm.searchPhrase
+            });
         }
     }
 
