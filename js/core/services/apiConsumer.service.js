@@ -167,17 +167,13 @@
          */
         this.getSearchFeed = function (searchPhrase) {
 
-            var promise;
-
             // empty searchPhrase
             if (!searchPhrase) {
                 dataStore.searchFeed.playlist = [];
-                return $q.resolve();
+                return $q.resolve(dataStore.searchFeed);
             }
 
-            promise = api.getSearchFeed(config.searchPlaylist, searchPhrase);
-
-            promise
+            return api.getSearchFeed(config.searchPlaylist, searchPhrase)
                 .then(function (response) {
 
                     var allItems = dataStore.getItems();
@@ -185,11 +181,12 @@
                     dataStore.searchFeed.playlist = allItems.filter(function (item) {
                         return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
                     });
-                }, function (e) {
-                    console.log(e.message);
-                });
 
-            return promise;
+                    return dataStore.searchFeed;
+                })
+                .catch(function (error) {
+                    console.log(error.message);
+                });
         };
 
         /**

@@ -24,12 +24,12 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$state', 'dataStore', 'platform'];
-    function SearchController ($state, dataStore, platform) {
+    SearchController.$inject = ['$state', 'platform', 'searchFeed'];
+    function SearchController ($state, platform, searchFeed) {
 
         var vm = this;
 
-        vm.feed = dataStore.searchFeed;
+        vm.feed = searchFeed;
 
         vm.cardClickHandler = cardClickHandler;
 

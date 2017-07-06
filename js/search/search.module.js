@@ -32,25 +32,28 @@
 
         $stateProvider
             .state('root.search', {
-                url:         '/search',
+                url:         '/search?q',
                 controller:  'SearchController as vm',
                 templateUrl: 'views/search/search.html',
                 scrollTop:   'last',
                 persistent:  true,
                 resolve:     {
-                    searchPlaylist: ['$q', 'config', function ($q, config) {
-                        if (!config.searchPlaylist) {
-                            return $q.reject();
-                        }
-                    }]
+                    searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
+                        function ($q, config, $stateParams, apiConsumer) {
+                            if (!config.searchPlaylist) {
+                                return $q.reject('searchPlaylist is not defined');
+                            }
+
+                            return apiConsumer.getSearchFeed($stateParams.q);
+                        }]
                 }
             });
 
         seoProvider
-            .state('root.search', ['$state', 'config', function ($state, config) {
+            .state('root.search', ['$state', '$stateParams', 'config', function ($state, $stateParams, config) {
 
                 return {
-                    title:       'Search results - ' + config.siteName,
+                    title:       $stateParams.q + ' - ' + config.siteName,
                     description: config.description,
                     canonical:   $state.href('root.search', {}, {absolute: true})
                 };
