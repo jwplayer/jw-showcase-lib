@@ -76,7 +76,7 @@
                 feed            = dataStore.getFeed(jwCard.item.feedid);
 
                 // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
-                if (!thumbnailsTrack || !feed.enablePreview) {
+                if (!thumbnailsTrack || !feed || !feed.enablePreview) {
                     return showDefaultPoster();
                 }
 
@@ -260,7 +260,6 @@
                     findElements('.jw-card-poster:not(.is-active)').remove();
                 }, 300);
             }
-
 
             /**
              * Update to the next thumbnail, this functions repeats itself after the THUMBNAIL_AUTOMATIC_INTERVAL

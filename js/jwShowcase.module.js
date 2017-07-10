@@ -39,6 +39,7 @@
                 enablePlayerAutoFocus:     true,
                 enableHeader:              true,
                 enableTags:                false,
+                enableGlobalSearch:        false,
                 rightRail:                 {
                     enabled: false
                 },

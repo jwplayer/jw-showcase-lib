@@ -48,8 +48,8 @@
          */
         function cardClickHandler (item, clickedOnPlay) {
 
-            $state.go('root.video', {
-                feedId:    item.feedid,
+            $state.go('root.videoFromSearch', {
+                query:     $state.params.query,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
                 autoStart: clickedOnPlay || platform.isMobile
