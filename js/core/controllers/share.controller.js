@@ -73,7 +73,7 @@
          */
         function composeFacebookLink () {
 
-            var facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?p[url]={url}';
+            var facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u={url}';
 
             return facebookShareLink
                 .replace('{url}', encodeURIComponent($location.absUrl()));
