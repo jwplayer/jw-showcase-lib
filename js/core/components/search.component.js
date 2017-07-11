@@ -76,6 +76,7 @@
                 }
                 else {
                     vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
+                    vm.searchBarActive = true;
                 }
             });
         }
