@@ -167,22 +167,27 @@
          */
         this.getSearchFeed = function (searchPhrase) {
 
+            var feed = new FeedModel(config.searchPlaylist, 'Search Results');
+
             // empty searchPhrase
             if (!searchPhrase) {
-                dataStore.searchFeed.playlist = [];
-                return $q.resolve(dataStore.searchFeed);
+                return $q.resolve(feed);
             }
 
-            return api.getSearchFeed(config.searchPlaylist, searchPhrase)
+            dataStore.searchFeed.feedid = config.searchPlaylist;
+
+            return api
+                .getSearchFeed(config.searchPlaylist, searchPhrase)
                 .then(function (response) {
 
                     var allItems = dataStore.getItems();
 
-                    dataStore.searchFeed.playlist = allItems.filter(function (item) {
-                        return response.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                    });
+                    feed.playlist = response.playlist
+                        .filter(function (item) {
+                            return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
+                        });
 
-                    return dataStore.searchFeed;
+                    return feed;
                 })
                 .catch(function (error) {
                     console.log(error.message);

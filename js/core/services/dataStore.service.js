@@ -151,6 +151,10 @@
          */
         this.getFeed = function (feedId) {
 
+            if (feedId === this.searchFeed.feedid) {
+                return this.searchFeed;
+            }
+
             return this.feeds.find(function (feed) {
                 return feed.feedid === feedId;
             });

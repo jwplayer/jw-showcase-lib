@@ -40,7 +40,8 @@
         <jw-rail
             feed="vm.activeFeed"
             first-item="vm.item"
-            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)">
+            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"
+            ng-if="vm.activeFeed.playlist.length > 1">
         </jw-rail>
       </div>
     </div>

@@ -282,16 +282,20 @@
         /**
          * Slugify text
          * @param {string} text
+         * @param {string} [whitespaceChar=-]
          * @returns {string}
          */
-        function slugify (text) {
+        function slugify (text, whitespaceChar) {
+
+            whitespaceChar = whitespaceChar || '-';
 
             return text.toString().toLowerCase()
                 .replace(/\s+/g, '-')
                 .replace(/[^\w\-]+/g, '')
                 .replace(/\-\-+/g, '-')
                 .replace(/^-+/, '')
-                .replace(/-+$/, '');
+                .replace(/-+$/, '')
+                .replace(/\-/g, whitespaceChar);
         }
 
         /**
