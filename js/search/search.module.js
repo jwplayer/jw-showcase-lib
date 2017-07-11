@@ -41,7 +41,7 @@
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
                         function ($q, config, $stateParams, apiConsumer) {
 
-                            var query = $stateParams.query.replace(/\++/g, ' ');
+                            var query = $stateParams.query.replace(/\+/g, ' ');
 
                             if (!config.searchPlaylist) {
                                 return $q.reject('searchPlaylist is not defined');
@@ -55,8 +55,10 @@
         seoProvider
             .state('root.search', ['$state', '$stateParams', 'config', function ($state, $stateParams, config) {
 
+                var query = $stateParams.query.replace(/\+/g, ' ');
+
                 return {
-                    title:       $stateParams.query + ' - ' + config.siteName,
+                    title:       query + ' - ' + config.siteName,
                     description: config.description,
                     canonical:   $state.href('root.search', {}, {absolute: true})
                 };
