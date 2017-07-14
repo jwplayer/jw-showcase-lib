@@ -1,4 +1,4 @@
-<div class="jw-popup jw-popup-login">
+<div class="jw-popup jw-popup-login jw-popup-signup">
     <h3 class="jw-popup-title">Sign up</h3>
     <p class="jw-popup-text">Create a JW Showcase account to enjoy our service on multiple devices.</p>
     <form class="jw-form" name="signUpForm" ng-submit="vm.signUp(vm.user.email, vm.user.password)" novalidate>
@@ -37,12 +37,12 @@
                 </p>
             </div>
         </div>
-        <div class="jw-form-group jw-form-group-">
-            <input type="checkbox" ng-model="vm.user.agreedToTerms">
+        <div class="jw-form-group">
+            <input type="checkbox" class="jw-checkbox-terms" ng-model="vm.user.agreedToTerms">
             <span>By signing up I agree to have read and agree to the terms and conditions</span>
         </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
+            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>

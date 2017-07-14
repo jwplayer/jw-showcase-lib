@@ -23,12 +23,15 @@
             <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
                    floating-label>
         </div>
+        <div class="jw-form-group">
+            <a class="jw-popup-text jw-forgot-password" ng-click="vm.forgotPassword(vm.user.email)">Forgot your password?</a>
+        </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-primary">
+            <button type="submit" class="jw-button jw-button-login jw-button-primary">
                 <span class="jw-button-label">Log in</span>
             </button>
-            <p class="jw-between-text">of</p>
-            <jw-button class="jw-button jw-button-secondary" ng-click="vm.signUp()">
+            <p class="jw-between-text">or</p>
+            <jw-button class="jw-button jw-button-signup jw-button-secondary" ng-click="vm.signUp()">
                 <span class="jw-button-label">Sign up</span>
             </jw-button>
         </div>

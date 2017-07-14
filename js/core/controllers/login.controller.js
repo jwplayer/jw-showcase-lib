@@ -26,8 +26,8 @@
      *
      * @requires popupInstance
      */
-    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup'];
-    function LoginController (auth, popupInstance, config, popup) {
+    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window'];
+    function LoginController (auth, popupInstance, config, popup, $window) {
 
         var vm = this;
 
@@ -37,12 +37,13 @@
 
         vm.logInWithProvider = logInWithProvider;
         vm.logInWithEmail = logInWithEmail;
+        vm.forgotPassword = forgotPassword;
         vm.signUp = signUp;
 
         function logInWithProvider(provider) {
             auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {
                 popupInstance.close(true);
-                window.location.reload();
+                $window.location.reload();
             }).catch(function (error) {
                 vm.errors.push(error);
             });
@@ -56,7 +57,7 @@
                     popup.alert('You have not verified your email address yet.');
                     auth.firebaseAuth.$signOut();
                 } else {
-                    window.location.reload();
+                    $window.location.reload();
                 }
 
             }).catch(function () {
@@ -65,17 +66,29 @@
             });
         }
 
-        function signUp() {
-                popup.show({
-                    controller: 'SignupController as vm',
-                    templateUrl: 'views/core/popups/signup.html',
-                    resolve: {
-                        config: config,
-                        user: vm.user
-                    }
-                });
-            popupInstance.close(true);
+        function forgotPassword(email) {
+            popup.show({
+                controller: 'ForgotPasswordController as vm',
+                templateUrl: 'views/core/popups/forgotPassword.html',
+                resolve: {
+                    email: email,
+                }
+            });
 
+            popupInstance.close(true);
+        }
+
+        function signUp() {
+            popup.show({
+                controller: 'SignupController as vm',
+                templateUrl: 'views/core/popups/signup.html',
+                resolve: {
+                    config: config,
+                    user: vm.user
+                }
+            });
+
+            popupInstance.close(true);
         }
     }
 

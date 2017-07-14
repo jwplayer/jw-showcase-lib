@@ -19,9 +19,9 @@
         .module('jwShowcase.core')
         .service('auth', AuthService);
 
-    AuthService.$inject = ['$firebaseAuth', 'config'];
+    AuthService.$inject = ['$firebaseAuth', 'config', '$window'];
 
-    function AuthService($firebaseAuth, config) {
+    function AuthService($firebaseAuth, config, $window) {
         if (!config.options.useAuthentication) {
             return;
         }
@@ -43,7 +43,7 @@
 
         this.logout = function() {
             auth.$signOut();
-            window.location.reload();
+            $window.location.reload();
         };
 
         this.getToken = function() {
