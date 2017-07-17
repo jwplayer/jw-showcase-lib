@@ -11,10 +11,10 @@
         </jw-button>
 
     </div>
-    <p class="jw-popup-text">
+    <p class="jw-popup-text" ng-if="vm.localAuth">
         Or login with email
     </p>
-    <form class="jw-form" ng-submit="vm.logInWithEmail(vm.user.email, vm.user.password)" novalidate>
+    <form class="jw-form" ng-if="vm.localAuth" ng-submit="vm.logInWithEmail(vm.user.email, vm.user.password)" novalidate>
         <div class="jw-form-group jw-floating-label-wrapper">
             <input type="email" class="jw-form-control" id="email" placeholder="Enter email" ng-model="vm.user.email"
                    floating-label>
@@ -26,7 +26,7 @@
         <div class="jw-form-group">
             <a class="jw-popup-text jw-forgot-password" ng-click="vm.forgotPassword(vm.user.email)">Forgot your password?</a>
         </div>
-        <div class="jw-button-row jw-button-block jw-popup-buttons">
+        <div class="jw-button-row jw-button-block jw-popup-buttons" ng-if="vm.localAuth">
             <button type="submit" class="jw-button jw-button-login jw-button-primary">
                 <span class="jw-button-label">Log in</span>
             </button>
