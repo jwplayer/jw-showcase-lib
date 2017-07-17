@@ -22,7 +22,7 @@
 
         <div class="jw-form-group jw-floating-label-wrapper">
             <input type="password" name="password" class="jw-form-control" id="password" placeholder="New password"  ng-minlength="6" ng-model="vm.password"
-                   floating-label required>
+                   floating-label required tabindex="0">
             <div class="jw-form-group-warnings">
                 <p ng-if="accountInfoForm.password.$dirty && accountInfoForm.password.$error.required" class="jw-form-group-warning">
                     <b>Warning:</b> A password is required to sign up
