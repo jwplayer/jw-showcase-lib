@@ -43,7 +43,14 @@
         function logInWithProvider(provider) {
             auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {
                 popupInstance.close(true);
-                $window.location.reload();
+
+                if (auth.isEmailDomainAllowed(result.user.email)) {
+                    $window.location.reload();
+                } else {
+                    popup.alert('This email domain is not allowed.');
+                    auth.firebaseAuth.$signOut();
+                }
+
             }).catch(function (error) {
                 vm.errors.push(error);
             });

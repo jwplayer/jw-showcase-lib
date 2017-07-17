@@ -55,5 +55,25 @@
                 return identity.getToken();
             });
         };
+
+        this.isEmailDomainAllowed = function (email) {
+            if (!config.options.restrictedDomains) {
+                return true;
+            }
+
+            if(!email) {
+                return false;
+            }
+
+            var domainOfEmail = email.replace(/.*@/, '');
+
+            for (var i = 0; i < config.options.restrictedDomains.length; i++) {
+                if (domainOfEmail === config.options.restrictedDomains[i]) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
     }
 }());

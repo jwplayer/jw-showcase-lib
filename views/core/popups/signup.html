@@ -3,14 +3,17 @@
     <p class="jw-popup-text">Create a JW Showcase account to enjoy our service on multiple devices.</p>
     <form class="jw-form" name="signUpForm" ng-submit="vm.signUp(vm.user.email, vm.user.password)" novalidate>
         <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="email" name="email" class="jw-form-control" id="email" placeholder="Email address" ng-model="vm.user.email"
-                   floating-label required>
+            <input type="email" name="email" class="jw-form-control" id="email" placeholder="Email address" tabindex="0" ng-model="vm.user.email"
+                   floating-label required restricted-domain>
             <div class="jw-form-group-warnings">
-                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.required" class="jw-form-group-warning">
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.required" class="jw-form-group-warning">
                     <b>Warning:</b> An email address is required to sign up
                 </p>
-                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.email" class="jw-form-group-warning">
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.email" class="jw-form-group-warning">
                     <b>Warning:</b> The email address is not a valid email address
+                </p>
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.restrictedDomain" class="jw-form-group-warning">
+                    <b>Warning:</b> This email domain is not allowed.
                 </p>
             </div>
         </div>
