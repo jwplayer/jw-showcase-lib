@@ -59,10 +59,12 @@
     }
 
     &-login {
-        .jw-login-social-buttons,
-        .jw-form {
-            width: 60%;
-            margin-left: 20%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        .jw-login-social-buttons {
+            width: 200px;
 
             .jw-button {
                 color: $white;
@@ -72,6 +74,23 @@
                 }
             }
         }
+
+        .jw-button-block {
+            justify-content: center;
+
+            .jw-button {
+                flex: 1 0;
+            }
+
+            .jw-between-text {
+                margin-bottom: 0;
+                padding: 0 10px;
+            }
+        }
+
+        .jw-form {
+            width: 100%;
+        }
     }
 
     .jw-button-row {
@@ -79,8 +98,7 @@
         @include align-items(center);
 
         .jw-button,
-        .jw-button:not(:last-child),
-        .jw-between-text {
+        .jw-button:not(:last-child) {
             @include flex(1 1 100%);
             margin-top: 0;
             margin-bottom: 0;
