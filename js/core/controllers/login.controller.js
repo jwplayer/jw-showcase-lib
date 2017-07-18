@@ -42,13 +42,15 @@
         vm.forgotPassword = forgotPassword;
         vm.signUp = signUp;
 
-         config.options.authenticationProviders.forEach(function (provider) {
+        vm.isPage = popupInstance.isPage();
+
+        config.options.authenticationProviders.forEach(function (provider) {
             if(provider === 'local') {
                 vm.localAuth = true;
             } else {
                 vm.providers.push(provider);
             }
-         });
+        });
 
         function logInWithProvider(provider) {
             auth.firebaseAuth.$signInWithPopup(provider).then(function (result) {

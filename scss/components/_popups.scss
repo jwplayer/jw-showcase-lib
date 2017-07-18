@@ -59,9 +59,9 @@
     }
 
     &-login {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
+        @include display-flex;
+        @include flex-direction(column);
+        @include align-items(center);
 
         .jw-login-social-buttons {
             width: 200px;
@@ -144,6 +144,15 @@
         left: 0;
         width: 100%;
     }
+}
+
+.jw-popup-as-page {
+    @include transform(translate(0, 0));
+    top: $header-height;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 30px calc(50vw - 250px);
 }
 
 %cover {
