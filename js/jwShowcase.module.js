@@ -41,9 +41,12 @@
                 enableTags:                false,
                 enableGlobalSearch:        false,
                 rightRail:                 {
-                    enabled: false
+                    enabled: false,
+                    full:    false
                 },
-                useRecommendationPlaylist: false
+                enableTitleAboveVideo:     false,
+                useRecommendationPlaylist: false,
+                displayAds:                false
             }
         });
 
@@ -73,6 +76,14 @@
      * @property {boolean}              options.enableContinueWatching
      * @property {boolean}              options.enableCookieNotice
      * @property {boolean}              options.enablePlayerAutoFocus
+     * @property {string}               options.videoTitlePosition
+     *
+     * @property {Object|boolean}       options.rightRail
+     * @property {boolean}              options.rightRail.enabled
+     *
+     * @property {Object|boolean}       options.displayAds
+     * @property {string}               options.displayAds.client
+     * @property {Array}                options.displayAds.slots
      */
 
     /**
