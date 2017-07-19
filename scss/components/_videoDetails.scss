@@ -3,13 +3,11 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 20px 0;
-
     color: $white;
     line-height: 1.4em;
     white-space: normal;
 
-    .jw-video-duration {
+    &-duration {
         display: inline-block;
         line-height: 19px;
         vertical-align: bottom;
@@ -27,14 +25,18 @@
         }
     }
 
-    .jw-video-title {
-        margin-bottom: 15px;
+    &-title {
+        margin: 0 0 $base-spacing-heading;
         font-size: rem(22px);
         font-weight: bold;
         line-height: rem(26px);
     }
 
-    .jw-video-tags {
+    &-description {
+        margin-bottom: $base-spacing;
+    }
+
+    &-tags {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -44,7 +46,7 @@
             margin-right: 5px;
             margin-bottom: 5px;
 
-            .jw-video-tag {
+            .jw-video-details-tag {
                 padding: 3px 7px;
             }
         }

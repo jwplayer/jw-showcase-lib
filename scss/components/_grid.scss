@@ -12,6 +12,26 @@
 }
 
 //
+// Paddings
+// --------------------------------
+
+.pb {
+    padding-bottom: $base-spacing;
+}
+
+.pbh {
+    padding-bottom: $base-spacing-heading;
+}
+
+.pt {
+    padding-top: $base-spacing;
+}
+
+.pth {
+    padding-top: $base-spacing-heading;
+}
+
+//
 // mediaQueries
 // --------------------------------
 

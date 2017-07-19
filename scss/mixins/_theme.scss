@@ -99,6 +99,7 @@
     $header-bg: $white !default;
     $header-color: $secondary-color !default;
     $header-hover-color: $primary-color !default;
+    $header-fixed-shadow: 0 0 15px 0 rgba($black, 0.5) !default;
 
     $search-bg: $header-bg !default;
     $search-color: inherit !default;
@@ -126,6 +127,8 @@
 
     // Rail
 
+    $rail-bg: transparent !default;
+    $rail-header-border-bottom: none !default;
     $rail-header-bg: $white !default;
     $rail-header-color: $secondary-color !default;
     $rail-item-color: $white;
@@ -415,6 +418,10 @@
                 color: $header-hover-color;
             }
         }
+
+        &-fixed {
+            @include box-shadow($header-fixed-shadow);
+        }
     }
 
     //
@@ -430,13 +437,18 @@
     // --------------------------------
 
     .jw-side-rail {
-        .jw-side-rail-header {
+        &-header {
+            border-bottom: $rail-header-border-bottom;
             background-color: $rail-header-bg;
             color: $rail-header-color;
         }
 
-        .jw-side-rail-item {
+        &-item {
             color: $rail-item-color;
+        }
+
+        &-scroll-wrapper {
+            background-color: $rail-bg;
         }
     }
 
@@ -587,11 +599,7 @@
         }
 
         .jw-toolbar-nav:last-child .jw-button {
-            border-right: $toolbar-nav-border;
-
-            &:first-child {
-                border-left: $toolbar-nav-border;
-            }
+            border-left: $toolbar-nav-border;
         }
 
         .jw-button-label {
@@ -632,7 +640,7 @@
         background-color: $video-details-bg;
         color: $video-details-color;
 
-        .jw-video-tag {
+        .jw-video-details-tag {
             @include box-shadow($video-details-tag-shadow);
             background-color: $video-details-tag-bg;
             color: $video-details-tag-color;

@@ -1,5 +1,5 @@
-$default-slider-spacing: 12px;
 $featured-slider-max-width: 900px;
+$default-slider-spacing: 90px;
 
 //
 // jwCardSlider
@@ -95,7 +95,7 @@ $featured-slider-max-width: 900px;
     // --------------------------------
 
     .jw-card-slider-title {
-        margin: 0 90px 20px;
+        margin: 0 90px $base-spacing-heading;
 
         font-size: 21px;
         font-weight: bold;
@@ -242,21 +242,21 @@ $featured-slider-max-width: 900px;
     }
 
     .jw-card-slider-align {
-        padding: 0 #{90px - $default-slider-spacing / 2};
+        padding: 0 #{90px - $base-spacing / 2};
     }
 
     .jw-card-slider-list {
 
         @for $i from 1 through 10 {
             &.slides-#{$i} .jw-card-slider-slide {
-                width: calc(#{100% / $i} - #{$default-slider-spacing});
+                width: calc(#{100% / $i} - #{$base-spacing});
             }
         }
     }
 
     .jw-card-slider-slide {
         @include single-transition(opacity, 0.2s, ease-in, 0s);
-        margin: 0 $default-slider-spacing / 2;
+        margin: 0 $base-spacing / 2;
 
         &-flag-error {
             opacity: 1;
@@ -279,11 +279,12 @@ $featured-slider-max-width: 900px;
 
         .jw-card-slider-container {
             .jw-card-slider-title {
-                margin: 0 20px 20px;
+                margin-right: $base-spacing;
+                margin-left: $base-spacing;
             }
 
             .jw-card-slider-align {
-                padding: 0 125px 0 15px;
+                padding-left: $base-spacing / 2;
             }
         }
     }
