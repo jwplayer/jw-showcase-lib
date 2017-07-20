@@ -41,10 +41,9 @@
                 enableTags:                false,
                 enableGlobalSearch:        false,
                 rightRail:                 {
-                    enabled: false,
-                    full:    false
+                    enabled: false
                 },
-                enableTitleAboveVideo:     false,
+                videoTitlePosition:        'below',
                 useRecommendationPlaylist: false,
                 displayAds:                false
             }
