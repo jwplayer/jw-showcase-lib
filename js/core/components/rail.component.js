@@ -108,9 +108,8 @@
          */
         function showMoreButtonClickHandler () {
 
-            vm.itemsLimit = vm.items.length;
+            vm.itemsLimit = Math.min(vm.items.length, vm.itemsLimit + 5);
         }
-
     }
 
 }());
