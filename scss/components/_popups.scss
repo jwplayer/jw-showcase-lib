@@ -151,11 +151,11 @@
 .jw-popup-as-page {
     @include transform(translate(0, 0));
     top: $header-height;
-    left: 0;
     right: 0;
     bottom: 0;
-    padding: 30px calc(50vw - 250px);
+    left: 0;
     max-width: none;
+    padding: 30px calc(50vw - 250px);
 }
 
 %cover {

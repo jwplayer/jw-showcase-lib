@@ -73,7 +73,6 @@
                     }
                 });
             }
-
         }
 
         function showAccountInfo() {

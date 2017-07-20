@@ -19,9 +19,9 @@
         .module('jwShowcase.core')
         .service('auth', AuthService);
 
-    AuthService.$inject = ['$firebaseAuth', 'config', '$window'];
+    AuthService.$inject = ['$firebaseAuth', 'config', '$window', '$rootScope', '$state'];
 
-    function AuthService($firebaseAuth, config, $window) {
+    function AuthService($firebaseAuth, config, $window, $rootScope, $state) {
         if (!config.options.useAuthentication) {
             return;
         }
@@ -75,5 +75,15 @@
 
             return false;
         };
+
+        this.hasIdentity().then(function (isUserLoggedIn) {
+            if(config.options.authenticationRequired && !isUserLoggedIn) {
+                $state.go('root.login');
+            }
+
+            if(isUserLoggedIn && $state.current.name === 'root.login') {
+                $state.go('root.dashboard');
+            }
+        });
     }
 }());
