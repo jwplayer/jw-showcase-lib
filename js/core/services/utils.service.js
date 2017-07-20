@@ -37,7 +37,8 @@
      * @name jwShowcase.core.utils
      * @description Collection of utility functions
      */
-    function utils () {
+    utils.$inject = ['$location'];
+    function utils ($location) {
 
         this.flatMap                = flatMap;
         this.ucfirst                = ucfirst;
@@ -51,6 +52,9 @@
         this.secondsToISO8601       = secondsToISO8601;
         this.memoize                = memoize;
         this.addStylesheetRules     = addStylesheetRules;
+        this.composeFacebookLink    = composeFacebookLink;
+        this.composeTwitterLink     = composeTwitterLink;
+        this.composeEmailLink       = composeEmailLink;
 
         ////////////////////////
 
@@ -389,6 +393,62 @@
                 // Insert CSS Rule
                 styleSheet.insertRule(selector + '{' + propStr + '}', styleSheet.cssRules.length);
             }
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.utils#composeFacebookLink
+         * @methodOf jwShowcase.core.utils
+         *
+         * @description
+         * Compose a Facebook share link
+         *
+         * @returns {string}        Share link
+         */
+        function composeFacebookLink () {
+
+            var facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u={url}';
+
+            return facebookShareLink
+                .replace('{url}', encodeURIComponent($location.absUrl()));
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.utils#composeTwitterLink
+         * @methodOf jwShowcase.core.utils
+         *
+         * @description
+         * Compose a Twitter share link
+         *
+         * @returns {string}        Share link
+         */
+        function composeTwitterLink (title) {
+
+            var twitterShareLink = 'http://twitter.com/share?text={text}&amp;url={url}';
+
+            return twitterShareLink
+                .replace('{url}', encodeURIComponent($location.absUrl()))
+                .replace('{text}', encodeURIComponent(title));
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.utils#composeEmailLink
+         * @methodOf jwShowcase.core.utils
+         *
+         * @description
+         * Compose a Email share link
+         *
+         * @returns {string}        Share link
+         */
+        function composeEmailLink (title) {
+
+            var twitterShareLink = 'mailto:?subject={subject}&body={url}';
+
+            return twitterShareLink
+                .replace('{url}', encodeURIComponent($location.absUrl()))
+                .replace('{subject}', encodeURIComponent(title));
         }
     }
 

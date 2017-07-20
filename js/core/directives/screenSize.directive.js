@@ -20,12 +20,12 @@
         .module('jwShowcase.core')
         .directive('jwScreenSize', jwScreenSize);
 
-    jwScreenSize.$inject = ['$animate', '$compile', 'platform'];
-    function jwScreenSize ($animate, $compile, platform) {
+    jwScreenSize.$inject = ['$animate', '$compile', '$parse', 'platform'];
+    function jwScreenSize ($animate, $compile, $parse, platform) {
         return {
             multiElement: true,
             transclude:   'element',
-            priority:     600,
+            priority:     500,
             terminal:     true,
             restrict:     'A',
             $$tlb:        true,
@@ -36,17 +36,45 @@
             var block, childScope, previousElements;
             var screenSize   = platform.screenSize();
             var breakpoints  = $attr.jwScreenSize.replace(/ /g, '').split(',');
-            var shouldRender = breakpoints.indexOf(screenSize) !== -1;
+            var shouldRender = getShouldRender();
 
-            window.addEventListener('resize', resizeHandler);
+            activate();
 
-            $scope.$on('$destroy', function () {
-                window.removeEventListener('resize', resizeHandler);
-            });
+            //////////////////
 
-            // initial update
-            update();
+            /**
+             * Initialize directive
+             */
+            function activate () {
 
+                window.addEventListener('resize', resizeHandler);
+
+                $scope.$on('$destroy', function () {
+                    window.removeEventListener('resize', resizeHandler);
+                });
+
+                // initial update
+                update();
+            }
+
+            /**
+             * Returns true if the directive should render
+             * @returns {boolean}
+             */
+            function getShouldRender () {
+
+                var render = breakpoints.indexOf(screenSize) !== -1;
+
+                if (!render && $attr.jwScreenSizeOr) {
+                    render = $parse($attr.jwScreenSizeOr)($scope);
+                }
+
+                return render;
+            }
+
+            /**
+             * Handle browser resize event
+             */
             function resizeHandler () {
                 var newScreenSize = platform.screenSize();
                 var render;
@@ -57,7 +85,7 @@
                 }
 
                 screenSize = newScreenSize;
-                render     = breakpoints.indexOf(screenSize) !== -1;
+                render     = getShouldRender();
 
                 if (render !== shouldRender) {
                     shouldRender = render;
@@ -66,13 +94,16 @@
                 }
             }
 
+            /**
+             * Handle update when the shouldRender value changes
+             */
             function update () {
 
                 if (shouldRender) {
                     if (!childScope) {
                         $transclude(function (clone, newScope) {
                             childScope            = newScope;
-                            clone[clone.length++] = $compile.$$createComment('end ngIf', $attr.ngIf);
+                            clone[clone.length++] = $compile.$$createComment('end jwScreenSize', $attr.ngIf);
                             // Note: We only need the first/last node of the cloned nodes.
                             // However, we need to keep the reference to the jqlite wrapper as it might be changed later
                             // by a directive with templateUrl when its template arrives.

@@ -26,17 +26,16 @@
      *
      * @requires $timeout
      * @requires $location
-     * @requires popupInstance
      * @requires jwShowcase.core.utils
      */
-    ShareController.$inject = ['$timeout', '$location', 'popupInstance', 'utils', 'item'];
-    function ShareController ($timeout, $location, popupInstance, utils, item) {
+    ShareController.$inject = ['$timeout', '$location', 'utils', 'item'];
+    function ShareController ($timeout, $location, utils, item) {
 
         var vm = this;
 
-        vm.facebookShareLink = composeFacebookLink();
-        vm.twitterShareLink  = composeTwitterLink();
-        vm.emailShareLink    = composeEmailLink();
+        vm.facebookShareLink = utils.composeFacebookLink();
+        vm.twitterShareLink  = utils.composeTwitterLink(item.title);
+        vm.emailShareLink    = utils.composeEmailLink(item.title);
         vm.copyResult        = null;
 
         vm.copyUrl = copyUrl;
@@ -63,48 +62,6 @@
             $timeout(function () {
                 vm.copyResult = null;
             }, 2000);
-        }
-
-
-        /**
-         * Compose a Facebook share link with the current URL
-         *
-         * @returns {string}
-         */
-        function composeFacebookLink () {
-
-            var facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u={url}';
-
-            return facebookShareLink
-                .replace('{url}', encodeURIComponent($location.absUrl()));
-        }
-
-        /**
-         * Compose a Twitter share link with the current URL and title
-         *
-         * @returns {string}
-         */
-        function composeTwitterLink () {
-
-            var twitterShareLink = 'http://twitter.com/share?text={text}&amp;url={url}';
-
-            return twitterShareLink
-                .replace('{url}', encodeURIComponent($location.absUrl()))
-                .replace('{text}', encodeURIComponent(item.title));
-        }
-
-        /**
-         * Compose a Email share link with the current URL and title
-         *
-         * @returns {string}
-         */
-        function composeEmailLink () {
-
-            var twitterShareLink = 'mailto:?subject={subject}&body={url}';
-
-            return twitterShareLink
-                .replace('{url}', encodeURIComponent($location.absUrl()))
-                .replace('{subject}', encodeURIComponent(item.title));
         }
     }
 

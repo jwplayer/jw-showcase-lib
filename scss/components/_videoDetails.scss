@@ -27,6 +27,15 @@
         line-height: rem(32px);
     }
 
+    &-share {
+        padding: 0 $base-spacing;
+        float: right;
+
+        .jw-button {
+            padding: 0 2px;
+        }
+    }
+
     &-description {
         margin-bottom: $base-spacing;
     }

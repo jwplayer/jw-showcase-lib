@@ -13,7 +13,10 @@
         <div class="jw-video-layout-align">
           <div class="jw-row" ng-if="vm.config.options.videoTitlePosition === 'above'">
             <jw-video-details item="vm.item">
-              <jw-video-details-title></jw-video-details-title>
+              <jw-video-details-title>
+                <jw-video-details-share item="vm.item" ng-if="vm.config.options.videoTitlePosition === 'above'">
+                </jw-video-details-share>
+              </jw-video-details-title>
             </jw-video-details>
           </div>
 
