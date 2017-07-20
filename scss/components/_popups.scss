@@ -63,6 +63,8 @@
         @include flex-direction(column);
         @include align-items(center);
 
+        max-width: 550px;
+
         .jw-login-social-buttons {
             width: 200px;
 
@@ -153,6 +155,7 @@
     right: 0;
     bottom: 0;
     padding: 30px calc(50vw - 250px);
+    max-width: none;
 }
 
 %cover {
