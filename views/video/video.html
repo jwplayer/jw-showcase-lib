@@ -58,12 +58,11 @@
         <jw-ad-slot slot-id="below-video" class="jw-row pb"></jw-ad-slot>
       </div>
 
-      <div class="jw-video-layout-rail" ng-if="vm.enableRail">
+      <div class="jw-video-layout-rail" ng-if="vm.enableRail && vm.activeFeed.playlist.length > 1">
         <jw-rail
             feed="vm.activeFeed"
             currently-playing="vm.item"
-            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"
-            ng-if="vm.activeFeed.playlist.length > 1">
+            on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)">
         </jw-rail>
       </div>
     </div>
