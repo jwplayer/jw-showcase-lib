@@ -5,7 +5,7 @@
     @import '../mixins/theme';
 
     // override variables
-    $body-bg: #2a374c;
+    $body-bg: #354560;
 
     $btn-light-bg: #5b6064;
     $btn-light-color: $white;
@@ -37,14 +37,17 @@
     $header-bg: #1e273f;
     $header-color: $white;
 
-    $video-layout-bg: #354560;
+    $video-layout-bg: transparent;
 
     $scroll-track-bg: $gray-darker;
     $scroll-indicator-bg: #7f899a;
 
+    $rail-bg: transparent;
     $rail-header-bg: #2c374a;
     $rail-header-color: $white;
     $rail-item-color: $white;
+    $rail-item-hover-bg: #435470;
+    $rail-button-color: $white;
 
 
     $video-details-bg: #354560;
