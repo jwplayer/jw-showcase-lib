@@ -302,9 +302,10 @@
          */
         function onReady (event) {
 
-            if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
-                this.getContainer().focus();
-            }
+            // Disabled because it scrolls down to the player
+            // if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
+            //     this.getContainer().focus();
+            // }
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;
