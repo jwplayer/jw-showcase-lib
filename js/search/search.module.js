@@ -37,6 +37,7 @@
                 templateUrl: 'views/search/search.html',
                 scrollTop:   'last',
                 persistent:  true,
+                history:     false,
                 resolve:     {
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
                         function ($q, config, $stateParams, apiConsumer) {
