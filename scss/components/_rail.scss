@@ -1,15 +1,13 @@
-
 //
 // jwRightRail
 // --------------------------------
 .jw-side-rail {
-    padding-bottom: $base-spacing;
 
     &-header {
         @include display-flex();
         @include align-items(center);
         height: 40px;
-        margin: 0 $base-spacing $base-spacing;
+        padding: 0 $base-spacing;
 
         font-size: 14px;
         font-weight: 800;
@@ -26,25 +24,44 @@
         list-style-type: none;
     }
 
-    &-ad {
-        padding-bottom: $base-spacing;
-    }
-
     &-item {
         @include display-flex();
-        padding: 0 $base-spacing $base-spacing;
+        @include single-transition(background, 0.2s, ease);
+        padding: $base-spacing;
         cursor: pointer;
 
         &:focus,
         &:hover {
-            // todo
+            .jw-side-rail-item-image-overlay {
+                opacity: 1;
+            }
         }
 
         &-image {
             @include flex(0 0 160px);
+            position: relative;
             width: 160px;
             height: 90px;
             margin-right: 10px;
+
+            > img {
+                width: 160px;
+                height: 90px;
+            }
+
+            &-overlay {
+                @include cover();
+                @include display-flex();
+                @include align-items(center);
+                @include justify-content(center);
+                @include single-transition(opacity, 0.2s, ease);
+                background-color: rgba($black, 0.3);
+                opacity: 0;
+
+                .jw-button-play {
+                    font-size: 0.825em;
+                }
+            }
         }
 
         &-info {
@@ -62,12 +79,11 @@
         }
     }
 
-    &-button {
+    &-control {
         padding: 0 $base-spacing;
 
         .jw-button {
             width: 100%;
-            color: $blue;
         }
     }
 }
@@ -80,7 +96,7 @@
             font-size: rem(14px);
         }
 
-        &-button {
+        &-control {
             text-align: center;
 
             .jw-button {
@@ -102,6 +118,5 @@
         &-item {
             @include flex(0 0 50%);
         }
-
     }
 }

@@ -8,9 +8,14 @@
         aria-label="{{ vm.firstItem.title }}"
         ng-if="vm.firstItem">
 
-      <img ng-src="{{ vm.firstItem.image }}"
-          alt="{{ vm.firstItem.name}} poster image"
-          class="jw-side-rail-item-image">
+      <div class="jw-side-rail-item-image">
+        <img ng-src="{{ vm.firstItem.image }}" alt="{{ vm.firstItem.name}} poster image">
+        <div class="jw-side-rail-item-image-overlay">
+          <a class="jw-button jw-button-play">
+            <i class="jwy-icon jwy-icon-play"></i>
+          </a>
+        </div>
+      </div>
       <div class="jw-side-rail-item-info">
         <strong>{{ vm.firstItem.title }}</strong><br/>
         {{ vm.firstItem.description }}
@@ -25,15 +30,22 @@
         tabindex="0"
         role="button"
         aria-label="{{ ::item.title }}">
-      <img ng-src="{{ ::item.image }}" alt="{{ ::item.name}} poster image" class="jw-side-rail-item-image">
+      <div class="jw-side-rail-item-image">
+        <img ng-src="{{ ::item.image }}" alt="{{ ::item.name}} poster image">
+        <div class="jw-side-rail-item-image-overlay">
+          <a class="jw-button jw-button-play">
+            <i class="jwy-icon jwy-icon-play"></i>
+          </a>
+        </div>
+      </div>
       <div class="jw-side-rail-item-info">
         <strong>{{ ::item.title }}</strong><br/>
         {{ ::item.description }}
       </div>
     </li>
   </ul>
-  <div class="jw-side-rail-button" ng-if="vm.items.length > vm.itemsLimit">
-    <jw-button class="jw-button-dark" ng-click="vm.showMoreButtonClickHandler()">
+  <div class="jw-side-rail-control" ng-if="vm.items.length > vm.itemsLimit">
+    <jw-button class="jw-button-default" ng-click="vm.showMoreButtonClickHandler()">
       Show more
     </jw-button>
   </div>

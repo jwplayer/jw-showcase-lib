@@ -5,12 +5,14 @@
     @import '../mixins/theme';
 
     // override variables
-    $body-bg: #181818;
+    $body-bg: #141523;
+
+    $dark-color: #2b2c39;
 
     $btn-light-bg: #5b6064;
     $btn-light-color: $white;
 
-    $toolbar-bg: #333;
+    $toolbar-bg: $dark-color;
     $toolbar-color: $white;
 
     $btn-icon-nested-color: $toolbar-bg;
@@ -32,21 +34,21 @@
 
     $card-menu-bg: $black;
 
-    $header-bg: $black;
+    $header-bg: #000;
     $header-color: $white;
 
-    $video-layout-bg: $black;
+    $video-layout-bg: transparent;
 
     $scroll-track-bg: $gray-darker;
     $scroll-indicator-bg: #7f899a;
 
-    $rail-header-bg: #3c3c3c;
+    $rail-bg: transparent;
+    $rail-header-bg: $dark-color;
     $rail-header-color: $white;
-    $rail-item-bg: #262626;
     $rail-item-color: $white;
-    $rail-item-bg-hover: #3c3c3c;
+    $rail-item-hover-bg: rgba(255, 255, 255, 0.05);
+    $rail-button-color: $white;
 
-    $video-details-bg: $black;
     $video-details-color: $white;
 
     $footer-color: $white;

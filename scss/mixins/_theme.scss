@@ -13,7 +13,7 @@
 
     // Body
 
-    $body-bg: #d6dbe5 !default;
+    $body-bg: #e2e5ec !default;
     $body-color: $dark-color !default;
     $body-font-family: Helvetica Neue, Helvetica, Arial, sans-serif !default;
 
@@ -127,11 +127,15 @@
 
     // Rail
 
-    $rail-bg: transparent !default;
+    $rail-bg: #d5dbe4 !default;
     $rail-header-border-bottom: none !default;
     $rail-header-bg: $white !default;
     $rail-header-color: $secondary-color !default;
-    $rail-item-color: $white;
+    $rail-item-color: $secondary-color !default;
+    $rail-item-hover-bg: #e3e7ec !default;
+    $rail-button-bg: transparent !default;
+    $rail-button-color: $secondary-color !default;
+    $rail-button-border-top: 1px solid $white !default;
 
     // Scroll
 
@@ -161,7 +165,7 @@
 
     // Video
 
-    $video-layout-bg: #e2e5ec !default;
+    $video-layout-bg: transparent !default;
 
     // VideoDetails
 
@@ -437,6 +441,8 @@
     // --------------------------------
 
     .jw-side-rail {
+        background-color: $rail-bg;
+
         &-header {
             border-bottom: $rail-header-border-bottom;
             background-color: $rail-header-bg;
@@ -445,10 +451,17 @@
 
         &-item {
             color: $rail-item-color;
+
+            &:focus,
+            &:hover {
+                background-color: $rail-item-hover-bg;
+            }
         }
 
-        &-scroll-wrapper {
-            background-color: $rail-bg;
+        &-control .jw-button {
+            border-top: $rail-button-border-top;
+            background-color: $rail-button-bg;
+            color: $rail-button-color;
         }
     }
 
