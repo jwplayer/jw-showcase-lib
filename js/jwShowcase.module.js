@@ -38,6 +38,7 @@
                 enableFeaturedText:        true,
                 enablePlayerAutoFocus:     true,
                 enableHeader:              true,
+                enableFooter:              true,
                 enableTags:                false,
                 enableGlobalSearch:        false,
                 rightRail:                 {
@@ -72,6 +73,8 @@
      * @property {Object}               options
      * @property {string}               options.backgroundColor
      * @property {string}               options.highlightColor
+     * @property {boolean}              options.enableHeader
+     * @property {boolean}              options.enableFooter
      * @property {boolean}              options.enableContinueWatching
      * @property {boolean}              options.enableCookieNotice
      * @property {boolean}              options.enablePlayerAutoFocus
