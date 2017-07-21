@@ -38,6 +38,7 @@
             templateUrl:  'views/core/rail.html',
             bindings:     {
                 feed:             '<',
+                title:            '<',
                 currentlyPlaying: '<',
                 onItemClick:      '&'
             }
@@ -52,12 +53,12 @@
 
         var vm = this;
 
-        vm.itemClickHandler = itemClickHandler;
+        vm.itemClickHandler           = itemClickHandler;
         vm.showMoreButtonClickHandler = showMoreButtonClickHandler;
 
-        vm.firstItem        = undefined;
-        vm.items            = [];
-        vm.itemsLimit       = 3;
+        vm.firstItem  = undefined;
+        vm.items      = [];
+        vm.itemsLimit = 3;
 
         vm.$onChanges = changeHandler;
 

@@ -82,6 +82,12 @@
         vm.activeFeed = null;
 
         /**
+         * Title of feed
+         * @type {string}
+         */
+        vm.activeFeedTitle = 'Next Up';
+
+        /**
          * Is true when the right rail is enabled.
          * @type {boolean}
          */
@@ -176,10 +182,11 @@
             // set activeFeed pointer to the recommendations feed when useRecommendationPlaylist is true and
             // recommendations exists
             if (config.options.useRecommendationPlaylist && recommendations) {
-                vm.activeFeed     = recommendations;
+                vm.activeFeed      = recommendations;
+                vm.activeFeedTitle = 'Related Videos';
             }
             else {
-                vm.activeFeed     = feed;
+                vm.activeFeed = feed;
             }
         }
 

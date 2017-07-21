@@ -63,6 +63,7 @@
 
       <div class="jw-video-layout-rail" ng-if="vm.enableRail && vm.activeFeed.playlist.length > 1">
         <jw-rail
+            title="vm.activeFeedTitle"
             feed="vm.activeFeed"
             currently-playing="vm.item"
             on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)">
@@ -73,6 +74,7 @@
 
   <div class="jw-row" ng-if="vm.activeFeed && !vm.enableRail">
     <jw-rail
+        title="vm.activeFeedTitle"
         feed="vm.activeFeed"
         currently-playing="vm.item"
         on-item-click="vm.cardClickHandler(newItem, clickedOnPlay)"
@@ -82,7 +84,7 @@
         feed="vm.activeFeed"
         first-item="vm.item"
         featured="false"
-        title="Next Up"
+        title="{{ vm.activeFeedTitle }}"
         class="jw-card-slider-flag-now-playing jw-lazy-load"
         on-card-click="vm.cardClickHandler"
         jw-screen-size="tablet,desktop">
