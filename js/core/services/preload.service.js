@@ -54,6 +54,9 @@
         configResolver
             .getConfig()
             .then(function (resolvedConfig) {
+                return angular.isFunction(window.configLoaded) ? window.configLoaded(resolvedConfig) : resolvedConfig;
+            })
+            .then(function (resolvedConfig) {
 
                 mergeSetValues(config, resolvedConfig);
                 applyConfigDefaults(config);
