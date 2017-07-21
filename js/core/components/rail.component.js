@@ -48,8 +48,8 @@
      * @ngdoc controller
      * @name jwShowcase.core.RailController
      */
-    RailController.$inject = [];
-    function RailController () {
+    RailController.$inject = ['$timeout'];
+    function RailController ($timeout) {
 
         var vm = this;
 
@@ -109,7 +109,11 @@
          */
         function showMoreButtonClickHandler () {
 
-            vm.itemsLimit = Math.min(vm.items.length, vm.itemsLimit + 5);
+            // Add a small delay to make it feel more natural when adding more items.
+            // It also prevents the click through.
+            $timeout(function () {
+                vm.itemsLimit = Math.min(vm.items.length, vm.itemsLimit + 5);
+            }, 50);
         }
     }
 
