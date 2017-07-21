@@ -133,9 +133,10 @@
     $rail-header-color: $secondary-color !default;
     $rail-item-color: $secondary-color !default;
     $rail-item-hover-bg: #e3e7ec !default;
-    $rail-button-bg: transparent !default;
-    $rail-button-color: $secondary-color !default;
-    $rail-button-border-top: 1px solid $white !default;
+
+    $rail-button-block-bg: transparent !default;
+    $rail-button-block-color: $secondary-color !default;
+    $rail-button-block-border-top: 1px solid $white !default;
 
     // Scroll
 
@@ -458,10 +459,10 @@
             }
         }
 
-        &-control .jw-button {
-            border-top: $rail-button-border-top;
-            background-color: $rail-button-bg;
-            color: $rail-button-color;
+        &-control .jw-button-block {
+            border-top: $rail-button-block-border-top;
+            background-color: $rail-button-block-bg;
+            color: $rail-button-block-color;
         }
     }
 

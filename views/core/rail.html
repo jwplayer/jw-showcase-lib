@@ -45,7 +45,10 @@
     </li>
   </ul>
   <div class="jw-side-rail-control" ng-if="vm.items.length > vm.itemsLimit">
-    <jw-button class="jw-button-default" ng-click="vm.showMoreButtonClickHandler()">
+    <jw-button class="jw-button-default jw-button-block" ng-click="vm.showMoreButtonClickHandler()" jw-screen-size="desktop">
+      Show more
+    </jw-button>
+    <jw-button class="jw-button-dark" ng-click="vm.showMoreButtonClickHandler()" jw-screen-size="mobile,tablet">
       Show more
     </jw-button>
   </div>
