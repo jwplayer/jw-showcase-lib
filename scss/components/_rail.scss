@@ -31,6 +31,12 @@
         padding: $base-spacing;
         cursor: pointer;
 
+        // disable animation when items are added or removed.
+        &.ng-leave,
+        &.ng-enter {
+            @include transition(none !important);
+        }
+
         &:focus,
         &:hover {
             .jw-side-rail-item-image-overlay {
