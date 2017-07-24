@@ -16,8 +16,6 @@
 
 (function () {
 
-    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
-
     angular
         .module('jwShowcase.video')
         .controller('VideoController', VideoController);
@@ -66,6 +64,12 @@
         vm.item = item;
 
         /**
+         * Config
+         * @type {jwShowcase.config}
+         */
+        vm.config = config;
+
+        /**
          * Loading flag
          * @type {boolean}
          */
@@ -78,16 +82,16 @@
         vm.activeFeed = null;
 
         /**
-         * Additional feed which can be recommendations or the item feed.
-         * @type {jwShowcase.core.feed}
+         * Title of feed
+         * @type {string}
          */
-        vm.extraFeed = null;
+        vm.activeFeedTitle = 'Next Up';
 
         /**
-         * Is true when the right rail is visible
+         * Is true when the right rail is enabled.
          * @type {boolean}
          */
-        vm.hasRightRail = config.options.rightRail.enabled && !MOBILE_SCREEN;
+        vm.enableRail = config.options.rightRail.enabled;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -175,17 +179,14 @@
          */
         function updateFeeds () {
 
-            // by default use the feed playlist as activeFeed and show the recommendations feed below
-            vm.activeFeed     = feed;
-            vm.extraFeed      = recommendations;
-            vm.extraFeedTitle = 'Related Videos';
-
             // set activeFeed pointer to the recommendations feed when useRecommendationPlaylist is true and
             // recommendations exists
             if (config.options.useRecommendationPlaylist && recommendations) {
-                vm.activeFeed     = recommendations;
-                vm.extraFeed      = feed;
-                vm.extraFeedTitle = vm.extraFeed.title;
+                vm.activeFeed      = recommendations;
+                vm.activeFeedTitle = 'Related Videos';
+            }
+            else {
+                vm.activeFeed = feed;
             }
         }
 
@@ -308,9 +309,10 @@
          */
         function onReady (event) {
 
-            if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
-                this.getContainer().focus();
-            }
+            // Disabled because it scrolls down to the player
+            // if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
+            //     this.getContainer().focus();
+            // }
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;

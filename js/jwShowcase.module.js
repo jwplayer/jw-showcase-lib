@@ -38,12 +38,15 @@
                 enableFeaturedText:        true,
                 enablePlayerAutoFocus:     true,
                 enableHeader:              true,
+                enableFooter:              true,
                 enableTags:                false,
                 enableGlobalSearch:        false,
                 rightRail:                 {
                     enabled: false
                 },
-                useRecommendationPlaylist: false
+                videoTitlePosition:        'below',
+                useRecommendationPlaylist: false,
+                displayAds:                false
             }
         });
 
@@ -70,9 +73,19 @@
      * @property {Object}               options
      * @property {string}               options.backgroundColor
      * @property {string}               options.highlightColor
+     * @property {boolean}              options.enableHeader
+     * @property {boolean}              options.enableFooter
      * @property {boolean}              options.enableContinueWatching
      * @property {boolean}              options.enableCookieNotice
      * @property {boolean}              options.enablePlayerAutoFocus
+     * @property {string}               options.videoTitlePosition
+     *
+     * @property {Object|boolean}       options.rightRail
+     * @property {boolean}              options.rightRail.enabled
+     *
+     * @property {Object|boolean}       options.displayAds
+     * @property {string}               options.displayAds.client
+     * @property {Array}                options.displayAds.slots
      */
 
     /**

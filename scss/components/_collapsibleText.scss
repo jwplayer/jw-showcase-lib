@@ -36,7 +36,8 @@
 
         .jw-button {
             @include transition(transform 0.3s ease 0s);
-            padding: 3px 10px;
+            top: -5px;
+            padding: 5px 15px;
 
             .jwy-icon {
                 font-size: rem(18px);

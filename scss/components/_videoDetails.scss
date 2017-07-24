@@ -3,38 +3,44 @@
 // --------------------------------
 
 .jw-video-details {
-    padding: 20px 0;
-
     color: $white;
     line-height: 1.4em;
     white-space: normal;
 
-    .jw-video-duration {
+    &-duration {
         display: inline-block;
+        padding: 0 8px;
+
+        background-color: $white;
+        color: $black;
+        font-size: rem(11px);
+        font-weight: normal;
+
         line-height: 19px;
-        vertical-align: bottom;
+        vertical-align: middle;
+    }
 
-        > span {
-            display: inline-block;
-            position: relative;
-            top: -1px;
-            padding: 0 8px;
+    &-title {
+        margin: 0 0 $base-spacing-heading;
+        font-size: rem(22px);
+        font-weight: bold;
+        line-height: rem(32px);
+    }
 
-            background-color: $white;
-            color: $black;
-            font-size: rem(11px);
-            font-weight: normal;
+    &-share {
+        padding: 0 $base-spacing;
+        float: right;
+
+        .jw-button {
+            padding: 0 2px;
         }
     }
 
-    .jw-video-title {
-        margin-bottom: 15px;
-        font-size: rem(22px);
-        font-weight: bold;
-        line-height: rem(26px);
+    &-description {
+        margin-bottom: $base-spacing;
     }
 
-    .jw-video-tags {
+    &-tags {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -44,7 +50,7 @@
             margin-right: 5px;
             margin-bottom: 5px;
 
-            .jw-video-tag {
+            .jw-video-details-tag {
                 padding: 3px 7px;
             }
         }

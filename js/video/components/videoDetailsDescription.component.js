@@ -18,29 +18,32 @@
 
     /**
      * @ngdoc component
-     * @name jwVideoDetails
+     * @name jwVideoDetailsDescription
      * @module jwShowcase.video
      *
      * @description
      *
      * # jwVideoDetails
-     * Render video details component.
+     * Render video details description component.
      *
      * @example
      *
      * ```html
-     * <jw-video-details item="item"></jw-video-details>
+     * <jw-video-details-description item="item"></jw-video-details-description>
      * ```
      */
     angular
         .module('jwShowcase.video')
-        .component('jwVideoDetails', {
-            templateUrl:  'views/video/videoDetails.html',
+        .component('jwVideoDetailsDescription', {
+            templateUrl:  'views/video/videoDetailsDescription.html',
             controller:   angular.noop,
             controllerAs: 'vm',
             transclude:   true,
+            require: {
+                jwVideoDetails: '^'
+            },
             bindings:     {
-                item: '<'
+                enableTags: '<'
             }
         });
 

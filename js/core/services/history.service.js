@@ -71,11 +71,19 @@
                         return;
                     }
 
-                    if (!goingBack) {
-                        add(fromUrl, fromState.name, angular.copy(fromParams));
+                    if (goingBack) {
+                        goingBack = false;
+                        return;
                     }
 
-                    goingBack = false;
+                    // update last history entry when history is set to false
+                    if (false === fromState.history && self.history.length && self.history[0][1] === fromState.name) {
+                        self.history[0][0] = fromUrl;
+                        self.history[0][2] = angular.copy(fromParams);
+                        return;
+                    }
+
+                    add(fromUrl, fromState.name, angular.copy(fromParams));
                 });
             }
 
