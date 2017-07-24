@@ -187,6 +187,7 @@ $default-slider-spacing: 90px;
     }
 
     .jw-card-slider-button {
+        @include transform(translateY(-50%));
         color: $white;
     }
 
