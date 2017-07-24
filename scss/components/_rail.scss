@@ -2,6 +2,7 @@
 // jwRightRail
 // --------------------------------
 .jw-side-rail {
+    margin-bottom: $base-spacing;
 
     &-header {
         @include display-flex();
@@ -20,7 +21,7 @@
     &-items {
         display: block;
         margin: 0;
-        padding: 0 0 $base-spacing;
+        padding: 0;
         list-style-type: none;
     }
 
@@ -93,6 +94,7 @@
         }
 
         &-control {
+            padding: $base-spacing;
             text-align: center;
 
             .jw-button {

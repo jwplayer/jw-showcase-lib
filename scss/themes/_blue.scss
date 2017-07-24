@@ -5,7 +5,7 @@
     @import '../mixins/theme';
 
     // override variables
-    $body-bg: #354560;
+    $body-bg: #2a374c;
     $body-color: $white;
 
     $btn-light-bg: #5b6064;
@@ -26,7 +26,7 @@
 
     $card-slider-title-color: $white;
     $card-slider-button-color: $white;
-    $card-slider-odd-bg-color: #2a374c;
+    $card-slider-odd-bg-color: #354560;
 
     $card-info-bg: #1e273f;
     $card-info-color: $white;
@@ -38,7 +38,7 @@
     $header-bg: #1e273f;
     $header-color: $white;
 
-    $video-layout-bg: transparent;
+    $video-layout-bg: #354560;
 
     $scroll-track-bg: $gray-darker;
     $scroll-indicator-bg: #7f899a;

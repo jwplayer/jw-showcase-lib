@@ -3,22 +3,25 @@
 // --------------------------------
 
 .jw-video-layout {
-    max-width: $video-layout-width;
-    margin: 0 auto;
     padding-top: $base-spacing-heading;
 
-    .jw-video-layout-align {
+    &-align {
         padding-right: 90px;
         padding-left: 90px;
     }
 
+    &-row {
+        max-width: $video-layout-width;
+        margin: 0 auto;
+    }
+
     &-flag-rail {
-        max-width: $video-layout-right-rail-width;
         padding-right: 0;
         padding-left: 0;
 
         .jw-video-layout-row {
             @include display-flex();
+            max-width: $video-layout-right-rail-width;
         }
 
         .jw-video-layout-main {
@@ -40,7 +43,7 @@
 
     .jw-video-layout {
 
-        .jw-video-layout-align {
+        &-align {
             padding: 0;
         }
 
