@@ -26,8 +26,8 @@
      *
      * @requires popupInstance
      */
-    AccountInfoController.$inject = ['auth', 'popupInstance', 'popup', 'user'];
-    function AccountInfoController (auth, popupInstance, popup, user) {
+    AccountInfoController.$inject = ['auth', 'popupInstance', 'popup', 'user', '$window'];
+    function AccountInfoController (auth, popupInstance, popup, user, $window) {
 
         var vm = this;
 
@@ -57,7 +57,7 @@
                                 return popup.alert('Account deleted!');
                             })
                             .then(function() {
-                                window.location.reload();
+                                $window.location.reload();
                             })
                             .catch(function(error) {
                                 popup.alert('Account could not be deleted. Try again later.');

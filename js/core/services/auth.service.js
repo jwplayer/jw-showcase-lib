@@ -19,9 +19,9 @@
         .module('jwShowcase.core')
         .service('auth', AuthService);
 
-    AuthService.$inject = ['$firebaseAuth', 'config'];
+    AuthService.$inject = ['$firebaseAuth', 'config', '$window', '$rootScope', '$state'];
 
-    function AuthService($firebaseAuth, config) {
+    function AuthService($firebaseAuth, config, $window, $rootScope, $state) {
         if (!config.options.useAuthentication) {
             return;
         }
@@ -43,7 +43,7 @@
 
         this.logout = function() {
             auth.$signOut();
-            window.location.reload();
+            $window.location.reload();
         };
 
         this.getToken = function() {
@@ -55,5 +55,35 @@
                 return identity.getToken();
             });
         };
+
+        this.isEmailDomainAllowed = function (email) {
+            if (!config.options.restrictedDomains) {
+                return true;
+            }
+
+            if(!email) {
+                return false;
+            }
+
+            var domainOfEmail = email.replace(/.*@/, '');
+
+            for (var i = 0; i < config.options.restrictedDomains.length; i++) {
+                if (domainOfEmail === config.options.restrictedDomains[i]) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        this.hasIdentity().then(function (isUserLoggedIn) {
+            if(config.options.authenticationRequired && !isUserLoggedIn) {
+                $state.go('root.login');
+            }
+
+            if(isUserLoggedIn && $state.current.name === 'root.login') {
+                $state.go('root.dashboard');
+            }
+        });
     }
 }());

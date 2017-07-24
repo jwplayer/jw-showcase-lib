@@ -34,6 +34,13 @@
         text-align: center;
     }
 
+    .jw-forgot-password {
+        font-size: 0.9rem;
+        text-align: center;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
     .jw-popup-buttons {
         text-align: center;
 
@@ -52,10 +59,14 @@
     }
 
     &-login {
-        .jw-login-social-buttons,
-        .jw-form {
-            width: 60%;
-            margin-left: 20%;
+        @include display-flex;
+        @include flex-direction(column);
+        @include align-items(center);
+
+        max-width: 550px;
+
+        .jw-login-social-buttons {
+            width: 200px;
 
             .jw-button {
                 color: $white;
@@ -65,6 +76,23 @@
                 }
             }
         }
+
+        .jw-button-block {
+            justify-content: center;
+
+            .jw-button {
+                flex: 1 0;
+            }
+
+            .jw-between-text {
+                margin-bottom: 0;
+                padding: 0 10px;
+            }
+        }
+
+        .jw-form {
+            width: 100%;
+        }
     }
 
     .jw-button-row {
@@ -72,8 +100,7 @@
         @include align-items(center);
 
         .jw-button,
-        .jw-button:not(:last-child),
-        .jw-between-text {
+        .jw-button:not(:last-child) {
             @include flex(1 1 100%);
             margin-top: 0;
             margin-bottom: 0;
@@ -119,6 +146,16 @@
         left: 0;
         width: 100%;
     }
+}
+
+.jw-popup-as-page {
+    @include transform(translate(0, 0));
+    top: $header-height;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: none;
+    padding: 30px calc(50vw - 250px);
 }
 
 %cover {

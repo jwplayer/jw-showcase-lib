@@ -1,16 +1,19 @@
-<div class="jw-popup jw-popup-login">
+<div class="jw-popup jw-popup-login jw-popup-signup">
     <h3 class="jw-popup-title">Sign up</h3>
     <p class="jw-popup-text">Create a JW Showcase account to enjoy our service on multiple devices.</p>
     <form class="jw-form" name="signUpForm" ng-submit="vm.signUp(vm.user.email, vm.user.password)" novalidate>
         <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="email" name="email" class="jw-form-control" id="email" placeholder="Email address" ng-model="vm.user.email"
-                   floating-label required>
+            <input type="email" name="email" class="jw-form-control" id="email" placeholder="Email address" tabindex="0" ng-model="vm.user.email"
+                   floating-label required restricted-domain>
             <div class="jw-form-group-warnings">
-                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.required" class="jw-form-group-warning">
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.required" class="jw-form-group-warning">
                     <b>Warning:</b> An email address is required to sign up
                 </p>
-                <p ng-if="signUpForm.email.$dirty && signUpForm.email.$error.email" class="jw-form-group-warning">
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.email" class="jw-form-group-warning">
                     <b>Warning:</b> The email address is not a valid email address
+                </p>
+                <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.restrictedDomain" class="jw-form-group-warning">
+                    <b>Warning:</b> This email domain is not allowed.
                 </p>
             </div>
         </div>
@@ -37,12 +40,12 @@
                 </p>
             </div>
         </div>
-        <div class="jw-form-group jw-form-group-">
-            <input type="checkbox" ng-model="vm.user.agreedToTerms">
-            <span>By signing up I agree to have read and agree to the terms and conditions</span>
+        <div class="jw-form-group">
+            <input type="checkbox" id="checkbox-terms" class="jw-checkbox-terms" ng-model="vm.user.agreedToTerms">
+            <label for="checkbox-terms">By signing up I agree to have read and agree to the terms and conditions</label>
         </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
+            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>

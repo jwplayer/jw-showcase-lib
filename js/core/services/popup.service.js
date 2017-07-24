@@ -311,6 +311,10 @@
                 $document.off('scroll', handleScroll);
             };
 
+            this.isPage = function () {
+                return false;
+            };
+
             /**
              * Handle document scroll event
              */

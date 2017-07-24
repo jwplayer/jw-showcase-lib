@@ -27,6 +27,7 @@
             'jwShowcase.error',
             'jwShowcase.dashboard',
             'jwShowcase.feed',
+            'jwShowcase.login',
             'jwShowcase.search',
             'jwShowcase.tag',
             'jwShowcase.video'

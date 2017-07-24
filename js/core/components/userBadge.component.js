@@ -54,6 +54,10 @@
         vm.showAccountInfo = showAccountInfo;
         vm.logout = logout;
 
+        auth.getIdentity().then(function (identity) {
+           vm.identity = identity;
+        });
+
 
         var firebaseAuth = auth.firebaseAuth;
 
@@ -69,7 +73,6 @@
                     }
                 });
             }
-
         }
 
         function showAccountInfo() {
