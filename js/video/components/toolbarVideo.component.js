@@ -44,12 +44,14 @@
             }
         });
 
-    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'serviceWorker'];
-    function ToolbarVideoController ($scope, popup, watchlist, serviceWorker) {
+    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'serviceWorker', 'platform', 'config'];
+    function ToolbarVideoController ($scope, popup, watchlist, serviceWorker, platform, config) {
 
         var vm = this;
 
+        vm.config      = config;
         vm.inWatchlist = false;
+        vm.screenSize  = platform.screenSize();
 
         vm.shareButtonClickHandler     = shareButtonClickHandler;
         vm.watchlistButtonClickHandler = watchlistButtonClickHandler;
@@ -81,12 +83,12 @@
         function shareButtonClickHandler (event) {
 
             popup.show({
-                controller: 'ShareController as vm',
+                controller:  'ShareController as vm',
                 templateUrl: 'views/core/popups/share.html',
-                resolve: {
+                resolve:     {
                     item: vm.item
                 },
-                target: event.target
+                target:      event.target
             });
         }
 

@@ -1,32 +1,21 @@
-
 //
 // jwRightRail
 // --------------------------------
 .jw-side-rail {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding-left: 12px;
+    margin-bottom: $base-spacing;
 
     &-header {
         @include display-flex();
         @include align-items(center);
-        width: 100%;
         height: 40px;
-        padding: 0 20px;
+        padding: 0 $base-spacing;
 
         font-size: 14px;
         font-weight: 800;
     }
 
     &-scroll-wrapper {
-        display: block;
         position: relative;
-
-        width: 100%;
-        height: calc(100% - 40px);
-
-        overflow: hidden;
     }
 
     &-items {
@@ -37,61 +26,101 @@
     }
 
     &-item {
-        display: block;
+        @include display-flex();
+        @include single-transition(background, 0.2s, ease);
+        padding: $base-spacing;
         cursor: pointer;
 
-        // first element is the currently playing item
-        &:first-child {
-            display: none;
+        // disable animation when items are added or removed.
+        &.ng-leave,
+        &.ng-enter {
+            @include transition(none !important);
         }
 
         &:focus,
         &:hover {
-
-            .jw-side-rail-item-overlay {
-                background-color: rgba($black, 0);
+            .jw-side-rail-item-image-overlay {
+                opacity: 1;
             }
         }
 
-        &-aspect {
-            position: relative;
-            padding-top: (9 / 16) * 100%;
-        }
-
         &-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            @include flex(0 0 160px);
+            position: relative;
+            width: 160px;
+            height: 90px;
+            margin-right: 10px;
+
+            > img {
+                width: 160px;
+                height: 90px;
+            }
+
+            &-overlay {
+                @include cover();
+                @include display-flex();
+                @include align-items(center);
+                @include justify-content(center);
+                @include single-transition(opacity, 0.2s, ease);
+                background-color: rgba($black, 0.3);
+                opacity: 0;
+
+                .jw-button-play {
+                    font-size: 0.825em;
+                }
+            }
         }
 
-        &-overlay {
-            @include single-transition(background-color, 0.15s, ease-in);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba($black, 0.25);
+        &-info {
+            @include align-self(center);
+            display: -webkit-box;
+            max-height: 5rem;
+            margin: 4px 0;
+
+            font-size: 0.8rem;
+            line-height: 1rem;
+            overflow: hidden;
+
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
         }
+    }
 
-        &-title {
-            display: block;
-
-            position: absolute;
-            bottom: 15px;
-            left: 20px;
-
-            margin: 0;
-            font-size: rem(17px);
-            line-height: rem(17px);
-        }
+    &-control {
+        padding: 0 $base-spacing;
     }
 }
 
 @include mobile-and-tablet () {
-    .jw-side-rail-item-title {
-        font-size: rem(14px);
+
+    .jw-side-rail {
+
+        &-item-title {
+            font-size: rem(14px);
+        }
+
+        &-control {
+            padding: $base-spacing;
+            text-align: center;
+
+            .jw-button {
+                width: 200px;
+            }
+        }
+    }
+}
+
+@include tablet-only () {
+
+    .jw-side-rail {
+
+        &-items {
+            @include display-flex();
+            @include flex-flow(wrap);
+        }
+
+        &-item {
+            @include flex(0 0 50%);
+        }
     }
 }

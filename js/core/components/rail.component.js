@@ -37,9 +37,10 @@
             controller:   RailController,
             templateUrl:  'views/core/rail.html',
             bindings:     {
-                feed:        '<',
-                firstItem:   '<',
-                onItemClick: '&'
+                feed:             '<',
+                title:            '<',
+                currentlyPlaying: '<',
+                onItemClick:      '&'
             }
         });
 
@@ -47,14 +48,17 @@
      * @ngdoc controller
      * @name jwShowcase.core.RailController
      */
-    RailController.$inject = [];
-    function RailController () {
+    RailController.$inject = ['$timeout'];
+    function RailController ($timeout) {
 
         var vm = this;
 
-        vm.itemClickHandler = itemClickHandler;
-        vm.scrollDelegate   = undefined;
-        vm.playlist         = [];
+        vm.itemClickHandler           = itemClickHandler;
+        vm.showMoreButtonClickHandler = showMoreButtonClickHandler;
+
+        vm.firstItem  = undefined;
+        vm.items      = [];
+        vm.itemsLimit = 3;
 
         vm.$onChanges = changeHandler;
 
@@ -65,18 +69,25 @@
          */
         function changeHandler () {
 
-            if (!vm.firstItem) {
-                vm.playlist = vm.feed.playlist;
+            if (!vm.currentlyPlaying) {
+                vm.items = vm.feed.playlist.slice();
                 return;
             }
 
-            var firstItemIndex = vm.feed.playlist.findIndex(function (item) {
-                return item.mediaid === vm.firstItem.mediaid;
+            var currentlyPlayingIndex = vm.feed.playlist.findIndex(function (item) {
+                return item.mediaid === vm.currentlyPlaying.mediaid;
             });
 
-            vm.playlist = vm.feed.playlist
-                .slice(firstItemIndex)
-                .concat(vm.feed.playlist.slice(0, firstItemIndex));
+            // copy and reorder playlist
+            vm.items = vm.feed.playlist
+                .slice(currentlyPlayingIndex)
+                .concat(vm.feed.playlist.slice(0, currentlyPlayingIndex));
+
+            // remove currently playing
+            vm.items.shift();
+
+            // set first item
+            vm.firstItem = vm.items.shift();
         }
 
         /**
@@ -91,13 +102,19 @@
 
             // call function
             vm.onItemClick({newItem: item, clickedOnPlay: false});
-
-            // scroll back to top
-            if (vm.scrollDelegate) {
-                vm.scrollDelegate.scrollTo(0, 0, 300);
-            }
         }
 
+        /**
+         * Handle click on show more button
+         */
+        function showMoreButtonClickHandler () {
+
+            // Add a small delay to make it feel more natural when adding more items.
+            // It also prevents the click through.
+            $timeout(function () {
+                vm.itemsLimit = Math.min(vm.items.length, vm.itemsLimit + 5);
+            }, 50);
+        }
     }
 
 }());

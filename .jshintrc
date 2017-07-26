@@ -59,6 +59,7 @@
         "jwplayer": false,
         "$": false,
         "UAParser": false,
-        "IScroll": false
+        "IScroll": false,
+        "googletag": false
     }
 }

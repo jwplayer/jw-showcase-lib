@@ -20,6 +20,8 @@ $green: #393 !default;
 // --------------------------------
 
 $body-font-size: 16px !default;
+$base-spacing: 12px !default;
+$base-spacing-heading: 20px !default;
 
 $jwy-icon-path: '../fonts' !default;
 
@@ -32,7 +34,7 @@ $container-width-desktop: 800px !default;
 // --------------------------------
 
 $mobile-max-width: 767px !default;
-$tablet-max-width: 991px !default;
+$tablet-max-width: 1023px !default;
 
 $tablet-min-width: $mobile-max-width + 1 !default;
 $desktop-min-width: $tablet-max-width + 1 !default;
@@ -70,8 +72,8 @@ $toggle-button-size: 25px !default;
 // VideoLayout
 // --------------------------------
 
-$video-layout-width: $container-width-desktop !default;
-$video-layout-right-rail-width: 1320px !default;
+$video-layout-width: 1024px !default;
+$video-layout-right-rail-width: 1240px !default;
 
 //
 // Z-index

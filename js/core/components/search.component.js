@@ -44,11 +44,10 @@
      *
      * @requires jwShowcase.config
      */
-    SearchController.$inject = ['$rootScope', '$state', 'config', 'apiConsumer'];
-    function SearchController ($rootScope, $state, config, apiConsumer) {
+    SearchController.$inject = ['$rootScope', '$state', 'config', 'utils'];
+    function SearchController ($rootScope, $state, config, utils) {
 
-        var vm        = this,
-            searching = false;
+        var vm        = this;
 
         vm.config = config;
 
@@ -69,11 +68,15 @@
          */
         function activate () {
 
-            $rootScope.$on('$stateChangeSuccess', function (event, toState) {
+            $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams) {
 
                 if ('root.search' !== toState.name) {
                     vm.searchPhrase    = '';
                     vm.searchBarActive = false;
+                }
+                else {
+                    vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
+                    vm.searchBarActive = true;
                 }
             });
         }
@@ -152,24 +155,9 @@
          */
         function searchAndDisplayResults () {
 
-            if (searching) {
-                return;
-            }
-
-            searching = true;
-
-            apiConsumer
-                .getSearchFeed(vm.searchPhrase)
-                .then(function () {
-
-                    if ($state.$current.name !== 'root.search') {
-                        $state.go('root.search');
-                    }
-                })
-                .finally(function () {
-                    searching = false;
-                    $rootScope.$broadcast('$viewContentUpdated');
-                });
+            $state.go('root.search', {
+                query: utils.slugify(vm.searchPhrase, '+')
+            });
         }
     }
 

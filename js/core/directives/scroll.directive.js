@@ -82,6 +82,9 @@
                     instance.destroy();
 
                     scrollElement.off('keyup', keyupEventHandler);
+                    scrollElement.off('wheel', wheelEventHandler);
+                    scrollElement.off('mousewheel', wheelEventHandler);
+                    scrollElement.off('DOMMouseScroll', wheelEventHandler);
                 }
 
                 scope.delegate = null;
@@ -100,6 +103,33 @@
                 });
 
                 scrollElement.on('keyup', keyupEventHandler);
+                scrollElement.on('wheel', wheelEventHandler);
+                scrollElement.on('mousewheel', wheelEventHandler);
+                scrollElement.on('DOMMouseScroll', wheelEventHandler);
+            }
+
+            /**
+             * Handle wheel events
+             * @param event
+             */
+            function wheelEventHandler (event) {
+
+                if (!instance) {
+                    return;
+                }
+
+                if (event.deltaY < 0 && instance.y === 0) {
+                    instance.enabled = false;
+                }
+                else if (event.deltaY > 0 && instance.y <= instance.maxScrollY) {
+                    instance.enabled = false;
+                }
+                else if (!instance.enabled) {
+
+                    // re-enable iScroll. Call prevent default to prevent scrolling both parent and scroll element.
+                    instance.enabled = true;
+                    event.preventDefault();
+                }
             }
 
             /**
