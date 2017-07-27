@@ -66,6 +66,11 @@
       </div>
 
       <div class="jw-video-layout-rail" ng-if="vm.enableRail && vm.activeFeed.playlist.length > 1">
+        <jw-ad-slot
+            slot-id="rail"
+            slot-size="[300,250]"
+            jw-screen-size="desktop"
+            class="jw-side-rail-ad pb"></jw-ad-slot>
         <jw-rail
             title="vm.activeFeedTitle"
             feed="vm.activeFeed"

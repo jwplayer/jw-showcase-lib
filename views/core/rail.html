@@ -2,32 +2,6 @@
   <div class="jw-side-rail-header">{{ vm.title }}</div>
   <ul class="jw-side-rail-items">
     <li class="jw-side-rail-item"
-        ng-click="vm.itemClickHandler(vm.firstItem)"
-        tabindex="0"
-        role="button"
-        aria-label="{{ vm.firstItem.title }}"
-        ng-if="vm.firstItem">
-
-      <div class="jw-side-rail-item-image">
-        <img ng-src="{{ vm.firstItem.image }}" alt="{{ vm.firstItem.name}} poster image">
-        <div class="jw-side-rail-item-image-overlay">
-          <a class="jw-button jw-button-play">
-            <i class="jwy-icon jwy-icon-play"></i>
-          </a>
-        </div>
-      </div>
-      <div class="jw-side-rail-item-info">
-        <strong>{{ vm.firstItem.title }}</strong><br/>
-        {{ vm.firstItem.description }}
-      </div>
-    </li>
-    <li jw-screen-size="desktop">
-      <jw-ad-slot
-          slot-id="rail"
-          slot-size="[300,250]"
-          class="jw-side-rail-ad"></jw-ad-slot>
-    </li>
-    <li class="jw-side-rail-item"
         ng-repeat="item in vm.items | limitTo:vm.itemsLimit"
         ng-click="vm.itemClickHandler(item)"
         tabindex="0"
