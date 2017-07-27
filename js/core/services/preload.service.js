@@ -73,8 +73,8 @@
                     setHighlightColor(config.options.highlightColor);
                 }
 
-                if (angular.isObject(config.options.displayAds)) {
-                    setupAdvertising();
+                if (angular.isObject(config.options.displayAds) && config.options.displayAds.client === 'dfp') {
+                    dfp.setup();
                 }
 
                 setTimeout(function () {
@@ -122,31 +122,6 @@
 
             watchlist.restore();
             watchProgress.restore();
-        }
-
-        function setupAdvertising () {
-
-            var sizeMapping = {
-                'above-video': [[[1024, 768], []], [[768, 424], [728, 90]], [[0, 0], []]],
-                'below-video': [[[1052, 768], [728, 90]], [[1000, 768], [300, 250]], [[768, 424], [728, 90]],
-                    [[0, 0], [300, 250]]],
-                'rail':        [[[1024, 768], [300, 250]], [[0, 0], []]]
-            };
-
-            // when right rail is disabled we can show the above-video ad on desktop
-            if (!config.options.rightRail.enabled) {
-                sizeMapping['above-video'] = [[[768, 424], [728, 90]], [[0, 0], []]];
-                sizeMapping['below-video'] = [[[768, 424], [728, 90]], [[0, 0], [300, 250]]];
-            }
-
-            angular.forEach(config.options.displayAds.slots, function (slot, id) {
-                if (angular.isString(slot) && sizeMapping[id]) {
-                    dfp.defineSlot(slot, [], id);
-                    dfp.defineSizeMapping(sizeMapping[id], id);
-                }
-            });
-
-            dfp.execute();
         }
 
         function showCookiesNotice () {

@@ -22,7 +22,10 @@
       </div>
     </li>
     <li jw-screen-size="desktop">
-      <jw-ad-slot slot-id="rail" class="jw-side-rail-ad"></jw-ad-slot>
+      <jw-ad-slot
+          slot-id="rail"
+          slot-size="[300,250]"
+          class="jw-side-rail-ad"></jw-ad-slot>
     </li>
     <li class="jw-side-rail-item"
         ng-repeat="item in vm.items | limitTo:vm.itemsLimit"

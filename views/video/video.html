@@ -2,8 +2,8 @@
 
   <div class="jw-video-layout" ng-class="{'jw-video-layout-flag-rail': vm.enableRail}">
 
-    <div class="jw-video-layout-row">
-      <jw-ad-slot slot-id="above-video" class="jw-row pb" jw-screen-size="tablet"></jw-ad-slot>
+    <div class="jw-video-layout-row pb" jw-screen-size="tablet">
+      <jw-ad-slot slot-id="above-video" slot-size="[728,90]">
     </div>
 
     <div class="jw-video-layout-row">
@@ -58,7 +58,11 @@
           </div>
         </div>
 
-        <jw-ad-slot slot-id="below-video" class="jw-row pb"></jw-ad-slot>
+        <jw-ad-slot
+            slot-id="below-video"
+            slot-size="[300,250]"
+            slot-size-mapping="[[[1052, 0], [728, 90]], [[1000, 0], [300, 250]], [[768, 0], [728, 90]]]"
+            class="jw-row pb"></jw-ad-slot>
       </div>
 
       <div class="jw-video-layout-rail" ng-if="vm.enableRail && vm.activeFeed.playlist.length > 1">
