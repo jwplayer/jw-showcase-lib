@@ -28,7 +28,6 @@
     &-item {
         @include display-flex();
         @include single-transition(background, 0.2s, ease);
-        padding: $base-spacing;
         cursor: pointer;
 
         // disable animation when items are added or removed.
@@ -45,13 +44,12 @@
         }
 
         &-image {
-            @include flex(0 0 160px);
+            @include flex(0 0 auto);
             position: relative;
-            width: 160px;
-            height: 90px;
-            margin-right: 10px;
+            margin: $base-spacing;
 
             > img {
+                display: block;
                 width: 160px;
                 height: 90px;
             }
@@ -75,7 +73,7 @@
             @include align-self(center);
             display: -webkit-box;
             max-height: 5rem;
-            margin: 4px 0;
+            margin: $base-spacing $base-spacing $base-spacing 0;
 
             font-size: 0.8rem;
             line-height: 1rem;
