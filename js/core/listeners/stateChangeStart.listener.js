@@ -20,13 +20,13 @@
         .module('jwShowcase.core')
         .run(registerListener);
 
-    registerListener.$inject = ['$rootScope', 'appStore'];
-    function registerListener ($rootScope, appStore) {
+    registerListener.$inject = ['$rootScope', '$location', 'appStore'];
+    function registerListener ($rootScope, $location, appStore) {
 
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
 
             if (fromState.scrollTop === 'last') {
-                appStore.scrollTopCache[fromState.name] = document.body.scrollTop;
+                appStore.scrollTopCache[$location.$$path] = document.body.scrollTop;
             }
         });
     }
