@@ -31,7 +31,9 @@
             replace:          true,
             template:         '<div></div>',
             scope:            {
-                slotId: '@'
+                slotId:          '@',
+                slotSize:        '=',
+                slotSizeMapping: '='
             }
         };
 
@@ -48,14 +50,30 @@
              */
             function activate () {
 
-                var slot            = dfp.getSlot(attrs.slotId),
-                    resizeDebounced = utils.debounce(resize, 10);
+                var resizeDebounced = utils.debounce(resize, 10);
+                var adUnit;
 
-                if (slot) {
-                    element.attr('id', attrs.slotId);
-                    dfp.display(attrs.slotId);
-                    window.addEventListener('resize', resizeDebounced);
+                if (config.options.displayAds && config.options.displayAds.slots) {
+                    adUnit = config.options.displayAds.slots[attrs.slotId];
                 }
+
+                if (!adUnit) {
+                    return;
+                }
+
+                element.attr('id', attrs.slotId);
+                window.addEventListener('resize', resizeDebounced);
+
+                // register slot
+                dfp.registerSlot(adUnit, scope.vm.slotSize, attrs.slotId, scope.vm.slotSizeMapping);
+
+                // display ad
+                dfp.display(attrs.slotId);
+
+                scope.$on('$destroy', function () {
+                    window.removeEventListener('resize', resizeDebounced);
+                    dfp.destroy(attrs.slotId);
+                });
             }
 
             /**
@@ -64,12 +82,11 @@
             function resize () {
 
                 var newScreenSize = platform.screenSize();
-                var slot          = dfp.getSlot(attrs.slotId);
 
                 // only refresh when screenSize changes
-                if (slot && screenSize !== newScreenSize) {
+                if (screenSize !== newScreenSize) {
                     screenSize = newScreenSize;
-                    dfp.refresh(slot);
+                    dfp.refresh(attrs.slotId);
                 }
             }
         }
