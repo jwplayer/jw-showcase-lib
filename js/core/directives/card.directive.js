@@ -197,12 +197,10 @@
             /**
              * Handle click on the menu button
              */
-            function menuButtonClickHandler (event) {
+            function menuButtonClickHandler () {
 
-                event.preventDefault();
-                event.stopImmediatePropagation();
-
-                showMenu();
+                // execute in next tick to prevent the clickOutside handler to close the menu immediately
+                $timeout(showMenu, 1);
             }
 
             /**
@@ -271,8 +269,10 @@
 
             /**
              * Close the menu
+             *
+             * @param {boolean} restoreFocus If true, focus the card menu button
              */
-            function closeMenu () {
+            function closeMenu (restoreFocus) {
 
                 var cardMenu = findElement('.jw-card-menu');
 
@@ -281,8 +281,10 @@
                     $animate.leave(cardMenu);
                     element.removeClass('jw-card-flag-menu-open');
 
-                    // bring focus back to menu button
-                    findElement('.jw-card-menu-button')[0].focus();
+                    if (restoreFocus) {
+                        // bring focus back to menu button
+                        findElement('.jw-card-menu-button')[0].focus();
+                    }
                 }
             }
 

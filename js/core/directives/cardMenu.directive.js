@@ -93,7 +93,7 @@
                 }
 
                 scope.$apply(function () {
-                    jwCard.closeMenu();
+                    jwCard.closeMenu(false);
                 });
 
                 evt.preventDefault();

@@ -20,14 +20,16 @@
         .module('jwShowcase.core')
         .run(registerListener);
 
-    registerListener.$inject = ['$rootScope', '$q', 'appStore'];
-    function registerListener ($rootScope, $q, appStore) {
+    registerListener.$inject = ['$rootScope', '$q', '$location', 'appStore'];
+    function registerListener ($rootScope, $q, $location, appStore) {
 
         $rootScope.$on('$stateChangeSuccess', function (event, toState) {
 
+            var path = $location.$$path;
+
             $q.resolve().then(function () {
-                if (toState.scrollTop === 'last' && appStore.scrollTopCache[toState.name]) {
-                    document.body.scrollTop = appStore.scrollTopCache[toState.name];
+                if (toState.scrollTop === 'last' && appStore.scrollTopCache[path]) {
+                    document.body.scrollTop = appStore.scrollTopCache[path];
                 }
                 else if (angular.isNumber(toState.scrollTop)) {
                     document.body.scrollTop = toState.scrollTop;
