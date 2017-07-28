@@ -78,7 +78,7 @@
          */
         function closeButtonClickHandler () {
 
-            vm.jwCard.closeMenu();
+            vm.jwCard.closeMenu(true);
         }
 
         /**
