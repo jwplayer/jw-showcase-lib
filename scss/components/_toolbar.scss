@@ -15,6 +15,11 @@
     }
 
     &-video {
+
+        .jw-toolbar-nav:first-child .jw-button {
+            margin-left: -$toolbar-padding;
+        }
+
         .jw-toolbar-nav:last-child {
             @include flex-grow(1);
         }
@@ -87,10 +92,6 @@
         &-video {
             padding-right: 0;
 
-            .jw-toolbar-nav:first-child .jw-button {
-                margin: 0;
-            }
-
             .jw-toolbar-nav:last-child {
                 padding-right: 0;
             }
@@ -98,16 +99,6 @@
 
         .jw-toolbar-title {
             font-size: rem(16px);
-        }
-    }
-}
-
-@include tablet-and-larger () {
-
-    .jw-toolbar {
-
-        &-video .jw-toolbar-nav:first-child .jw-button {
-            margin-left: -$toolbar-padding;
         }
     }
 }

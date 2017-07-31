@@ -3,37 +3,39 @@
 // --------------------------------
 
 .jw-video-layout {
-    padding: 0 90px;
+    padding-top: $base-spacing-heading;
 
-    .jw-video-layout-row {
+    &-align {
+        padding-right: 90px;
+        padding-left: 90px;
+    }
+
+    &-row {
         max-width: $video-layout-width;
         margin: 0 auto;
     }
 
-    &-flag-right-rail {
-
-        .jw-video-layout-row {
-            max-width: $video-layout-right-rail-width;
-        }
+    &-flag-rail {
+        padding-right: 0;
+        padding-left: 0;
 
         .jw-video-layout-row {
             @include display-flex();
-
-            .jw-video-layout-player {
-                @include flex(1 0);
-            }
-
-            .jw-video-layout-rail {
-                position: relative;
-                width: 30%;
-            }
+            max-width: $video-layout-right-rail-width;
         }
 
-        .jw-video-details {
-            .jw-video-title,
-            .jw-video-description {
-                padding-right: 30%;
-            }
+        .jw-video-layout-main {
+            @include flex(1 1 auto);
+        }
+
+        .jw-video-layout-rail {
+            @include flex(1 0 360px);
+            position: relative;
+            width: 360px;
+        }
+
+        .jw-video-layout-align {
+            padding: 0;
         }
     }
 }
@@ -41,10 +43,40 @@
 @include mobile-only () {
 
     .jw-video-layout {
-        padding: 0;
-    }
 
-    .jw-video-layout-row:not(:first-child) {
-        padding: 0 20px;
+        &-align {
+            padding: 0;
+        }
+
+        .jw-video-details {
+            padding-right: $base-spacing;
+            padding-left: $base-spacing;
+        }
+    }
+}
+
+@include mobile-and-tablet () {
+
+    .jw-video-layout {
+
+        &-flag-rail .jw-video-layout-row {
+            @include flex-direction(column);
+
+            .jw-video-layout-rail {
+                @include flex-basis(100%);
+                width: 100%;
+            }
+        }
+    }
+}
+
+@include tablet-and-larger () {
+
+    .jw-video-layout {
+
+        &-flag-rail .jw-video-layout-main .jw-row {
+            padding-right: $base-spacing;
+            padding-left: $base-spacing;
+        }
     }
 }

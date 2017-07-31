@@ -16,19 +16,33 @@
 
 (function () {
 
+    /**
+     * @ngdoc component
+     * @name jwVideoDetailsTitle
+     * @module jwShowcase.video
+     *
+     * @description
+     *
+     * # jwVideoDetails
+     * Render video details title component.
+     *
+     * @example
+     *
+     * ```html
+     * <jw-video-details-title item="item"></jw-video-details-title>
+     * ```
+     */
     angular
-        .module('jwShowcase.core')
-        .run(registerListener);
-
-    registerListener.$inject = ['$rootScope', '$location', 'appStore'];
-    function registerListener ($rootScope, $location, appStore) {
-
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
-
-            if (fromState.scrollTop === 'last') {
-                appStore.scrollTopCache[$location.$$path] = document.body.scrollTop;
+        .module('jwShowcase.video')
+        .component('jwVideoDetailsTitle', {
+            templateUrl:  'views/video/videoDetailsTitle.html',
+            controller:   angular.noop,
+            controllerAs: 'vm',
+            transclude:   true,
+            require:      {
+                jwVideoDetails: '^'
             }
         });
-    }
 
 }());
+

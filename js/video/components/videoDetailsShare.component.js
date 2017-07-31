@@ -18,31 +18,47 @@
 
     /**
      * @ngdoc component
-     * @name jwVideoDetails
+     * @name jwVideoDetailsShare
      * @module jwShowcase.video
      *
      * @description
      *
      * # jwVideoDetails
-     * Render video details component.
+     * Render video details share component.
      *
      * @example
      *
      * ```html
-     * <jw-video-details item="item"></jw-video-details>
+     * <jw-video-details-share></jw-video-details-title>
      * ```
      */
     angular
         .module('jwShowcase.video')
-        .component('jwVideoDetails', {
-            templateUrl:  'views/video/videoDetails.html',
-            controller:   angular.noop,
+        .component('jwVideoDetailsShare', {
+            templateUrl:  'views/video/videoDetailsShare.html',
+            controller:   VideoDetailsShareController,
             controllerAs: 'vm',
             transclude:   true,
-            bindings:     {
-                item: '<'
+            require:      {
+                jwVideoDetails: '^'
             }
         });
+
+    VideoDetailsShareController.$inject = ['$scope', 'utils'];
+    function VideoDetailsShareController ($scope, utils) {
+
+        var vm = this;
+
+        vm.facebookShareLink = '';
+        vm.twitterShareLink  = '';
+        vm.emailShareLink    = '';
+
+        $scope.$watch('vm.jwVideoDetails.item', function (item) {
+            vm.facebookShareLink = utils.composeFacebookLink();
+            vm.twitterShareLink  = utils.composeTwitterLink(item.title);
+            vm.emailShareLink    = utils.composeEmailLink(item.title);
+        });
+    }
 
 }());
 

@@ -82,7 +82,7 @@
     $card-slider-featured-button-color: $white !default;
     $card-slider-featured-button-hover-color: $primary-color !default;
 
-    $card-slider-odd-bg-color: $body-bg !default;
+    $card-slider-odd-bg-color: transparent !default;
 
     $card-slider-loading-bg: $black !default;
     $card-slider-loading-card-bg: $secondary-color !default;
@@ -105,6 +105,7 @@
     $header-bg: $white !default;
     $header-color: $secondary-color !default;
     $header-hover-color: $primary-color !default;
+    $header-fixed-shadow: 0 0 15px 0 rgba($black, 0.5) !default;
 
     $search-bg: $header-bg !default;
     $search-color: inherit !default;
@@ -132,9 +133,16 @@
 
     // Rail
 
+    $rail-bg: #d5dbe4 !default;
+    $rail-header-border-bottom: none !default;
     $rail-header-bg: $white !default;
     $rail-header-color: $secondary-color !default;
-    $rail-item-color: $white;
+    $rail-item-color: $secondary-color !default;
+    $rail-item-hover-bg: #e3e7ec !default;
+
+    $rail-button-block-bg: transparent !default;
+    $rail-button-block-color: $secondary-color !default;
+    $rail-button-block-border-top: 1px solid $white !default;
 
     // Scroll
 
@@ -429,6 +437,10 @@
                 color: $header-hover-color;
             }
         }
+
+        &-fixed {
+            @include box-shadow($header-fixed-shadow);
+        }
     }
 
     //
@@ -444,13 +456,27 @@
     // --------------------------------
 
     .jw-side-rail {
-        .jw-side-rail-header {
+        background-color: $rail-bg;
+
+        &-header {
+            border-bottom: $rail-header-border-bottom;
             background-color: $rail-header-bg;
             color: $rail-header-color;
         }
 
-        .jw-side-rail-item {
+        &-item {
             color: $rail-item-color;
+
+            &:focus,
+            &:hover {
+                background-color: $rail-item-hover-bg;
+            }
+        }
+
+        &-control .jw-button-block {
+            border-top: $rail-button-block-border-top;
+            background-color: $rail-button-block-bg;
+            color: $rail-button-block-color;
         }
     }
 
@@ -607,11 +633,7 @@
         }
 
         .jw-toolbar-nav:last-child .jw-button {
-            border-right: $toolbar-nav-border;
-
-            &:first-child {
-                border-left: $toolbar-nav-border;
-            }
+            border-left: $toolbar-nav-border;
         }
 
         .jw-button-label {
@@ -652,7 +674,7 @@
         background-color: $video-details-bg;
         color: $video-details-color;
 
-        .jw-video-tag {
+        .jw-video-details-tag {
             @include box-shadow($video-details-tag-shadow);
             background-color: $video-details-tag-bg;
             color: $video-details-tag-color;

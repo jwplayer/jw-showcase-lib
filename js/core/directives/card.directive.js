@@ -75,7 +75,8 @@
             function activate () {
 
                 var feed       = dataStore.getFeed(scope.vm.item.feedid),
-                    enableText = true;
+                    enableText = true,
+                    link       = generateLink();
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
@@ -96,12 +97,11 @@
 
                 findElement('.jw-card-title')
                     .html(scope.vm.item.title)
-                    .attr('href', $state.href('root.video', {
-                        feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
-                        mediaId: scope.vm.item.mediaid,
-                        slug:    scope.vm.item.$slug
-                    }));
-                findElement('.jw-card-duration').html(utils.getVideoDurationByItem(scope.vm.item));
+                    .attr('href', link)
+                    .on('click', titleClickHandler);
+
+                findElement('.jw-card-duration')
+                    .html(utils.getVideoDurationByItem(scope.vm.item));
 
                 // set watch progress
                 if (scope.vm.item.feedid === 'continue-watching') {
@@ -113,6 +113,26 @@
                 scope.$watch(function () {
                     return watchlist.hasItem(scope.vm.item);
                 }, watchlistUpdateHandler);
+            }
+
+            /**
+             * Generate link to page, mostly used for SEO indexing
+             */
+            function generateLink () {
+
+                if ($state.is('root.search')) {
+                    return $state.href('root.videoFromSearch', {
+                        query:   $state.params.query,
+                        mediaId: scope.vm.item.mediaid,
+                        slug:    scope.vm.item.$slug
+                    });
+                }
+
+                return $state.href('root.video', {
+                    feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
+                    mediaId: scope.vm.item.mediaid,
+                    slug:    scope.vm.item.$slug
+                });
             }
 
             /**
@@ -152,6 +172,15 @@
             }
 
             /**
+             * Handle click event on title element
+             * @param event
+             */
+            function titleClickHandler (event) {
+
+                event.preventDefault();
+            }
+
+            /**
              * Handle click event on the card container
              * @param event
              */
@@ -168,12 +197,10 @@
             /**
              * Handle click on the menu button
              */
-            function menuButtonClickHandler (event) {
+            function menuButtonClickHandler () {
 
-                event.preventDefault();
-                event.stopImmediatePropagation();
-
-                showMenu();
+                // execute in next tick to prevent the clickOutside handler to close the menu immediately
+                $timeout(showMenu, 1);
             }
 
             /**
@@ -242,8 +269,10 @@
 
             /**
              * Close the menu
+             *
+             * @param {boolean} restoreFocus If true, focus the card menu button
              */
-            function closeMenu () {
+            function closeMenu (restoreFocus) {
 
                 var cardMenu = findElement('.jw-card-menu');
 
@@ -252,8 +281,10 @@
                     $animate.leave(cardMenu);
                     element.removeClass('jw-card-flag-menu-open');
 
-                    // bring focus back to menu button
-                    findElement('.jw-card-menu-button')[0].focus();
+                    if (restoreFocus) {
+                        // bring focus back to menu button
+                        findElement('.jw-card-menu-button')[0].focus();
+                    }
                 }
             }
 

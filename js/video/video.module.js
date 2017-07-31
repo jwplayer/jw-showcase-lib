@@ -30,56 +30,47 @@
     config.$inject = ['$stateProvider', '$urlRouterProvider', 'seoProvider'];
     function config ($stateProvider, $urlRouterProvider, seoProvider) {
 
+        var videoState = {
+            controller:  'VideoController as vm',
+            templateUrl: 'views/video/video.html',
+            resolve:     {
+                feed:            resolveFeed,
+                item:            resolveItem,
+                recommendations: resolveRecommendations
+            },
+            params:      {
+                autoStart: false,
+                slug:      {
+                    value:  null,
+                    squash: true
+                }
+            },
+            scrollTop:   0
+        };
+
         $urlRouterProvider
             .when('/list/:feedId/video', '/list/:feedId');
 
         $stateProvider
-            .state('root.video', {
-                url:         '/list/:feedId/video/:mediaId/:slug',
-                controller:  'VideoController as vm',
-                templateUrl: 'views/video/video.html',
-                resolve:     {
-                    feed:            resolveFeed,
-                    item:            resolveItem,
-                    recommendations: resolveRecommendations
-                },
-                params:      {
-                    autoStart: false,
-                    slug:      {
-                        value:  null,
-                        squash: true
-                    }
-                },
-                scrollTop:   0
-            });
+            .state('root.video', angular.extend({
+                url: '/list/:feedId/video/:mediaId/:slug'
+            }, videoState))
+            .state('root.videoFromSearch', angular.extend({
+                url: '/search/:query/video/:mediaId/:slug'
+            }, videoState));
 
         seoProvider
-            .state('root.video', ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
-
-                var canonical = $state.href('root.video', {slug: item.$slug}, {absolute: true});
-
-                return {
-                    title:       item.title + ' - ' + config.siteName,
-                    description: item.description,
-                    image:       item.image,
-                    canonical:   canonical,
-                    schema:      {
-                        '@context':   'http://schema.org/',
-                        '@type':      'VideoObject',
-                        '@id':        canonical,
-                        name:         item.title,
-                        description:  item.description,
-                        duration:     utils.secondsToISO8601(item.duration, true),
-                        thumbnailUrl: item.image,
-                        uploadDate:   utils.secondsToISO8601(item.pubdate)
-                    }
-                };
-            }]);
+            .state('root.video', generateSeoState('root.video'))
+            .state('root.videoFromSearch', generateSeoState('root.videoFromSearch'));
 
         /////////////////
 
-        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'bootstrap'];
-        function resolveFeed ($stateParams, $q, dataStore) {
+        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'apiConsumer', 'bootstrap'];
+        function resolveFeed ($stateParams, $q, dataStore, apiConsumer) {
+
+            if ($stateParams.query) {
+                return apiConsumer.getSearchFeed($stateParams.query);
+            }
 
             var feed = dataStore.getFeed($stateParams.feedId);
 
@@ -115,6 +106,30 @@
                 // when this recommendations request fails, don't prevent the video page from loading
                 return undefined;
             });
+        }
+
+        function generateSeoState (stateName) {
+
+            return ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
+                var canonical = $state.href(stateName, {slug: item.$slug}, {absolute: true});
+
+                return {
+                    title:       item.title + ' - ' + config.siteName,
+                    description: item.description,
+                    image:       item.image,
+                    canonical:   canonical,
+                    schema:      {
+                        '@context':   'http://schema.org/',
+                        '@type':      'VideoObject',
+                        '@id':        canonical,
+                        name:         item.title,
+                        description:  item.description,
+                        duration:     utils.secondsToISO8601(item.duration, true),
+                        thumbnailUrl: item.image,
+                        uploadDate:   utils.secondsToISO8601(item.pubdate)
+                    }
+                };
+            }];
         }
     }
 

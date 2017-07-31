@@ -5,9 +5,11 @@
         featured="feed.featured"
         on-card-click="vm.cardClickHandler"
         ng-class="{ 'jw-expand-animation': feed.dynamic, 'jw-lazy-load': true }"
-        ng-if="!(feed.dynamic && !feed.playlist.length) && !(feed.featured && vm.isMobileScreen)"
+        ng-if="!(feed.dynamic && !feed.playlist.length)"
+        jw-screen-size="tablet,desktop"
+        jw-screen-size-or="!feed.featured"
     ></jw-card-slider>
-    <div ng-if="feed.featured && vm.isMobileScreen" class="jw-card-list">
+    <div ng-if="feed.featured" jw-screen-size="mobile" class="jw-card-list">
       <jw-card
           item="item"
           featured="true"

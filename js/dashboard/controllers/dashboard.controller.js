@@ -16,8 +16,6 @@
 
 (function () {
 
-    var MOBILE_SCREEN = window.matchMedia('(max-device-width: 767px)').matches;
-
     angular
         .module('jwShowcase.dashboard')
         .controller('DashboardController', DashboardController);
@@ -28,17 +26,15 @@
      *
      * @requires $state
      * @requires jwShowcase.core.dataStore
-     * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.platform
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'userSettings', 'platform', 'config'];
-    function DashboardController ($state, dataStore, userSettings, platform, config) {
+    DashboardController.$inject = ['$state', 'dataStore', 'platform', 'config'];
+    function DashboardController ($state, dataStore, platform, config) {
 
         var vm = this;
 
         vm.dataStore              = dataStore;
         vm.config                 = config;
-        vm.isMobileScreen         = MOBILE_SCREEN;
 
         vm.cardClickHandler = cardClickHandler;
 

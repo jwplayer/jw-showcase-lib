@@ -6,6 +6,7 @@
 
     // override variables
     $body-bg: #2a374c;
+    $body-color: $white;
 
     $btn-light-bg: #5b6064;
     $btn-light-color: $white;
@@ -42,12 +43,16 @@
     $scroll-track-bg: $gray-darker;
     $scroll-indicator-bg: #7f899a;
 
+    $rail-bg: #334056;
     $rail-header-bg: #2c374a;
     $rail-header-color: $white;
     $rail-item-color: $white;
+    $rail-item-hover-bg: #435470;
+
+    $rail-button-block-color: $white;
 
 
-    $video-details-bg: #354560;
+    //$video-details-bg: #354560;
     $video-details-color: $white;
 
     $footer-color: $white;

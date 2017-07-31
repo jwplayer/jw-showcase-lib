@@ -16,6 +16,10 @@
 
 (function () {
 
+    var mobileQuery  = window.matchMedia('(max-width: 767px)'),
+        tabletQuery  = window.matchMedia('(min-width: 768px) and (max-width: 1023px)'),
+        desktopQuery = window.matchMedia('(min-width: 1024px)');
+
     angular
         .module('jwShowcase.core')
         .factory('platform', platform);
@@ -31,6 +35,7 @@
 
         return {
             prepare:         prepare,
+            screenSize:      getScreenSize,
             isTouch:         isTouch,
             isAndroid:       osName === 'android',
             isIOS:           osName === 'ios',
@@ -63,6 +68,19 @@
 
             if (isMobile) {
                 body.addClass('jw-flag-mobile');
+            }
+        }
+
+        function getScreenSize () {
+
+            if (mobileQuery.matches) {
+                return 'mobile';
+            }
+            if (tabletQuery.matches) {
+                return 'tablet';
+            }
+            if (desktopQuery.matches) {
+                return 'desktop';
             }
         }
     }
