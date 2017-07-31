@@ -28,12 +28,17 @@
             var path = $location.$$path;
 
             $q.resolve().then(function () {
-                if (toState.scrollTop === 'last' && appStore.scrollTopCache[path]) {
-                    document.body.scrollTop = appStore.scrollTopCache[path];
+
+                var scrollTop = 0;
+
+                if (toState.scrollTop === 'last' && angular.isNumber(appStore.scrollTopCache[path])) {
+                    scrollTop = appStore.scrollTopCache[path];
                 }
                 else if (angular.isNumber(toState.scrollTop)) {
-                    document.body.scrollTop = toState.scrollTop;
+                    scrollTop = toState.scrollTop;
                 }
+
+                document.body.scrollTop = scrollTop;
             });
         });
     }
