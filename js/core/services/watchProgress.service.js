@@ -207,8 +207,14 @@
                 });
         }
 
-        function restore() {
-            return session.load(LOCAL_STORAGE_KEY, []).then(enhanceItems);
+        function restore () {
+            return session.isLocal().then(function (local) {
+                if (!local) {
+                    return;
+                }
+
+                return session.load(LOCAL_STORAGE_KEY, []).then(enhanceItems);
+            });
         }
 
         /**
