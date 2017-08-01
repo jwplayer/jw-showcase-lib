@@ -56,9 +56,8 @@
         vm.itemClickHandler           = itemClickHandler;
         vm.showMoreButtonClickHandler = showMoreButtonClickHandler;
 
-        vm.firstItem  = undefined;
         vm.items      = [];
-        vm.itemsLimit = 3;
+        vm.itemsLimit = 4;
 
         vm.$onChanges = changeHandler;
 
@@ -85,9 +84,6 @@
 
             // remove currently playing
             vm.items.shift();
-
-            // set first item
-            vm.firstItem = vm.items.shift();
         }
 
         /**

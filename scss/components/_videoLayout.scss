@@ -25,10 +25,11 @@
         }
 
         .jw-video-layout-main {
-            @include flex(1 0);
+            @include flex(1 1 auto);
         }
 
         .jw-video-layout-rail {
+            @include flex(1 0 360px);
             position: relative;
             width: 360px;
         }
@@ -62,6 +63,7 @@
             @include flex-direction(column);
 
             .jw-video-layout-rail {
+                @include flex-basis(100%);
                 width: 100%;
             }
         }
