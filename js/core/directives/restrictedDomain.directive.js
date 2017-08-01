@@ -22,7 +22,6 @@
 
     restrictedDomainDirective.$inject = ['auth'];
     function restrictedDomainDirective (auth) {
-
         return {
             require:    'ngModel',
             restrict:   'A',

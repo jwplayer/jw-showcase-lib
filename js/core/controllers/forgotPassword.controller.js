@@ -31,7 +31,6 @@
      */
     ForgotPasswordController.$inject = ['auth', 'popupInstance', 'email', 'popup'];
     function ForgotPasswordController (auth, popupInstance, email, popup) {
-
         var vm = this;
 
         vm.user = {

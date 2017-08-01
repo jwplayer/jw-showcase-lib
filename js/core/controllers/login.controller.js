@@ -28,7 +28,6 @@
      */
     LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window'];
     function LoginController (auth, popupInstance, config, popup, $window) {
-
         var vm = this;
 
         vm.providers = [];
@@ -45,7 +44,7 @@
         vm.isPage = popupInstance.isPage();
 
         config.options.authenticationProviders.forEach(function (provider) {
-            if(provider === 'local') {
+            if (provider === 'local') {
                 vm.localAuth = true;
             } else {
                 vm.providers.push(provider);
