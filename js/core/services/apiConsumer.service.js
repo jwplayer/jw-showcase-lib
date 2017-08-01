@@ -227,7 +227,7 @@
 
                 if (!model) {
 
-                    model   = new FeedModel(content.playlistId, null, null, null, content.playlistUri);
+                    model   = new FeedModel(content.playlistId, false, true, false, content.playlistUri);
                     promise = self
                         .populateFeedModel(model)
                         .then(null, function (error) {
