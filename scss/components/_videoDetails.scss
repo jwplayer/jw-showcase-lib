@@ -25,6 +25,12 @@
         font-size: rem(22px);
         font-weight: bold;
         line-height: rem(32px);
+
+        &::after {
+            display: block;
+            clear: both;
+            content: '';
+        }
     }
 
     &-share {
