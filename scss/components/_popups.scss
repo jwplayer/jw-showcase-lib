@@ -34,11 +34,13 @@
         text-align: center;
     }
 
-    .jw-forgot-password {
+    .jw-forgot-password,
+    .jw-delete-account {
         font-size: 0.9rem;
         text-align: center;
         text-decoration: underline;
         cursor: pointer;
+        opacity: 1;
     }
 
     .jw-popup-buttons {
