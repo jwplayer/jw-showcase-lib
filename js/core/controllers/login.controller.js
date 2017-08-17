@@ -68,20 +68,25 @@
         }
 
         function logInWithEmail(email, password) {
-            auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
-                popupInstance.close(true);
+            vm.errors = [];
 
-                if (!result.emailVerified) {
-                    popup.alert('You have not verified your email address yet.');
-                    auth.firebaseAuth.$signOut();
-                } else {
-                    $window.location.reload();
-                }
+            try {
+                auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
+                    popupInstance.close(true);
 
-            }).catch(function () {
-                vm.errors = [];
-                vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
-            });
+                    if (!result.emailVerified) {
+                        popup.alert('You have not verified your email address yet.');
+                        auth.firebaseAuth.$signOut();
+                    } else {
+                        $window.location.reload();
+                    }
+
+                }).catch(function () {
+                    vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
+                });
+            } catch (err) {
+                vm.errors.push({message: err.message});
+            }
         }
 
         function forgotPassword(email) {
