@@ -81,7 +81,80 @@
 
             phrase = encodeURIComponent(phrase);
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+            var items;
+
+            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase)
+                .then(function(feed) {
+                    var promises = [];
+                    items = feed;
+
+                    feed.playlist.forEach(function (item) {
+                        promises.push(patchCaptions(item));
+                    });
+
+                    return Promise.all(promises);
+                })
+                .then(function () {
+                    return items;
+                });
+
+            function patchCaptions(item) {
+                if (!item.tracks) {
+                    return Promise.resolve(item);
+                }
+
+                var captionUrl = null;
+                var captionHits = null;
+
+                item.tracks.forEach(function (track) {
+                    if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
+                        captionUrl = track.file;
+                        captionHits = track.hits;
+                    }
+                });
+
+                if (!captionUrl) {
+                    return Promise.resolve(item);
+                }
+
+                return findMatches(captionUrl, captionHits).then(function (matches) {
+                  item.captionMatches = matches;
+                });
+            }
+
+            function findMatches(location, positions) {
+                return $http.get(location)
+                    .then(function (response) {
+                        var vtt = response.data;
+
+                        return new Promise(function (resolve, reject) {
+                            const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                            var segments = [];
+
+                            parser.onparsingerror = reject;
+                            parser.oncue = function (cue) {
+                                segments.push(cue);
+                            };
+
+                            parser.onflush = function() {
+                                resolve(positions.map(function(position) {
+                                    var segment = segments[position - 1];
+                                    var regex = new RegExp('(' + phrase + ')', 'ig');
+
+                                    return {
+                                        text       : segment.text,
+                                        time       : segment.startTime,
+                                        highlighted: segment.text.replace(regex, '<span>$1</span>')
+                                    };
+                                }));
+                            };
+
+                            parser.parse(vtt);
+
+                            parser.flush();
+                        });
+                    });
+            }
         };
 
         /**
