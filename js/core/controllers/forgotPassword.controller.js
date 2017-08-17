@@ -47,7 +47,7 @@
                 popupInstance.close(true);
             }).catch(function (error) {
                 vm.errors = [];
-                vm.errors.push({message: error});
+                vm.errors.push({message: error.message});
             });
 
         }
