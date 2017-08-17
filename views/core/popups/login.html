@@ -2,10 +2,9 @@
     <h3 class="jw-popup-title">Log in</h3>
     <p class="jw-popup-text">Logging in allows to continue watching op multiple devices. Also your personal settings and
         preferences will be stored for further use.</p>
-    <div class="jw-popup-buttons jw-login-social-buttons">
+    <div class="jw-popup-buttons jw-login-social-buttons" tabindex="0">
         <jw-button  ng-repeat="provider in vm.providers"
                     ng-click="vm.logInWithProvider(provider)"
-                    tabindex="0"
                     class="jw-button jw-button-{{provider}} jw-button-block"
         >
             <span class="jw-button-label">Login with {{provider | capitalize}}</span>
