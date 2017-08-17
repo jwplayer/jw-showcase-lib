@@ -23,6 +23,11 @@
         <div class="jw-form-group jw-floating-label-wrapper">
             <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
                    floating-label>
+            <div class="jw-form-group-warnings">
+                <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
+                    <b>Warning:</b> {{error.message}}
+                </p>
+            </div>
         </div>
         <div class="jw-form-group">
             <a class="jw-popup-text jw-forgot-password" ng-click="vm.forgotPassword(vm.user.email)" tabindex="0">Forgot your password?</a>
