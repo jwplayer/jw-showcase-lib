@@ -52,7 +52,7 @@
                     popupInstance.close(true);
 
                 }).catch(function (error) {
-                vm.errors[error.code] = error.message;
+                    vm.errors[error.code] = error.message;
             });
         }
 
