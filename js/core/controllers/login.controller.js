@@ -85,7 +85,7 @@
                     vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
                 });
             } catch (err) {
-                vm.errors.push({message: err.message});
+                vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
             }
         }
 
