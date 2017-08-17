@@ -89,7 +89,7 @@
                 controller: 'ForgotPasswordController as vm',
                 templateUrl: 'views/core/popups/forgotPassword.html',
                 resolve: {
-                    email: email,
+                    email: email
                 }
             });
 
