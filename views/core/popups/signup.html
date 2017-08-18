@@ -15,6 +15,9 @@
                 <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.restrictedDomain" class="jw-form-group-warning">
                     <b>Warning:</b> This email domain is not allowed.
                 </p>
+                <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
+                    <b>Warning:</b> {{error.message}}
+                </p>
             </div>
         </div>
 
@@ -28,11 +31,6 @@
                 <p ng-if="signUpForm.password.$dirty && signUpForm.password.$error.minlength" class="jw-form-group-warning">
                     <b>Warning:</b> A password has to have at least 6 characters
                 </p>
-                <div class="jw-form-group-warnings">
-                    <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
-                        <b>Warning:</b> {{error.message}}
-                    </p>
-                </div>
             </div>
         </div>
 
