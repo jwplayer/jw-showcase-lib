@@ -26,8 +26,8 @@
      *
      * @requires popupInstance
      */
-    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window'];
-    function LoginController (auth, popupInstance, config, popup, $window) {
+    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window', '$timeout'];
+    function LoginController (auth, popupInstance, config, popup, $window, $timeout) {
         var vm = this;
 
         vm.providers = [];
@@ -69,24 +69,29 @@
 
         function logInWithEmail(email, password) {
             vm.errors = [];
+            var invalidCredentials = {message: 'Invalid credentials. Please try again!'};
+            var signin;
 
             try {
-                auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
-                    popupInstance.close(true);
-
-                    if (!result.emailVerified) {
-                        popup.alert('You have not verified your email address yet.');
-                        auth.firebaseAuth.$signOut();
-                    } else {
-                        $window.location.reload();
-                    }
-
-                }).catch(function () {
-                    vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
-                });
-            } catch (err) {
-                vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
+                signin = auth.firebaseAuth.$signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                signin = Promise.reject(invalidCredentials);
             }
+
+            return signin.then(function (result) {
+                popupInstance.close(true);
+
+                if (!result.emailVerified) {
+                    popup.alert('You have not verified your email address yet.');
+                    auth.firebaseAuth.$signOut();
+                } else {
+                    $window.location.reload();
+                }
+            }).catch(function (err) {
+                $timeout(function () {
+                    vm.errors.push({message: err.message});
+                });
+            });
         }
 
         function forgotPassword(email) {
