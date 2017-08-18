@@ -52,9 +52,10 @@
 
                     popupInstance.close(true);
 
-                }).catch(function (error) {
-                    vm.errors[error.code] = error.message;
-            });
+                })
+                .catch(function (error) {
+                    vm.errors[error.code] = {message: error.message};
+                });
         }
 
         function errorsPresent(obj) {
