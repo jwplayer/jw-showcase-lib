@@ -45,12 +45,12 @@
                 </p>
             </div>
         </div>
-        <div class="jw-form-group">
+        <div class="jw-form-group" ng-if="vm.termsAndConditions">
             <input type="checkbox" id="checkbox-terms" class="jw-checkbox-terms" ng-model="vm.user.agreedToTerms">
-            <label for="checkbox-terms">By signing up I agree to have read and agree to the terms and conditions</label>
+            <label for="checkbox-terms">By signing up I agree to have read and agree to the <a class="jw-checkbox-terms-link" target="_blank" href="{{vm.termsAndConditions}}">terms and conditions</a></label>
         </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
+            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || (!vm.user.agreedToTerms && vm.termsAndConditions)">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>

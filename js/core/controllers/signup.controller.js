@@ -32,6 +32,7 @@
         var vm = this;
 
         vm.providers = config.options.authenticationProviders;
+        vm.termsAndConditions = config.options.termsAndConditions;
 
         vm.user = user;
         vm.errors = {};
