@@ -204,6 +204,31 @@
             }
         }
     }
+
+    .jw-card-in-video-search-timeline {
+        @include transition(all 0.15s ease-in);
+        position: relative;
+        height: rem(2px);
+
+        .jw-card-in-video-search-timeline-dot {
+            $size: 13px;
+            $adjustSize: ($size - 1) / 2;
+
+            @include transform(translate(-$adjustSize, -$adjustSize));
+            @include transition(all 0.15s ease-in);
+
+            position: absolute;
+            height: rem($size);
+            width: rem($size);
+
+            border-radius: 50%;
+
+            &:hover {
+                $hoverSize: 18px;
+                transform: translate(-$adjustSize, -$adjustSize) scale($hoverSize / $size, $hoverSize / $size);
+            }
+        }
+    }
 }
 
 //
