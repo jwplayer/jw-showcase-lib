@@ -310,16 +310,16 @@
         }
 
         .jw-card-title .jw-card-title-matches {
-            font-weight: 400;
             color: $primary-color;
+            font-weight: 400;
         }
 
         .jw-card-description .jw-card-description-caption {
-            color: #979797;
+            color: $gray;
 
             span {
-                font-weight: 700;
                 color: $primary-color;
+                font-weight: 700;
             }
         }
 

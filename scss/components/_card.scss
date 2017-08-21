@@ -212,20 +212,20 @@
 
         .jw-card-in-video-search-timeline-dot {
             $size: 13px;
-            $adjustSize: ($size - 1) / 2;
+            $adjust-size: ($size - 1) / 2;
 
-            @include transform(translate(-$adjustSize, -$adjustSize));
+            @include transform(translate(-$adjust-size, -$adjust-size));
             @include transition(all 0.15s ease-in);
 
             position: absolute;
-            height: rem($size);
             width: rem($size);
+            height: rem($size);
 
             border-radius: 50%;
 
             &:hover {
-                $hoverSize: 18px;
-                transform: translate(-$adjustSize, -$adjustSize) scale($hoverSize / $size, $hoverSize / $size);
+                $hover-size: 18px;
+                transform: translate(-$adjust-size, -$adjust-size) scale($hover-size / $size, $hover-size / $size);
             }
         }
     }
