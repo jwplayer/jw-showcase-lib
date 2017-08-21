@@ -27,9 +27,11 @@
         }
 
         var auth = $firebaseAuth();
+
         this.firebaseAuth = auth;
 
-        this.getIdentity = function() {
+        //Define methods
+        this.getIdentity  = function() {
             return auth.$waitForSignIn().then(function() {
                 return auth.$getAuth();
             });
@@ -61,7 +63,7 @@
                 return true;
             }
 
-            if(!email) {
+            if (!email) {
                 return false;
             }
 
@@ -77,11 +79,11 @@
         };
 
         this.hasIdentity().then(function (isUserLoggedIn) {
-            if(config.options.authenticationRequired && !isUserLoggedIn) {
+            if (config.options.authenticationRequired && !isUserLoggedIn) {
                 $state.go('root.login');
             }
 
-            if(isUserLoggedIn && $state.current.name === 'root.login') {
+            if (isUserLoggedIn && $state.current.name === 'root.login') {
                 $state.go('root.dashboard');
             }
         });

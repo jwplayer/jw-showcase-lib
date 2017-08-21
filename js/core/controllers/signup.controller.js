@@ -32,6 +32,7 @@
         var vm = this;
 
         vm.providers = config.options.authenticationProviders;
+        vm.termsAndConditions = config.options.termsAndConditions;
 
         vm.user = user;
         vm.errors = {};
@@ -51,9 +52,10 @@
 
                     popupInstance.close(true);
 
-                }).catch(function (error) {
-                vm.errors[error.code] = error.message;
-            });
+                })
+                .catch(function (error) {
+                    vm.errors[error.code] = {message: error.message};
+                });
         }
 
         function errorsPresent(obj) {

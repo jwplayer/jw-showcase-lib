@@ -15,6 +15,9 @@
                 <p ng-if="signUpForm.email.$touched && signUpForm.email.$dirty && signUpForm.email.$error.restrictedDomain" class="jw-form-group-warning">
                     <b>Warning:</b> This email domain is not allowed.
                 </p>
+                <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
+                    <b>Warning:</b> {{error.message}}
+                </p>
             </div>
         </div>
 
@@ -40,19 +43,14 @@
                 </p>
             </div>
         </div>
-        <div class="jw-form-group">
+        <div class="jw-form-group" ng-if="vm.termsAndConditions">
             <input type="checkbox" id="checkbox-terms" class="jw-checkbox-terms" ng-model="vm.user.agreedToTerms">
-            <label for="checkbox-terms">By signing up I agree to have read and agree to the terms and conditions</label>
+            <label for="checkbox-terms">By signing up I agree to have read and agree to the <a class="jw-checkbox-terms-link" target="_blank" href="{{vm.termsAndConditions}}">terms and conditions</a></label>
         </div>
         <div class="jw-button-row jw-button-block jw-popup-buttons">
-            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || !vm.user.agreedToTerms">
+            <button type="submit" class="jw-button jw-button-signup jw-button-primary" ng-disabled="signUpForm.$invalid || (!vm.user.agreedToTerms && vm.termsAndConditions)">
                 <span class="jw-button-label">Sign Up</span>
             </button>
         </div>
     </form>
-    <div class="jw-errors-row" ng-if="vm.errorsPresent(vm.errors)">
-        <div class="jw-error" ng-repeat="error in vm.errors">
-            Error: <i>{{error}}</i>
-        </div>
-    </div>
 </div>

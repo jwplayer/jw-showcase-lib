@@ -34,6 +34,7 @@
         this.load  = load;
         this.watch = watch;
         this.clear = clear;
+        this.isLocal = isLocal;
 
         if (config.options.firebase) {
 

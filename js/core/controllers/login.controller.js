@@ -26,9 +26,8 @@
      *
      * @requires popupInstance
      */
-    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window'];
-    function LoginController (auth, popupInstance, config, popup, $window) {
-
+    LoginController.$inject = ['auth', 'popupInstance', 'config', 'popup', '$window', '$timeout'];
+    function LoginController (auth, popupInstance, config, popup, $window, $timeout) {
         var vm = this;
 
         vm.providers = [];
@@ -45,7 +44,7 @@
         vm.isPage = popupInstance.isPage();
 
         config.options.authenticationProviders.forEach(function (provider) {
-            if(provider === 'local') {
+            if (provider === 'local') {
                 vm.localAuth = true;
             } else {
                 vm.providers.push(provider);
@@ -69,7 +68,17 @@
         }
 
         function logInWithEmail(email, password) {
-            auth.firebaseAuth.$signInWithEmailAndPassword(email, password).then(function (result) {
+            vm.errors = [];
+            var invalidCredentials = {message: 'Invalid credentials. Please try again!'};
+            var signin;
+
+            try {
+                signin = auth.firebaseAuth.$signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                signin = Promise.reject(invalidCredentials);
+            }
+
+            return signin.then(function (result) {
                 popupInstance.close(true);
 
                 if (!result.emailVerified) {
@@ -78,10 +87,10 @@
                 } else {
                     $window.location.reload();
                 }
-
-            }).catch(function () {
-                vm.errors = [];
-                vm.errors.push({message: 'Your email or password is wrong. Please try again!'});
+            }).catch(function (err) {
+                $timeout(function () {
+                    vm.errors.push({message: err.message});
+                });
             });
         }
 
@@ -90,7 +99,7 @@
                 controller: 'ForgotPasswordController as vm',
                 templateUrl: 'views/core/popups/forgotPassword.html',
                 resolve: {
-                    email: email,
+                    email: email
                 }
             });
 

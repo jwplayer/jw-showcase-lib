@@ -2,10 +2,9 @@
     <h3 class="jw-popup-title">Log in</h3>
     <p class="jw-popup-text">Logging in allows to continue watching op multiple devices. Also your personal settings and
         preferences will be stored for further use.</p>
-    <div class="jw-popup-buttons jw-login-social-buttons">
+    <div class="jw-popup-buttons jw-login-social-buttons" tabindex="0">
         <jw-button  ng-repeat="provider in vm.providers"
                     ng-click="vm.logInWithProvider(provider)"
-                    tabindex="0"
                     class="jw-button jw-button-{{provider}} jw-button-block"
         >
             <span class="jw-button-label">Login with {{provider | capitalize}}</span>
@@ -13,16 +12,21 @@
 
     </div>
     <p class="jw-popup-text" ng-if="vm.localAuth">
-        Or login with email
+        Or login with your email address
     </p>
     <form class="jw-form" ng-if="vm.localAuth" ng-submit="vm.logInWithEmail(vm.user.email, vm.user.password)" novalidate>
         <div class="jw-form-group jw-floating-label-wrapper">
-            <input type="email" tabindex="0" class="jw-form-control" id="email" placeholder="Enter email" ng-model="vm.user.email"
+            <input type="email" tabindex="0" class="jw-form-control" id="email" placeholder="Email address" ng-model="vm.user.email"
                    floating-label>
         </div>
         <div class="jw-form-group jw-floating-label-wrapper">
             <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
                    floating-label>
+            <div class="jw-form-group-warnings">
+                <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
+                    <b>Warning:</b> {{error.message}}
+                </p>
+            </div>
         </div>
         <div class="jw-form-group">
             <a class="jw-popup-text jw-forgot-password" ng-click="vm.forgotPassword(vm.user.email)" tabindex="0">Forgot your password?</a>
@@ -37,9 +41,4 @@
             </jw-button>
         </div>
     </form>
-    <div class="jw-errors-row" ng-if="vm.errors.length > 0">
-        <div class="jw-error" ng-repeat="error in vm.errors">
-            Error: <i>{{error.message}}</i>
-        </div>
-    </div>
 </div>

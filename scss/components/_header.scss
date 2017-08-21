@@ -55,6 +55,14 @@
         &:last-child {
             text-align: right;
         }
+
+        &-left {
+            @include justify-content(flex-start);
+        }
+
+        &-right {
+            @include justify-content(flex-end);
+        }
     }
 
     //
