@@ -85,6 +85,10 @@
 
             return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase)
                 .then(function(feed) {
+                    if (!config.options.enableInVideoSearch) {
+                        return feed;
+                    }
+
                     var promises = [];
                     items = feed;
 
@@ -110,6 +114,10 @@
                     if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
                         captionUrl = track.file;
                         captionHits = track.hits;
+                    }
+
+                    if (track.kind === 'thumbnails') {
+                        item.thumbnails = track.file;
                     }
                 });
 
