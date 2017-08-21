@@ -136,7 +136,7 @@
                         var vtt = response.data;
 
                         return new Promise(function (resolve, reject) {
-                            const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                            var parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
                             var segments = [];
 
                             parser.onparsingerror = reject;
