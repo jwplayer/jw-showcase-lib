@@ -137,7 +137,7 @@
             };
 
             if ($state.params.startTime) {
-              startTime = $state.params.startTime;
+                startTime = $state.params.startTime;
             }
 
             if (angular.isDefined(config.options.cast)) {
@@ -470,11 +470,11 @@
         }
 
         function performConditionalSeek () {
-          if (startTime) {
-            player.seek(startTime);
+            if (startTime) {
+                player.seek(startTime);
 
-            startTime = null;
-          }
+                startTime = null;
+            }
         }
 
         /**

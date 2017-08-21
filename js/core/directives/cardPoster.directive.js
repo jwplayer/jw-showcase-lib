@@ -20,6 +20,7 @@
         THUMBNAIL_AUTOMATIC_TIMEOUT         = 500,
         THUMBNAIL_AUTOMATIC_INTERVAL        = 2300,
         CONTINUE_WATCHING_THUMBNAIL_QUALITY = 320,
+        SEARCH_THUMBNAIL_QUALITY            = 320,
         DEFAULT_CARD_THUMBNAIL_QUALITY      = 120,
         FEATURED_CARD_THUMBNAIL_QUALITY     = 320;
 
@@ -216,7 +217,7 @@
              * @param position
              */
             function showPositionThumbnail (url, position) {
-                thumbstrip.load(url, 320)
+                thumbstrip.load(url, SEARCH_THUMBNAIL_QUALITY)
                     .then(function (thumbnails) {
                         return thumbnails.find(function (item) {
                             return item.start <= position && item.end >= position;
