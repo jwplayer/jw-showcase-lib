@@ -52,6 +52,7 @@
             resumed              = false,
             started              = false,
             requestQualityChange = false,
+            startTime            = null,
             playlist             = [],
             levels,
             watchProgressItem,
@@ -135,6 +136,10 @@
                 }
             };
 
+            if ($state.params.startTime) {
+              startTime = $state.params.startTime;
+            }
+
             if (angular.isDefined(config.options.cast)) {
                 vm.playerSettings.cast = config.options.cast;
             }
@@ -194,7 +199,6 @@
          * Update controller
          */
         function update () {
-
             watchProgressItem = watchProgress.getItem(vm.item);
         }
 
@@ -219,7 +223,6 @@
                 .then(function () {
                     seo.update();
                 });
-
         }
 
         /**
@@ -440,6 +443,8 @@
                 requestQualityChange = false;
             }
 
+            performConditionalSeek();
+
             // watchProgress is disabled
             if (false === userSettings.settings.continueWatching || false === config.options.enableContinueWatching) {
                 return;
@@ -462,6 +467,14 @@
             lastPos = position;
 
             handleWatchProgress(position, event.duration);
+        }
+
+        function performConditionalSeek () {
+          if (startTime) {
+            player.seek(startTime);
+
+            startTime = null;
+          }
         }
 
         /**
