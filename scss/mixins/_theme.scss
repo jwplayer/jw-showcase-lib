@@ -63,6 +63,8 @@
 
     $card-menu-bg: $white !default;
 
+    $card-in-video-timeline-bg: #2d3b56 !default;
+
     // CardSlider
 
     $card-slider-title-color: $secondary-color !default;
@@ -306,6 +308,36 @@
                 }
             }
         }
+
+        .jw-card-title .jw-card-title-matches {
+            font-weight: 400;
+            color: $primary-color;
+        }
+
+        .jw-card-description .jw-card-description-caption {
+            color: #979797;
+
+            span {
+                font-weight: 700;
+                color: $primary-color;
+            }
+        }
+
+        .jw-card-in-video-search-timeline {
+            background-color: $card-in-video-timeline-bg;
+
+            &:hover {
+                background-color: $primary-color;
+            }
+
+            .jw-card-in-video-search-timeline-dot {
+                background-color: $card-in-video-timeline-bg;
+
+                &:hover {
+                    background-color: $primary-color;
+                }
+            }
+        }
     }
 
     .jw-card.jw-card-flag-featured {
@@ -319,13 +351,11 @@
     // CardSlider
     // --------------------------------
 
-
     .jw-row:nth-child(2n+3) {
         .jw-card-slider {
             background-color: $card-slider-odd-bg-color;
         }
     }
-
 
     .jw-card-slider {
 

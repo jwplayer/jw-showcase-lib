@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'serviceWorker'];
+        'watchlist', 'utils', 'serviceWorker', 'config'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            serviceWorker) {
+                            serviceWorker, config) {
 
         return {
             scope:            {
@@ -62,11 +62,15 @@
         };
 
         function link (scope, element) {
+            scope.vm.inLineSearchEnabled = config.options.enableInVideoSearch && scope.vm.item.captionMatches;
+            scope.vm.activeCaption       = null;
 
             scope.vm.showToast              = showToast;
             scope.vm.closeMenu              = closeMenu;
             scope.vm.menuButtonClickHandler = menuButtonClickHandler;
             scope.vm.containerClickHandler  = containerClickHandler;
+            scope.vm.setActiveCaption       = setActiveCaption;
+            scope.vm.removeActiveCaption    = removeActiveCaption;
 
             activate();
 
@@ -75,10 +79,12 @@
             function activate () {
 
                 var feed       = dataStore.getFeed(scope.vm.item.feedid),
+                    item       = scope.vm.item,
                     enableText = true,
                     link       = generateLink();
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+
 
                 if (feed && $state.is('root.dashboard')) {
                     enableText = feed.enableText;
@@ -93,25 +99,35 @@
                 }
 
                 findElement('.jw-card-container')
-                    .attr('aria-label', 'play video ' + scope.vm.item.title);
+                    .attr('aria-label', 'play video ' + item.title);
+
+                var completeTitle = '';
+
+                if (scope.vm.inLineSearchEnabled) {
+                    var matchCount = item.captionMatches.length;
+
+                    completeTitle = '<span class="jw-card-title-matches">' + matchCount + ' matches: </span>';
+                }
+
+                completeTitle += item.title;
 
                 findElement('.jw-card-title')
-                    .html(scope.vm.item.title)
+                    .html(completeTitle)
                     .attr('href', link)
                     .on('click', titleClickHandler);
 
                 findElement('.jw-card-duration')
-                    .html(utils.getVideoDurationByItem(scope.vm.item));
+                    .html(utils.getVideoDurationByItem(item));
 
                 // set watch progress
-                if (scope.vm.item.feedid === 'continue-watching') {
+                if (item.feedid === 'continue-watching') {
                     scope.$watch('vm.item.progress', watchProgressUpdateHandler);
                 }
 
                 scope.$on('$destroy', destroyDirectiveHandler);
 
                 scope.$watch(function () {
-                    return watchlist.hasItem(scope.vm.item);
+                    return watchlist.hasItem(item);
                 }, watchlistUpdateHandler);
             }
 
@@ -178,6 +194,14 @@
             function titleClickHandler (event) {
 
                 event.preventDefault();
+            }
+
+            function setActiveCaption (caption) {
+                scope.vm.activeCaption = caption;
+            }
+
+            function removeActiveCaption () {
+                scope.vm.activeCaption = null;
             }
 
             /**
