@@ -45,14 +45,15 @@
          *
          * @param {jwShowcase.core.item}    item            Clicked item
          * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
+         * @param {number}                  [startTime]     Time to seek to once the video starts
          */
-        function cardClickHandler (item, clickedOnPlay) {
-
+        function cardClickHandler (item, clickedOnPlay, startTime) {
             $state.go('root.videoFromSearch', {
                 query:     $state.params.query,
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
-                autoStart: clickedOnPlay || platform.isMobile
+                startTime: startTime,
+                autoStart: clickedOnPlay || platform.isMobile || typeof startTime !== 'undefined'
             });
         }
     }

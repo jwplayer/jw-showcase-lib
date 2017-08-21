@@ -62,8 +62,11 @@
         };
 
         function link (scope, element) {
-            scope.vm.inLineSearchEnabled = config.options.enableInVideoSearch && scope.vm.item.captionMatches;
+            var isSearch            = $state.is('root.search');
+            var enableInVideoSearch = config.options.enableInVideoSearch;
+
             scope.vm.activeCaption       = null;
+            scope.vm.inLineSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
 
             scope.vm.showToast              = showToast;
             scope.vm.closeMenu              = closeMenu;
@@ -197,24 +200,30 @@
             }
 
             function setActiveCaption (caption) {
+                scope.$broadcast('caption_changed', {caption: caption, thumbnails: scope.vm.item.thumbnails});
+
                 scope.vm.activeCaption = caption;
             }
 
             function removeActiveCaption () {
                 scope.vm.activeCaption = null;
+
+                scope.$broadcast('caption_reset');
             }
 
             /**
              * Handle click event on the card container
              * @param event
+             * @param startTime
              */
-            function containerClickHandler (event) {
+            function containerClickHandler (event, startTime) {
+                event.stopPropagation();
 
                 var playButton    = findElement('.jw-card-play-button')[0],
                     clickedOnPlay = playButton === event.target || playButton === event.target.parentNode;
 
                 if (angular.isFunction(scope.vm.onClick)) {
-                    scope.vm.onClick(scope.vm.item, clickedOnPlay);
+                    scope.vm.onClick(scope.vm.item, clickedOnPlay, startTime);
                 }
             }
 

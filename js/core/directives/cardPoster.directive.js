@@ -75,6 +75,14 @@
                 thumbnailsTrack = getThumbnailsTrack();
                 feed            = dataStore.getFeed(jwCard.item.feedid);
 
+                scope.$on('caption_changed', function (event, data) {
+                    showPositionThumbnail(data.thumbnails, data.caption.time);
+                });
+
+                scope.$on('caption_reset', function () {
+                    showDefaultPoster();
+                });
+
                 // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
                 if (!thumbnailsTrack || !feed || !feed.enablePreview) {
                     return showDefaultPoster();
@@ -204,14 +212,14 @@
 
             /**
              * Show thumbnail closest to the item's position
+             * @param url
              * @param position
              */
-            function showPositionThumbnail (position) {
-                thumbstrip
-                    .getThumbnails()
+            function showPositionThumbnail (url, position) {
+                thumbstrip.load(url, 320)
                     .then(function (thumbnails) {
                         return thumbnails.find(function (item) {
-                            return item.start < position && item.end >= position;
+                            return item.start <= position && item.end >= position;
                         });
                     })
                     .then(preloadImage)
@@ -223,7 +231,6 @@
              * @param {Object} thumb
              */
             function showThumbnail (thumb) {
-
                 var posterElement,
                     x, y, w;
 
