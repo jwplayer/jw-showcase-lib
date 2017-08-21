@@ -22,9 +22,23 @@
       <div class="jw-card-info-mask">
         <a class="jw-card-title jw-card-text" tabindex="-1"></a>
         <div class="jw-card-description jw-card-text jw-markdown">
-          <jw-markdown ng-model="vm.item.description"></jw-markdown>
+          <div
+            ng-if="vm.activeCaption"
+            class="jw-card-description-caption"
+            ng-bind-html="vm.activeCaption.highlighted"
+          ></div>
+          <jw-markdown ng-if="!vm.activeCaption" ng-model="vm.item.description"></jw-markdown>
         </div>
       </div>
+    </div>
+    <div class="jw-card-in-video-search-timeline" ng-if="vm.inLineSearchEnabled">
+      <div
+        class="jw-card-in-video-search-timeline-dot"
+        ng-repeat="caption in vm.item.captionMatches"
+        ng-style="{left: (caption.time * 10 / vm.item.duration) * 100 + '%'}"
+        ng-mouseenter="vm.setActiveCaption(caption)"
+        ng-mouseleave="vm.removeActiveCaption()"
+      ></div>
     </div>
   </div>
 

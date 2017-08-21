@@ -203,6 +203,22 @@
             }
 
             /**
+             * Show thumbnail closest to the item's position
+             * @param position
+             */
+            function showPositionThumbnail (position) {
+                thumbstrip
+                    .getThumbnails()
+                    .then(function (thumbnails) {
+                        return thumbnails.find(function (item) {
+                            return item.start < position && item.end >= position;
+                        });
+                    })
+                    .then(preloadImage)
+                    .then(showThumbnail);
+            }
+
+            /**
              * Create a poster element from the given thumb
              * @param {Object} thumb
              */
