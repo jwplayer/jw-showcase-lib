@@ -35,7 +35,8 @@
       <div
         class="jw-card-in-video-search-timeline-dot"
         ng-repeat="caption in vm.item.captionMatches"
-        ng-style="{left: (caption.time * 10 / vm.item.duration) * 100 + '%'}"
+        ng-style="{left: (caption.time / vm.item.duration) * 100 + '%'}"
+        ng-click="vm.containerClickHandler($event, caption.time)"
         ng-mouseenter="vm.setActiveCaption(caption)"
         ng-mouseleave="vm.removeActiveCaption()"
       ></div>
