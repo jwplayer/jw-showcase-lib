@@ -141,8 +141,8 @@
                     '.jw-card-toast-primary',
                     '.jw-offline-message',
                     '.jw-skin-jw-showcase .jw-progress',
-                    '.jw-card-in-video-search-timeline',
-                    '.jw-card-in-video-search-timeline-dot'
+                    '.jw-card-in-video-search-timeline:hover',
+                    '.jw-card-in-video-search-timeline-dot:hover'
                 ],
                 colorClassNames = [
                     '.jw-button-default:hover',
