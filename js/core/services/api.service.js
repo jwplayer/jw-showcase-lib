@@ -30,6 +30,7 @@
      * @requires jwShowcase.config
      */
     apiService.$inject = ['$http', '$q', 'config', 'utils'];
+
     function apiService ($http, $q, config, utils) {
 
         /**
@@ -69,6 +70,8 @@
          */
         this.getSearchFeed = function (searchPlaylist, phrase) {
 
+            var result;
+
             // reject when searchPlaylist is missing
             if (!searchPlaylist) {
                 return $q.reject(new Error('searchPlaylist is missing'));
@@ -81,38 +84,32 @@
 
             phrase = encodeURIComponent(phrase);
 
-            var items;
-
             return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase)
-                .then(function(feed) {
+                .then(function (feed) {
+
+                    result = feed;
+
                     if (!config.options.enableInVideoSearch) {
-                        return feed;
+                        return;
                     }
 
-                    var promises = [];
-                    items = feed;
-
-                    feed.playlist.forEach(function (item) {
-                        promises.push(patchCaptions(item));
-                    });
-
-                    return Promise.all(promises);
+                    return Promise.all(feed.playlist.map(patchCaptions));
                 })
                 .then(function () {
-                    return items;
+                    return result;
                 });
 
-            function patchCaptions(item) {
+            function patchCaptions (item) {
                 if (!item.tracks) {
                     return Promise.resolve(item);
                 }
 
-                var captionUrl = null;
+                var captionUrl  = null;
                 var captionHits = null;
 
                 item.tracks.forEach(function (track) {
                     if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
-                        captionUrl = track.file;
+                        captionUrl  = track.file;
                         captionHits = track.hits;
                     }
 
@@ -126,32 +123,32 @@
                 }
 
                 return findMatches(captionUrl, captionHits).then(function (matches) {
-                  item.captionMatches = matches;
+                    item.captionMatches = matches;
                 });
             }
 
-            function findMatches(location, positions) {
+            function findMatches (location, positions) {
                 return $http.get(location)
                     .then(function (response) {
                         var vtt = response.data;
 
                         return new Promise(function (resolve, reject) {
-                            var parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                            var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
                             var segments = [];
 
                             parser.onparsingerror = reject;
-                            parser.oncue = function (cue) {
+                            parser.oncue          = function (cue) {
                                 segments.push(cue);
                             };
 
-                            parser.onflush = function() {
-                                resolve(positions.map(function(position) {
+                            parser.onflush = function () {
+                                resolve(positions.map(function (position) {
                                     var segment = segments[position - 1];
-                                    var regex = new RegExp('(' + phrase + ')', 'ig');
+                                    var regex   = new RegExp('(' + phrase + ')', 'ig');
 
                                     return {
-                                        text       : segment.text,
-                                        time       : segment.startTime,
+                                        text:        segment.text,
+                                        time:        segment.startTime,
                                         highlighted: segment.text.replace(regex, '<span>$1</span>')
                                     };
                                 }));
@@ -222,7 +219,7 @@
             };
 
             script.async = true;
-            script.src = config.contentService + '/libraries/' + playerId + '.js';
+            script.src   = config.contentService + '/libraries/' + playerId + '.js';
             document.body.appendChild(script);
 
             return defer.promise;
@@ -379,6 +376,7 @@
      * This decorator will add crossdomain request support for IE9 using XDomainRequest.
      */
     $httpBackendDecorator.$inject = ['$delegate', '$browser'];
+
     function $httpBackendDecorator ($delegate, $browser) {
 
         if (!window.XDomainRequest) {
