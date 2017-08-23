@@ -66,7 +66,7 @@
             var enableInVideoSearch = config.options.enableInVideoSearch;
 
             scope.vm.activeCaption       = null;
-            scope.vm.inLineSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
+            scope.vm.inVideoSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
 
             scope.vm.showToast              = showToast;
             scope.vm.closeMenu              = closeMenu;
@@ -105,7 +105,7 @@
 
                 var completeTitle = '';
 
-                if (scope.vm.inLineSearchEnabled) {
+                if (scope.vm.inVideoSearchEnabled) {
                     var matchCount = item.captionMatches.length;
 
                     completeTitle = '<span class="jw-card-title-matches">' + matchCount + ' matches: </span>';

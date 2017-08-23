@@ -22,6 +22,10 @@
         .jw-card-watchlist-button {
             @include transform(scale(0) !important);
         }
+
+        .jw-card-in-video-search-timeline {
+            display: none;
+        }
     }
 
     &-flag-hide-text {
