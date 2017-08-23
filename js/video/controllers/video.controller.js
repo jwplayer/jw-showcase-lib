@@ -202,6 +202,10 @@
             watchProgressItem = watchProgress.getItem(vm.item);
         }
 
+        /**
+         * Update the state silently. Meaning the $stateParams are updated with the new item, but the state isn't
+         * reloaded. This prevents the page from reloading and reinitialising the player.
+         */
         function updateStateSilently () {
 
             var stateParams = $state.params;
@@ -469,6 +473,9 @@
             handleWatchProgress(position, event.duration);
         }
 
+        /**
+         * Seek to time given in stateParams when set
+         */
         function performConditionalSeek () {
             if (startTime) {
                 player.seek(startTime);
