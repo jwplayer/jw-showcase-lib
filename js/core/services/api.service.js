@@ -62,13 +62,14 @@
          *
          * @param {string} searchPlaylist Search playlist
          * @param {string} phrase Search phrase
+         * @param {boolean} searchInCaptions Search in captions
          * @description
          * Get search feed from jw platform with given search phrase
          *
          * @resolves {jwShowcase.core.feed}
          * @returns {Promise} Promise which be resolved when the request is completed.
          */
-        this.getSearchFeed = function (searchPlaylist, phrase) {
+        this.getSearchFeed = function (searchPlaylist, phrase, searchInCaptions) {
 
             var result;
 
@@ -89,7 +90,7 @@
 
                     result = feed;
 
-                    if (!config.options.enableInVideoSearch) {
+                    if (!config.options.enableInVideoSearch || !searchInCaptions) {
                         return;
                     }
 

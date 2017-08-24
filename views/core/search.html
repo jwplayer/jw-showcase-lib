@@ -5,6 +5,14 @@
       <input class="jw-search-input" type="text" placeholder="Type to search..."
           ng-model="vm.searchPhrase" ng-model-options="{ debounce: 500 }"
           ng-keyup="vm.searchInputKeyupHandler($event)" ng-change="vm.searchInputChangeHandler()"/>
+      <div class="jw-search-captions-toggle" ng-if="vm.config.options.enableInVideoSearch">
+          <span class="jw-search-captions-toggle-label">Include captions:</span>
+          <jw-toggle
+                  aria-label="enable continue watching"
+                  tabindex="0"
+                  ng-model="vm.searchWithCaptions"
+                  ng-change="vm.toggleSearchWithCaptions()"></jw-toggle>
+      </div>
       <jw-button class="jw-icon-button jw-button-close-search jw-button-default"
           ng-click="vm.closeSearchButtonClickHandler($event)"
           tabindex="0">

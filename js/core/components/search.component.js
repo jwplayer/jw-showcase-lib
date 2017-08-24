@@ -51,13 +51,15 @@
 
         vm.config = config;
 
-        vm.searchPhrase    = '';
-        vm.searchBarActive = false;
+        vm.searchPhrase       = '';
+        vm.searchBarActive    = false;
+        vm.searchWithCaptions = false;
 
         vm.closeSearchButtonClickHandler = closeSearchButtonClickHandler;
         vm.searchButtonClickHandler      = searchButtonClickHandler;
         vm.searchInputKeyupHandler       = searchInputKeyupHandler;
         vm.searchInputChangeHandler      = searchInputChangeHandler;
+        vm.toggleSearchWithCaptions      = toggleSearchWithCaptions;
 
         vm.$onInit = activate;
 
@@ -149,15 +151,22 @@
             searchAndDisplayResults();
         }
 
-
         /**
          * Get search results and go to search state
          */
         function searchAndDisplayResults () {
 
             $state.go('root.search', {
-                query: utils.slugify(vm.searchPhrase, '+')
+                query: utils.slugify(vm.searchPhrase, '+'),
+                searchInCaptions: vm.searchWithCaptions
             });
+        }
+
+        /**
+         *  With every toggle get new search results
+         */
+        function toggleSearchWithCaptions () {
+            searchAndDisplayResults();
         }
     }
 

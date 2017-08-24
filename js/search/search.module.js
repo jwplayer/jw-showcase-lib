@@ -38,6 +38,9 @@
                 scrollTop:   'last',
                 persistent:  true,
                 history:     false,
+                params: {
+                    searchInCaptions: null
+                },
                 resolve:     {
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
                         function ($q, config, $stateParams, apiConsumer) {
@@ -48,7 +51,7 @@
                                 return $q.reject('searchPlaylist is not defined');
                             }
 
-                            return apiConsumer.getSearchFeed(query);
+                            return apiConsumer.getSearchFeed(query, $stateParams.searchInCaptions);
                         }]
                 }
             });
