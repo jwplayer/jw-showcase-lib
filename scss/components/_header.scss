@@ -49,10 +49,19 @@
     .jw-header-nav {
         @include flex(0 0 $header-nav-width);
         @include align-self(center);
+        @include display-flex;
         min-width: $header-nav-width;
 
         &:last-child {
             text-align: right;
+        }
+
+        &-left {
+            @include justify-content(flex-start);
+        }
+
+        &-right {
+            @include justify-content(flex-end);
         }
     }
 

@@ -31,6 +31,8 @@
     userSettings.$inject = ['session'];
     function userSettings (session) {
 
+
+        var self = this;
         var settings = {
             conserveBandwidth: false,
             continueWatching:  true,
@@ -41,7 +43,21 @@
         this.settings = settings;
         this.restore  = restore;
 
+        activate();
+
         ////////////////
+
+        function activate () {
+            session.watch(LOCAL_STORAGE_KEY, function (data) {
+                if (!angular.isObject(data)) {
+                    return;
+                }
+
+                angular.forEach(data, function (value, key) {
+                    self.settings[key] = value;
+                });
+            });
+        }
 
         /**
          * @ngdoc property
@@ -85,15 +101,15 @@
          * Restore user settings from session
          */
         function restore () {
-
-            var data = session.load(LOCAL_STORAGE_KEY);
-
-            if (angular.isObject(data)) {
+            return session.load(LOCAL_STORAGE_KEY).then(function (data) {
+                if (!angular.isObject(data)) {
+                    return;
+                }
 
                 angular.forEach(data, function (value, key) {
                     settings[key] = value;
                 });
-            }
+            });
         }
     }
 

@@ -44,8 +44,8 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player'];
-    function JwPlayerDirective ($parse, $timeout, utils, player) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform'];
+    function JwPlayerDirective ($parse, $timeout, utils, player, platform) {
 
         return {
             scope:       {
@@ -107,8 +107,8 @@
                     controls: true
                 }, scope.settings);
 
-                // override autostart
-                if (window.cordova) {
+                // override autostart for mobile devices
+                if (window.cordova || platform.isMobile) {
                     settings.autostart = false;
                 }
 

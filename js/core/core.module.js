@@ -46,7 +46,12 @@
             .state('root', {
                 abstract:    true,
                 resolve:     {
-                    preload: 'preload'
+                    configure: ['configResolver', 'config', function (configResolver, config) {
+                        return configResolver.getConfig();
+                    }],
+                    bootstrap: ['configure', 'bootstrap', function(configure, bootstrap) {
+                        return bootstrap;
+                    }]
                 },
                 templateUrl: 'views/core/root.html'
             });

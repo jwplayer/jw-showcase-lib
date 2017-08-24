@@ -1,0 +1,44 @@
+<div class="jw-popup jw-popup-login" ng-class="{'jw-popup-as-page': vm.isPage}">
+    <h3 class="jw-popup-title">Log in</h3>
+    <p class="jw-popup-text">Logging in allows to continue watching op multiple devices. Also your personal settings and
+        preferences will be stored for further use.</p>
+    <div class="jw-popup-buttons jw-login-social-buttons" tabindex="0">
+        <jw-button  ng-repeat="provider in vm.providers"
+                    ng-click="vm.logInWithProvider(provider)"
+                    class="jw-button jw-button-{{provider}} jw-button-block"
+        >
+            <span class="jw-button-label">Login with {{provider | capitalize}}</span>
+        </jw-button>
+
+    </div>
+    <p class="jw-popup-text" ng-if="vm.localAuth">
+        Or login with your email address
+    </p>
+    <form class="jw-form" ng-if="vm.localAuth" ng-submit="vm.logInWithEmail(vm.user.email, vm.user.password)" novalidate>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="email" tabindex="0" class="jw-form-control" id="email" placeholder="Email address" ng-model="vm.user.email"
+                   floating-label>
+        </div>
+        <div class="jw-form-group jw-floating-label-wrapper">
+            <input type="password" class="jw-form-control" id="password" placeholder="Password" ng-model="vm.user.password"
+                   floating-label>
+            <div class="jw-form-group-warnings">
+                <p ng-repeat="error in vm.errors" class="jw-form-group-warning">
+                    <b>Warning:</b> {{error.message}}
+                </p>
+            </div>
+        </div>
+        <div class="jw-form-group">
+            <a class="jw-popup-text jw-forgot-password" ng-click="vm.forgotPassword(vm.user.email)" tabindex="0">Forgot your password?</a>
+        </div>
+        <div class="jw-button-row jw-button-block jw-popup-buttons" ng-if="vm.localAuth">
+            <button type="submit" class="jw-button jw-button-login jw-button-primary" tabindex="0">
+                <span class="jw-button-label">Log in</span>
+            </button>
+            <p class="jw-between-text">or</p>
+            <jw-button class="jw-button jw-button-signup jw-button-secondary" ng-click="vm.signUp()" tabindex="0">
+                <span class="jw-button-label">Sign up</span>
+            </jw-button>
+        </div>
+    </form>
+</div>

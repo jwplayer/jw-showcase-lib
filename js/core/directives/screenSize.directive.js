@@ -110,7 +110,11 @@
                             block = {
                                 clone: clone
                             };
-                            $animate.enter(clone, $element.parent(), $element);
+                            $animate.enter(clone, $element.parent(), $element).then(function () {
+
+                                // let the application know that the view has been updated
+                                $scope.$emit('$viewContentUpdated');
+                            });
                         });
                     }
                 } else {

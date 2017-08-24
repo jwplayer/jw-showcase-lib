@@ -44,11 +44,11 @@ $desktop-min-width: $tablet-max-width + 1 !default;
 // --------------------------------
 
 $header-height: 90px !default;
-$header-nav-width: 120px !default;
+$header-nav-width: 175px !default;
 $header-padding: 10px !default;
 
 $header-height-mobile: 60px !default;
-$header-nav-width-mobile: 50px !default;
+$header-nav-width-mobile: 120px !default;
 
 $search-height: 70px !default;
 
@@ -73,7 +73,7 @@ $toggle-button-size: 25px !default;
 // --------------------------------
 
 $video-layout-width: 1024px !default;
-$video-layout-right-rail-width: 1240px !default;
+$video-layout-right-rail-width: 1280px !default;
 
 //
 // Z-index

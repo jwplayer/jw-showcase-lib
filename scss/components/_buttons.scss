@@ -46,7 +46,12 @@
 
     &-label {
         display: inline-block;
+        font-size: initial;
         vertical-align: middle;
+    }
+
+    &-user-badge {
+        padding-left: 0;
     }
 
     .jwy-icon {

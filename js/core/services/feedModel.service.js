@@ -27,7 +27,9 @@
     feedModelFactory.$inject = [];
     function feedModelFactory () {
 
-        function FeedModel (feedId, title, navigable, dynamic) {
+        function FeedModel (feedId, title, navigable, dynamic, feedUri) {
+
+            this.feedUri = feedUri;
 
             this.feedid = feedId;
 

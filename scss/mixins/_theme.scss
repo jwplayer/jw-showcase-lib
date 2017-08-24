@@ -10,6 +10,12 @@
 
     $facebook-color: #3b5998 !default;
     $twitter-color: #55acee !default;
+    $google-color: #dd4b39 !default;
+    $github-color: #444 !default;
+
+    &-github {
+        background-color: $github-color;
+    }
 
     // Body
 
@@ -241,6 +247,14 @@
 
         &-twitter {
             background-color: $twitter-color;
+        }
+
+        &-google {
+            background-color: $google-color;
+        }
+
+        &-github {
+            background-color: $github-color;
         }
 
         &-mail {

@@ -43,11 +43,23 @@
      * @name jwShowcase.core.HeaderController
      *
      * @requires jwShowcase.config
+     * @requires jwShowcase.auth
      */
-    HeaderController.$inject = ['config'];
-    function HeaderController (config) {
+    HeaderController.$inject = ['config', 'auth'];
+    function HeaderController (config, auth) {
+        var self = this;
 
-        this.config = config;
+        self.userLoggedIn = false;
+        self.config = config;
+
+        if (config.options.useAuthentication) {
+            auth.hasIdentity().then(function (isUserLoggedIn) {
+                self.userLoggedIn = !config.options.authenticationRequired || isUserLoggedIn;
+            });
+
+            auth.firebaseAuth.$onAuthStateChanged(function (firebaseUser) {
+                self.userLoggedIn = !config.options.authenticationRequired || !!firebaseUser;
+            });
+        }
     }
-
 }());

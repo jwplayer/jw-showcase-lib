@@ -22,10 +22,12 @@
      */
     angular
         .module('jwShowcase', [
+            'firebase',
             'jwShowcase.core',
             'jwShowcase.error',
             'jwShowcase.dashboard',
             'jwShowcase.feed',
+            'jwShowcase.login',
             'jwShowcase.search',
             'jwShowcase.tag',
             'jwShowcase.video'

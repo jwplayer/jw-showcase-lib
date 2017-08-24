@@ -65,7 +65,7 @@
 
         /////////////////
 
-        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'apiConsumer', 'preload'];
+        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'apiConsumer', 'bootstrap'];
         function resolveFeed ($stateParams, $q, dataStore, apiConsumer) {
 
             if ($stateParams.query) {

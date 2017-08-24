@@ -14,6 +14,9 @@
  * governing permissions and limitations under the License.
  **/
 
+window.googletag = window.googletag || {};
+window.googletag.cmd = window.googletag.cmd || [];
+
 (function () {
 
     angular
@@ -28,63 +31,53 @@
     function dfp ($q) {
 
         var gptScript    = 'https://www.googletagservices.com/tag/js/gpt.js',
-            gptLoaded    = false,
+            gptPromise   = false,
             dfp          = this,
             definedSlots = {};
 
-        this.slots       = {};
-        this.sizeMapping = {};
-
-        this.defineSlot        = defineSlot;
-        this.defineSizeMapping = defineSizeMapping;
-        this.getSlot           = getSlot;
-        this.display           = display;
-        this.execute           = execute;
-        this.refresh           = refresh;
-        this.destroy           = destroy;
+        this.registerSlot = registerSlot;
+        this.getSlot      = getSlot;
+        this.display      = display;
+        this.setup        = setup;
+        this.refresh      = refresh;
+        this.destroy      = destroy;
 
         ////////////////
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.dfp#defineSlot
+         * @name jwShowcase.core.dfp#registerSlot
          * @methodOf jwShowcase.core.dfp
          *
          * @returns {jwShowcase.core.dfp}
          */
-        function defineSlot (tag, size, id) {
+        function registerSlot (adUnit, size, id, sizeMapping) {
 
-            this.slots[id] = {
-                tag:  tag,
-                size: size
-            };
+            if (sizeMapping) {
+                // to match css mediaQueries with sizeMapping breakpoints the scrollbar width must be subtracted.
+                var scrollbarWidth = window.innerWidth - document.body.clientWidth;
 
-            return this;
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.dfp#defineSizeMapping
-         * @methodOf jwShowcase.core.dfp
-         *
-         * @returns {jwShowcase.core.dfp}
-         */
-        function defineSizeMapping (mapping, id) {
-
-            // to match css mediaQueries with sizeMapping breakpoints the scrollbar width must be subtracted.
-            var scrollbarWidth = window.innerWidth - document.body.clientWidth;
-
-            // but only when scrollbar is visible
-            if (scrollbarWidth > 0) {
-                mapping = mapping.map(function (size) {
-                    if (size[0][0] > 0) {
-                        size[0][0] = size[0][0] - scrollbarWidth;
-                    }
-                    return size;
-                });
+                // but only when scrollbar is visible
+                if (scrollbarWidth > 0) {
+                    sizeMapping = sizeMapping.map(function (size) {
+                        if (size[0][0] > 0) {
+                            size[0][0] = size[0][0] - scrollbarWidth;
+                        }
+                        return size;
+                    });
+                }
             }
 
-            this.sizeMapping[id] = mapping;
+            googletag.cmd.push(function () {
+                var slot = googletag.defineSlot(adUnit, size, id);
+
+                if (sizeMapping) {
+                    slot.defineSizeMapping(sizeMapping);
+                }
+
+                slot.addService(googletag.pubads());
+                definedSlots[id] = slot;
+            });
 
             return this;
         }
@@ -118,10 +111,14 @@
          * @name jwShowcase.core.dfp#refresh
          * @methodOf jwShowcase.core.dfp
          */
-        function refresh (slot) {
+        function refresh (id) {
+
+            if (!definedSlots[id]) {
+                return;
+            }
 
             googletag.cmd.push(function () {
-                googletag.pubads().refresh([slot]);
+                googletag.pubads().refresh([definedSlots[id]]);
             });
         }
 
@@ -130,44 +127,31 @@
          * @name jwShowcase.core.dfp#display
          * @methodOf jwShowcase.core.dfp
          */
-        function destroy (slot) {
+        function destroy (id) {
+
+            if (!definedSlots[id]) {
+                return;
+            }
 
             googletag.cmd.push(function () {
-                googletag.destroySlots([slot]);
+                googletag.destroySlots([definedSlots[id]]);
             });
         }
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.dfp#execute
+         * @name jwShowcase.core.dfp#setup
          * @methodOf jwShowcase.core.dfp
-         *
-         * @returns {jwShowcase.core.dfp}
          */
-        function execute () {
+        function setup () {
 
-            loadDfpScript().then(function () {
-
+            return loadDfpScript().then(function () {
                 googletag.cmd.push(function () {
-                    angular.forEach(dfp.slots, function (slot, id) {
-                        definedSlots[id] = googletag
-                            .defineSlot(slot.tag, slot.size, id)
-                            .addService(googletag.pubads());
-
-                        if (dfp.sizeMapping[id]) {
-                            definedSlots[id].defineSizeMapping(dfp.sizeMapping[id]);
-                        }
-                    });
-
-                    googletag.pubads().enableSingleRequest();
                     googletag.pubads().collapseEmptyDivs(true);
                     googletag.pubads().setCentering(true);
                     googletag.enableServices();
                 });
-
             });
-
-            return this;
         }
 
         /**
@@ -178,8 +162,8 @@
             var defer,
                 script;
 
-            if (gptLoaded) {
-                return $q.resolve();
+            if (gptPromise) {
+                return gptPromise;
             }
 
             defer  = $q.defer();
@@ -188,19 +172,21 @@
             script.type = 'text/javascript';
 
             script.onload = function () {
-                gptLoaded = true;
+                gptPromise = true;
                 defer.resolve();
             };
 
             script.onerror = function () {
-                defer.reject('Could not load dfp library, ad blockers?');
+                defer.reject('Could not load dfp library, ad blocker?');
             };
 
             script.async = true;
             script.src   = gptScript;
             document.body.appendChild(script);
 
-            return defer.promise;
+            gptPromise = defer.promise;
+
+            return gptPromise;
         }
     }
 

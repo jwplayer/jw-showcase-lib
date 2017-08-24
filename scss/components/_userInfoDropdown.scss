@@ -1,0 +1,48 @@
+.jw-user-info-dropdown {
+    &-header {
+        @include display-flex;
+    }
+
+    &-left-col {
+        padding: 16px 8px 16px 16px;
+    }
+
+    &-right-col {
+        @include display-flex;
+        @include align-items(center);
+        padding: 16px 16px 16px 8px;
+
+    }
+
+    &-userbadge {
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    &-name {
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    &-email {
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        opacity: 0.3;
+    }
+
+    &-button {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        text-align: center;
+    }
+
+    &-divider-bottom {
+        border-bottom: 1px solid rgba($black, 0.3);
+    }
+}

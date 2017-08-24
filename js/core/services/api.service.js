@@ -29,8 +29,8 @@
      * @requires $q
      * @requires jwShowcase.config
      */
-    apiService.$inject = ['$http', '$q', 'config', 'utils'];
-    function apiService ($http, $q, config, utils) {
+    apiService.$inject = ['$http', '$q', 'config', 'utils', 'auth'];
+    function apiService ($http, $q, config, utils, auth) {
 
         /**
          * @ngdoc method
@@ -51,7 +51,7 @@
                 return $q.reject(new Error('feedId is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/v2/playlists/' + feedId);
+            return getFeed(feedId);
         };
 
         /**
@@ -81,7 +81,14 @@
 
             phrase = encodeURIComponent(phrase);
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+            if (config.options.firebase && config.options.useSigning) {
+                return this.getSignedFeed([{id: searchPlaylist, query: {'search': phrase}}])
+                    .then(function(signed) {
+                        return getFeed(signed[0]);
+                    });
+            }
+
+            return this.getFeed(searchPlaylist + '?search=' + phrase);
         };
 
         /**
@@ -109,8 +116,14 @@
                 return $q.reject(new Error('media id is not given or not a string'));
             }
 
-            return getFeed(config.contentService + '/v2/playlists/' + recommendationsPlaylist +
-                '?related_media_id=' + mediaId);
+            if (config.options.firebase && config.options.useSigning) {
+                return this.getSignedFeed([{id: recommendationsPlaylist, query: {'related_media_id': mediaId}}])
+                    .then(function(signed) {
+                        return getFeed(signed[0]);
+                    });
+            }
+
+            return getFeed('/v2/playlists/' + recommendationsPlaylist, {'related_media_id': mediaId});
         };
 
         /**
@@ -147,16 +160,35 @@
             return defer.promise;
         };
 
+        this.getSignedFeed = getSignedFeed;
+
+        function getSignedFeed(playlist) {
+            return auth.getToken()
+                .then(function(token) {
+                    return $http({
+                        method : 'POST',
+                        url    : config.options.firebase.functions + '/token',
+                        data   : {userToken: token, playlist: playlist},
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                })
+                .then(function(result) {
+                    return result.data.playlist;
+                });
+        }
+
         /**
          * Get feed from the given URL.
          *
          * @param {string} url
          * @returns {Promise}
          */
-        function getFeed (url) {
+        function getFeed (feedId) {
+            var url = config.contentService + feedId;
 
             return $http.get(url)
-                .then(getFeedCompleted, getFeedFailed);
+                .then(getFeedCompleted)
+                .catch(getFeedFailed);
 
             function getFeedCompleted (response) {
 

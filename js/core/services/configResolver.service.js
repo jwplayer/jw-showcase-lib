@@ -27,13 +27,15 @@
      * @requires $http
      * @required $q
      */
-    configResolverService.$inject = ['$http', '$q'];
-    function configResolverService ($http, $q) {
+    configResolverService.$inject = ['$http', '$q', 'config'];
+    function configResolverService ($http, $q, config) {
 
         var isDefined     = angular.isDefined,
             isArray       = angular.isArray,
             isString      = angular.isString,
             configPromise = null;
+
+        var firebaseInitialized = false;
 
         this.getConfig = getConfig;
 
@@ -58,7 +60,33 @@
                     .then(getConfigComplete, getConfigFailed);
             }
 
-            return configPromise;
+            return configPromise
+                .then(function(resolved) {
+                    copyValuesRecursive(config, resolved);
+
+                    config.content.forEach(function (target) {
+                      target.signable = true;
+                    });
+
+                    applyConfigDefaults(config);
+                })
+                .then(function () {
+                    if (firebaseInitialized) {
+                        return;
+                    }
+
+                    firebaseInitialized = true;
+
+                    if (config.options.useSigning || config.options.useAuthentication) {
+                        if (!config.options.firebase) {
+                            throw new Error('Missing firebase options.');
+                        }
+
+                        firebase.initializeApp(config.options.firebase);
+                    } else {
+                        config.options.firebase = false;
+                    }
+                });
         }
 
         /**
@@ -207,6 +235,80 @@
         }
 
         /**
+         * Apply the config defaults and fixtures
+         * @param config
+         * @returns {*}
+         */
+        function applyConfigDefaults (config) {
+            if (angular.isArray(config.content)) {
+
+                // add continue watching feed if its not defined
+                if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
+
+                    // when first feed is featured we place the continue watching slider after that
+                    var index = config.content[0] && config.content[0].featured ? 1 : 0;
+
+                    // insert at index
+                    config.content.splice(index, 0, {
+                        playlistId: 'continue-watching'
+                    });
+                }
+
+                // add saved videos feed if its not defined
+                if (!containsPlaylistId(config.content, 'saved-videos')) {
+
+                    // add as last slider
+                    config.content.push({
+                        playlistId: 'saved-videos'
+                    });
+                }
+
+                // make sure each content has the default settings
+                config.content = config.content.map(function (content) {
+
+                    if (!isSet(content.enableText)) {
+                        content.enableText = true;
+                    }
+
+                    if (!isSet(content.enableTitle)) {
+                        content.enableTitle = true;
+                    }
+
+                    if (!isSet(content.enablePreview)) {
+                        content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
+                    }
+
+                    config.content.url = '';
+
+                    return content;
+                });
+            }
+
+            return config;
+        }
+
+        /**
+         * Returns true if value is defined and not null
+         * @param {*} value
+         * @returns {boolean}
+         */
+        function isSet (value) {
+            return angular.isDefined(value) && value !== null;
+        }
+
+        /**
+         * Test if collection contains a playlist id
+         * @param collection
+         * @param id
+         * @returns {boolean}
+         */
+        function containsPlaylistId (collection, id) {
+            return collection.findIndex(function (current) {
+                    return current.playlistId === id;
+                }) > -1;
+        }
+
+        /**
          * Copy defined keys from source to target
          * @param {string[]} keys
          * @param {Object} source
@@ -217,6 +319,26 @@
             angular.forEach(keys, function (key) {
                 if (angular.isDefined(source[key])) {
                     target[key] = source[key];
+                }
+            });
+        }
+
+
+        /**
+         * Merge values that are defined and not null
+         * @param {Object} destination
+         * @param {Object} source
+         */
+        function copyValuesRecursive(destination, source) {
+
+            angular.forEach(source, function (value, key) {
+
+                if (angular.isObject(value) && angular.isObject(destination[key])) {
+                    return copyValuesRecursive(destination[key], value);
+                }
+
+                if (isSet(value)) {
+                    destination[key] = value;
                 }
             });
         }
