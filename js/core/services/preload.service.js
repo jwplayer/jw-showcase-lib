@@ -40,9 +40,9 @@
      */
 
     Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
-        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'utils'];
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils'];
     function Preload ($q, $state, appStore, config, configResolver, cookies, api, dfp, apiConsumer, serviceWorker,
-                      watchlist, watchProgress, userSettings, utils) {
+                      watchlist, watchProgress, userSettings, bridge, utils) {
 
         var defer = $q.defer();
 
@@ -122,6 +122,8 @@
 
             watchlist.restore();
             watchProgress.restore();
+
+            bridge();
         }
 
         function showCookiesNotice () {
