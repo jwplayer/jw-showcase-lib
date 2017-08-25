@@ -41,6 +41,7 @@
                 enableFooter:              true,
                 enableTags:                false,
                 enableGlobalSearch:        false,
+                enableAddToHome:           false,
                 rightRail:                 {
                     enabled: false
                 },
