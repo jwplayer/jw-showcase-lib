@@ -168,7 +168,7 @@
          *
          * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
-        this.getSearchFeed = function (searchPhrase, searchInCaptions) {
+        this.getSearchFeed = function (searchPhrase) {
 
             var feed = new FeedModel(config.searchPlaylist, 'Search Results');
 
@@ -180,7 +180,7 @@
             dataStore.searchFeed.feedid = config.searchPlaylist;
 
             return api
-                .getSearchFeed(config.searchPlaylist, searchPhrase, searchInCaptions)
+                .getSearchFeed(config.searchPlaylist, searchPhrase)
                 .then(function (response) {
 
                     var allItems = dataStore.getItems();

@@ -9,4 +9,5 @@
 
   <jw-card-grid feed="vm.feed" on-card-click="vm.cardClickHandler" card-class-name="jw-lazy-load"
       cols="{xs:2, sm:2, md:3, lg:4, xl:5}"></jw-card-grid>
+  <jw-button ng-if="vm.itemsLeft()" ng-click="vm.showMoreClickHandler()" class="jw-button-default jw-button-secondary jw-button-show-more jw-card-grid">Show more results...</jw-button>
 </div>

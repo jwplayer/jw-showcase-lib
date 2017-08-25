@@ -51,7 +51,7 @@
                                 return $q.reject('searchPlaylist is not defined');
                             }
 
-                            return apiConsumer.getSearchFeed(query, $stateParams.searchInCaptions);
+                            return apiConsumer.getSearchFeed(query);
                         }]
                 }
             });

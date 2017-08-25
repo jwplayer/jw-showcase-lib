@@ -62,16 +62,13 @@
          *
          * @param {string} searchPlaylist Search playlist
          * @param {string} phrase Search phrase
-         * @param {boolean} searchInCaptions Search in captions
          * @description
          * Get search feed from jw platform with given search phrase
          *
          * @resolves {jwShowcase.core.feed}
          * @returns {Promise} Promise which be resolved when the request is completed.
          */
-        this.getSearchFeed = function (searchPlaylist, phrase, searchInCaptions) {
-
-            var result;
+        this.getSearchFeed = function (searchPlaylist, phrase) {
 
             // reject when searchPlaylist is missing
             if (!searchPlaylist) {
@@ -85,48 +82,46 @@
 
             phrase = encodeURIComponent(phrase);
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase)
-                .then(function (feed) {
+            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+        };
 
-                    result = feed;
-
-                    if (!config.options.enableInVideoSearch || !searchInCaptions) {
-                        return;
-                    }
-
-                    return Promise.all(feed.playlist.map(patchCaptions));
-                })
-                .then(function () {
-                    return result;
-                });
-
-            function patchCaptions (item) {
-                if (!item.tracks) {
-                    return Promise.resolve(item);
-                }
-
-                var captionUrl  = null;
-                var captionHits = null;
-
-                item.tracks.forEach(function (track) {
-                    if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
-                        captionUrl  = track.file;
-                        captionHits = track.hits;
-                    }
-
-                    if (track.kind === 'thumbnails') {
-                        item.thumbnails = track.file;
-                    }
-                });
-
-                if (!captionUrl) {
-                    return Promise.resolve(item);
-                }
-
-                return findMatches(captionUrl, captionHits).then(function (matches) {
-                    item.captionMatches = matches;
-                });
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.api#patchCaptions
+         * @methodOf jwShowcase.core.api
+         * @description
+         * Add captions to a given item
+         *
+         * @param {object} item
+         * @param {string} phrase
+         * @returns {*}
+         */
+        this.patchCaptions = function (item, phrase) {
+            if (!item.tracks) {
+                return Promise.resolve(item);
             }
+
+            var captionUrl  = null;
+            var captionHits = null;
+
+            item.tracks.forEach(function (track) {
+                if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
+                    captionUrl  = track.file;
+                    captionHits = track.hits;
+                }
+
+                if (track.kind === 'thumbnails') {
+                    item.thumbnails = track.file;
+                }
+            });
+
+            if (!captionUrl) {
+                return Promise.resolve(item);
+            }
+
+            return findMatches(captionUrl, captionHits).then(function (matches) {
+                item.captionMatches = matches;
+            });
 
             function findMatches (location, positions) {
                 return $http.get(location)
