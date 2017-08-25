@@ -96,12 +96,19 @@
 
         function handlePreloadSuccess () {
 
+            var pwa = window.enablePwa && 'serviceWorker' in navigator;
+
             userSettings.restore();
             showCookiesNotice();
 
             if (serviceWorker.isSupported()) {
                 serviceWorker.prefetchPlayer(jwplayer.utils.repo());
                 serviceWorker.prefetchConfig(config);
+            }
+
+            // show add to homescreen when PWA is disabled
+            if (config.options.enableAddToHome && !window.cordova && !pwa) {
+                window.addToHomescreen({appID: 'jwshowcase.addtohome'});
             }
 
             defer.resolve();
