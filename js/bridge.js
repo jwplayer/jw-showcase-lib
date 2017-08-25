@@ -16,10 +16,39 @@
 
 (function (global) {
 
-    global.jwShowcase = {};
+    var listeners  = {},
+        jwShowcase = {};
 
-    global.jwShowcase.ready = new Promise(function (resolve) {
-        global.jwShowcase.$ready = resolve;
-    });
+    jwShowcase.on = function (event, callback) {
+        if (!listeners[event]) {
+            listeners[event] = [];
+        }
+
+        listeners[event].unshift(callback);
+    };
+
+    jwShowcase.off = function (event, callback) {
+        if (listeners[event]) {
+            listeners[event] = listeners[event].filter(function (current) {
+                return current !== callback;
+            });
+        }
+    };
+
+    jwShowcase.dispatch = function (event) {
+        var args = Array.prototype.slice.call(arguments, 1);
+
+        if (listeners[event]) {
+            listeners[event].forEach(function (callback) {
+                try {
+                    callback.apply(this, args);
+                } catch (e) {
+                    // error
+                }
+            });
+        }
+    };
+
+    global.jwShowcase = jwShowcase;
 
 }(window));

@@ -26,37 +26,44 @@
      *
      * @required jwShowcase.core.bridge
      */
-    bridgeService.$inject = ['$timeout', '$state', 'dataStore', 'history', 'userSettings', 'sidebar', 'watchlist',
-        'watchProgress', 'utils', 'config'];
+    bridgeService.$inject = ['$rootScope', '$timeout', '$state', 'dataStore', 'history', 'userSettings', 'sidebar',
+        'watchlist', 'watchProgress', 'utils', 'config'];
 
-    function bridgeService ($timeout, $state, dataStore, history, userSettings, sidebar, watchlist, watchProgress,
-                            utils, config) {
+    function bridgeService ($rootScope, $timeout, $state, dataStore, history, userSettings, sidebar, watchlist,
+                            watchProgress, utils, config) {
 
-        //window.jwShowcase.search = search;
-        // window.jwShowcase.navigate = $state.go;
-        // window.jwShowcase.goBack   = goBack;
-        // window.jwShowcase.state    = getState;
+        var jwShowcase = window.jwShowcase;
 
-        window.jwShowcase.state = {
+        jwShowcase.config        = getConfig;
+        jwShowcase.feeds         = getFeeds;
+        jwShowcase.search        = search;
+        jwShowcase.sidebar       = patchFunctions(sidebar);
+        jwShowcase.watchlist     = patchFunctions(watchlist);
+        jwShowcase.watchProgress = patchFunctions(watchProgress);
+
+        jwShowcase.settings = {
+            get: getSetting,
+            set: setSetting
+        };
+
+        jwShowcase.state = {
             go:     $state.go,
             goBack: goBack,
             get:    getState
         };
 
-        window.jwShowcase.config = getConfig;
-        window.jwShowcase.feeds  = getFeeds;
+        $rootScope.$on('$stateChangeSuccess', function () {
+            jwShowcase.dispatch('stateChanged', getState());
+        });
 
-        window.jwShowcase.settings = {
-            get: getSetting,
-            set: setSetting
-        };
-
-        window.jwShowcase.sidebar       = patchFunctions(sidebar);
-        window.jwShowcase.watchlist     = patchFunctions(watchlist);
-        window.jwShowcase.watchProgress = patchFunctions(watchProgress);
+        $rootScope.$watchCollection(function () {
+            return userSettings.settings;
+        }, function (settings) {
+            jwShowcase.dispatch('settingsChanged', settings);
+        });
 
         return function () {
-            window.jwShowcase.$ready();
+            jwShowcase.dispatch('ready');
         };
 
         /////////////
