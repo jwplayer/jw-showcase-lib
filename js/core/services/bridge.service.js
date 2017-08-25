@@ -48,6 +48,7 @@
 
         jwShowcase.state = {
             go:     $state.go,
+            is:     $state.is,
             goBack: goBack,
             get:    getState
         };
@@ -79,7 +80,7 @@
         }
 
         function getState () {
-            return angular.copy($state.current);
+            return angular.merge({params: $state.params}, $state.current);
         }
 
         function getFeeds () {
