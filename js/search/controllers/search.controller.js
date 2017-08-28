@@ -24,33 +24,49 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$scope', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
-    function SearchController ($scope, $state, $stateParams, platform, searchFeed, api) {
+    SearchController.$inject = ['$q', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
 
-        var vm = this;
+    function SearchController ($q, $state, $stateParams, platform, searchFeed, api) {
+
+        var vm               = this;
+        var limit            = 10;
+        var searchInCaptions = $stateParams.searchInCaptions && platform.screenSize() !== 'mobile';
 
         vm.cardClickHandler     = cardClickHandler;
         vm.showMoreClickHandler = showMoreClickHandler;
         vm.itemsLeft            = itemsLeft;
 
-        vm.feed = null;
+        vm.feed      = null;
+        vm.searching = true;
 
-        var limit = 10;
+        activate();
 
-        if ($stateParams.searchInCaptions) {
-            var partFeed = searchFeed.clone();
+        ////////////////////////
 
-            partFeed.playlist = searchFeed.playlist.slice(0, limit);
+        /**
+         * Initialize controller
+         */
+        function activate () {
+            if (!searchInCaptions) {
+                vm.feed      = searchFeed.clone();
+                vm.searching = false;
+                return;
+            }
 
-            addItemsToFeed(partFeed.playlist).then(function () {
-                vm.feed = partFeed;
+            var clone = searchFeed.clone();
 
-                $scope.$apply();
+            clone.playlist = searchFeed.playlist.slice(0, limit);
+
+            addItemsToFeed(clone.playlist).then(function () {
+                vm.feed      = clone;
+                vm.searching = false;
             });
-        } else {
-            vm.feed = searchFeed;
         }
 
+        /**
+         * Add items to feed
+         * @param items
+         */
         function addItemsToFeed (items) {
             var query = $stateParams.query.replace(/\+/g, ' ');
 
@@ -58,10 +74,8 @@
                 return api.patchItemWithCaptions(item, query);
             });
 
-            return Promise.all(patchItemPromises);
+            return $q.all(patchItemPromises);
         }
-
-        ////////////////////////
 
         /**
          * @ngdoc method
@@ -89,8 +103,8 @@
          * Are there any items left to show
          * @returns {boolean}
          */
-        function itemsLeft() {
-            return  !!(vm.feed && (searchFeed.playlist.length > vm.feed.playlist.length));
+        function itemsLeft () {
+            return !!(vm.feed && (searchFeed.playlist.length > vm.feed.playlist.length));
         }
 
         /**
@@ -102,13 +116,11 @@
          * Handle click event on the show more button
          */
         function showMoreClickHandler () {
-            var feedPlaylistLength = vm.feed.playlist.length;
+            var feedPlaylistLength  = vm.feed.playlist.length;
             var toBeAddedMediaItems = searchFeed.playlist.slice(feedPlaylistLength, feedPlaylistLength + limit);
 
             addItemsToFeed(toBeAddedMediaItems).then(function () {
                 vm.feed.playlist = vm.feed.playlist.concat(toBeAddedMediaItems);
-
-                $scope.$apply();
             });
         }
     }

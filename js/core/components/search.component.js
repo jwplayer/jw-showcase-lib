@@ -45,15 +45,16 @@
      * @requires jwShowcase.config
      */
     SearchController.$inject = ['$rootScope', '$state', 'config', 'utils'];
+
     function SearchController ($rootScope, $state, config, utils) {
 
-        var vm        = this;
+        var vm = this;
 
         vm.config = config;
 
-        vm.searchPhrase       = '';
-        vm.searchBarActive    = false;
-        vm.searchInCaptions   = false;
+        vm.searchPhrase     = '';
+        vm.searchBarActive  = false;
+        vm.searchInCaptions = false;
 
         vm.closeSearchButtonClickHandler = closeSearchButtonClickHandler;
         vm.searchButtonClickHandler      = searchButtonClickHandler;
@@ -77,8 +78,9 @@
                     vm.searchBarActive = false;
                 }
                 else {
-                    vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
-                    vm.searchBarActive = true;
+                    vm.searchPhrase     = toParams.query.replace(/\+/g, ' ');
+                    vm.searchBarActive  = true;
+                    vm.searchInCaptions = toParams.searchInCaptions;
                 }
             });
         }
@@ -157,7 +159,7 @@
         function searchAndDisplayResults () {
 
             $state.go('root.search', {
-                query: utils.slugify(vm.searchPhrase, '+'),
+                query:            utils.slugify(vm.searchPhrase, '+'),
                 searchInCaptions: vm.searchInCaptions
             });
         }

@@ -38,6 +38,17 @@
                     opacity: 0;
                 }
             }
+
+            .jw-search-captions-toggle {
+                @include transition(opacity .3s ease 0.2s);
+                opacity: 0;
+            }
+        }
+
+        &.ng-hide-remove-active {
+            .jw-search-captions-toggle {
+                opacity: 1;
+            }
         }
 
         &.ng-hide-add {
@@ -58,6 +69,17 @@
 
             .jw-button:last-child {
                 display: none;
+            }
+
+            .jw-search-captions-toggle {
+                @include transition(opacity .3s ease 0s);
+                opacity: 1;
+            }
+        }
+
+        &.ng-hide-add-active {
+            .jw-search-captions-toggle {
+                opacity: 0;
             }
         }
 
@@ -85,6 +107,7 @@
             top: 0;
             right: 5px + 16px;
             padding: 15px 10px;
+            white-space: nowrap;
         }
 
         .jw-search-captions-toggle-label {
@@ -131,7 +154,7 @@
             }
 
             .jw-search-captions-toggle {
-                padding: 8px 5px;
+                display: none;
             }
 
             .jw-search-icon {

@@ -30,6 +30,7 @@
 
     config.$inject = ['$stateProvider', '$urlMatcherFactoryProvider', '$touchProvider', 'seoProvider',
         'historyProvider'];
+
     function config ($stateProvider, $urlMatcherFactoryProvider, $touchProvider, seoProvider, historyProvider) {
 
         if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
@@ -38,6 +39,21 @@
 
         $urlMatcherFactoryProvider
             .strictMode(false);
+
+        $urlMatcherFactoryProvider
+            .type('boolean', {
+                name:    'boolean',
+                decode:  function (val) {
+                    return val === 'true';
+                },
+                equals:  function (a, b) {
+                    return angular.equals(a, b);
+                },
+                is:      function (val) {
+                    return typeof val === 'boolean';
+                },
+                pattern: /true|false/
+            });
 
         historyProvider
             .setDefaultState('root.dashboard');
@@ -62,6 +78,7 @@
     }
 
     run.$inject = ['$document', 'history', 'platform'];
+
     function run ($document, history, platform) {
 
         history.attach();

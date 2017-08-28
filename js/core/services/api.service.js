@@ -98,7 +98,7 @@
          */
         this.patchItemWithCaptions = function (item, phrase) {
             if (!item.tracks) {
-                return Promise.resolve(item);
+                return $q.resolve(item);
             }
 
             var captionUrl  = null;
@@ -116,7 +116,7 @@
             });
 
             if (!captionUrl) {
-                return Promise.resolve(item);
+                return $q.resolve(item);
             }
 
             return findMatches(captionUrl, captionHits).then(function (matches) {
@@ -128,7 +128,7 @@
                     .then(function (response) {
                         var vtt = response.data;
 
-                        return new Promise(function (resolve, reject) {
+                        return $q(function (resolve, reject) {
                             var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
                             var segments = [];
 
@@ -151,7 +151,6 @@
                             };
 
                             parser.parse(vtt);
-
                             parser.flush();
                         });
                     });
