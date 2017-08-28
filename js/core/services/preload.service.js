@@ -123,7 +123,7 @@
             watchlist.restore();
             watchProgress.restore();
 
-            bridge();
+            bridge.initialize();
         }
 
         function showCookiesNotice () {

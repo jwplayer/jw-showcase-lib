@@ -37,9 +37,9 @@
         jwShowcase.config        = getConfig;
         jwShowcase.feeds         = getFeeds;
         jwShowcase.search        = search;
-        jwShowcase.sidebar       = patchFunctions(sidebar);
-        jwShowcase.watchlist     = patchFunctions(watchlist);
-        jwShowcase.watchProgress = patchFunctions(watchProgress);
+        jwShowcase.sidebar       = getServiceMethods(sidebar);
+        jwShowcase.watchlist     = getServiceMethods(watchlist);
+        jwShowcase.watchProgress = getServiceMethods(watchProgress);
 
         jwShowcase.settings = {
             get: getSetting,
@@ -63,30 +63,57 @@
             jwShowcase.dispatch('settingsChanged', settings);
         });
 
-        return function () {
-            jwShowcase.dispatch('ready');
+        return {
+            initialize: initialize
         };
 
         /////////////
 
+        /**
+         * Initialize bridge
+         */
+        function initialize () {
+            jwShowcase.dispatch('ready');
+        }
+
+        /**
+         * Shortcut to $state.go('search')
+         * @param {string} phrase
+         */
         function search (phrase) {
             $state.go('root.search', {
                 query: utils.slugify(phrase, '+')
             });
         }
 
+        /**
+         * Go back to the previous state
+         */
         function goBack () {
             history.goBack();
         }
 
+        /**
+         * Get the current state and params
+         * @returns {Object}
+         */
         function getState () {
             return angular.merge({params: $state.params}, $state.current);
         }
 
+        /**
+         * Get all feeds. Including watchlist and watchProgress.
+         * @returns {Array.<Object>}
+         */
         function getFeeds () {
             return angular.copy(dataStore.feeds);
         }
 
+        /**
+         * Get setting(s)
+         * @param {string} [key]
+         * @returns {mixed}
+         */
         function getSetting (key) {
             if (key) {
                 return userSettings.settings[key];
@@ -95,15 +122,29 @@
             return angular.copy(userSettings.settings);
         }
 
+        /**
+         * Set setting
+         * @param {string} key
+         * @param {mixed} value
+         */
         function setSetting (key, value) {
             userSettings.set(key, value);
         }
 
+        /**
+         * Get config
+         * @returns {Object}
+         */
         function getConfig () {
             return angular.copy(config);
         }
 
-        function patchFunctions (service) {
+        /**
+         * Patch functions of the given service
+         * @param service
+         * @returns {Object}
+         */
+        function getServiceMethods (service) {
 
             var functions = {};
 
