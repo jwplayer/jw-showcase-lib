@@ -61,6 +61,8 @@
 
 .jw-button-show-more {
     display: block;
+    position: relative;
+    margin: 0 80px;
 }
 
 //
@@ -144,5 +146,16 @@
     100% {
         transform: scale3d(1.5, 1.5, 1);
         opacity: 0;
+    }
+}
+
+//
+// mediaQueries
+// --------------------------------
+
+@include mobile-only() {
+
+    .jw-button-show-more {
+        margin: 0 15px;
     }
 }
