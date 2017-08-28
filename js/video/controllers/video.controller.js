@@ -57,7 +57,8 @@
             playlist                 = [],
             levels,
             watchProgressItem,
-            loadingTimeout;
+            loadingTimeout,
+            feedIsPresentInPlaylist;
 
         /**
          * Current playing item
@@ -176,6 +177,11 @@
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
+            
+            feedIsPresentInPlaylist = dataStore.feeds.map(
+                function (feed) {
+                    return feed.feedid;
+                }).indexOf(feed.feedid) > -1;
 
             update();
         }
@@ -460,6 +466,12 @@
 
             // don't handle watchProgress when the position hasn't changed.
             if (lastPos === position) {
+                return;
+            }
+
+            // don't handle watchProgress if the feed which the video belongs to is not set in the config
+            // this happens when the video that was watched has the feed-id from the search-list
+            if (!feedIsPresentInPlaylist) {
                 return;
             }
 
