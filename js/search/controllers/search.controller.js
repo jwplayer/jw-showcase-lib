@@ -24,9 +24,9 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$q', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
+    SearchController.$inject = ['$scope', '$q', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
 
-    function SearchController ($q, $state, $stateParams, platform, searchFeed, api) {
+    function SearchController ($scope, $q, $state, $stateParams, platform, searchFeed, api) {
 
         var vm               = this;
         var limit            = 10;
@@ -60,6 +60,8 @@
             addItemsToFeed(clone.playlist).then(function () {
                 vm.feed      = clone;
                 vm.searching = false;
+
+                $scope.$emit('$viewContentUpdated');
             });
         }
 
@@ -121,6 +123,8 @@
 
             addItemsToFeed(toBeAddedMediaItems).then(function () {
                 vm.feed.playlist = vm.feed.playlist.concat(toBeAddedMediaItems);
+            }).then(function () {
+                $scope.$emit('$viewContentUpdated');
             });
         }
     }
