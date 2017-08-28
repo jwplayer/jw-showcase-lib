@@ -2,10 +2,11 @@
 .jw-flag-no-header {
 
     .has-jw-subheader {
-        padding-top: $toolbar-height;
+        padding-top: 0;
     }
 
     .jw-toolbar-subheader {
+        position: static;
         top: 0;
     }
 }
