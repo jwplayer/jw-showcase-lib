@@ -70,8 +70,6 @@
          */
         this.getSearchFeed = function (searchPlaylist, phrase) {
 
-            var result;
-
             // reject when searchPlaylist is missing
             if (!searchPlaylist) {
                 return $q.reject(new Error('searchPlaylist is missing'));
@@ -84,48 +82,46 @@
 
             phrase = encodeURIComponent(phrase);
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase)
-                .then(function (feed) {
+            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+        };
 
-                    result = feed;
-
-                    if (!config.options.enableInVideoSearch) {
-                        return;
-                    }
-
-                    return Promise.all(feed.playlist.map(patchCaptions));
-                })
-                .then(function () {
-                    return result;
-                });
-
-            function patchCaptions (item) {
-                if (!item.tracks) {
-                    return Promise.resolve(item);
-                }
-
-                var captionUrl  = null;
-                var captionHits = null;
-
-                item.tracks.forEach(function (track) {
-                    if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
-                        captionUrl  = track.file;
-                        captionHits = track.hits;
-                    }
-
-                    if (track.kind === 'thumbnails') {
-                        item.thumbnails = track.file;
-                    }
-                });
-
-                if (!captionUrl) {
-                    return Promise.resolve(item);
-                }
-
-                return findMatches(captionUrl, captionHits).then(function (matches) {
-                    item.captionMatches = matches;
-                });
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.api#patchItemWithCaptions
+         * @methodOf jwShowcase.core.api
+         * @description
+         * Add captions to a given item
+         *
+         * @param {object} item
+         * @param {string} phrase
+         * @returns {*}
+         */
+        this.patchItemWithCaptions = function (item, phrase) {
+            if (!item.tracks) {
+                return Promise.resolve(item);
             }
+
+            var captionUrl  = null;
+            var captionHits = null;
+
+            item.tracks.forEach(function (track) {
+                if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
+                    captionUrl  = track.file;
+                    captionHits = track.hits;
+                }
+
+                if (track.kind === 'thumbnails') {
+                    item.thumbnails = track.file;
+                }
+            });
+
+            if (!captionUrl) {
+                return Promise.resolve(item);
+            }
+
+            return findMatches(captionUrl, captionHits).then(function (matches) {
+                item.captionMatches = matches;
+            });
 
             function findMatches (location, positions) {
                 return $http.get(location)

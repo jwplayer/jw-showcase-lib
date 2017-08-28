@@ -38,6 +38,9 @@
                 scrollTop:   'last',
                 persistent:  true,
                 history:     false,
+                params: {
+                    searchInCaptions: false
+                },
                 resolve:     {
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
                         function ($q, config, $stateParams, apiConsumer) {

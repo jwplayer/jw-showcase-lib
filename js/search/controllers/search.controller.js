@@ -24,14 +24,42 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$state', 'platform', 'searchFeed'];
-    function SearchController ($state, platform, searchFeed) {
+    SearchController.$inject = ['$scope', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
+    function SearchController ($scope, $state, $stateParams, platform, searchFeed, api) {
 
         var vm = this;
 
-        vm.feed = searchFeed;
+        vm.cardClickHandler     = cardClickHandler;
+        vm.showMoreClickHandler = showMoreClickHandler;
+        vm.itemsLeft            = itemsLeft;
 
-        vm.cardClickHandler = cardClickHandler;
+        vm.feed = null;
+
+        var limit = 10;
+
+        if ($stateParams.searchInCaptions) {
+            var partFeed = searchFeed.clone();
+
+            partFeed.playlist = searchFeed.playlist.slice(0, limit);
+
+            addItemsToFeed(partFeed.playlist).then(function () {
+                vm.feed = partFeed;
+
+                $scope.$apply();
+            });
+        } else {
+            vm.feed = searchFeed;
+        }
+
+        function addItemsToFeed (items) {
+            var query = $stateParams.query.replace(/\+/g, ' ');
+
+            var patchItemPromises = items.map(function (item) {
+                return api.patchItemWithCaptions(item, query);
+            });
+
+            return Promise.all(patchItemPromises);
+        }
 
         ////////////////////////
 
@@ -54,6 +82,33 @@
                 slug:      item.$slug,
                 startTime: startTime,
                 autoStart: clickedOnPlay || platform.isMobile || typeof startTime !== 'undefined'
+            });
+        }
+
+        /**
+         * Are there any items left to show
+         * @returns {boolean}
+         */
+        function itemsLeft() {
+            return  !!(vm.feed && (searchFeed.playlist.length > vm.feed.playlist.length));
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.search.SearchController#showMoreClickHandler
+         * @methodOf jwShowcase.search.SearchController
+         *
+         * @description
+         * Handle click event on the show more button
+         */
+        function showMoreClickHandler () {
+            var feedPlaylistLength = vm.feed.playlist.length;
+            var toBeAddedMediaItems = searchFeed.playlist.slice(feedPlaylistLength, feedPlaylistLength + limit);
+
+            addItemsToFeed(toBeAddedMediaItems).then(function () {
+                vm.feed.playlist = vm.feed.playlist.concat(toBeAddedMediaItems);
+
+                $scope.$apply();
             });
         }
     }

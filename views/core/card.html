@@ -39,6 +39,7 @@
         ng-click="vm.containerClickHandler($event, caption.time)"
         ng-mouseenter="vm.setActiveCaption(caption)"
         ng-mouseleave="vm.removeActiveCaption()"
+        ng-if="(caption.time / vm.item.duration) <= 1"
       ></div>
     </div>
   </div>
