@@ -103,7 +103,6 @@
          */
         function showMoreClickHandler () {
             var feedPlaylistLength = vm.feed.playlist.length;
-
             var toBeAddedMediaItems = searchFeed.playlist.slice(feedPlaylistLength, feedPlaylistLength + limit);
 
             addItemsToFeed(toBeAddedMediaItems).then(function () {
