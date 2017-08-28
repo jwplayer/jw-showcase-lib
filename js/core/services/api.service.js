@@ -115,7 +115,7 @@
                 }
             });
 
-            if (!captionUrl) {
+            if (!captionUrl || !captionHits) {
                 return $q.resolve(item);
             }
 
