@@ -22,6 +22,10 @@
         .jw-card-watchlist-button {
             @include transform(scale(0) !important);
         }
+
+        .jw-card-in-video-search-timeline {
+            display: none;
+        }
     }
 
     &-flag-hide-text {
@@ -201,6 +205,31 @@
                 width: 42px;
                 height: 42px;
                 font-size: 42px;
+            }
+        }
+    }
+
+    .jw-card-in-video-search-timeline {
+        @include transition(all 0.15s ease-in);
+        position: relative;
+        height: rem(2px);
+
+        .jw-card-in-video-search-timeline-dot {
+            $size: 13px;
+            $adjust-size: ($size - 1) / 2;
+
+            @include transform(translate(-$adjust-size, -$adjust-size));
+            @include transition(all 0.15s ease-in);
+
+            position: absolute;
+            width: rem($size);
+            height: rem($size);
+
+            border-radius: 50%;
+
+            &:hover {
+                $hover-size: 18px;
+                transform: translate(-$adjust-size, -$adjust-size) scale($hover-size / $size, $hover-size / $size);
             }
         }
     }

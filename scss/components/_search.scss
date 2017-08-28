@@ -38,6 +38,17 @@
                     opacity: 0;
                 }
             }
+
+            .jw-search-captions-toggle {
+                @include transition(opacity .3s ease 0.2s);
+                opacity: 0;
+            }
+        }
+
+        &.ng-hide-remove-active {
+            .jw-search-captions-toggle {
+                opacity: 1;
+            }
         }
 
         &.ng-hide-add {
@@ -59,6 +70,17 @@
             .jw-button:last-child {
                 display: none;
             }
+
+            .jw-search-captions-toggle {
+                @include transition(opacity .3s ease 0s);
+                opacity: 1;
+            }
+        }
+
+        &.ng-hide-add-active {
+            .jw-search-captions-toggle {
+                opacity: 0;
+            }
         }
 
         .jw-search-align {
@@ -78,6 +100,19 @@
 
             background: transparent;
             font-size: rem(16px);
+        }
+
+        .jw-search-captions-toggle {
+            position: absolute;
+            top: 0;
+            right: 5px + 16px;
+            padding: 15px 10px;
+            white-space: nowrap;
+        }
+
+        .jw-search-captions-toggle-label {
+            font-size: rem(14px);
+            line-height: rem(22px);
         }
 
         .jw-search-icon {
@@ -116,6 +151,10 @@
             .jw-search-align {
                 height: 38px;
                 margin: 2px 10px;
+            }
+
+            .jw-search-captions-toggle {
+                display: none;
             }
 
             .jw-search-icon {

@@ -30,6 +30,7 @@
      * @requires jwShowcase.config
      */
     apiService.$inject = ['$http', '$q', 'config', 'utils'];
+
     function apiService ($http, $q, config, utils) {
 
         /**
@@ -82,6 +83,78 @@
             phrase = encodeURIComponent(phrase);
 
             return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+        };
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.api#patchItemWithCaptions
+         * @methodOf jwShowcase.core.api
+         * @description
+         * Add captions to a given item
+         *
+         * @param {object} item
+         * @param {string} phrase
+         * @returns {*}
+         */
+        this.patchItemWithCaptions = function (item, phrase) {
+            if (!item.tracks) {
+                return $q.resolve(item);
+            }
+
+            var captionUrl  = null;
+            var captionHits = null;
+
+            item.tracks.forEach(function (track) {
+                if (track.kind === 'captions' && /\.vtt$/.test(track.file)) {
+                    captionUrl  = track.file;
+                    captionHits = track.hits;
+                }
+
+                if (track.kind === 'thumbnails') {
+                    item.thumbnails = track.file;
+                }
+            });
+
+            if (!captionUrl) {
+                return $q.resolve(item);
+            }
+
+            return findMatches(captionUrl, captionHits).then(function (matches) {
+                item.captionMatches = matches;
+            });
+
+            function findMatches (location, positions) {
+                return $http.get(location)
+                    .then(function (response) {
+                        var vtt = response.data;
+
+                        return $q(function (resolve, reject) {
+                            var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                            var segments = [];
+
+                            parser.onparsingerror = reject;
+                            parser.oncue          = function (cue) {
+                                segments.push(cue);
+                            };
+
+                            parser.onflush = function () {
+                                resolve(positions.map(function (position) {
+                                    var segment = segments[position - 1];
+                                    var regex   = new RegExp('(' + phrase + ')', 'ig');
+
+                                    return {
+                                        text:        segment.text,
+                                        time:        segment.startTime,
+                                        highlighted: segment.text.replace(regex, '<span>$1</span>')
+                                    };
+                                }));
+                            };
+
+                            parser.parse(vtt);
+                            parser.flush();
+                        });
+                    });
+            }
         };
 
         /**
@@ -141,7 +214,7 @@
             };
 
             script.async = true;
-            script.src = config.contentService + '/libraries/' + playerId + '.js';
+            script.src   = config.contentService + '/libraries/' + playerId + '.js';
             document.body.appendChild(script);
 
             return defer.promise;
@@ -298,6 +371,7 @@
      * This decorator will add crossdomain request support for IE9 using XDomainRequest.
      */
     $httpBackendDecorator.$inject = ['$delegate', '$browser'];
+
     function $httpBackendDecorator ($delegate, $browser) {
 
         if (!window.XDomainRequest) {

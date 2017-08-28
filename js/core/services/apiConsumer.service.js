@@ -163,6 +163,9 @@
          * Get search feed from the {@link jwShowcase.core.api api} and store it in the
          * {@link jwShowcase.core.dataStore dataStore}. Items not known by JW Showcase will be filtered out.
          *
+         * @param {string}  searchPhrase        The phrase that should be searched on
+         * @param {boolean} searchInCaptions    Should the search also include caption search results
+         *
          * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
         this.getSearchFeed = function (searchPhrase) {

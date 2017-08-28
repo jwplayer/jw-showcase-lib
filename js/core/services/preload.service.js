@@ -149,7 +149,9 @@
                     '.jw-card-watch-progress',
                     '.jw-card-toast-primary',
                     '.jw-offline-message',
-                    '.jw-skin-jw-showcase .jw-progress'
+                    '.jw-skin-jw-showcase .jw-progress',
+                    '.jw-card-in-video-search-timeline:hover',
+                    '.jw-card-in-video-search-timeline-dot:hover'
                 ],
                 colorClassNames = [
                     '.jw-button-default:hover',
@@ -162,7 +164,9 @@
                     '.jw-loading .jw-loading-icon .jwy-icon',
                     '.jw-skin-jw-showcase .jw-button-color:hover',
                     '.jw-skin-jw-showcase .jw-toggle.jw-off:hover',
-                    '.jw-skin-jw-showcase .jw-toggle:not(.jw-off)'
+                    '.jw-skin-jw-showcase .jw-toggle:not(.jw-off)',
+                    '.jw-theme-light .jw-card.jw-card-flag-default .jw-card-title .jw-card-title-matches',
+                    '.jw-theme-light .jw-card.jw-card-flag-default .jw-card-description span'
                 ];
 
             utils.addStylesheetRules([

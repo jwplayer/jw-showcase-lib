@@ -43,9 +43,9 @@
      * ```
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'serviceWorker'];
+        'watchlist', 'utils', 'serviceWorker', 'config'];
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
-                            serviceWorker) {
+                            serviceWorker, config) {
 
         return {
             scope:            {
@@ -62,11 +62,18 @@
         };
 
         function link (scope, element) {
+            var isSearch            = $state.is('root.search');
+            var enableInVideoSearch = config.options.enableInVideoSearch;
+
+            scope.vm.activeCaption       = null;
+            scope.vm.inVideoSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
 
             scope.vm.showToast              = showToast;
             scope.vm.closeMenu              = closeMenu;
             scope.vm.menuButtonClickHandler = menuButtonClickHandler;
             scope.vm.containerClickHandler  = containerClickHandler;
+            scope.vm.setActiveCaption       = setActiveCaption;
+            scope.vm.removeActiveCaption    = removeActiveCaption;
 
             activate();
 
@@ -75,6 +82,7 @@
             function activate () {
 
                 var feed       = dataStore.getFeed(scope.vm.item.feedid),
+                    item       = scope.vm.item,
                     enableText = true,
                     link       = generateLink();
 
@@ -93,25 +101,35 @@
                 }
 
                 findElement('.jw-card-container')
-                    .attr('aria-label', 'play video ' + scope.vm.item.title);
+                    .attr('aria-label', 'play video ' + item.title);
+
+                var completeTitle = '';
+
+                if (scope.vm.inVideoSearchEnabled) {
+                    var matchCount = item.captionMatches.length;
+
+                    completeTitle = '<span class="jw-card-title-matches">' + matchCount + ' matches: </span>';
+                }
+
+                completeTitle += item.title;
 
                 findElement('.jw-card-title')
-                    .html(scope.vm.item.title)
+                    .html(completeTitle)
                     .attr('href', link)
                     .on('click', titleClickHandler);
 
                 findElement('.jw-card-duration')
-                    .html(utils.getVideoDurationByItem(scope.vm.item));
+                    .html(utils.getVideoDurationByItem(item));
 
                 // set watch progress
-                if (scope.vm.item.feedid === 'continue-watching') {
+                if (item.feedid === 'continue-watching') {
                     scope.$watch('vm.item.progress', watchProgressUpdateHandler);
                 }
 
                 scope.$on('$destroy', destroyDirectiveHandler);
 
                 scope.$watch(function () {
-                    return watchlist.hasItem(scope.vm.item);
+                    return watchlist.hasItem(item);
                 }, watchlistUpdateHandler);
             }
 
@@ -180,17 +198,31 @@
                 event.preventDefault();
             }
 
+            function setActiveCaption (caption) {
+                scope.$broadcast('caption_changed', {caption: caption, thumbnails: scope.vm.item.thumbnails});
+
+                scope.vm.activeCaption = caption;
+            }
+
+            function removeActiveCaption () {
+                scope.vm.activeCaption = null;
+
+                scope.$broadcast('caption_reset');
+            }
+
             /**
              * Handle click event on the card container
              * @param event
+             * @param startTime
              */
-            function containerClickHandler (event) {
+            function containerClickHandler (event, startTime) {
+                event.stopPropagation();
 
                 var playButton    = findElement('.jw-card-play-button')[0],
                     clickedOnPlay = playButton === event.target || playButton === event.target.parentNode;
 
                 if (angular.isFunction(scope.vm.onClick)) {
-                    scope.vm.onClick(scope.vm.item, clickedOnPlay);
+                    scope.vm.onClick(scope.vm.item, clickedOnPlay, startTime);
                 }
             }
 

@@ -20,6 +20,7 @@
         THUMBNAIL_AUTOMATIC_TIMEOUT         = 500,
         THUMBNAIL_AUTOMATIC_INTERVAL        = 2300,
         CONTINUE_WATCHING_THUMBNAIL_QUALITY = 320,
+        SEARCH_THUMBNAIL_QUALITY            = 320,
         DEFAULT_CARD_THUMBNAIL_QUALITY      = 120,
         FEATURED_CARD_THUMBNAIL_QUALITY     = 320;
 
@@ -74,6 +75,14 @@
                 itemPosterUrl   = generatePosterUrl();
                 thumbnailsTrack = getThumbnailsTrack();
                 feed            = dataStore.getFeed(jwCard.item.feedid);
+
+                scope.$on('caption_changed', function (event, data) {
+                    showPositionThumbnail(data.thumbnails, data.caption.time);
+                });
+
+                scope.$on('caption_reset', function () {
+                    showDefaultPoster();
+                });
 
                 // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
                 if (!thumbnailsTrack || !feed || !feed.enablePreview) {
@@ -203,11 +212,26 @@
             }
 
             /**
+             * Show thumbnail closest to the item's position
+             * @param url
+             * @param position
+             */
+            function showPositionThumbnail (url, position) {
+                thumbstrip.load(url, SEARCH_THUMBNAIL_QUALITY)
+                    .then(function (thumbnails) {
+                        return thumbnails.find(function (item) {
+                            return item.start <= position && item.end >= position;
+                        });
+                    })
+                    .then(preloadImage)
+                    .then(showThumbnail);
+            }
+
+            /**
              * Create a poster element from the given thumb
              * @param {Object} thumb
              */
             function showThumbnail (thumb) {
-
                 var posterElement,
                     x, y, w;
 

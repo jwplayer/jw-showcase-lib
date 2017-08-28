@@ -45,19 +45,22 @@
      * @requires jwShowcase.config
      */
     SearchController.$inject = ['$rootScope', '$state', 'config', 'utils'];
+
     function SearchController ($rootScope, $state, config, utils) {
 
-        var vm        = this;
+        var vm = this;
 
         vm.config = config;
 
-        vm.searchPhrase    = '';
-        vm.searchBarActive = false;
+        vm.searchPhrase     = '';
+        vm.searchBarActive  = false;
+        vm.searchInCaptions = false;
 
         vm.closeSearchButtonClickHandler = closeSearchButtonClickHandler;
         vm.searchButtonClickHandler      = searchButtonClickHandler;
         vm.searchInputKeyupHandler       = searchInputKeyupHandler;
         vm.searchInputChangeHandler      = searchInputChangeHandler;
+        vm.toggleSearchInCaptions        = toggleSearchInCaptions;
 
         vm.$onInit = activate;
 
@@ -75,8 +78,9 @@
                     vm.searchBarActive = false;
                 }
                 else {
-                    vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
-                    vm.searchBarActive = true;
+                    vm.searchPhrase     = toParams.query.replace(/\+/g, ' ');
+                    vm.searchBarActive  = true;
+                    vm.searchInCaptions = toParams.searchInCaptions;
                 }
             });
         }
@@ -149,15 +153,22 @@
             searchAndDisplayResults();
         }
 
-
         /**
          * Get search results and go to search state
          */
         function searchAndDisplayResults () {
 
             $state.go('root.search', {
-                query: utils.slugify(vm.searchPhrase, '+')
+                query:            utils.slugify(vm.searchPhrase, '+'),
+                searchInCaptions: vm.searchInCaptions
             });
+        }
+
+        /**
+         *  With every toggle get new search results
+         */
+        function toggleSearchInCaptions () {
+            searchAndDisplayResults();
         }
     }
 
