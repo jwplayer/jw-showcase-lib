@@ -57,8 +57,7 @@
             playlist                 = [],
             levels,
             watchProgressItem,
-            loadingTimeout,
-            feedIsPresentInPlaylist;
+            loadingTimeout;
 
         /**
          * Current playing item
@@ -94,7 +93,8 @@
          * Is true when the right rail is enabled.
          * @type {boolean}
          */
-        vm.enableRail = config.options.rightRail.enabled;
+        vm.enableRail               = config.options.rightRail.enabled;
+        vm.feedIsPresentInPlaylist  = null;
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -178,7 +178,7 @@
                 vm.loading = false;
             }, 2000);
             
-            feedIsPresentInPlaylist = dataStore.feeds.map(
+            vm.feedIsPresentInPlaylist = dataStore.feeds.map(
                 function (feed) {
                     return feed.feedid;
                 }).indexOf(feed.feedid) > -1;
@@ -471,7 +471,7 @@
 
             // don't handle watchProgress if the feed which the video belongs to is not set in the config
             // this happens when the video that was watched has the feed-id from the search-list
-            if (!feedIsPresentInPlaylist) {
+            if (!vm.feedIsPresentInPlaylist) {
                 return;
             }
 

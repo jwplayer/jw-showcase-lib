@@ -5,7 +5,7 @@
     </nav>
     <div class="jw-toolbar-title"></div>
     <nav class="jw-toolbar-nav">
-      <jw-button class="jw-button-watchlist jw-button-default" ng-click="vm.watchlistButtonClickHandler()"
+      <jw-button ng-if="vm.showSaveButton" class="jw-button-watchlist jw-button-default" ng-click="vm.watchlistButtonClickHandler()"
           ng-class="{'is-active': vm.inWatchlist}"
           tabindex="0"
           aria-label="save video">

@@ -40,7 +40,8 @@
             controllerAs: 'vm',
             transclude:   true,
             bindings:     {
-                'item': '='
+                'item': '=',
+                'showSaveButton': '='
             }
         });
 
