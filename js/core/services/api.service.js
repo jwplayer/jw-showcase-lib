@@ -87,7 +87,7 @@
 
         /**
          * @ngdoc method
-         * @name jwShowcase.core.api#patchCaptions
+         * @name jwShowcase.core.api#patchItemWithCaptions
          * @methodOf jwShowcase.core.api
          * @description
          * Add captions to a given item
@@ -96,7 +96,7 @@
          * @param {string} phrase
          * @returns {*}
          */
-        this.patchCaptions = function (item, phrase) {
+        this.patchItemWithCaptions = function (item, phrase) {
             if (!item.tracks) {
                 return Promise.resolve(item);
             }

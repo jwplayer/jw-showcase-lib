@@ -54,11 +54,11 @@
         function addItemsToFeed (items) {
             var query = $stateParams.query.replace(/\+/g, ' ');
 
-            var patchCaptionPromises = items.map(function (item) {
-                return api.patchCaptions(item, query);
+            var patchItemPromises = items.map(function (item) {
+                return api.patchItemWithCaptions(item, query);
             });
 
-            return Promise.all(patchCaptionPromises);
+            return Promise.all(patchItemPromises);
         }
 
         ////////////////////////
