@@ -26,11 +26,11 @@
      *
      * @required jwShowcase.core.bridge
      */
-    bridgeService.$inject = ['$rootScope', '$timeout', '$state', 'dataStore', 'history', 'userSettings', 'sidebar',
-        'watchlist', 'watchProgress', 'utils', 'config'];
+    bridgeService.$inject = ['$rootScope', '$timeout', '$state', '$stateParams', 'dataStore', 'history', 'userSettings',
+        'sidebar', 'watchlist', 'watchProgress', 'utils', 'config'];
 
-    function bridgeService ($rootScope, $timeout, $state, dataStore, history, userSettings, sidebar, watchlist,
-                            watchProgress, utils, config) {
+    function bridgeService ($rootScope, $timeout, $state, $stateParams, dataStore, history, userSettings, sidebar,
+                            watchlist, watchProgress, utils, config) {
 
         var jwShowcase = window.jwShowcase;
 
@@ -98,7 +98,7 @@
          * @returns {Object}
          */
         function getState () {
-            return angular.merge({params: $state.params}, $state.current);
+            return {params: $stateParams, name: $state.current.name};
         }
 
         /**
