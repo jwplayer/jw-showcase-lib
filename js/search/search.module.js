@@ -39,7 +39,7 @@
                 persistent:  true,
                 history:     false,
                 params: {
-                    searchInCaptions: null
+                    searchInCaptions: false
                 },
                 resolve:     {
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
