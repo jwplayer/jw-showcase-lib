@@ -51,7 +51,7 @@
             vm.feed = searchFeed;
         }
 
-        function addItemsToFeed(items) {
+        function addItemsToFeed (items) {
             var query = $stateParams.query.replace(/\+/g, ' ');
 
             var patchCaptionPromises = items.map(function (item) {
