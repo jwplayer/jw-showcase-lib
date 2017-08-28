@@ -8,10 +8,11 @@
       <div class="jw-search-captions-toggle" ng-if="vm.config.options.enableInVideoSearch">
           <span class="jw-search-captions-toggle-label">Include captions:</span>
           <jw-toggle
-                  aria-label="enable continue watching"
-                  tabindex="0"
-                  ng-model="vm.searchInCaptions"
-                  ng-change="vm.toggleSearchInCaptions()"></jw-toggle>
+              aria-label="enable continue watching"
+              tabindex="0"
+              ng-model="vm.searchInCaptions"
+              ng-change="vm.toggleSearchInCaptions()"
+          ></jw-toggle>
       </div>
       <jw-button class="jw-icon-button jw-button-close-search jw-button-default"
           ng-click="vm.closeSearchButtonClickHandler($event)"
