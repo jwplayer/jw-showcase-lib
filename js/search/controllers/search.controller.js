@@ -38,7 +38,7 @@
         var limit = 10;
 
         if ($stateParams.searchInCaptions) {
-            var partFeed = angular.copy(searchFeed);
+            var partFeed = searchFeed.clone();
 
             partFeed.playlist = searchFeed.playlist.slice(0, limit);
 
