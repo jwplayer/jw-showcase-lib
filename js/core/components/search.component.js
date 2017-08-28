@@ -53,13 +53,13 @@
 
         vm.searchPhrase       = '';
         vm.searchBarActive    = false;
-        vm.searchWithCaptions = false;
+        vm.searchInCaptions   = false;
 
         vm.closeSearchButtonClickHandler = closeSearchButtonClickHandler;
         vm.searchButtonClickHandler      = searchButtonClickHandler;
         vm.searchInputKeyupHandler       = searchInputKeyupHandler;
         vm.searchInputChangeHandler      = searchInputChangeHandler;
-        vm.toggleSearchWithCaptions      = toggleSearchWithCaptions;
+        vm.toggleSearchInCaptions        = toggleSearchInCaptions;
 
         vm.$onInit = activate;
 
@@ -158,14 +158,14 @@
 
             $state.go('root.search', {
                 query: utils.slugify(vm.searchPhrase, '+'),
-                searchInCaptions: vm.searchWithCaptions
+                searchInCaptions: vm.searchInCaptions
             });
         }
 
         /**
          *  With every toggle get new search results
          */
-        function toggleSearchWithCaptions () {
+        function toggleSearchInCaptions () {
             searchAndDisplayResults();
         }
     }
