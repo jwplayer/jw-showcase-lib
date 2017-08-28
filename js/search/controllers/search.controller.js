@@ -37,7 +37,7 @@
 
         var limit = 10;
 
-        if($stateParams.searchInCaptions) {
+        if ($stateParams.searchInCaptions) {
             var partFeed = angular.copy(searchFeed);
 
             partFeed.playlist = searchFeed.playlist.slice(0, limit);
@@ -103,7 +103,7 @@
          */
         function showMoreClickHandler () {
             var feedPlaylistLength = vm.feed.playlist.length;
-            
+
             var toBeAddedMediaItems = searchFeed.playlist.slice(feedPlaylistLength, feedPlaylistLength + limit);
 
             addItemsToFeed(toBeAddedMediaItems).then(function () {
