@@ -65,7 +65,7 @@
             var isSearch            = $state.is('root.search');
             var enableInVideoSearch = config.options.enableInVideoSearch;
 
-            scope.vm.activeCaption       = null;
+            scope.vm.activeCaption        = null;
             scope.vm.inVideoSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
 
             scope.vm.showToast              = showToast;
@@ -74,6 +74,8 @@
             scope.vm.containerClickHandler  = containerClickHandler;
             scope.vm.setActiveCaption       = setActiveCaption;
             scope.vm.removeActiveCaption    = removeActiveCaption;
+            scope.vm.isSearch               = isSearch;
+            scope.vm.isVideoFromSearch      = $state.is('root.videoFromSearch');
 
             activate();
 

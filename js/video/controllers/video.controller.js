@@ -93,7 +93,13 @@
          * Is true when the right rail is enabled.
          * @type {boolean}
          */
-        vm.enableRail = config.options.rightRail.enabled;
+        vm.enableRail               = config.options.rightRail.enabled;
+
+        /**
+         * Is the current state root.videoFromSearch
+         * @type {boolean}
+         */
+        vm.isVideoFromSearch  = $state.is('root.videoFromSearch');
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -209,20 +215,26 @@
          */
         function updateStateSilently () {
 
-            var stateParams = $state.params;
+            var toState     = $state.current.name,
+                newStateParams = {
+                    mediaId: vm.item.mediaid,
+                    slug: vm.item.$slug
+                };
 
-            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId = $stateParams.feedId = vm.item.feedid;
-            stateParams.slug = $stateParams.slug = vm.item.$slug;
+            if (toState === 'root.videoFromSearch') {
+                newStateParams.query = $state.params.query;
+            }
+            else {
+                newStateParams.feedId = vm.item.feedid;
+            }
+
+            angular.merge($state.params, newStateParams);
+            angular.merge($stateParams, newStateParams);
 
             $state.$current.locals.globals.item = vm.item;
 
             $state
-                .go('root.video', {
-                    feedId:  vm.item.feedid,
-                    mediaId: vm.item.mediaid,
-                    slug:    vm.item.$slug
-                }, {
+                .go(toState, newStateParams, {
                     notify: false
                 })
                 .then(function () {
@@ -460,6 +472,12 @@
 
             // don't handle watchProgress when the position hasn't changed.
             if (lastPos === position) {
+                return;
+            }
+
+            // don't handle watchProgress when the state is videoFromSearch.
+            // @TODO: will be fixed in permalink feature
+            if (vm.isVideoFromSearch) {
                 return;
             }
 

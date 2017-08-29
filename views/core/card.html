@@ -48,7 +48,8 @@
       class="jw-card-menu-button jw-button-default"
       ng-click="vm.menuButtonClickHandler($event)"
       aria-label="open card menu"
-      tabindex="0">
+      tabindex="0"
+      ng-show="!vm.isSearch && !vm.isVideoFromSearch">
     <i class="jwy-icon jwy-icon-more jwy-icon-rotate-90"></i>
   </jw-button>
 
