@@ -40,19 +40,20 @@
             controllerAs: 'vm',
             transclude:   true,
             bindings:     {
-                'item': '=',
-                'showSaveButton': '='
+                'item': '='
             }
         });
 
-    ToolbarVideoController.$inject = ['$scope', 'popup', 'watchlist', 'serviceWorker', 'platform', 'config'];
-    function ToolbarVideoController ($scope, popup, watchlist, serviceWorker, platform, config) {
+    ToolbarVideoController.$inject = ['$scope', '$state', 'popup', 'watchlist', 'serviceWorker', 'platform', 'config'];
+
+    function ToolbarVideoController ($scope, $state, popup, watchlist, serviceWorker, platform, config) {
 
         var vm = this;
 
-        vm.config      = config;
-        vm.inWatchlist = false;
-        vm.screenSize  = platform.screenSize();
+        vm.config            = config;
+        vm.inWatchlist       = false;
+        vm.screenSize        = platform.screenSize();
+        vm.isVideoFromSearch = $state.is('root.videoFromSearch');
 
         vm.shareButtonClickHandler     = shareButtonClickHandler;
         vm.watchlistButtonClickHandler = watchlistButtonClickHandler;

@@ -75,6 +75,7 @@
             scope.vm.setActiveCaption       = setActiveCaption;
             scope.vm.removeActiveCaption    = removeActiveCaption;
             scope.vm.isSearch               = isSearch;
+            scope.vm.isVideoFromSearch      = $state.is('root.videoFromSearch');
 
             activate();
 

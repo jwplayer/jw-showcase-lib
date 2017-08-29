@@ -94,7 +94,12 @@
          * @type {boolean}
          */
         vm.enableRail               = config.options.rightRail.enabled;
-        vm.feedIsPresentInPlaylist  = null;
+
+        /**
+         * Is the current state root.videoFromSearch
+         * @type {boolean}
+         */
+        vm.isVideoFromSearch  = $state.is('root.videoFromSearch');
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -177,11 +182,6 @@
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
-            
-            vm.feedIsPresentInPlaylist = dataStore.feeds.map(
-                function (feed) {
-                    return feed.feedid;
-                }).indexOf(feed.feedid) > -1;
 
             update();
         }
@@ -475,9 +475,9 @@
                 return;
             }
 
-            // don't handle watchProgress if the feed which the video belongs to is not set in the config
-            // this happens when the video that was watched has the feed-id from the search-list
-            if (!vm.feedIsPresentInPlaylist) {
+            // don't handle watchProgress when the state is videoFromSearch.
+            // @TODO: will be fixed in permalink feature
+            if (vm.isVideoFromSearch) {
                 return;
             }
 
