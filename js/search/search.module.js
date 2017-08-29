@@ -32,12 +32,18 @@
 
         $stateProvider
             .state('root.search', {
-                url:         '/search/:query',
+                url:         '/search/:query?{searchInCaptions:boolean}',
                 controller:  'SearchController as vm',
                 templateUrl: 'views/search/search.html',
                 scrollTop:   'last',
                 persistent:  true,
                 history:     false,
+                params: {
+                    searchInCaptions: {
+                        value:  false,
+                        squash: true
+                    }
+                },
                 resolve:     {
                     searchFeed: ['$q', 'config', '$stateParams', 'apiConsumer', 'preload',
                         function ($q, config, $stateParams, apiConsumer) {

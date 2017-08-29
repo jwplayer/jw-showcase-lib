@@ -25,10 +25,16 @@
         font-size: rem(22px);
         font-weight: bold;
         line-height: rem(32px);
+
+        &::after {
+            display: block;
+            clear: both;
+            content: '';
+        }
     }
 
     &-share {
-        padding: 0 $base-spacing;
+        padding-right: $base-spacing;
         float: right;
 
         .jw-button {

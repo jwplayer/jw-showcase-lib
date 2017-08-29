@@ -29,7 +29,7 @@
         }
 
         .jw-video-layout-rail {
-            @include flex(1 0 360px);
+            @include flex(0 0 360px);
             position: relative;
             width: 360px;
         }

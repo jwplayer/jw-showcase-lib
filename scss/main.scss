@@ -70,8 +70,6 @@ html {
 }
 
 body {
-    @include user-select(none);
-
     min-width: 320px;
     margin: 0;
     padding: 0;

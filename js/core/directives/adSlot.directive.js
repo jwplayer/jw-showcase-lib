@@ -58,6 +58,7 @@
                 }
 
                 if (!adUnit) {
+                    element.css('display', 'none');
                     return;
                 }
 

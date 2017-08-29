@@ -43,16 +43,18 @@
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
         'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker', 'config', 'feed', 'item',
         'recommendations'];
+
     function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup,
                               watchProgress, watchlist, seo, userSettings, utils, player, platform, serviceWorker,
                               config, feed, item, recommendations) {
 
-        var vm                   = this,
-            lastPos              = 0,
-            resumed              = false,
-            started              = false,
-            requestQualityChange = false,
-            playlist             = [],
+        var vm                       = this,
+            lastPos                  = 0,
+            performedConditionalSeek = false,
+            started                  = false,
+            requestQualityChange     = false,
+            startTime                = null,
+            playlist                 = [],
             levels,
             watchProgressItem,
             loadingTimeout;
@@ -91,7 +93,13 @@
          * Is true when the right rail is enabled.
          * @type {boolean}
          */
-        vm.enableRail = config.options.rightRail.enabled;
+        vm.enableRail               = config.options.rightRail.enabled;
+
+        /**
+         * Is the current state root.videoFromSearch
+         * @type {boolean}
+         */
+        vm.isVideoFromSearch  = $state.is('root.videoFromSearch');
 
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
@@ -135,6 +143,10 @@
                 }
             };
 
+            if ($state.params.startTime) {
+                startTime = $state.params.startTime;
+            }
+
             if (angular.isDefined(config.options.cast)) {
                 vm.playerSettings.cast = config.options.cast;
             }
@@ -150,6 +162,10 @@
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
                 vm.playerSettings.cast                  = false;
+            }
+
+            if (angular.isObject(config.options.player)) {
+                angular.merge(vm.playerSettings, config.options.player);
             }
 
             $scope.$watch(function () {
@@ -194,32 +210,40 @@
          * Update controller
          */
         function update () {
-
             watchProgressItem = watchProgress.getItem(vm.item);
         }
 
+        /**
+         * Update the state silently. Meaning the $stateParams are updated with the new item, but the state isn't
+         * reloaded. This prevents the page from reloading and reinitialising the player.
+         */
         function updateStateSilently () {
 
-            var stateParams = $state.params;
+            var toState     = $state.current.name,
+                newStateParams = {
+                    mediaId: vm.item.mediaid,
+                    slug: vm.item.$slug
+                };
 
-            stateParams.mediaId = $stateParams.mediaId = vm.item.mediaid;
-            stateParams.feedId = $stateParams.feedId = vm.item.feedid;
-            stateParams.slug = $stateParams.slug = vm.item.$slug;
+            if (toState === 'root.videoFromSearch') {
+                newStateParams.query = $state.params.query;
+            }
+            else {
+                newStateParams.feedId = vm.item.feedid;
+            }
+
+            angular.merge($state.params, newStateParams);
+            angular.merge($stateParams, newStateParams);
 
             $state.$current.locals.globals.item = vm.item;
 
             $state
-                .go('root.video', {
-                    feedId:  vm.item.feedid,
-                    mediaId: vm.item.mediaid,
-                    slug:    vm.item.$slug
-                }, {
+                .go(toState, newStateParams, {
                     notify: false
                 })
                 .then(function () {
                     seo.update();
                 });
-
         }
 
         /**
@@ -440,28 +464,54 @@
                 requestQualityChange = false;
             }
 
-            // watchProgress is disabled
-            if (false === userSettings.settings.continueWatching || false === config.options.enableContinueWatching) {
-                return;
-            }
-
-            // resume watch progress fail over when duration was 0 on the play or firstFrame event
-
-            if (true === started && false === resumed && !!watchProgressItem) {
-                resumeWatchProgress(event.duration);
-                return;
-            }
-
             // occasionally the onTime event fires before the onPlay or onFirstFrame event.
             // so we have to prevent updating the watchProgress before the video has started
-
-            if (false === started || !vm.item.feedid || lastPos === position) {
+            if (!started) {
                 return;
             }
 
-            lastPos = position;
+            if (!performedConditionalSeek) {
+                return performConditionalSeek();
+            }
 
-            handleWatchProgress(position, event.duration);
+            // don't handle watchProgress when the position hasn't changed.
+            if (lastPos === position) {
+                return;
+            }
+
+            // don't handle watchProgress when the state is videoFromSearch.
+            // @TODO: will be fixed in permalink feature
+            if (vm.isVideoFromSearch) {
+                return;
+            }
+
+            if (vm.item.feedid) {
+                lastPos = position;
+                handleWatchProgress(position, event.duration);
+            }
+        }
+
+        /**
+         * Seek to time given in stateParams when set or resume the watch progress
+         */
+        function performConditionalSeek () {
+
+            var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching;
+
+            performedConditionalSeek = true;
+
+            // startTime via $stateParams
+            if (startTime) {
+                player.seek(startTime);
+
+                startTime = null;
+
+                return;
+            }
+
+            if (continueWatching && angular.isDefined(watchProgressItem)) {
+                resumeWatchProgress();
+            }
         }
 
         /**
@@ -477,16 +527,13 @@
 
         /**
          * Resume video playback at last saved position from watchProgress
-         *
-         * @param {Number} duration
          */
-        function resumeWatchProgress (duration) {
+        function resumeWatchProgress () {
 
             var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
 
-            if (toWatchProgress > 0 && duration > 0) {
-                player.seek(toWatchProgress * duration);
-                resumed = true;
+            if (toWatchProgress > 0) {
+                player.seek(toWatchProgress * vm.item.duration);
             }
         }
 
