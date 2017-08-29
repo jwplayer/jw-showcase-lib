@@ -165,9 +165,15 @@
         }
 
         /**
-         *  With every toggle get new search results
+         *  Handle search in captions toggle change
          */
         function toggleSearchInCaptions () {
+
+            // prevent navigating to search state when search phrase is empty.
+            if (vm.searchPhrase === '') {
+                return;
+            }
+
             searchAndDisplayResults();
         }
     }
