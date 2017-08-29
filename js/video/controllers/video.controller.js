@@ -164,6 +164,10 @@
                 vm.playerSettings.cast                  = false;
             }
 
+            if (angular.isObject(config.options.player)) {
+                angular.merge(vm.playerSettings, config.options.player);
+            }
+
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
             }, conserveBandwidthChangeHandler);
