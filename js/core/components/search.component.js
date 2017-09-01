@@ -52,15 +52,15 @@
 
         vm.config = config;
 
-        vm.searchPhrase     = '';
-        vm.searchBarActive  = false;
-        vm.searchInCaptions = false;
+        vm.searchPhrase       = '';
+        vm.searchBarActive    = false;
+        vm.showCaptionMatches = false;
 
-        vm.closeSearchButtonClickHandler = closeSearchButtonClickHandler;
-        vm.searchButtonClickHandler      = searchButtonClickHandler;
-        vm.searchInputKeyupHandler       = searchInputKeyupHandler;
-        vm.searchInputChangeHandler      = searchInputChangeHandler;
-        vm.toggleSearchInCaptions        = toggleSearchInCaptions;
+        vm.closeSearchButtonClickHandler   = closeSearchButtonClickHandler;
+        vm.searchButtonClickHandler        = searchButtonClickHandler;
+        vm.searchInputKeyupHandler         = searchInputKeyupHandler;
+        vm.searchInputChangeHandler        = searchInputChangeHandler;
+        vm.showCaptionMatchesChangeHandler = showCaptionMatchesChangeHandler;
 
         vm.$onInit = activate;
 
@@ -78,9 +78,9 @@
                     vm.searchBarActive = false;
                 }
                 else {
-                    vm.searchPhrase     = toParams.query.replace(/\+/g, ' ');
-                    vm.searchBarActive  = true;
-                    vm.searchInCaptions = toParams.searchInCaptions;
+                    vm.searchPhrase       = toParams.query.replace(/\+/g, ' ');
+                    vm.searchBarActive    = true;
+                    vm.showCaptionMatches = toParams.showCaptionMatches;
                 }
             });
         }
@@ -159,15 +159,15 @@
         function searchAndDisplayResults () {
 
             $state.go('root.search', {
-                query:            utils.slugify(vm.searchPhrase, '+'),
-                searchInCaptions: vm.searchInCaptions
+                query:              utils.slugify(vm.searchPhrase, '+'),
+                showCaptionMatches: vm.showCaptionMatches
             });
         }
 
         /**
          *  Handle search in captions toggle change
          */
-        function toggleSearchInCaptions () {
+        function showCaptionMatchesChangeHandler () {
 
             // prevent navigating to search state when search phrase is empty.
             if (vm.searchPhrase === '') {
