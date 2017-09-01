@@ -28,9 +28,9 @@
 
     function SearchController ($scope, $q, $state, $stateParams, platform, searchFeed, api) {
 
-        var vm               = this;
-        var limit            = 10;
-        var searchInCaptions = $stateParams.searchInCaptions && platform.screenSize() !== 'mobile';
+        var vm                 = this;
+        var limit              = 10;
+        var showCaptionMatches = $stateParams.showCaptionMatches && platform.screenSize() !== 'mobile';
 
         vm.cardClickHandler     = cardClickHandler;
         vm.showMoreClickHandler = showMoreClickHandler;
@@ -47,7 +47,7 @@
          * Initialize controller
          */
         function activate () {
-            if (!searchInCaptions) {
+            if (!showCaptionMatches) {
                 vm.feed      = searchFeed.clone();
                 vm.searching = false;
                 return;
