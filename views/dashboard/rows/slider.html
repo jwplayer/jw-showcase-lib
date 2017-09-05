@@ -1,0 +1,9 @@
+<div class="jw-content-row jw-content-row-slider">
+  <jw-card-slider
+      feed="feed"
+      options="options"
+      on-card-click="cardClickHandler"
+      ng-if="!feed.virtual || feed.playlist.length"
+      ng-class="{'jw-expand-animation': feed.virtual, 'jw-lazy-load': true}"
+  ></jw-card-slider>
+</div>

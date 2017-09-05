@@ -42,17 +42,17 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'serviceWorker', 'config'];
+    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist',
+        'utils', 'serviceWorker', 'config'];
 
-    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils,
                             serviceWorker, config) {
 
         return {
             scope:            {
-                item:     '=',
-                featured: '=',
-                onClick:  '='
+                item:    '=',
+                options: '=',
+                onClick: '='
             },
             controllerAs:     'vm',
             controller:       angular.noop,
@@ -63,6 +63,7 @@
         };
 
         function link (scope, element) {
+            var options             = {};
             var isSearch            = $state.is('root.search');
             var enableInVideoSearch = config.options.enableInVideoSearch;
 
@@ -84,19 +85,17 @@
 
             function activate () {
 
-                var feed       = dataStore.getFeed(scope.vm.item.feedid),
-                    item       = scope.vm.item,
-                    enableText = true,
-                    link       = generateLink();
+                var item = scope.vm.item,
+                    link = generateLink();
 
-                element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
-
-                if (feed && $state.is('root.dashboard')) {
-                    enableText = feed.enableText;
+                if (scope.vm.options) {
+                    options = scope.vm.options;
                 }
 
-                if (!enableText) {
-                    element.addClass('jw-card-flag-hide-text');
+                element.addClass('jw-card-flag-' + (options.featured ? 'featured' : 'default'));
+
+                if (angular.isDefined(options.enableText)) {
+                    element.toggleClass('jw-card-flag-hide-text', !options.enableText);
                 }
 
                 if (serviceWorker.isSupported()) {

@@ -15,7 +15,6 @@
  **/
 
 (function () {
-    'use strict';
 
     angular
         .module('jwShowcase.core')
@@ -52,6 +51,7 @@
      * ```
      */
     jwCardGrid.$inject = ['$timeout', 'utils'];
+
     function jwCardGrid ($timeout, utils) {
 
         return {
@@ -62,17 +62,21 @@
             templateUrl:      'views/core/cardGrid.html',
             replace:          true,
             scope:            {
-                cols:          '=',
-                heading:       '=',
                 feed:          '=',
+                options:       '=',
                 onCardClick:   '=',
-                cardClassName: '@'
+                cardClassName: '@',
+                title:         '@'
             }
         };
 
         function link (scope, element) {
 
-            var cols            = 0,
+            var options         = {
+                    cols: {xs: 2, sm: 2, md: 3, lg: 4, xl: 5}
+                },
+                columns         = 0,
+                rows            = 2,
                 debouncedResize = utils.debounce(resize, 200);
 
             activate();
@@ -83,6 +87,18 @@
              * Initialize the directive
              */
             function activate () {
+
+                if (angular.isObject(scope.vm.options)) {
+                    angular.merge(options, scope.vm.options);
+                }
+
+                if (options.rows) {
+                    rows = 2;
+                }
+
+                scope.vm.showMoreClickHandler = showMoreClickHandler;
+                scope.vm.limit                = 9;
+                scope.vm.heading              = scope.vm.title || scope.vm.feed.title;
 
                 window.addEventListener('resize', debouncedResize);
                 $timeout(resize, 50);
@@ -97,20 +113,30 @@
              */
             function resize () {
 
-                var toCols       = scope.vm.cols,
+                var toColumns    = options.cols,
                     gridsElement = angular.element(element[0].querySelector('.jw-card-grid-cards'));
 
-                if (angular.isObject(toCols)) {
-                    toCols = utils.getValueForScreenSize(toCols, 1);
+                if (angular.isObject(toColumns)) {
+                    toColumns = utils.getValueForScreenSize(toColumns, 1);
                 }
 
-                if (cols === toCols) {
+                if (columns === toColumns) {
                     return;
                 }
 
-                cols = toCols;
+                columns        = toColumns;
+                scope.vm.limit = toColumns * rows;
 
-                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + cols;
+                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + columns;
+            }
+
+            /**
+             *
+             */
+            function showMoreClickHandler () {
+
+                rows += 10;
+                scope.vm.limit = columns * rows;
             }
         }
     }

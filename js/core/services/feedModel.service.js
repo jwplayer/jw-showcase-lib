@@ -25,50 +25,40 @@
      * @name jwShowcase.core.FeedModel
      */
     feedModelFactory.$inject = [];
+
     function feedModelFactory () {
 
-        function FeedModel (feedId, title, navigable, dynamic) {
-
-            this.feedid = feedId;
-
-            this.title = title || '';
-
-            this.dynamic = !!dynamic;
-
-            this.playlist = [];
-
-            this.navigable = angular.isDefined(navigable) ? navigable : true;
-
-            this.featured = false;
-
-            this.loading = false;
-
-            this.error = false;
-
-            /**
-             * Find item inside this feed
-             * @param {string} mediaId
-             */
-            this.findItem = function (mediaId) {
-
-                return this.playlist.find(function (item) {
-                    return item.mediaid === mediaId;
-                });
-            };
-
-            /**
-             * Make a copy of the current FeedModel
-             * @returns {FeedModel}
-             */
-            this.clone = function () {
-
-                var clone         = new FeedModel();
-                angular.extend(clone, this);
-                clone.playlist = angular.copy(this.playlist);
-
-                return clone;
-            };
+        function FeedModel (feedId, title, virtual) {
+            this.feedid    = feedId;
+            this.title     = title || '';
+            this.virtual   = !!virtual;
+            this.playlist  = [];
+            this.navigable = true;
         }
+
+        /**
+         * Find item inside this feed
+         * @param {string} mediaId
+         */
+        FeedModel.prototype.findItem = function (mediaId) {
+
+            return this.playlist.find(function (item) {
+                return item.mediaid === mediaId;
+            });
+        };
+
+        /**
+         * Make a copy of the current FeedModel
+         * @returns {FeedModel}
+         */
+        FeedModel.prototype.clone = function () {
+
+            var clone = new FeedModel();
+            angular.extend(clone, this);
+            clone.playlist = angular.copy(this.playlist);
+
+            return clone;
+        };
 
         return FeedModel;
     }

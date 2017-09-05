@@ -54,14 +54,15 @@
      * ```
      */
     cardSliderDirective.$inject = ['$state', '$compile', '$templateCache', 'utils'];
+
     function cardSliderDirective ($state, $compile, $templateCache, utils) {
 
         return {
             scope:            {
                 feed:        '=',
-                featured:    '=',
                 onCardClick: '=',
                 firstItem:   '=',
+                options:     '=',
                 title:       '@'
             },
             replace:          true,
@@ -83,6 +84,7 @@
                 sliding                = false,
                 userIsSliding          = false,
                 startCoords            = {},
+                options                = {},
                 sliderMap              = [],
                 totalItems             = 0,
                 itemsVisible           = 0,
@@ -99,15 +101,16 @@
              */
             function activate () {
 
-                var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
-                    className       = 'jw-card-slider-flag-' + classNameSuffix,
-                    loading         = scope.vm.feed.loading;
+                if (scope.vm.options) {
+                    options = scope.vm.options;
+                }
+
+                scope.vm.heading     = scope.vm.feed.title;
+
+                var classNameSuffix = options.featured ? 'featured' : 'default',
+                    className       = 'jw-card-slider-flag-' + classNameSuffix;
 
                 element.addClass(className);
-
-                if (!scope.vm.featured) {
-                    scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
-                }
 
                 scope.$on('$destroy', destroyHandler);
                 window.addEventListener('resize', resizeHandlerDebounced);
@@ -124,12 +127,7 @@
                     totalItems = scope.vm.feed.playlist.length;
                 }
 
-                if (loading) {
-                    element.addClass('jw-card-slider-flag-loading');
-                    // renderLoadingSlides();
-                }
-
-                leftSlidesVisible = scope.vm.featured;
+                leftSlidesVisible = options.featured;
 
                 resizeHandler();
             }
@@ -168,19 +166,17 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                if ($state.is('root.dashboard')) {
 
-                    // set slider background color
-                    element.css('background-color', scope.vm.feed.backgroundColor || '');
+                // set slider background color
+                element.css('background-color', options.backgroundColor || '');
 
-                    // set slider aspectratio
-                    if (scope.vm.feed.aspectratio) {
-                        element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
-                    }
+                // set slider aspectratio
+                if (options.aspectratio) {
+                    element.addClass('jw-card-slider-' + options.aspectratio.replace(':', ''));
+                }
 
-                    if (angular.isDefined(scope.vm.feed.enableTitle)) {
-                        element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.feed.enableTitle);
-                    }
+                if (angular.isDefined(options.enableTitle)) {
+                    element.toggleClass('jw-card-slider-flag-hide-title', !options.enableTitle);
                 }
 
                 if (!feedHasChanged(newValue, oldValue)) {
@@ -193,7 +189,8 @@
 
                 totalItems = scope.vm.feed.playlist.length;
 
-                element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
+                //
+                // element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
 
                 resizeHandler(true);
             }
@@ -234,7 +231,7 @@
             function resizeHandler (forceRender) {
 
                 var newItemsVisible = getItemsVisible(),
-                    needsRender     = newItemsVisible !== itemsVisible;
+                    needsRender     = forceRender || newItemsVisible !== itemsVisible;
 
                 itemsVisible   = newItemsVisible;
                 itemsMargin    = newItemsVisible + 1;
@@ -249,17 +246,8 @@
 
                 findElements('.jw-card-slider-button').toggleClass('ng-hide', !sliderCanSlide);
 
-                if (forceRender || needsRender) {
-
-                    if (scope.vm.feed.error) {
-                        renderErrorSlides();
-                    }
-                    else if (scope.vm.feed.loading) {
-                        renderLoadingSlides();
-                    }
-                    else {
-                        renderSlides();
-                    }
+                if (needsRender) {
+                    renderSlides();
                 }
 
                 moveSlider(0, false);
@@ -271,10 +259,10 @@
              */
             function getItemsVisible () {
 
-                var cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
+                var cols = options.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
 
-                if (angular.isDefined(scope.vm.feed.cols) && $state.is('root.dashboard')) {
-                    cols = scope.vm.feed.cols;
+                if (angular.isObject(options.cols) || angular.isNumber(options.cols)) {
+                    cols = options.cols;
                 }
 
                 return angular.isNumber(cols) ? cols : utils.getValueForScreenSize(cols, 1);
@@ -331,7 +319,7 @@
              */
             function renderSlides () {
 
-                var playlist = scope.vm.feed.playlist,
+                var playlist      = scope.vm.feed.playlist,
                     nextSliderMap = [],
                     nextSliderList;
 
@@ -435,7 +423,7 @@
 
                 function findExistingSlide (item, visible) {
 
-                    var mapIndex = sliderMap.length,
+                    var mapIndex   = sliderMap.length,
                         candidates = [],
                         useIndex,
                         slide;

@@ -59,7 +59,6 @@
             .then(function (resolvedConfig) {
 
                 mergeSetValues(config, resolvedConfig);
-                applyConfigDefaults(config);
 
                 if (angular.isString(config.options.backgroundColor) && '' !== config.options.backgroundColor) {
                     document.body.style.backgroundColor = config.options.backgroundColor;
@@ -111,7 +110,7 @@
                 window.addToHomescreen({appID: 'jwshowcase.addtohome'});
             }
 
-            defer.resolve();
+            // defer.resolve();
         }
 
         function handlePreloadError (error) {
@@ -131,6 +130,8 @@
             watchProgress.restore();
 
             bridge.initialize();
+
+            defer.resolve();
         }
 
         function showCookiesNotice () {
@@ -173,70 +174,6 @@
                 [bgClassNames.join(','), ['background-color', color, true]],
                 [colorClassNames.join(','), ['color', color, true]]
             ]);
-        }
-
-        /**
-         * Apply the config defaults and fixtures
-         * @param config
-         * @returns {*}
-         */
-        function applyConfigDefaults (config) {
-
-            if (angular.isArray(config.content)) {
-
-                // add continue watching feed if its not defined
-                if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
-
-                    // when first feed is featured we place the continue watching slider after that
-                    var index = config.content[0] && config.content[0].featured ? 1 : 0;
-
-                    // insert at index
-                    config.content.splice(index, 0, {
-                        playlistId: 'continue-watching'
-                    });
-                }
-
-                // add saved videos feed if its not defined
-                if (!containsPlaylistId(config.content, 'saved-videos')) {
-
-                    // add as last slider
-                    config.content.push({
-                        playlistId: 'saved-videos'
-                    });
-                }
-
-                // make sure each content has the default settings
-                config.content = config.content.map(function (content) {
-
-                    if (!isSet(content.enableText)) {
-                        content.enableText = true;
-                    }
-
-                    if (!isSet(content.enableTitle)) {
-                        content.enableTitle = true;
-                    }
-
-                    if (!isSet(content.enablePreview)) {
-                        content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
-                    }
-
-                    return content;
-                });
-            }
-
-            return config;
-        }
-
-        /**
-         * Test if collection contains a playlist id
-         * @param collection
-         * @param id
-         * @returns {boolean}
-         */
-        function containsPlaylistId (collection, id) {
-            return collection.findIndex(function (current) {
-                    return current.playlistId === id;
-                }) > -1;
         }
 
         /**

@@ -16,6 +16,15 @@
 
 (function () {
 
+    var defaultContentOptions = {
+        featured:      false,
+        type:          'slider',
+        enableText:    true,
+        enableTitle:   true,
+        enablePreview: false,
+        aspectratio:   '16:9'
+    };
+
     angular
         .module('jwShowcase.core')
         .service('configResolver', configResolverService);
@@ -28,6 +37,7 @@
      * @required $q
      */
     configResolverService.$inject = ['$http', '$q'];
+
     function configResolverService ($http, $q) {
 
         var isDefined     = angular.isDefined,
@@ -77,7 +87,8 @@
                     return $q.reject(new Error(config.message));
                 }
 
-                return validateConfig(config);
+                config = validateConfig(config);
+                return applyConfigDefaults(config);
             }
             catch (error) {
                 return $q.reject(error);
@@ -207,6 +218,64 @@
         }
 
         /**
+         * Apply the config defaults and fixtures
+         * @param config
+         * @returns {*}
+         */
+        function applyConfigDefaults (config) {
+
+            if (!angular.isArray(config.content)) {
+                return config;
+            }
+
+            // add continue watching feed if its not defined
+            if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
+
+                // when first feed is featured we place the continue watching slider after that
+                var index = config.content[0] && config.content[0].featured ? 1 : 0;
+
+                // insert at index
+                config.content.splice(index, 0, {
+                    playlistId: 'continue-watching'
+                });
+            }
+
+            // add saved videos feed if its not defined
+            if (!containsPlaylistId(config.content, 'saved-videos')) {
+
+                // add as last slider
+                config.content.push({
+                    playlistId: 'saved-videos'
+                });
+            }
+
+            // apply defaults
+            config.content = config.content.map(function (options) {
+                options = angular.merge({}, defaultContentOptions, options);
+
+                if (options.featured) {
+                    options.type = 'featured';
+                }
+
+                return options;
+            });
+
+            return config;
+        }
+
+        /**
+         * Test if collection contains a playlist id
+         * @param collection
+         * @param id
+         * @returns {boolean}
+         */
+        function containsPlaylistId (collection, id) {
+            return collection.findIndex(function (current) {
+                return current.playlistId === id;
+            }) > -1;
+        }
+
+        /**
          * Copy defined keys from source to target
          * @param {string[]} keys
          * @param {Object} source
@@ -219,6 +288,15 @@
                     target[key] = source[key];
                 }
             });
+        }
+
+        /**
+         * Returns true if value is defined and not null
+         * @param {*} value
+         * @returns {boolean}
+         */
+        function isSet (value) {
+            return angular.isDefined(value) && value !== null;
         }
     }
 

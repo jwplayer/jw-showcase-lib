@@ -30,6 +30,7 @@
      * @required jwShowcase.core.dataStore
      */
     apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore', 'FeedModel'];
+
     function apiConsumerService ($q, config, api, dataStore, FeedModel) {
 
         var self = this;
@@ -44,9 +45,7 @@
          */
         this.populateFeedModel = function (feed, type) {
 
-            var customOptions = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio',
-                    'enableTitle'],
-                promise;
+            var promise;
 
             if (!feed.feedid) {
                 return $q.reject(new Error('feedid is not defined'));
@@ -69,17 +68,15 @@
                 promise       = api.getFeed(feed.feedid);
             }
 
-            feed.promise = promise.then(function (data) {
+            promise.then(function (data) {
 
                 angular.merge(feed, data);
-                setCustomOptions(feed);
-
                 feed.loading = false;
 
                 return feed;
             });
 
-            feed.promise.catch(function (error) {
+            promise.catch(function (error) {
 
                 feed.error     = error;
                 feed.loading   = false;
@@ -88,43 +85,7 @@
                 return feed;
             });
 
-            return feed.promise;
-
-            /**
-             * Set custom `showcase.*` options from the feed response
-             */
-            function setCustomOptions () {
-
-                var value;
-
-                angular.forEach(customOptions, function (key) {
-
-                    value = feed['showcase.' + key];
-
-                    if (!angular.isDefined(value)) {
-                        return;
-                    }
-
-                    // convert to boolean
-                    if (value === 'true' || value === 'false') {
-                        feed[key] = value === 'true';
-                        return;
-                    }
-
-                    // convert to object
-                    if (angular.isString(value) && '{' === value[0]) {
-                        try {
-                            feed[key] = JSON.parse(value);
-                        }
-                        catch (e) {
-                            console.log('Error while parsing JSON from feed custom option: ' + e.message);
-                        }
-                        return;
-                    }
-
-                    feed[key] = value;
-                });
-            }
+            return promise;
         };
 
         /**
@@ -216,41 +177,41 @@
                 return $q.resolve([]);
             }
 
-            dataStore.feeds = config.content.map(function (content) {
+            dataStore.feeds = config.content
+                .filter(function (row) {
+                    return angular.isDefined(row.playlistId);
+                })
+                .map(function (row) {
 
-                var model;
+                    if (row.playlistId === dataStore.watchProgressFeed.feedid) {
+                        return dataStore.watchProgressFeed;
+                    }
 
-                if (content.playlistId === dataStore.watchProgressFeed.feedid) {
-                    model = dataStore.watchProgressFeed;
-                }
+                    if (row.playlistId === dataStore.watchlistFeed.feedid) {
+                        return dataStore.watchlistFeed;
+                    }
 
-                if (content.playlistId === dataStore.watchlistFeed.feedid) {
-                    model = dataStore.watchlistFeed;
-                }
+                    var model = new FeedModel(row.playlistId);
+                    promise   = self.populateFeedModel(model)
+                        .then(function (response) {
+                            // set custom options from dashboard in config content
+                            angular.merge(row, extractShowcaseOptions(response));
 
-                if (!model) {
-
-                    model   = new FeedModel(content.playlistId);
-                    promise = self
-                        .populateFeedModel(model)
-                        .then(null, function (error) {
-
+                            return response;
+                        })
+                        .catch(function (error) {
                             // show error, but resolve so we can wait for all feeds to be loaded
                             console.error(error);
+
                             return $q.resolve();
                         });
 
                     feedPromises.push(promise);
-                }
 
-                angular.extend(model, content);
+                    return model;
+                });
 
-                return model;
-            });
-
-            allFeedsPromise = $q.all(feedPromises);
-
-            return allFeedsPromise;
+            return (allFeedsPromise = $q.all(feedPromises));
         };
 
         /**
@@ -262,6 +223,47 @@
             return function (item) {
                 return item.mediaid === mediaId;
             };
+        }
+
+        /**
+         * Extract Showcase options from feed response
+         */
+        function extractShowcaseOptions (feed) {
+
+            var keys    = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio',
+                'enableTitle'];
+            var options = {};
+            var value;
+
+            angular.forEach(keys, function (key) {
+
+                value = feed['showcase.' + key];
+
+                if (!angular.isDefined(value)) {
+                    return;
+                }
+
+                // convert to boolean
+                if (value === 'true' || value === 'false') {
+                    options[key] = value === 'true';
+                    return;
+                }
+
+                // convert to object
+                if (angular.isString(value) && '{' === value[0]) {
+                    try {
+                        options[key] = JSON.parse(value);
+                    }
+                    catch (e) {
+                        console.log('Error while parsing JSON from feed custom option: ' + e.message);
+                    }
+                    return;
+                }
+
+                options[key] = value;
+            });
+
+            return options;
         }
     }
 

@@ -29,12 +29,14 @@
      * @requires jwShowcase.core.platform
      */
     DashboardController.$inject = ['$state', 'dataStore', 'platform', 'config'];
+
     function DashboardController ($state, dataStore, platform, config) {
 
         var vm = this;
 
-        vm.dataStore              = dataStore;
-        vm.config                 = config;
+        vm.dataStore = dataStore;
+        vm.config    = config;
+        vm.rows      = [];
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -48,6 +50,13 @@
         function activate () {
 
             $state.history = [];
+
+            vm.rows = config.content.map(function (options) {
+                return {
+                    options: options,
+                    feed:    dataStore.getFeed(options.playlistId)
+                };
+            });
         }
 
         /**

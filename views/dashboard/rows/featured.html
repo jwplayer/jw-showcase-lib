@@ -1,0 +1,17 @@
+<div class="jw-content-row jw-content-row-slider">
+  <jw-card-slider
+      feed="feed"
+      options="options"
+      on-card-click="cardClickHandler"
+      ng-if="!feed.virtual || feed.playlist.length"
+      jw-screen-size="tablet,desktop"
+  ></jw-card-slider>
+  <div jw-screen-size="mobile" class="jw-card-list">
+    <jw-card
+        item="item"
+        options="options"
+        on-click="cardClickHandler"
+        ng-repeat="item in feed.playlist"
+        class="jw-lazy-load"></jw-card>
+  </div>
+</div>

@@ -1,6 +1,19 @@
 <div class="jw-card-grid">
-  <div class="jw-card-grid-cards">
-    <jw-card item="item" ng-repeat="item in vm.feed.playlist" ng-class="::vm.cardClassName"
-        on-click="vm.onCardClick"></jw-card>
+  <jw-feed-title feed="vm.feed"></jw-feed-title>
+  <div class="jw-card-grid-align">
+    <div class="jw-card-grid-cards">
+      <jw-card
+          item="item"
+          ng-repeat="item in vm.feed.playlist|limitTo:vm.limit"
+          ng-class="::vm.cardClassName"
+          on-click="vm.onCardClick"
+      ></jw-card>
+    </div>
+  </div>
+  <div class="jw-card-grid-control" ng-if="vm.feed.playlist.length > vm.limit">
+    <jw-button
+        class="jw-button jw-button-secondary"
+        ng-click="vm.showMoreClickHandler()"
+    >Show more</jw-button>
   </div>
 </div>
