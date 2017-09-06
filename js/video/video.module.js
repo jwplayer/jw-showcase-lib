@@ -79,9 +79,7 @@
                 return $q.reject();
             }
 
-            return feed.promise.then(function (res) {
-                return res.clone();
-            });
+            return feed.clone();
         }
 
         resolveItem.$inject = ['$stateParams', '$q', 'feed'];

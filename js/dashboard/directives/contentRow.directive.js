@@ -28,21 +28,20 @@
             link:     link,
             restrict: 'E',
             scope:    {
-                data:             '=',
+                feed:             '=',
+                options:          '=',
                 cardClickHandler: '='
             }
         };
 
         function link (scope, element, attrs) {
 
-            var template   = $templateCache.get('views/dashboard/rows/' + scope.data.options.type + '.html');
-            var childScope = scope.$new();
+            var template = $templateCache.get('views/dashboard/rows/' + scope.options.type + '.html');
+            var html     = $compile(template)(scope);
 
-            childScope.feed             = scope.data.feed;
-            childScope.options          = scope.data.options;
-            childScope.cardClickHandler = scope.cardClickHandler;
-
-            var html = $compile(template)(childScope);
+            if (scope.options.backgroundColor) {
+                html.css('background-color', scope.options.backgroundColor);
+            }
 
             element.append(html);
         }

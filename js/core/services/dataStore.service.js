@@ -121,7 +121,7 @@
             angular.forEach(this.feeds, function (feed) {
 
                 // skip watchProgress and watchlist feeds
-                if (true === feed.dynamic) {
+                if (true === feed.virtual) {
                     return;
                 }
 

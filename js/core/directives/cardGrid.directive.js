@@ -62,21 +62,25 @@
             templateUrl:      'views/core/cardGrid.html',
             replace:          true,
             scope:            {
-                feed:          '=',
-                options:       '=',
-                onCardClick:   '=',
-                cardClassName: '@',
-                title:         '@'
+                feed:           '=',
+                aspectratio:    '=?',
+                cols:           '=?',
+                rows:           '=?',
+                enableTitle:    '=?',
+                enableText:     '=?',
+                enablePreview:  '=?',
+                enableShowMore: '=?',
+                onCardClick:    '=',
+                cardClassName:  '@',
+                title:          '@'
             }
         };
 
         function link (scope, element) {
 
-            var options         = {
-                    cols: {xs: 2, sm: 2, md: 3, lg: 4, xl: 5}
-                },
-                columns         = 0,
-                rows            = 2,
+            var columnOption    = {xs: 2, sm: 2, md: 3, lg: 4, xl: 5},
+                currentCols     = 0,
+                currentRows     = 6,
                 debouncedResize = utils.debounce(resize, 200);
 
             activate();
@@ -88,17 +92,22 @@
              */
             function activate () {
 
-                if (angular.isObject(scope.vm.options)) {
-                    angular.merge(options, scope.vm.options);
+                // set initial rows
+                if (scope.vm.rows) {
+                    currentRows = scope.vm.rows;
                 }
 
-                if (options.rows) {
-                    rows = 2;
+                if (scope.vm.cols) {
+                    columnOption = scope.vm.cols;
                 }
 
                 scope.vm.showMoreClickHandler = showMoreClickHandler;
                 scope.vm.limit                = 9;
-                scope.vm.heading              = scope.vm.title || scope.vm.feed.title;
+                scope.vm.heading              = scope.vm.title;
+
+                if (!scope.vm.heading && scope.vm.feed) {
+                    scope.vm.heading = scope.vm.feed.title;
+                }
 
                 window.addEventListener('resize', debouncedResize);
                 $timeout(resize, 50);
@@ -113,30 +122,30 @@
              */
             function resize () {
 
-                var toColumns    = options.cols,
+                var toColumns    = columnOption,
                     gridsElement = angular.element(element[0].querySelector('.jw-card-grid-cards'));
 
                 if (angular.isObject(toColumns)) {
                     toColumns = utils.getValueForScreenSize(toColumns, 1);
                 }
 
-                if (columns === toColumns) {
+                if (currentCols === toColumns) {
                     return;
                 }
 
-                columns        = toColumns;
-                scope.vm.limit = toColumns * rows;
+                currentCols    = toColumns;
+                scope.vm.limit = toColumns * currentRows;
 
-                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + columns;
+                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + currentCols;
             }
 
             /**
-             *
+             * Handle click on Show more button
              */
             function showMoreClickHandler () {
 
-                rows += 10;
-                scope.vm.limit = columns * rows;
+                currentRows += 10;
+                scope.vm.limit = currentCols * currentRows;
             }
         }
     }

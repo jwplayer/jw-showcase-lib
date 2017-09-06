@@ -50,9 +50,12 @@
 
         return {
             scope:            {
-                item:    '=',
-                options: '=',
-                onClick: '='
+                item:          '=',
+                featured:      '=?',
+                aspectratio:   '=?',
+                enableText:    '=?',
+                enablePreview: '=?',
+                onClick:       '='
             },
             controllerAs:     'vm',
             controller:       angular.noop,
@@ -63,7 +66,6 @@
         };
 
         function link (scope, element) {
-            var options             = {};
             var isSearch            = $state.is('root.search');
             var enableInVideoSearch = config.options.enableInVideoSearch;
 
@@ -88,14 +90,15 @@
                 var item = scope.vm.item,
                     link = generateLink();
 
-                if (scope.vm.options) {
-                    options = scope.vm.options;
+                element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
+
+                if (angular.isDefined(scope.vm.enableText)) {
+                    element.toggleClass('jw-card-flag-hide-text', !scope.vm.enableText);
                 }
 
-                element.addClass('jw-card-flag-' + (options.featured ? 'featured' : 'default'));
-
-                if (angular.isDefined(options.enableText)) {
-                    element.toggleClass('jw-card-flag-hide-text', !options.enableText);
+                // set slider aspectratio
+                if (angular.isString(scope.vm.aspectratio)) {
+                    element.addClass('jw-card-aspect-' + scope.vm.aspectratio.replace(':', ''));
                 }
 
                 if (serviceWorker.isSupported()) {

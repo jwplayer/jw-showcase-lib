@@ -49,30 +49,6 @@ $featured-slider-max-width: 900px;
         }
     }
 
-    &-916 .jw-card .jw-card-aspect {
-        padding-bottom: (16 / 9) * 100%;
-    }
-
-    &-23 .jw-card .jw-card-aspect {
-        padding-bottom: (3 / 2) * 100%;
-    }
-
-    &-11 .jw-card .jw-card-aspect {
-        padding-bottom: 100%;
-    }
-
-    &-43 .jw-card .jw-card-aspect {
-        padding-bottom: 75%;
-    }
-
-    &-53 .jw-card .jw-card-aspect {
-        padding-bottom: 60%;
-    }
-
-    &-21 .jw-card .jw-card-aspect {
-        padding-bottom: 50%;
-    }
-
     &.jw-lazy-load {
 
         .jw-card-poster {
@@ -208,10 +184,6 @@ $featured-slider-max-width: 900px;
 // --------------------------------
 
 .jw-card-slider.jw-card-slider-flag-default {
-
-    .jw-card-slider-container {
-        //padding-top: $base-spacing-heading;
-    }
 
     .jw-card-slider-align {
         padding: 0 90px;

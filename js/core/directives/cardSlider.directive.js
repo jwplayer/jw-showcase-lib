@@ -59,11 +59,16 @@
 
         return {
             scope:            {
-                feed:        '=',
-                onCardClick: '=',
-                firstItem:   '=',
-                options:     '=',
-                title:       '@'
+                feed:          '=',
+                onCardClick:   '=',
+                firstItem:     '=?',
+                featured:      '=?',
+                aspectratio:   '=?',
+                cols:          '=?',
+                enableTitle:   '=?',
+                enableText:    '=?',
+                enablePreview: '=?',
+                title:         '@'
             },
             replace:          true,
             controller:       angular.noop,
@@ -84,7 +89,6 @@
                 sliding                = false,
                 userIsSliding          = false,
                 startCoords            = {},
-                options                = {},
                 sliderMap              = [],
                 totalItems             = 0,
                 itemsVisible           = 0,
@@ -101,13 +105,9 @@
              */
             function activate () {
 
-                if (scope.vm.options) {
-                    options = scope.vm.options;
-                }
+                scope.vm.heading = scope.vm.feed.title;
 
-                scope.vm.heading     = scope.vm.feed.title;
-
-                var classNameSuffix = options.featured ? 'featured' : 'default',
+                var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
                     className       = 'jw-card-slider-flag-' + classNameSuffix;
 
                 element.addClass(className);
@@ -127,7 +127,7 @@
                     totalItems = scope.vm.feed.playlist.length;
                 }
 
-                leftSlidesVisible = options.featured;
+                leftSlidesVisible = scope.vm.featured;
 
                 resizeHandler();
             }
@@ -166,17 +166,8 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-
-                // set slider background color
-                element.css('background-color', options.backgroundColor || '');
-
-                // set slider aspectratio
-                if (options.aspectratio) {
-                    element.addClass('jw-card-slider-' + options.aspectratio.replace(':', ''));
-                }
-
-                if (angular.isDefined(options.enableTitle)) {
-                    element.toggleClass('jw-card-slider-flag-hide-title', !options.enableTitle);
+                if (angular.isDefined(scope.vm.enableTitle)) {
+                    element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.enableTitle);
                 }
 
                 if (!feedHasChanged(newValue, oldValue)) {
@@ -259,10 +250,10 @@
              */
             function getItemsVisible () {
 
-                var cols = options.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
+                var cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
 
-                if (angular.isObject(options.cols) || angular.isNumber(options.cols)) {
-                    cols = options.cols;
+                if (angular.isObject(scope.vm.cols) || angular.isNumber(scope.vm.cols)) {
+                    cols = scope.vm.cols;
                 }
 
                 return angular.isNumber(cols) ? cols : utils.getValueForScreenSize(cols, 1);
@@ -510,7 +501,12 @@
 
                 var childScope = scope.$new(false, scope);
 
-                childScope.item = angular.copy(item);
+                childScope.item          = angular.copy(item);
+
+                childScope.featured      = scope.vm.featured;
+                childScope.enableText    = scope.vm.enableText;
+                childScope.enablePreview = scope.vm.enablePreview;
+                childScope.aspectratio   = scope.vm.aspectratio;
 
                 return $compile(angular.element(slideTemplate))(childScope);
             }

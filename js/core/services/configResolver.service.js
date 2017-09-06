@@ -17,12 +17,10 @@
 (function () {
 
     var defaultContentOptions = {
-        featured:      false,
-        type:          'slider',
-        enableText:    true,
-        enableTitle:   true,
-        enablePreview: false,
-        aspectratio:   '16:9'
+        featured:    false,
+        type:        'slider',
+        enableTitle: true,
+        enableText:  true
     };
 
     angular
@@ -236,7 +234,8 @@
 
                 // insert at index
                 config.content.splice(index, 0, {
-                    playlistId: 'continue-watching'
+                    playlistId:    'continue-watching',
+                    enablePreview: true
                 });
             }
 

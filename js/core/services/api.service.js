@@ -80,9 +80,10 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            phrase = encodeURIComponent(phrase);
+            var url = config.contentService + '/v2/playlists/' + searchPlaylist;
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+            return getFeed(url + '?search=' + encodeURIComponent(phrase));
+
         };
 
         /**
@@ -124,36 +125,35 @@
             });
 
             function findMatches (location, positions) {
-                return $http.get(location)
-                    .then(function (response) {
-                        var vtt = response.data;
+                return $http.get(location).then(function (response) {
+                    var vtt = response.data;
 
-                        return $q(function (resolve, reject) {
-                            var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
-                            var segments = [];
+                    return $q(function (resolve, reject) {
+                        var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                        var segments = [];
 
-                            parser.onparsingerror = reject;
-                            parser.oncue          = function (cue) {
-                                segments.push(cue);
-                            };
+                        parser.onparsingerror = reject;
+                        parser.oncue          = function (cue) {
+                            segments.push(cue);
+                        };
 
-                            parser.onflush = function () {
-                                resolve(positions.map(function (position) {
-                                    var segment = segments[position - 1];
-                                    var regex   = new RegExp('(' + phrase + ')', 'ig');
+                        parser.onflush = function () {
+                            resolve(positions.map(function (position) {
+                                var segment = segments[position - 1];
+                                var regex   = new RegExp('(' + phrase + ')', 'ig');
 
-                                    return {
-                                        text:        segment.text,
-                                        time:        segment.startTime,
-                                        highlighted: segment.text.replace(regex, '<span>$1</span>')
-                                    };
-                                }));
-                            };
+                                return {
+                                    text:        segment.text,
+                                    time:        segment.startTime,
+                                    highlighted: segment.text.replace(regex, '<span>$1</span>')
+                                };
+                            }));
+                        };
 
-                            parser.parse(vtt);
-                            parser.flush();
-                        });
+                        parser.parse(vtt);
+                        parser.flush();
                     });
+                });
             }
         };
 

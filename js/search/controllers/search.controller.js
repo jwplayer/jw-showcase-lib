@@ -24,60 +24,16 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$scope', '$q', '$state', '$stateParams', 'platform', 'searchFeed', 'api'];
+    SearchController.$inject = ['$state', 'platform', 'searchFeed'];
 
-    function SearchController ($scope, $q, $state, $stateParams, platform, searchFeed, api) {
+    function SearchController ($state, platform, searchFeed) {
 
-        var vm                 = this;
-        var limit              = 10;
-        var showCaptionMatches = $stateParams.showCaptionMatches && platform.screenSize() !== 'mobile';
+        var vm = this;
 
-        vm.cardClickHandler     = cardClickHandler;
-        vm.showMoreClickHandler = showMoreClickHandler;
-        vm.itemsLeft            = itemsLeft;
-
-        vm.feed      = null;
-        vm.searching = true;
-
-        activate();
+        vm.cardClickHandler = cardClickHandler;
+        vm.feed             = searchFeed;
 
         ////////////////////////
-
-        /**
-         * Initialize controller
-         */
-        function activate () {
-            if (!showCaptionMatches) {
-                vm.feed      = searchFeed.clone();
-                vm.searching = false;
-                return;
-            }
-
-            var clone = searchFeed.clone();
-
-            clone.playlist = searchFeed.playlist.slice(0, limit);
-
-            addItemsToFeed(clone.playlist).then(function () {
-                vm.feed      = clone;
-                vm.searching = false;
-
-                $scope.$emit('$viewContentUpdated');
-            });
-        }
-
-        /**
-         * Add items to feed
-         * @param items
-         */
-        function addItemsToFeed (items) {
-            var query = $stateParams.query.replace(/\+/g, ' ');
-
-            var patchItemPromises = items.map(function (item) {
-                return api.patchItemWithCaptions(item, query);
-            });
-
-            return $q.all(patchItemPromises);
-        }
 
         /**
          * @ngdoc method
@@ -98,33 +54,6 @@
                 slug:      item.$slug,
                 startTime: startTime,
                 autoStart: clickedOnPlay || platform.isMobile || typeof startTime !== 'undefined'
-            });
-        }
-
-        /**
-         * Are there any items left to show
-         * @returns {boolean}
-         */
-        function itemsLeft () {
-            return !!(vm.feed && (searchFeed.playlist.length > vm.feed.playlist.length));
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.search.SearchController#showMoreClickHandler
-         * @methodOf jwShowcase.search.SearchController
-         *
-         * @description
-         * Handle click event on the show more button
-         */
-        function showMoreClickHandler () {
-            var feedPlaylistLength  = vm.feed.playlist.length;
-            var toBeAddedMediaItems = searchFeed.playlist.slice(feedPlaylistLength, feedPlaylistLength + limit);
-
-            addItemsToFeed(toBeAddedMediaItems).then(function () {
-                vm.feed.playlist = vm.feed.playlist.concat(toBeAddedMediaItems);
-            }).then(function () {
-                $scope.$emit('$viewContentUpdated');
             });
         }
     }

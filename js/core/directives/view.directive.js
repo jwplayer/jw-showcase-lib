@@ -186,7 +186,7 @@
                              * @param {Object} event Event object.
                              * @param {Object} data, object with view name.
                              */
-                            cached.scope.$emit('$viewRestored', {name: name});
+                            cached.scope.$broadcast('$viewRestored', {name: name});
                         });
 
                         currentEl    = cached.element;

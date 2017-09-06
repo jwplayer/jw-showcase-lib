@@ -1,15 +1,21 @@
-<div class="jw-content-row jw-content-row-slider">
+<div class="jw-content-row jw-content-row-featured">
   <jw-card-slider
       feed="feed"
-      options="options"
+      featured="true"
+      aspectratio="options.aspectratio"
+      cols="options.cols"
+      enable-text="options.enableText"
+      enable-preview="options.enablePreview"
       on-card-click="cardClickHandler"
-      ng-if="!feed.virtual || feed.playlist.length"
       jw-screen-size="tablet,desktop"
   ></jw-card-slider>
   <div jw-screen-size="mobile" class="jw-card-list">
     <jw-card
         item="item"
-        options="options"
+        featured="true"
+        aspectratio="options.aspectratio"
+        enable-text="options.enableText"
+        enable-preview="options.enablePreview"
         on-click="cardClickHandler"
         ng-repeat="item in feed.playlist"
         class="jw-lazy-load"></jw-card>

@@ -125,11 +125,11 @@
          * {@link jwShowcase.core.dataStore dataStore}. Items not known by JW Showcase will be filtered out.
          *
          * @param {string}  searchPhrase        The phrase that should be searched on
-         * @param {boolean} searchInCaptions    Should the search also include caption search results
+         * @param {boolean} [requestCaptions]   Should the search also include caption search results
          *
          * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
-        this.getSearchFeed = function (searchPhrase) {
+        this.getSearchFeed = function (searchPhrase, requestCaptions) {
 
             var feed = new FeedModel(config.searchPlaylist, 'Search Results');
 
@@ -146,11 +146,20 @@
 
                     var allItems = dataStore.getItems();
 
-                    feed.playlist = response.playlist
-                        .filter(function (item) {
-                            return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
-                        });
+                    // filter results to items loaded in Showcase when enableGlobalSearch is false
+                    feed.playlist = response.playlist.filter(function (item) {
+                        return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
+                    });
 
+                    // if enableInVideoSearch and requestCaptions are true, patch the first 10 items in the results
+                    // with captions.
+                    if (config.options.enableInVideoSearch && requestCaptions) {
+                        return $q.all(feed.playlist.slice(0, 10).map(function (item) {
+                            return api.patchItemWithCaptions(item, searchPhrase);
+                        }));
+                    }
+                })
+                .then(function () {
                     return feed;
                 })
                 .catch(function (error) {

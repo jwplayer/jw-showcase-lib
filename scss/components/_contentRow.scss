@@ -1,4 +1,10 @@
 
-.jw-content-row {
-    margin-bottom: $base-spacing-heading;
+.jw-content-row:not(.jw-content-row-featured) {
+    padding: 0.5px 0;
+
+    > .jw-card-slider,
+    > .jw-card-grid,
+    > .jw-card-display-ad {
+        margin: $base-spacing 0;
+    }
 }
