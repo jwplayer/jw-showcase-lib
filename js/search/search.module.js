@@ -32,14 +32,14 @@
 
         $stateProvider
             .state('root.search', {
-                url:         '/search/:query?{searchInCaptions:boolean}',
+                url:         '/search/:query?{showCaptionMatches:boolean}',
                 controller:  'SearchController as vm',
                 templateUrl: 'views/search/search.html',
                 scrollTop:   'last',
                 persistent:  true,
                 history:     false,
                 params: {
-                    searchInCaptions: {
+                    showCaptionMatches: {
                         value:  false,
                         squash: true
                     }

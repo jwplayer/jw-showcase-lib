@@ -44,6 +44,7 @@
      */
     cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
         'watchlist', 'utils', 'serviceWorker', 'config'];
+
     function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
                             serviceWorker, config) {
 
@@ -65,8 +66,8 @@
             var isSearch            = $state.is('root.search');
             var enableInVideoSearch = config.options.enableInVideoSearch;
 
-            scope.vm.activeCaption        = null;
-            scope.vm.inVideoSearchEnabled = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
+            scope.vm.activeCaption      = null;
+            scope.vm.showCaptionMatches = enableInVideoSearch && scope.vm.item.captionMatches && isSearch;
 
             scope.vm.showToast              = showToast;
             scope.vm.closeMenu              = closeMenu;
