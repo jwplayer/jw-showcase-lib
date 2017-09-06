@@ -1,5 +1,5 @@
 {
-    "version": "3.6.0-beta",
+    "version": "3.6.0",
     "name": "jw-showcase-lib",
     "ignore": [".github", "icons"]
 }
