@@ -2,12 +2,13 @@
 // jwSearchBar
 // --------------------------------
 
-.jw-search {
+$align-margin: 10px;
+$align-height: $search-height - ($align-margin * 2);
+$input-height: 38px;
+$input-cap-width: 35px;
+$ivs-toggle-width: 200px;
 
-    $align-margin: 10px;
-    $align-height: $search-height - ($align-margin * 2);
-    $input-height: 38px;
-    $input-cap-width: 35px;
+.jw-search {
 
     .jw-search-container {
         position: absolute;
@@ -141,6 +142,18 @@
 //
 // mediaQueries
 // --------------------------------
+
+@include tablet-and-larger () {
+
+    .jw-search {
+
+        &.jw-search-flag-ivs {
+            .jw-search-input {
+                width: calc(100% - #{($input-cap-width * 2) + $ivs-toggle-width});
+            }
+        }
+    }
+}
 
 @include mobile-only () {
 
