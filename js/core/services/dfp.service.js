@@ -28,10 +28,13 @@ window.googletag.cmd = window.googletag.cmd || [];
      * @name jwShowcase.core.dfp
      */
     dfp.$inject = ['$q'];
+
     function dfp ($q) {
 
         var gptScript    = 'https://www.googletagservices.com/tag/js/gpt.js',
-            gptPromise   = false,
+            gptDefer     = $q.defer(),
+            gptPromise   = gptDefer.promise,
+            gptSetup     = false,
             dfp          = this,
             definedSlots = {};
 
@@ -74,7 +77,6 @@ window.googletag.cmd = window.googletag.cmd || [];
                 if (sizeMapping) {
                     slot.defineSizeMapping(sizeMapping);
                 }
-
                 slot.addService(googletag.pubads());
                 definedSlots[id] = slot;
             });
@@ -88,9 +90,10 @@ window.googletag.cmd = window.googletag.cmd || [];
          * @methodOf jwShowcase.core.dfp
          */
         function display (id) {
-
-            googletag.cmd.push(function () {
-                googletag.display(id);
+            gptPromise.then(function () {
+                googletag.cmd.push(function () {
+                    googletag.display(id);
+                });
             });
         }
 
@@ -159,32 +162,28 @@ window.googletag.cmd = window.googletag.cmd || [];
          */
         function loadDfpScript () {
 
-            var defer,
-                script;
+            var script;
 
-            if (gptPromise) {
+            if (gptSetup) {
                 return gptPromise;
             }
 
-            defer  = $q.defer();
-            script = document.createElement('script');
+            gptSetup = true;
 
+            script      = document.createElement('script');
             script.type = 'text/javascript';
 
             script.onload = function () {
-                gptPromise = true;
-                defer.resolve();
+                gptDefer.resolve();
             };
 
             script.onerror = function () {
-                defer.reject('Could not load dfp library, ad blocker?');
+                gptDefer.reject('Could not load dfp library, ad blocker?');
             };
 
             script.async = true;
             script.src   = gptScript;
             document.body.appendChild(script);
-
-            gptPromise = defer.promise;
 
             return gptPromise;
         }
