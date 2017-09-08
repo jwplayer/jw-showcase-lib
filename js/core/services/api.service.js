@@ -35,6 +35,28 @@
 
         /**
          * @ngdoc method
+         * @name jwShowcase.core.api#getItem
+         * @methodOf jwShowcase.core.api
+         *
+         * @param {string} mediaId Id of the item
+         * @description
+         * Get media from jw platform
+         *
+         * @resolves {jwShowcase.core.item}
+         * @returns {Promise} Promise which will be resolved when the request is completed.
+         */
+        this.getItem = function (mediaId) {
+
+            // reject when mediaId is empty or no string
+            if (!angular.isString(mediaId) || mediaId === '') {
+                return $q.reject(new Error('mediaId is not given or not a string'));
+            }
+
+            return getItem(config.contentService + '/v2/media/' + mediaId);
+        };
+
+        /**
+         * @ngdoc method
          * @name jwShowcase.core.api#getFeed
          * @methodOf jwShowcase.core.api
          *
@@ -221,6 +243,33 @@
         };
 
         /**
+         * Get item from the given URL
+         *
+         * @param {string} url
+         * @returns {Promise}
+         */
+        function getItem (url) {
+
+            return $http.get(url)
+                .then(function (response) {
+                    return response.data;
+                })
+                .then(function (feed) {
+                    if (!angular.isArray(feed.playlist) || !feed.playlist.length) {
+                        return $q.reject(new Error('Item not found'));
+                    }
+
+                    return feed.playlist[0];
+                })
+                .then(function (item) {
+                    return patchItem(item, 0);
+                })
+                .catch(function () {
+                    return $q.reject('Failed to get item');
+                });
+        }
+
+        /**
          * Get feed from the given URL.
          *
          * @param {string} url
@@ -245,23 +294,7 @@
                 }
 
                 feed.playlist = feed.playlist
-                    .map(function (item, index) {
-
-                        if (!item.feedid) {
-                            item.feedid = feed.feedid;
-                        }
-
-                        item.$key  = index + item.mediaid;
-                        item.$slug = utils.slugify(item.title);
-                        item.$tags = [];
-
-                        if (angular.isString(item.tags)) {
-                            item.$tags = item.tags.split(',');
-                        }
-
-                        return item;
-                    })
-                    .map(fixItemUrls);
+                    .map(patchItem);
 
                 return feed;
             }
@@ -276,6 +309,22 @@
 
                 return $q.reject(new Error(message));
             }
+        }
+
+        /**
+         * Patch item with shortcut values
+         *
+         * @param {jwShowcase.core.item} item
+         * @param {number} index
+         * @returns {jwShowcase.core.item}
+         */
+        function patchItem (item, index) {
+
+            item.$key  = index + item.mediaid;
+            item.$slug = utils.slugify(item.title);
+            item.$tags = angular.isString(item.tags) ? item.tags.split(',') : [];
+
+            return fixItemUrls(item);
         }
 
         /**
