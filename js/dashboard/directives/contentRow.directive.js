@@ -27,6 +27,8 @@
         return {
             link:     link,
             restrict: 'E',
+            replace:  true,
+            template: '<div class="jw-content-row"></div>',
             scope:    {
                 feed:             '=',
                 options:          '=',
@@ -39,11 +41,13 @@
             var template = $templateCache.get('views/dashboard/rows/' + scope.options.type + '.html');
             var html     = $compile(template)(scope);
 
-            if (scope.options.backgroundColor) {
-                html.css('background-color', scope.options.backgroundColor);
-            }
+            element.addClass('jw-content-row-' + scope.options.type);
 
             element.append(html);
+
+            if (scope.options.backgroundColor) {
+                element.css('background-color', scope.options.backgroundColor);
+            }
         }
     }
 

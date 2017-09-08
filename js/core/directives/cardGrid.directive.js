@@ -110,7 +110,7 @@
                 }
 
                 window.addEventListener('resize', debouncedResize);
-                $timeout(resize, 50);
+                resize();
 
                 scope.$on('$destroy', function () {
                     window.removeEventListener('resize', debouncedResize);
@@ -134,7 +134,10 @@
                 }
 
                 currentCols    = toColumns;
-                scope.vm.limit = toColumns * currentRows;
+
+                $timeout(function () {
+                    scope.vm.limit = toColumns * currentRows;
+                });
 
                 gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + currentCols;
             }

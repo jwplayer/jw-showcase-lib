@@ -5,10 +5,10 @@
     <h4 class="jw-page-title" ng-if="!vm.feed.playlist.length">No videos</h4>
     <jw-card-grid
         feed="vm.feed"
+        rows="10"
+        cols="{xs:2, sm:2, md:3, lg:4, xl:5}"
         enable-title="false"
         enable-show-more="true"
-        rows="2"
-        cols="{xs:2, sm:2, md:3, lg:4, xl:5}"
         on-card-click="vm.cardClickHandler"
         card-class-name="jw-lazy-load"
     ></jw-card-grid>
