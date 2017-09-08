@@ -41,51 +41,71 @@
          * @name jwShowcase.core.apiConsumer#populateFeedModel
          * @methodOf jwShowcase.core.apiConsumer
          *
-         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         * @returns {Promise.<jwShowcase.core.FeedModel>}
          */
-        this.populateFeedModel = function (feed, type) {
-
-            var promise;
+        this.populateFeedModel = function (feed) {
 
             if (!feed.feedid) {
                 return $q.reject(new Error('feedid is not defined'));
             }
 
-            feed.loading = true;
+            // clear playlist
+            feed.playlist = [];
 
-            if (type === 'recommendations') {
+            // set promise
+            feed.$promise = api.getFeed(feed.feedid)
+                .then(function (data) {
+                    // merge response data with the feed model
+                    angular.merge(feed, data);
 
-                promise = api.getRecommendationsFeed(feed.feedid, feed.relatedMediaId)
-                    .then(function (data) {
-                        data.playlist = dataStore.getItems().filter(function (item) {
-                            return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                        });
-                        return data;
-                    });
+                    return feed;
+                })
+                .catch(function (error) {
+                    feed.$error     = error;
+                    feed.$navigable = false;
+
+                    return $q.reject(feed);
+                });
+
+            return feed.$promise;
+        };
+
+        /**
+         * Get recommendations feed
+         * @param relatedMediaId
+         * @returns {Promise.<jwShowcase.core.FeedModel>}
+         */
+        this.getRecommendationsFeed = function (relatedMediaId) {
+
+            var feedId = config.recommendationsPlaylist;
+
+            if (!feedId) {
+                return $q.reject();
             }
-            else {
-                feed.playlist = [];
-                promise       = api.getFeed(feed.feedid);
-            }
 
-            promise.then(function (data) {
+            var feed = new FeedModel(feedId, 'Related videos', false);
 
-                angular.merge(feed, data);
-                feed.loading = false;
+            return api
+                .getRecommendationsFeed(feedId, relatedMediaId)
+                .then(function (data) {
 
-                return feed;
-            });
+                    // @todo create option to allow all pub items to show as related
+                    // data.playlist = dataStore.getItems().filter(function (item) {
+                    //     return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
+                    // });
 
-            promise.catch(function (error) {
+                    return data;
+                })
+                .then(function (data) {
+                    // merge data with feed
+                    return angular.merge(feed, data);
+                })
+                .catch(function (error) {
+                    feed.$error     = error;
+                    feed.$navigable = false;
 
-                feed.error     = error;
-                feed.loading   = false;
-                feed.navigable = false;
-
-                return feed;
-            });
-
-            return promise;
+                    return $q.reject(feed);
+                });
         };
 
         /**

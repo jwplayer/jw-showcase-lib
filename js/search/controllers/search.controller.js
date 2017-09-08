@@ -48,8 +48,7 @@
          * @param {number}                  [startTime]     Time to seek to once the video starts
          */
         function cardClickHandler (item, clickedOnPlay, startTime) {
-            $state.go('root.videoFromSearch', {
-                query:     $state.params.query,
+            $state.go('root.video', {
                 mediaId:   item.mediaid,
                 slug:      item.$slug,
                 startTime: startTime,

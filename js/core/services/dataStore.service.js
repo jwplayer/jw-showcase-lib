@@ -27,6 +27,7 @@
      * @requires jwShowcase.core.utils
      */
     dataStoreService.$inject = ['FeedModel'];
+
     function dataStoreService (FeedModel) {
 
         var self = this;
@@ -84,24 +85,11 @@
          * Return item with the given mediaId.
          *
          * @param {string}              mediaId     Id of the item
-         * @param {string}              feedId      Id of the feed
          *
          * @returns {jwShowcase.core.item|undefined} Found item or undefined when not found
          */
-        this.getItem = function (mediaId, feedId) {
-
-            var feed = this.getFeed(feedId),
-                item;
-
-            if (!feed) {
-                return;
-            }
-
-            item = feed.playlist.find(function (item) {
-                return item.mediaid === mediaId;
-            });
-
-            return item ? angular.extend({}, item) : undefined;
+        this.getItem = function (mediaId) {
+            return angular.copy(this.getItems().find(byMediaId(mediaId)));
         }.bind(this);
 
         /**
@@ -121,7 +109,7 @@
             angular.forEach(this.feeds, function (feed) {
 
                 // skip watchProgress and watchlist feeds
-                if (true === feed.virtual) {
+                if (true === feed.$virtual) {
                     return;
                 }
 

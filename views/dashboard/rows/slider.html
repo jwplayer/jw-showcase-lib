@@ -1,7 +1,6 @@
 <div
-    class="jw-content-row jw-content-row-slider"
-    ng-if="!feed.virtual || feed.playlist.length"
-    ng-class="{'jw-expand-animation': feed.virtual}">
+    ng-if="!feed.$virtual || feed.playlist.length"
+    ng-class="{'jw-expand-animation': feed.$virtual}">
   <jw-card-slider
       feed="feed"
       featured="false"

@@ -110,7 +110,7 @@
                 window.addToHomescreen({appID: 'jwshowcase.addtohome'});
             }
 
-            // defer.resolve();
+            defer.resolve();
         }
 
         function handlePreloadError (error) {
@@ -130,8 +130,6 @@
             watchProgress.restore();
 
             bridge.initialize();
-
-            defer.resolve();
         }
 
         function showCookiesNotice () {

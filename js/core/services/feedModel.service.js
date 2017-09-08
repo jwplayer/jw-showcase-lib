@@ -24,16 +24,18 @@
      * @ngdoc service
      * @name jwShowcase.core.FeedModel
      */
-    feedModelFactory.$inject = [];
+    feedModelFactory.$inject = ['$q'];
 
-    function feedModelFactory () {
+    function feedModelFactory ($q) {
 
         function FeedModel (feedId, title, virtual) {
             this.feedid    = feedId;
             this.title     = title || '';
-            this.virtual   = !!virtual;
             this.playlist  = [];
-            this.navigable = true;
+
+            this.$virtual   = !!virtual;
+            this.$navigable = true;
+            this.$promise   = $q.resolve(this);
         }
 
         /**
