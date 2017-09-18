@@ -30,6 +30,7 @@
      * @required jwShowcase.core.dataStore
      */
     apiConsumerService.$inject = ['$q', 'config', 'api', 'dataStore', 'FeedModel'];
+
     function apiConsumerService ($q, config, api, dataStore, FeedModel) {
 
         var self = this;
@@ -40,91 +41,71 @@
          * @name jwShowcase.core.apiConsumer#populateFeedModel
          * @methodOf jwShowcase.core.apiConsumer
          *
-         * @returns {Promise} A promise which will be resolved after the api request is finished.
+         * @returns {Promise.<jwShowcase.core.FeedModel>}
          */
-        this.populateFeedModel = function (feed, type) {
-
-            var customOptions = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio',
-                    'enableTitle'],
-                promise;
+        this.populateFeedModel = function (feed) {
 
             if (!feed.feedid) {
                 return $q.reject(new Error('feedid is not defined'));
             }
 
-            feed.loading = true;
+            // clear playlist
+            feed.playlist = [];
 
-            if (type === 'recommendations') {
+            // set promise
+            feed.$promise = api.getFeed(feed.feedid)
+                .then(function (data) {
+                    // merge response data with the feed model
+                    angular.merge(feed, data);
 
-                promise = api.getRecommendationsFeed(feed.feedid, feed.relatedMediaId)
-                    .then(function (data) {
-                        data.playlist = dataStore.getItems().filter(function (item) {
-                            return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                        });
-                        return data;
-                    });
-            }
-            else {
-                feed.playlist = [];
-                promise       = api.getFeed(feed.feedid);
-            }
+                    return feed;
+                })
+                .catch(function (error) {
+                    feed.$error     = error;
+                    feed.$navigable = false;
 
-            feed.promise = promise.then(function (data) {
-
-                angular.merge(feed, data);
-                setCustomOptions(feed);
-
-                feed.loading = false;
-
-                return feed;
-            });
-
-            feed.promise.catch(function (error) {
-
-                feed.error     = error;
-                feed.loading   = false;
-                feed.navigable = false;
-
-                return feed;
-            });
-
-            return feed.promise;
-
-            /**
-             * Set custom `showcase.*` options from the feed response
-             */
-            function setCustomOptions () {
-
-                var value;
-
-                angular.forEach(customOptions, function (key) {
-
-                    value = feed['showcase.' + key];
-
-                    if (!angular.isDefined(value)) {
-                        return;
-                    }
-
-                    // convert to boolean
-                    if (value === 'true' || value === 'false') {
-                        feed[key] = value === 'true';
-                        return;
-                    }
-
-                    // convert to object
-                    if (angular.isString(value) && '{' === value[0]) {
-                        try {
-                            feed[key] = JSON.parse(value);
-                        }
-                        catch (e) {
-                            console.log('Error while parsing JSON from feed custom option: ' + e.message);
-                        }
-                        return;
-                    }
-
-                    feed[key] = value;
+                    return $q.reject(feed);
                 });
+
+            return feed.$promise;
+        };
+
+        /**
+         * Get recommendations feed
+         * @param relatedMediaId
+         * @returns {Promise.<jwShowcase.core.FeedModel>}
+         */
+        this.getRecommendationsFeed = function (relatedMediaId) {
+
+            var feedId = config.recommendationsPlaylist;
+
+            if (!feedId) {
+                return $q.reject();
             }
+
+            var feed = new FeedModel(feedId, 'Related videos', false);
+
+            return api
+                .getRecommendationsFeed(feedId, relatedMediaId)
+                .then(function (data) {
+
+                    // @todo create option to allow all pub items to show as related
+                    // data.playlist = dataStore.getItems().filter(function (item) {
+                    //     return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
+                    // });
+
+                    return data;
+                })
+                .then(function (data) {
+                    // merge data with feed
+                    return angular.merge(feed, data);
+                })
+                .catch(function (error) {
+                    feed.$error     = error;
+                    feed.$navigable = false;
+
+                    return $q.reject(feed);
+                });
         };
 
         /**
@@ -145,7 +126,7 @@
             // wait for feeds to be resolved
             allFeedsPromise.then(function () {
                 feed.playlist = dataStore.getItems().filter(function (item) {
-                    return item.$tags.indexOf(tag) !== -1;
+                    return angular.isString(item.tags) && item.tags.split(',').indexOf(tag) !== -1;
                 });
 
                 defer.resolve(feed);
@@ -164,11 +145,11 @@
          * {@link jwShowcase.core.dataStore dataStore}. Items not known by JW Showcase will be filtered out.
          *
          * @param {string}  searchPhrase        The phrase that should be searched on
-         * @param {boolean} searchInCaptions    Should the search also include caption search results
+         * @param {boolean} [requestCaptions]   Should the search also include caption search results
          *
          * @returns {Promise} A promise which will be resolved after the api request is finished.
          */
-        this.getSearchFeed = function (searchPhrase) {
+        this.getSearchFeed = function (searchPhrase, requestCaptions) {
 
             var feed = new FeedModel(config.searchPlaylist, 'Search Results');
 
@@ -185,11 +166,20 @@
 
                     var allItems = dataStore.getItems();
 
-                    feed.playlist = response.playlist
-                        .filter(function (item) {
-                            return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
-                        });
+                    // filter results to items loaded in Showcase when enableGlobalSearch is false
+                    feed.playlist = response.playlist.filter(function (item) {
+                        return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
+                    });
 
+                    // if enableInVideoSearch and requestCaptions are true, patch the first 10 items in the results
+                    // with captions.
+                    if (config.options.enableInVideoSearch && requestCaptions) {
+                        return $q.all(feed.playlist.slice(0, 10).map(function (item) {
+                            return api.patchItemWithCaptions(item, searchPhrase);
+                        }));
+                    }
+                })
+                .then(function () {
                     return feed;
                 })
                 .catch(function (error) {
@@ -216,41 +206,41 @@
                 return $q.resolve([]);
             }
 
-            dataStore.feeds = config.content.map(function (content) {
+            dataStore.feeds = config.content
+                .filter(function (row) {
+                    return angular.isDefined(row.playlistId);
+                })
+                .map(function (row) {
 
-                var model;
+                    if (row.playlistId === dataStore.watchProgressFeed.feedid) {
+                        return dataStore.watchProgressFeed;
+                    }
 
-                if (content.playlistId === dataStore.watchProgressFeed.feedid) {
-                    model = dataStore.watchProgressFeed;
-                }
+                    if (row.playlistId === dataStore.watchlistFeed.feedid) {
+                        return dataStore.watchlistFeed;
+                    }
 
-                if (content.playlistId === dataStore.watchlistFeed.feedid) {
-                    model = dataStore.watchlistFeed;
-                }
+                    var model = new FeedModel(row.playlistId);
+                    promise   = self.populateFeedModel(model)
+                        .then(function (response) {
+                            // set custom options from dashboard in config content
+                            angular.merge(row, extractShowcaseOptions(response));
 
-                if (!model) {
-
-                    model   = new FeedModel(content.playlistId);
-                    promise = self
-                        .populateFeedModel(model)
-                        .then(null, function (error) {
-
+                            return response;
+                        })
+                        .catch(function (error) {
                             // show error, but resolve so we can wait for all feeds to be loaded
                             console.error(error);
+
                             return $q.resolve();
                         });
 
                     feedPromises.push(promise);
-                }
 
-                angular.extend(model, content);
+                    return model;
+                });
 
-                return model;
-            });
-
-            allFeedsPromise = $q.all(feedPromises);
-
-            return allFeedsPromise;
+            return (allFeedsPromise = $q.all(feedPromises));
         };
 
         /**
@@ -262,6 +252,47 @@
             return function (item) {
                 return item.mediaid === mediaId;
             };
+        }
+
+        /**
+         * Extract Showcase options from feed response
+         */
+        function extractShowcaseOptions (feed) {
+
+            var keys    = ['backgroundColor', 'featured', 'cols', 'enableText', 'enablePreview', 'aspectratio',
+                'enableTitle'];
+            var options = {};
+            var value;
+
+            angular.forEach(keys, function (key) {
+
+                value = feed['showcase.' + key];
+
+                if (!angular.isDefined(value)) {
+                    return;
+                }
+
+                // convert to boolean
+                if (value === 'true' || value === 'false') {
+                    options[key] = value === 'true';
+                    return;
+                }
+
+                // convert to object
+                if (angular.isString(value) && '{' === value[0]) {
+                    try {
+                        options[key] = JSON.parse(value);
+                    }
+                    catch (e) {
+                        console.log('Error while parsing JSON from feed custom option: ' + e.message);
+                    }
+                    return;
+                }
+
+                options[key] = value;
+            });
+
+            return options;
         }
     }
 

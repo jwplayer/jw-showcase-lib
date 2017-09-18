@@ -53,7 +53,6 @@
         vm.config            = config;
         vm.inWatchlist       = false;
         vm.screenSize        = platform.screenSize();
-        vm.isVideoFromSearch = $state.is('root.videoFromSearch');
 
         vm.shareButtonClickHandler     = shareButtonClickHandler;
         vm.watchlistButtonClickHandler = watchlistButtonClickHandler;

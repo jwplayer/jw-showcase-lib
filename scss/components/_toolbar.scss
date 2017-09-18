@@ -12,6 +12,12 @@
         top: $header-height;
         width: 100%;
         z-index: $toolbar-z-index;
+
+        // make subheader static when header is disabled
+        .jw-flag-no-header & {
+            position: static;
+            top: 0;
+        }
     }
 
     &-video {

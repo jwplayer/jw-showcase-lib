@@ -24,11 +24,13 @@
      * @ngdoc controller
      * @name jwShowcase.tag.FeedController
      *
-     * @requires $scope
+     * @requires $state
      * @requires jwShowcase.core.platform
+     * @requires jwShowcase.core.utils
+     * @requires jwShowcase.core.feed
      */
-    TagController.$inject = ['$state', 'platform', 'feed'];
-    function TagController ($state, platform, feed) {
+    TagController.$inject = ['$state', 'platform', 'utils', 'feed'];
+    function TagController ($state, platform, utils, feed) {
 
         var vm = this;
 
@@ -51,9 +53,9 @@
         function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
-                feedId:    item.$feedid || item.feedid,
+                list:      item.feedid,
                 mediaId:   item.mediaid,
-                slug:      item.$slug,
+                slug:      utils.slugify(item.title),
                 autoStart: clickedOnPlay || platform.isMobile
             });
         }

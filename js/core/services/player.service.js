@@ -29,8 +29,8 @@
      * automatically set by the {@link jwShowcase.core.directive:jwPlayer `jwPlayerDirective`}.
      */
 
-    player.$inject = ['$timeout'];
-    function player ($timeout) {
+    player.$inject = [];
+    function player () {
 
         var playerInstance,
             self = this;
@@ -46,7 +46,6 @@
         this.setPlayer         = setPlayer;
         this.getPlayer         = getPlayer;
 
-        this.paused      = true;
         this.currentTime = 0;
 
         ////////////////
@@ -74,17 +73,6 @@
         function setPlayer (player) {
 
             playerInstance = player;
-
-            if (playerInstance) {
-
-                playerInstance.on('play', invoke(function () {
-                    self.paused = false;
-                }));
-
-                playerInstance.on('pause idle', invoke(function () {
-                    self.paused = true;
-                }));
-            }
         }
 
         /**
@@ -94,21 +82,6 @@
         function getPlayer () {
 
             return playerInstance;
-        }
-
-        /**
-         * Creates function which triggers digest and calls callback
-         *
-         * @param {Function} callback
-         * @returns {Function}
-         */
-        function invoke (callback) {
-
-            return function (event) {
-                $timeout(function () {
-                    callback(event);
-                }, 1);
-            };
         }
     }
 

@@ -1,19 +1,9 @@
 <div class="jw-card-slider" aria-live="polite">
   <div class="jw-card-slider-container">
-    <div class="jw-card-slider-title">
-      <jw-button ui-sref="root.feed({feedId: vm.feed.feedid})"
-          class="jw-button-link jw-button-text jw-button-default"
-          ng-if="vm.feed.navigable">
-        <span>{{ vm.heading }}</span> <i class="jwy-icon jwy-icon-angle-right"></i> <span
-          class="jw-card-slider-title-count">({{ vm.feed.playlist.length }})</span>
-      </jw-button>
-      <div ng-if="!vm.feed.navigable">
-        <span>{{ vm.heading }}</span> <span class="jw-card-slider-title-count"
-          ng-if="vm.feed.playlist.length">({{ vm.feed.playlist.length }})</span>
-      </div>
-    </div>
+    <jw-feed-title feed="vm.feed"></jw-feed-title>
     <div class="jw-card-slider-controls" aria-label="slider buttons" aria-controls="jw-card-slider">
-      <jw-button class="jw-button-default jw-card-slider-button jw-card-slider-button-flag-left is-hidden-mobile-device"
+      <jw-button
+          class="jw-button-default jw-card-slider-button jw-card-slider-button-flag-left is-hidden-mobile-device"
           ng-click="vm.slideLeft($event)"
           aria-label="slide left"
           tabindex="0">

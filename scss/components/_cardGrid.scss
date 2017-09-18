@@ -4,24 +4,38 @@
 
 .jw-card-grid {
     position: relative;
-    margin: 0 80px;
 
-    .jw-card-grid-cards {
-        margin: 30px 0 0;
+    &-align {
+        margin: 0 90px #{-$base-spacing};
 
-        @for $i from 1  through 10 {
+    }
+
+    &-cards {
+        margin-right: -$base-spacing / 2;
+        margin-left: -$base-spacing / 2;
+
+        @for $i from 1 through 10 {
             $perc: 100% / $i;
 
             &.jw-card-grid-#{$i} > .jw-card {
-                width: calc(#{$perc} - 20px);
-                margin: 0 10px 20px;
+                width: calc(#{$perc} - #{$base-spacing});
+                margin: 0 #{$base-spacing / 2} $base-spacing;
             }
         }
     }
 
+    &-control {
+        padding-top: $base-spacing;
+        text-align: center;
+    }
+
     .jw-card {
         display: inline-block;
-        margin-bottom: 12px;
+        margin-bottom: $base-spacing;
+    }
+
+    .jw-feed-title {
+        margin: 0 90px $base-spacing;
     }
 }
 
@@ -32,19 +46,24 @@
 @include mobile-only() {
 
     .jw-card-grid {
-        margin: 0 15px;
 
-        .jw-card-grid-cards {
-            margin-top: 20px;
+        &-align {
+            margin: $base-spacing-heading $base-spacing #{-$base-spacing};
+        }
 
-            @for $i from 1  through 10 {
+        &-cards {
+            @for $i from 1 through 10 {
                 $perc: 100% / $i;
 
                 &.jw-card-grid-#{$i} > .jw-card {
-                    width: calc(#{$perc} - 10px);
-                    margin: 0 5px 5px;
+                    width: calc(#{$perc} - #{$base-spacing});
+                    margin: 0 #{$base-spacing / 2} #{$base-spacing};
                 }
             }
+        }
+
+        .jw-feed-title {
+            margin: 0 $base-spacing $base-spacing-heading;
         }
     }
 }

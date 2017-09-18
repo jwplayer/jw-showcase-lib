@@ -34,26 +34,24 @@
      * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
-     * @requires jwShowcase.core.utils
      * @requires jwShowcase.core.player
      * @requires jwShowcase.core.platform
      * @requires jwShowcase.core.serviceWorker
+     * @requires jwShowcase.core.utils
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
-        'watchlist', 'seo', 'userSettings', 'utils', 'player', 'platform', 'serviceWorker', 'config', 'feed', 'item',
-        'recommendations'];
+        'watchlist', 'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed'];
 
-    function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup,
-                              watchProgress, watchlist, seo, userSettings, utils, player, platform, serviceWorker,
-                              config, feed, item, recommendations) {
+    function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup, watchProgress, watchlist, seo,
+                              userSettings, player, platform, serviceWorker, utils, config, item, feed) {
 
         var vm                       = this,
             lastPos                  = 0,
             performedConditionalSeek = false,
             started                  = false,
             requestQualityChange     = false,
-            startTime                = null,
+            startTime                = $stateParams.startTime,
             playlist                 = [],
             levels,
             watchProgressItem,
@@ -81,7 +79,7 @@
          * Feed which is being used as playlist for the player.
          * @type {jwShowcase.core.feed}
          */
-        vm.activeFeed = null;
+        vm.activeFeed = feed;
 
         /**
          * Title of feed
@@ -93,14 +91,28 @@
          * Is true when the right rail is enabled.
          * @type {boolean}
          */
-        vm.enableRail               = config.options.rightRail.enabled;
+        vm.enableRail = config.options.rightRail.enabled;
 
         /**
-         * Is the current state root.videoFromSearch
-         * @type {boolean}
+         * Player settings
+         * @type {Object}
          */
-        vm.isVideoFromSearch  = $state.is('root.videoFromSearch');
-
+        vm.playerSettings = {
+            width:          '100%',
+            height:         '100%',
+            aspectratio:    '16:9',
+            ph:             4,
+            autostart:      $state.params.autoStart,
+            playlist:       [],
+            related:        false,
+            preload:        'metadata',
+            sharing:        false,
+            visualplaylist: false,
+            cast:           config.options.cast || {},
+            analytics:      {
+                bi: config.id
+            }
+        };
         vm.onComplete     = onComplete;
         vm.onFirstFrame   = onFirstFrame;
         vm.onTime         = onTime;
@@ -122,51 +134,8 @@
          */
         function activate () {
 
-            updateFeeds();
-
-            playlist = generatePlaylist(vm.activeFeed, item);
-
-            vm.playerSettings = {
-                width:          '100%',
-                height:         '100%',
-                aspectratio:    '16:9',
-                ph:             4,
-                autostart:      $state.params.autoStart,
-                playlist:       playlist,
-                related:        false,
-                preload:        'metadata',
-                sharing:        false,
-                visualplaylist: false,
-                cast:           {},
-                analytics:      {
-                    bi: config.id
-                }
-            };
-
-            if ($state.params.startTime) {
-                startTime = $state.params.startTime;
-            }
-
-            if (angular.isDefined(config.options.cast)) {
-                vm.playerSettings.cast = config.options.cast;
-            }
-
-            if (!navigator.onLine) {
-                vm.playerSettings.advertising = false;
-            }
-
-            if (!window.jwplayer.defaults.skin) {
-                vm.playerSettings.skin = 'jw-showcase';
-            }
-
-            if (!!window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
-                vm.playerSettings.cast                  = false;
-            }
-
-            if (angular.isObject(config.options.player)) {
-                angular.merge(vm.playerSettings, config.options.player);
-            }
+            ensureItemIsInFeed();
+            createPlayerSettings();
 
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
@@ -174,36 +143,13 @@
 
             $scope.$watch(function () {
                 return serviceWorker.isOnline();
-            }, function () {
-                var state = player.getState();
-                if (state !== 'playing' && state !== 'paused') {
-                    playlist = generatePlaylist(vm.activeFeed, vm.item);
-                    player.load(playlist);
-                    update();
-                }
-            });
+            }, connectionChangeHandler);
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
 
             update();
-        }
-
-        /**
-         * Update feeds
-         */
-        function updateFeeds () {
-
-            // set activeFeed pointer to the recommendations feed when useRecommendationPlaylist is true and
-            // recommendations exists
-            if (config.options.useRecommendationPlaylist && recommendations) {
-                vm.activeFeed      = recommendations;
-                vm.activeFeedTitle = 'Related Videos';
-            }
-            else {
-                vm.activeFeed = feed;
-            }
         }
 
         /**
@@ -219,17 +165,14 @@
          */
         function updateStateSilently () {
 
-            var toState     = $state.current.name,
-                newStateParams = {
-                    mediaId: vm.item.mediaid,
-                    slug: vm.item.$slug
-                };
+            var newStateParams = {
+                mediaId: vm.item.mediaid,
+                slug:    utils.slugify(vm.item.title),
+                list:    undefined
+            };
 
-            if (toState === 'root.videoFromSearch') {
-                newStateParams.query = $state.params.query;
-            }
-            else {
-                newStateParams.feedId = vm.item.feedid;
+            if (vm.item.feedid !== config.recommendationsPlaylist) {
+                newStateParams.list = vm.item.feedid;
             }
 
             angular.merge($state.params, newStateParams);
@@ -238,12 +181,59 @@
             $state.$current.locals.globals.item = vm.item;
 
             $state
-                .go(toState, newStateParams, {
+                .go('root.video', newStateParams, {
                     notify: false
                 })
                 .then(function () {
+                    // update the SEO metadata
                     seo.update();
                 });
+        }
+
+        /**
+         * Create player settings
+         */
+        function createPlayerSettings () {
+
+            playlist = generatePlaylist(vm.activeFeed, item);
+
+            vm.playerSettings.playlist = playlist;
+
+            // disable advertising when we are offline, this prevents errors while playing videos offline in PWA.
+            if (!navigator.onLine) {
+                vm.playerSettings.advertising = false;
+            }
+
+            // if no skin is selected in dashboard use the jw-showcase skin
+            if (!window.jwplayer.defaults.skin) {
+                vm.playerSettings.skin = 'jw-showcase';
+            }
+
+            if (!!window.cordova) {
+                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
+                vm.playerSettings.cast                  = false;
+            }
+
+            // override player settings from config
+            if (angular.isObject(config.options.player)) {
+                angular.merge(vm.playerSettings, config.options.player);
+            }
+        }
+
+        /**
+         * Ensure that the item is in the feed
+         */
+        function ensureItemIsInFeed () {
+
+            if (!vm.activeFeed) {
+                return;
+            }
+
+            var itemIndex = vm.activeFeed.playlist.findIndex(byMediaId(vm.item.mediaid));
+
+            if (itemIndex === -1) {
+                vm.activeFeed.playlist.unshift(item);
+            }
         }
 
         /**
@@ -256,50 +246,54 @@
          */
         function generatePlaylist (feed, item) {
 
-            var playlistIndex = feed.playlist.findIndex(byMediaId(item.mediaid)),
-                isAndroid4    = platform.isAndroid && platform.platformVersion < 5,
-                playlistCopy  = angular.copy(feed.playlist),
-                playlistItem, sources;
+            var playlist     = [item],
+                isPwaOffline = serviceWorker.isSupported() && !serviceWorker.isOnline(),
+                isAndroid4   = platform.isAndroid && platform.platformVersion < 5,
+                itemIndex    = 0;
 
-            if (serviceWorker.isSupported()) {
-                playlistCopy = playlistCopy.filter(function (item) {
+            if (feed) {
+                playlist = angular.copy(feed.playlist);
+
+                // find item index
+                itemIndex = playlist.findIndex(byMediaId(item.mediaid));
+
+                // re-order playlist to start with given item
+                playlist = playlist
+                    .slice(itemIndex)
+                    .concat(playlist.slice(0, itemIndex));
+            }
+
+            // filter out items that not have been downloaded when PWA is offline
+            if (isPwaOffline) {
+                playlist = playlist.filter(function (item) {
                     return serviceWorker.isOnline() || serviceWorker.hasDownloadedItem(item);
                 });
             }
 
-            playlistCopy = playlistCopy
-                .slice(playlistIndex)
-                .concat(playlistCopy.slice(0, playlistIndex));
+            // make small corrections to item sources
+            playlist.forEach(function (playlistItem) {
 
-            return playlistCopy.map(function (current) {
-
-                // make a copy of the playlist item, we don't want to override the original
-                playlistItem = angular.extend({}, current);
-
-                sources = current.sources.filter(function (source) {
-
-                    if (serviceWorker.isSupported() && !navigator.onLine) {
-                        return source.type === 'video/mp4' && source.width <= 720;
-                    }
-
+                playlistItem.sources = playlistItem.sources.filter(function (source) {
                     // filter out HLS streams for Android 4
                     if (isAndroid4 && 'application/vnd.apple.mpegurl' === source.type) {
                         return false;
                     }
 
+                    // filter out non playable sources when PWA is offline
+                    if (isPwaOffline) {
+                        return source.type === 'video/mp4' && source.width <= 720;
+                    }
+
                     return 'application/dash+xml' !== source.type;
                 });
 
-                if (serviceWorker.isSupported() && !navigator.onLine) {
-                    sources.splice(1);
+                // only use the first source when PWA is offline
+                if (isPwaOffline) {
+                    playlistItem.sources.splice(1);
                 }
-
-                return angular.extend(playlistItem, {
-                    image:   utils.replaceImageSize(current.image, 1920),
-                    sources: sources,
-                    tracks:  current.tracks
-                });
             });
+
+            return playlist;
         }
 
         /**
@@ -324,6 +318,28 @@
             }
 
             requestQualityChange = toQuality;
+        }
+
+        /**
+         * Handle changes in connection
+         * @param val
+         * @param prevVal
+         */
+        function connectionChangeHandler (val, prevVal) {
+
+            // don't reload playlist when nothing changed
+            if (val === prevVal) {
+                return;
+            }
+
+            var state = player.getState();
+
+            // reload the playlist when connection has changed to ensure all playable items are loaded in the playlist.
+            if (state !== 'playing' && state !== 'paused') {
+                playlist = generatePlaylist(vm.activeFeed, vm.item);
+                player.load(playlist);
+                update();
+            }
         }
 
         /**
@@ -386,17 +402,11 @@
          */
         function onPlaylistItem (event) {
 
-            var playlistItem = playlist[event.index],
-                newItem;
-
-            if (!angular.isNumber(event.index) || !playlistItem) {
-                return;
-            }
-
-            newItem = dataStore.getItem(playlistItem.mediaid, playlistItem.feedid);
+            // search item in dataStore, fallback to item in event allowing global access.
+            var newItem = dataStore.getItem(event.item.mediaid) || event.item;
 
             // return if item doesn't exist or its the same item
-            if (!newItem || newItem.mediaid === vm.item.mediaid) {
+            if (newItem.mediaid === vm.item.mediaid) {
                 return;
             }
 
@@ -476,12 +486,6 @@
 
             // don't handle watchProgress when the position hasn't changed.
             if (lastPos === position) {
-                return;
-            }
-
-            // don't handle watchProgress when the state is videoFromSearch.
-            // @TODO: will be fixed in permalink feature
-            if (vm.isVideoFromSearch) {
                 return;
             }
 
@@ -573,28 +577,16 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex = playlist.findIndex(byMediaId(newItem.mediaid));
-
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
                 return;
             }
 
-            if (playlistIndex === -1) {
-
-                return $state.go('root.video', {
-                    feedId:    newItem.feedid,
-                    mediaId:   newItem.mediaid,
-                    slug:      newItem.$slug,
-                    autoStart: clickedOnPlay
-                });
-            }
-
             // update current item and set playlistItem
-            vm.item = angular.extend({}, newItem);
+            vm.item = angular.copy(newItem);
 
-            playlistIndex = playlist.findIndex(byMediaId(vm.item.mediaid));
-            player.playlistItem(playlistIndex);
+            // start playing item from playlist
+            player.playlistItem(playlist.findIndex(byMediaId(vm.item.mediaid)));
 
             updateStateSilently();
             update();

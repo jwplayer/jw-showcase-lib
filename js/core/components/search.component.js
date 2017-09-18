@@ -78,7 +78,11 @@
                     vm.searchBarActive = false;
                 }
                 else {
-                    vm.searchPhrase       = toParams.query.replace(/\+/g, ' ');
+                    // only update searchPhrase when nothing is defined
+                    if (!vm.searchPhrase) {
+                        vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
+                    }
+
                     vm.searchBarActive    = true;
                     vm.showCaptionMatches = toParams.showCaptionMatches;
                 }

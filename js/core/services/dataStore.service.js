@@ -27,6 +27,7 @@
      * @requires jwShowcase.core.utils
      */
     dataStoreService.$inject = ['FeedModel'];
+
     function dataStoreService (FeedModel) {
 
         var self = this;
@@ -51,7 +52,7 @@
          * @description
          * The watchlist feed
          */
-        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos', true, true);
+        this.watchlistFeed = new FeedModel('saved-videos', 'Saved videos', true);
 
         /**
          * @ngdoc property
@@ -62,7 +63,7 @@
          * @description
          * The watchProgress feed
          */
-        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching', true, true);
+        this.watchProgressFeed = new FeedModel('continue-watching', 'Continue watching', true);
 
         /**
          * @ngdoc property
@@ -73,7 +74,7 @@
          * @description
          * The search feed
          */
-        this.searchFeed = new FeedModel('search-feed', 'Search results');
+        this.searchFeed = new FeedModel('search-feed', 'Search results', true);
 
         /**
          * @ngdoc method
@@ -84,24 +85,11 @@
          * Return item with the given mediaId.
          *
          * @param {string}              mediaId     Id of the item
-         * @param {string}              feedId      Id of the feed
          *
          * @returns {jwShowcase.core.item|undefined} Found item or undefined when not found
          */
-        this.getItem = function (mediaId, feedId) {
-
-            var feed = this.getFeed(feedId),
-                item;
-
-            if (!feed) {
-                return;
-            }
-
-            item = feed.playlist.find(function (item) {
-                return item.mediaid === mediaId;
-            });
-
-            return item ? angular.extend({}, item) : undefined;
+        this.getItem = function (mediaId) {
+            return angular.copy(this.getItems().find(byMediaId(mediaId)));
         }.bind(this);
 
         /**
@@ -121,7 +109,7 @@
             angular.forEach(this.feeds, function (feed) {
 
                 // skip watchProgress and watchlist feeds
-                if (true === feed.dynamic) {
+                if (true === feed.$virtual) {
                     return;
                 }
 

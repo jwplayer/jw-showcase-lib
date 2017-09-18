@@ -28,13 +28,15 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.platform
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'platform', 'config'];
-    function DashboardController ($state, dataStore, platform, config) {
+    DashboardController.$inject = ['$state', 'dataStore', 'platform', 'utils', 'config'];
+
+    function DashboardController ($state, dataStore, platform, utils, config) {
 
         var vm = this;
 
-        vm.dataStore              = dataStore;
-        vm.config                 = config;
+        vm.dataStore = dataStore;
+        vm.config    = config;
+        vm.rows      = [];
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -48,6 +50,13 @@
         function activate () {
 
             $state.history = [];
+
+            vm.rows = config.content.map(function (options) {
+                return {
+                    options: options,
+                    feed:    dataStore.getFeed(options.playlistId)
+                };
+            });
         }
 
         /**
@@ -64,9 +73,9 @@
         function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
-                feedId:    item.$feedid || item.feedid,
+                list:      item.feedid,
                 mediaId:   item.mediaid,
-                slug:      item.$slug,
+                slug:      utils.slugify(item.title),
                 autoStart: clickedOnPlay || platform.isMobile
             });
         }
