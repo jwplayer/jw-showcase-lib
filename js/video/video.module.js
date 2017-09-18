@@ -80,10 +80,25 @@
 
         /////////////////
 
-        resolveItem.$inject = ['$stateParams', 'dataStore', 'api', 'preload'];
+        resolveItem.$inject = ['$stateParams', '$q', 'dataStore', 'api', 'config', 'preload'];
 
-        function resolveItem ($stateParams, dataStore, api) {
-            return dataStore.getItem($stateParams.mediaId) || api.getItem($stateParams.mediaId);
+        function resolveItem ($stateParams, $q, dataStore, api, config) {
+
+            var item = dataStore.getItem($stateParams.mediaId);
+
+            // item not found in preloaded data.
+            if (!item) {
+
+                // show video not found error
+                if (config.options.showcaseContentOnly) {
+                    return $q.reject(new Error('Video not found'));
+                }
+
+                // get item from api.
+                return api.getItem($stateParams.mediaId);
+            }
+
+            return item;
         }
 
         resolveFeed.$inject = ['$stateParams', 'dataStore', 'apiConsumer', 'config', 'preload'];
