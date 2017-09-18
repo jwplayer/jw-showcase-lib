@@ -402,17 +402,11 @@
          */
         function onPlaylistItem (event) {
 
-            var playlistItem = playlist[event.index],
-                newItem;
-
-            if (!angular.isNumber(event.index) || !playlistItem) {
-                return;
-            }
-
-            newItem = dataStore.getItem(playlistItem.mediaid, playlistItem.feedid);
+            // search item in dataStore, fallback to item in event allowing global access.
+            var newItem = dataStore.getItem(event.item.mediaid) || event.item;
 
             // return if item doesn't exist or its the same item
-            if (!newItem || newItem.mediaid === vm.item.mediaid) {
+            if (newItem.mediaid === vm.item.mediaid) {
                 return;
             }
 
