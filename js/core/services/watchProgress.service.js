@@ -29,10 +29,14 @@
      * @ngdoc service
      * @name jwShowcase.core.watchProgress
      *
+     * @requires $q
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.session
+     * @requires jwShowcase.core.api
      */
-    watchProgress.$inject = ['dataStore', 'session'];
-    function watchProgress (dataStore, session) {
+    watchProgress.$inject = ['$q', 'dataStore', 'session', 'api'];
+
+    function watchProgress ($q, dataStore, session, api) {
 
         this.MAX_PROGRESS = MAX_PROGRESS;
         this.MIN_PROGRESS = MIN_PROGRESS;
@@ -82,22 +86,18 @@
          */
         function saveItem (item, progress) {
 
-            var playlist = dataStore.watchProgressFeed.playlist,
-                clone    = angular.extend({}, item),
-                index    = findProgressIndex(item);
+            var playlist  = dataStore.watchProgressFeed.playlist,
+                index     = findProgressIndex(item),
+                savedItem = index > -1 ? playlist[index] : angular.copy(item);
 
-            if (index !== -1) {
-                playlist[index].progress    = progress;
-                playlist[index].lastWatched = +new Date();
+            // item is not in watchProgress
+            if (index === -1) {
+                playlist.unshift(savedItem);
             }
-            else {
-                clone.$feedid     = clone.$feedid || clone.feedid;
-                clone.feedid      = dataStore.watchProgressFeed.feedid;
-                clone.progress    = progress;
-                clone.lastWatched = +new Date();
 
-                playlist.unshift(clone);
-            }
+            // set/update progress and last watched
+            savedItem.progress    = progress;
+            savedItem.lastWatched = +new Date();
 
             playlist.sort(sortOnLastWatched);
             persist();
@@ -160,16 +160,14 @@
          */
         function persist () {
 
-            var data = dataStore.watchProgressFeed.playlist.map(function (item) {
+            session.save(LOCAL_STORAGE_KEY, dataStore.watchProgressFeed.playlist.map(function (item) {
                 return {
                     mediaid:     item.mediaid,
-                    feedid:      item.$feedid,
+                    feedid:      item.feedid,
                     progress:    item.progress,
                     lastWatched: item.lastWatched
                 };
-            });
-
-            session.save(LOCAL_STORAGE_KEY, data);
+            }));
         }
 
         /**
@@ -184,23 +182,27 @@
 
             var time = +new Date();
 
-            session.load(LOCAL_STORAGE_KEY, [])
+            var promises = session.load(LOCAL_STORAGE_KEY, [])
                 .filter(isValid)
                 .sort(sortOnLastWatched)
-                .map(function (keys) {
+                .map(function (data) {
+                    // try to get item from dataStore
+                    var item = dataStore.getItem(data.mediaid);
 
-                    // dataStore#getItem already returns a clone of the item
-                    var item = dataStore.getItem(keys.mediaid, keys.feedid);
-
-                    if (item) {
-                        item.progress    = keys.progress;
-                        item.lastWatched = keys.lastWatched;
-                        item.feedid      = dataStore.watchProgressFeed.feedid;
-                        item.$feedid     = keys.feedid;
-
-                        dataStore.watchProgressFeed.playlist.push(item);
-                    }
+                    // try fetching the item from the API if it isn't already loaded by Showcase.
+                    return item || api.getItem(item.mediaid).catch(function () {
+                        // item doesn't exist anymore, return undefined so that the rest don't fail.
+                        return undefined;
+                    });
                 });
+
+            return $q.all(promises).then(function (items) {
+                // add all items to feed.
+                dataStore.watchProgressFeed.playlist = items.filter(angular.isDefined);
+
+                // persist valid data to session.
+                persist();
+            });
 
             /**
              * Test if the given item from localStorage is valid
@@ -210,8 +212,8 @@
              */
             function isValid (item) {
 
-                // item contains keys
-                if (!item.mediaid || !item.feedid) {
+                // item has mediaid
+                if (!item.mediaid) {
                     return false;
                 }
 
