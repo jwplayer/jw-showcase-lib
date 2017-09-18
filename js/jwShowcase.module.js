@@ -33,6 +33,7 @@
         .value('config', {
             contentService: 'https://content.jwplatform.com',
             options:        {
+                showcaseContentOnly:       true,
                 enableContinueWatching:    true,
                 enableCookieNotice:        false,
                 enableFeaturedText:        true,
