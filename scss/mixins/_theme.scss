@@ -420,6 +420,11 @@
     // --------------------------------
 
     .jw-card-grid {
+
+        &-control {
+            color: $secondary-color;
+        }
+
         .jw-feed-title {
             color: $card-grid-title-color;
         }

@@ -70,6 +70,7 @@
                 enableText:     '=?',
                 enablePreview:  '=?',
                 enableShowMore: '=?',
+                enableSeeAll:   '=?',
                 onCardClick:    '=',
                 cardClassName:  '@',
                 title:          '@'
@@ -101,6 +102,7 @@
                     columnOption = scope.vm.cols;
                 }
 
+                scope.vm.controlIsVisible     = controlIsVisible;
                 scope.vm.showMoreClickHandler = showMoreClickHandler;
                 scope.vm.limit                = 9;
                 scope.vm.heading              = scope.vm.title;
@@ -133,13 +135,22 @@
                     return;
                 }
 
-                currentCols    = toColumns;
+                currentCols = toColumns;
 
                 $timeout(function () {
                     scope.vm.limit = toColumns * currentRows;
                 });
 
                 gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + currentCols;
+            }
+
+            /**
+             * Returns true when control should be visible
+             * @returns {boolean|string}
+             */
+            function controlIsVisible () {
+                return scope.vm.feed.playlist.length > scope.vm.limit &&
+                    (scope.vm.enableShowMore || scope.vm.enableSeeAll);
             }
 
             /**
