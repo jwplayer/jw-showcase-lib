@@ -261,9 +261,7 @@
 
                     return feed.playlist[0];
                 })
-                .then(function (item) {
-                    return patchItem(item, 0);
-                })
+                .then(fixItemUrls)
                 .catch(function () {
                     return $q.reject('Failed to get item');
                 });
@@ -294,7 +292,7 @@
                 }
 
                 feed.playlist = feed.playlist
-                    .map(patchItem);
+                    .map(fixItemUrls);
 
                 return feed;
             }
@@ -309,22 +307,6 @@
 
                 return $q.reject(new Error(message));
             }
-        }
-
-        /**
-         * Patch item with shortcut values
-         *
-         * @param {jwShowcase.core.item} item
-         * @param {number} index
-         * @returns {jwShowcase.core.item}
-         */
-        function patchItem (item, index) {
-
-            item.$key  = index + item.mediaid;
-            item.$slug = utils.slugify(item.title);
-            item.$tags = angular.isString(item.tags) ? item.tags.split(',') : [];
-
-            return fixItemUrls(item);
         }
 
         /**
@@ -403,8 +385,6 @@
      * @property {string}               link            Link
      * @property {string}               mediaid         Video id
      * @property {string}               feedid          Feed id (set by apiService)
-     * @property {string}               $feedid         Original feedid
-     * @property {string}               $slug           Title slugified
      * @property {number}               pubdate         Publication date timestamp
      * @property {Object[]}             sources         Video sources
      * @property {string}               tags            Tags
