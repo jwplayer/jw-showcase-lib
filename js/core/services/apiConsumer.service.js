@@ -87,19 +87,17 @@
 
             return api
                 .getRecommendationsFeed(feedId, relatedMediaId)
-                .then(function (data) {
+                .then(function (response) {
+
+                    feed.playlist = response.playlist;
 
                     if (config.options.showcaseContentOnly) {
-                        data.playlist = data.playlist.filter(function (item) {
+                        feed.playlist = feed.playlist.filter(function (item) {
                             return !!dataStore.getItem(item.mediaid);
                         });
                     }
 
-                    return data;
-                })
-                .then(function (data) {
-                    // merge data with feed
-                    return angular.merge(feed, data);
+                    return feed;
                 })
                 .catch(function (error) {
                     feed.$error     = error;
@@ -165,9 +163,12 @@
                 .getSearchFeed(config.searchPlaylist, searchPhrase)
                 .then(function (response) {
 
+                    // set playlist
+                    feed.playlist = response.playlist;
+
                     // filter results to items loaded in Showcase when showcaseContentOnly is true
                     if (config.options.showcaseContentOnly) {
-                        feed.playlist = response.playlist.filter(function (item) {
+                        feed.playlist = feed.playlist.filter(function (item) {
                             return !!dataStore.getItem(item.mediaid);
                         });
                     }
