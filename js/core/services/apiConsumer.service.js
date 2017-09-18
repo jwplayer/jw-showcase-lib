@@ -126,7 +126,7 @@
             // wait for feeds to be resolved
             allFeedsPromise.then(function () {
                 feed.playlist = dataStore.getItems().filter(function (item) {
-                    return item.$tags.indexOf(tag) !== -1;
+                    return angular.isString(item.tags) && item.tags.split(',').indexOf(tag) !== -1;
                 });
 
                 defer.resolve(feed);
