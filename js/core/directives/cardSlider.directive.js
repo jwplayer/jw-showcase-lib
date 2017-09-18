@@ -205,11 +205,11 @@
              */
             function comparePlaylist (playlist, prevPlaylist) {
 
-                var playlistMap     = playlist.map(function (item) {
-                        return item.$key;
+                var playlistMap     = playlist.map(function (item, index) {
+                        return $$key(item, index);
                     }),
-                    prevPlaylistMap = prevPlaylist.map(function (item) {
-                        return item.$key;
+                    prevPlaylistMap = prevPlaylist.map(function (item, index) {
+                        return $$key(item, index);
                     });
 
                 return angular.equals(playlistMap, prevPlaylistMap);
@@ -378,7 +378,7 @@
                         }
 
                         item  = playlist[itemIndex];
-                        slide = findExistingSlide(item, visible) || createSlide(item);
+                        slide = findExistingSlide(item, visible, itemIndex) || createSlide(item, itemIndex);
 
                         addClassNamesToSlide(slide, itemIndex, visible);
                         list.push(slide);
@@ -389,11 +389,11 @@
                     return list;
                 }
 
-                function createSlide (item) {
+                function createSlide (item, itemIndex) {
 
                     var slide = compileSlide(item);
                     nextSliderMap.push({
-                        key: item.$key,
+                        key: $$key(item, itemIndex),
                         el:  slide
                     });
 
@@ -412,7 +412,7 @@
                     }
                 }
 
-                function findExistingSlide (item, visible) {
+                function findExistingSlide (item, visible, itemIndex) {
 
                     var mapIndex   = sliderMap.length,
                         candidates = [],
@@ -421,7 +421,7 @@
 
                     while (mapIndex--) {
 
-                        if (sliderMap[mapIndex].key !== item.$key) {
+                        if (sliderMap[mapIndex].key !== $$key(item, itemIndex)) {
                             continue;
                         }
 
@@ -755,6 +755,16 @@
             function easeOutDistance (current, total) {
 
                 return Math.sin((0.5 / total) * current) * current;
+            }
+
+            /**
+             * Generate key based on item and index
+             * @param item
+             * @param index
+             * @returns {*}
+             */
+            function $$key (item, index) {
+                return index + item.mediaid;
             }
         }
     }
