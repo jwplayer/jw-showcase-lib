@@ -81,6 +81,20 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
+                // if flexbox is not supported show update browser page
+                var testElement           =    document.createElement('div');
+                var flexboxIsNotSupported =    typeof testElement.style.flex === 'undefined';
+
+                testElement = null;
+
+                if (flexboxIsNotSupported) {
+                    appStore.loading = false;
+
+                    $state.go('updateBrowser', {directed: true});
+
+                    return;
+                }
+
                 api.getPlayer(config.player)
                     .then(handlePreloadSuccess, handlePreloadError);
 

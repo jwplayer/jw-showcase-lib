@@ -28,6 +28,7 @@
             'jwShowcase.feed',
             'jwShowcase.search',
             'jwShowcase.tag',
+            'jwShowcase.updateBrowser',
             'jwShowcase.video'
         ])
         .value('config', {
