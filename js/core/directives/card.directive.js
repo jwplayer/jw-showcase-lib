@@ -78,8 +78,6 @@
             scope.vm.containerClickHandler  = containerClickHandler;
             scope.vm.setActiveCaption       = setActiveCaption;
             scope.vm.removeActiveCaption    = removeActiveCaption;
-            scope.vm.isSearch               = isSearch;
-            scope.vm.isVideoFromSearch      = $state.is('root.videoFromSearch');
 
             activate();
 
@@ -127,8 +125,8 @@
                     .html(utils.getVideoDurationByItem(item));
 
                 // set watch progress
-                if (item.feedid === 'continue-watching') {
-                    scope.$watch('vm.item.progress', watchProgressUpdateHandler);
+                if (angular.isDefined(item.progress)) {
+                    watchProgressUpdateHandler();
                 }
 
                 scope.$on('$destroy', destroyDirectiveHandler);
@@ -143,18 +141,10 @@
              */
             function generateLink () {
 
-                if ($state.is('root.search')) {
-                    return $state.href('root.videoFromSearch', {
-                        query:   $state.params.query,
-                        mediaId: scope.vm.item.mediaid,
-                        slug:    scope.vm.item.$slug
-                    });
-                }
-
                 return $state.href('root.video', {
-                    feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
+                    list:    scope.vm.item.feedid,
                     mediaId: scope.vm.item.mediaid,
-                    slug:    scope.vm.item.$slug
+                    slug:    utils.slugify(scope.vm.item.title)
                 });
             }
 

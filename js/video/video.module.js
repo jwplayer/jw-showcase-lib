@@ -58,7 +58,7 @@
 
         seoProvider
             .state('root.video', ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
-                var canonical = $state.href('root.video', {slug: item.$slug}, {absolute: true});
+                var canonical = $state.href('root.video', {slug: utils.slugify(item.title)}, {absolute: true});
 
                 return {
                     title:       item.title + ' - ' + config.siteName,

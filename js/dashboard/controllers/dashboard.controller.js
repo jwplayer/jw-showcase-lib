@@ -28,9 +28,9 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.platform
      */
-    DashboardController.$inject = ['$state', 'dataStore', 'platform', 'config'];
+    DashboardController.$inject = ['$state', 'dataStore', 'platform', 'utils', 'config'];
 
-    function DashboardController ($state, dataStore, platform, config) {
+    function DashboardController ($state, dataStore, platform, utils, config) {
 
         var vm = this;
 
@@ -73,9 +73,9 @@
         function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
-                list:      item.$feedid || item.feedid,
+                list:      item.feedid,
                 mediaId:   item.mediaid,
-                slug:      item.$slug,
+                slug:      utils.slugify(item.title),
                 autoStart: clickedOnPlay || platform.isMobile
             });
         }

@@ -27,8 +27,8 @@
      * @requires $scope
      * @requires jwShowcase.core.platform
      */
-    FeedController.$inject = ['$state', 'platform', 'feed'];
-    function FeedController ($state, platform, feed) {
+    FeedController.$inject = ['$state', 'platform', 'utils', 'feed'];
+    function FeedController ($state, platform, utils, feed) {
 
         var vm = this;
 
@@ -51,9 +51,9 @@
         function cardClickHandler (item, clickedOnPlay) {
 
             $state.go('root.video', {
-                feedId:    item.$feedid || item.feedid,
+                list:      item.feedid,
                 mediaId:   item.mediaid,
-                slug:      item.$slug,
+                slug:      utils.slugify(item.title),
                 autoStart: clickedOnPlay || platform.isMobile
             });
         }

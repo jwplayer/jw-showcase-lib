@@ -24,9 +24,9 @@
      * @ngdoc controller
      * @name jwShowcase.search.SearchController
      */
-    SearchController.$inject = ['$state', 'platform', 'searchFeed'];
+    SearchController.$inject = ['$state', 'platform', 'utils', 'searchFeed'];
 
-    function SearchController ($state, platform, searchFeed) {
+    function SearchController ($state, platform, utils, searchFeed) {
 
         var vm = this;
 
@@ -50,7 +50,7 @@
         function cardClickHandler (item, clickedOnPlay, startTime) {
             $state.go('root.video', {
                 mediaId:   item.mediaid,
-                slug:      item.$slug,
+                slug:      utils.slugify(item.title),
                 startTime: startTime,
                 autoStart: clickedOnPlay || platform.isMobile || typeof startTime !== 'undefined'
             });

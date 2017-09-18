@@ -37,13 +37,14 @@
      * @requires jwShowcase.core.player
      * @requires jwShowcase.core.platform
      * @requires jwShowcase.core.serviceWorker
+     * @requires jwShowcase.core.utils
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
-        'watchlist', 'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'config', 'item', 'feed'];
+        'watchlist', 'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed'];
 
     function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup, watchProgress, watchlist, seo,
-                              userSettings, player, platform, serviceWorker, config, item, feed) {
+                              userSettings, player, platform, serviceWorker, utils, config, item, feed) {
 
         var vm                       = this,
             lastPos                  = 0,
@@ -166,7 +167,7 @@
 
             var newStateParams = {
                 mediaId: vm.item.mediaid,
-                slug:    vm.item.$slug,
+                slug:    utils.slugify(vm.item.title),
                 list:    undefined
             };
 
