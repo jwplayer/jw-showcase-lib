@@ -9,7 +9,6 @@
           class="jw-button-watchlist jw-button-default"
           tabindex="0"
           aria-label="save video"
-          ng-if="!vm.isVideoFromSearch"
           ng-click="vm.watchlistButtonClickHandler()"
           ng-class="{'is-active': vm.inWatchlist}">
         <small class="jw-button-label is-hidden-mobile">{{ vm.inWatchlist ? 'Unsave video' : 'Save video' }}</small>
