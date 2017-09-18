@@ -30,17 +30,14 @@
     config.$inject = ['$stateProvider'];
     function config ($stateProvider) {
 
-        var updateBrowserState = {
-            controller:  'UpdateBrowserController as vm',
-            templateUrl: 'views/updateBrowser/updateBrowser.html'
-        };
-
         $stateProvider
-            .state('updateBrowser', angular.extend({
+            .state('updateBrowser',{
+                controller:  'UpdateBrowserController as vm',
+                templateUrl: 'views/updateBrowser/updateBrowser.html',
                 url: '/update-browser',
                 params: {
                     directed: false
                 }
-            }, updateBrowserState));
+            });
     }
 }());
