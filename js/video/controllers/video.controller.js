@@ -406,8 +406,20 @@
          */
         function onPlaylistItem (event) {
 
-            // search item in dataStore, fallback to item in event allowing global access.
-            var newItem = dataStore.getItem(event.item.mediaid) || event.item;
+            // search item in dataStore
+            var newItem = dataStore.getItem(event.item.mediaid);
+
+            // if item is not loaded in showcase
+            if (!newItem) {
+
+                // return when publisher has showcaseContentOnly set to true
+                if (config.options.showcaseContentOnly) {
+                    return;
+                }
+
+                // fallback to item given in event object
+                newItem = event.item;
+            }
 
             // return if item doesn't exist or its the same item
             if (newItem.mediaid === vm.item.mediaid) {
