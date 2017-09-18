@@ -104,7 +104,6 @@
             ph:             4,
             autostart:      $state.params.autoStart,
             playlist:       [],
-            related:        false,
             preload:        'metadata',
             sharing:        false,
             visualplaylist: false,
@@ -212,6 +211,11 @@
             if (!!window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
                 vm.playerSettings.cast                  = false;
+            }
+
+            // disable related overlay if showcaseContentOnly is true.
+            if (config.options.showcaseContentOnly) {
+                vm.playerSettings.related = false;
             }
 
             // override player settings from config
