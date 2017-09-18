@@ -89,10 +89,11 @@
                 .getRecommendationsFeed(feedId, relatedMediaId)
                 .then(function (data) {
 
-                    // @todo create option to allow all pub items to show as related
-                    // data.playlist = dataStore.getItems().filter(function (item) {
-                    //     return data.playlist.findIndex(byMediaId(item.mediaid)) !== -1;
-                    // });
+                    if (config.options.showcaseContentOnly) {
+                        data.playlist = data.playlist.filter(function (item) {
+                            return !!dataStore.getItem(item.mediaid);
+                        });
+                    }
 
                     return data;
                 })
@@ -164,12 +165,12 @@
                 .getSearchFeed(config.searchPlaylist, searchPhrase)
                 .then(function (response) {
 
-                    var allItems = dataStore.getItems();
-
-                    // filter results to items loaded in Showcase when enableGlobalSearch is false
-                    feed.playlist = response.playlist.filter(function (item) {
-                        return config.options.enableGlobalSearch || allItems.find(byMediaId(item.mediaid));
-                    });
+                    // filter results to items loaded in Showcase when showcaseContentOnly is true
+                    if (config.options.showcaseContentOnly) {
+                        feed.playlist = response.playlist.filter(function (item) {
+                            return !!dataStore.getItem(item.mediaid);
+                        });
+                    }
 
                     // if enableInVideoSearch and requestCaptions are true, patch the first 10 items in the results
                     // with captions.
