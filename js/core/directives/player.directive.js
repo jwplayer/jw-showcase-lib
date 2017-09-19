@@ -155,11 +155,18 @@
 
                 parsed = $parse(attr[attrName])(scope.$parent);
 
-                if (angular.isFunction(parsed)) {
-                    $timeout(function () {
-                        parsed.call(playerInstance, event);
-                    }, 1);
+                if (!angular.isFunction(parsed)) {
+                    return;
                 }
+
+                // prevent $digest every time event
+                if (type === 'time') {
+                    return parsed.call(playerInstance, event);
+                }
+
+                $timeout(function () {
+                    parsed.call(playerInstance, event);
+                });
             }
 
             /**

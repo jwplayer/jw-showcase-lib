@@ -38,9 +38,7 @@
 
     function watchProgress ($q, dataStore, session, api) {
 
-        this.MAX_PROGRESS = MAX_PROGRESS;
-        this.MIN_PROGRESS = MIN_PROGRESS;
-
+        this.handler    = handler;
         this.saveItem   = saveItem;
         this.removeItem = removeItem;
         this.getItem    = getItem;
@@ -61,6 +59,29 @@
             return playlist.findIndex(function (current) {
                 return current.mediaid === item.mediaid;
             });
+        }
+
+        /**
+         * @ngdoc property
+         * @name jwShowcase.core.watchProgress#handler
+         * @propertyOf jwShowcase.core.watchProgress
+         *
+         * @param {jwShowcase.core.item}    item
+         * @param {number}                  progress
+         *
+         * @description
+         * Progress update handler
+         */
+        function handler (item, progress) {
+
+            if (angular.isNumber(progress) && progress >= MIN_PROGRESS && progress < MAX_PROGRESS) {
+                return saveItem(item, progress);
+            }
+
+            // item is not valid, remove from watch progress feed
+            if (hasItem(item)) {
+                removeItem(item);
+            }
         }
 
         /**
@@ -189,11 +210,24 @@
                     // try to get item from dataStore
                     var item = dataStore.getItem(data.mediaid);
 
+                    // set watchProgress properties
+                    if (item) {
+                        item.progress    = data.progress;
+                        item.lastWatched = data.lastWatched;
+                    }
+
                     // try fetching the item from the API if it isn't already loaded by Showcase.
-                    return item || api.getItem(item.mediaid).catch(function () {
-                        // item doesn't exist anymore, return undefined so that the rest don't fail.
-                        return undefined;
-                    });
+                    return api.getItem(item.mediaid)
+                        .then(function (item) {
+                            item.progress    = data.progress;
+                            item.lastWatched = data.lastWatched;
+
+                            return item;
+                        })
+                        .catch(function () {
+                            // item doesn't exist anymore, return undefined so that the rest don't fail.
+                            return undefined;
+                        });
                 });
 
             return $q.all(promises).then(function (items) {
