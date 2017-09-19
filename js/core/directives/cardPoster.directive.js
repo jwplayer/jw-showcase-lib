@@ -69,7 +69,7 @@
              */
             function activate () {
 
-                var watchProgressFeed = jwCard.item.feedid === dataStore.watchProgressFeed.feedid,
+                var watchProgressFeed = angular.isNumber(jwCard.item.progress),
                     featuredCard      = jwCard.featured;
 
                 itemPosterUrl   = generatePosterUrl();

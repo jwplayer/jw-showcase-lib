@@ -256,6 +256,10 @@
                     options.type = 'featured';
                 }
 
+                if (options.featured && !angular.isDefined(options.enablePreview)) {
+                    options.enablePreview = true;
+                }
+
                 return options;
             });
 
