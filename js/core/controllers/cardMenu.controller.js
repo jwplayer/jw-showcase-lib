@@ -53,7 +53,7 @@
         function activate () {
 
             vm.inWatchlist     = watchlist.hasItem(vm.item);
-            vm.inWatchProgress = watchProgress.hasItem(vm.item);
+            vm.inWatchProgress = watchProgress.hasItem(vm.item) && angular.isNumber(vm.item.progress);
 
             $scope.$watch(function () {
                 return watchlist.hasItem(vm.item);
