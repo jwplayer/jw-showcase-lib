@@ -56,7 +56,6 @@
         vm.clearWatchProgress = clearWatchProgress;
 
         vm.itemClickHandler = itemClickHandler;
-        vm.toggleChangeHandler = toggleChangeHandler;
 
         activate();
 
@@ -84,24 +83,6 @@
             vm.feeds.sort(function (a, b) {
                 return a.title > b.title;
             });
-        }
-
-        /**
-         * @ngdoc method
-         * @name jwShowcase.core.SidebarController#toggleChangeHandler
-         * @methodOf jwShowcase.core.SidebarController
-         *
-         * @description
-         * Handle change event in toggle directive.
-         */
-        function toggleChangeHandler (type) {
-
-            // empty watchProgress when user disables continueWatching
-            if (type === 'continueWatching' && !vm[type]) {
-                watchProgress.clearAll();
-            }
-
-            userSettings.set(type, vm[type]);
         }
 
         /**

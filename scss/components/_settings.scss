@@ -1,0 +1,44 @@
+.jw-settings {
+    &-row {
+        padding: 1rem 0;
+    }
+
+    .jw-feed-title,
+    .jw-settings-action-row,
+    .jw-button-settings-action {
+        margin: 0 90px $base-spacing;
+    }
+
+    .jw-button-settings-action {
+        min-width: 200px;
+        margin-top: rem(10px);
+        font-weight: 600;
+    }
+
+    .jw-settings-action-row {
+        @include display-flex();
+        @include align-items(center);
+        @include justify-content(space-between);
+
+        width: 18rem;
+
+        .jw-settings-label {
+            margin: 0;
+        }
+    }
+}
+
+@include mobile-only() {
+    .jw-settings {
+        .jw-settings-action-row {
+            width: auto;
+        }
+
+        .jw-feed-title,
+        .jw-settings-action-row,
+        .jw-button-settings-action {
+            margin-right: $base-spacing;
+            margin-left: $base-spacing;
+        }
+    }
+}

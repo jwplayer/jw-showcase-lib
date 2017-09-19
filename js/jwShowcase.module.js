@@ -27,6 +27,7 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.settings',
             'jwShowcase.tag',
             'jwShowcase.video'
         ])
