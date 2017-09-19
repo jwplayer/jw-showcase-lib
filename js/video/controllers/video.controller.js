@@ -41,9 +41,9 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
-        'watchlist', 'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed'];
+        'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed'];
 
-    function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup, watchProgress, watchlist, seo,
+    function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup, watchProgress, seo,
                               userSettings, player, platform, serviceWorker, utils, config, item, feed) {
 
         var vm                       = this,
@@ -500,14 +500,9 @@
                 return performConditionalSeek();
             }
 
-            // don't handle watchProgress when the position hasn't changed.
-            if (lastPos === position) {
-                return;
-            }
-
-            if (vm.item.feedid) {
+            if (Math.abs(lastPos - position) > 5) {
                 lastPos = position;
-                handleWatchProgress(position, event.duration);
+                watchProgress.handler(vm.item, event.position / event.duration);
             }
         }
 
@@ -554,29 +549,6 @@
 
             if (toWatchProgress > 0) {
                 player.seek(toWatchProgress * vm.item.duration);
-            }
-        }
-
-        /**
-         * Saves or removes watchProgress
-         *
-         * @param {number} position
-         * @param {number} duration
-         */
-        function handleWatchProgress (position, duration) {
-
-            var progress      = position / duration,
-                minPosition   = Math.min(10, duration * watchProgress.MIN_PROGRESS),
-                maxPosition   = Math.max(duration - 10, duration * watchProgress.MAX_PROGRESS),
-                betweenMinMax = position >= minPosition && position < maxPosition;
-
-            if (angular.isNumber(progress) && betweenMinMax && !watchlist.hasItem(vm.item)) {
-                watchProgress.saveItem(vm.item, progress);
-                return;
-            }
-
-            if (watchProgress.hasItem(vm.item)) {
-                watchProgress.removeItem(vm.item, progress);
             }
         }
 
