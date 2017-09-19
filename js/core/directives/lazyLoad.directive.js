@@ -70,6 +70,7 @@
                 scope.$on('$destroy', destroy);
                 scope.$on('$viewContentUpdated', updateDebounced);
                 scope.$on('$viewContentLoaded', updateDebounced);
+                scope.$on('$viewRestored', updateDebounced);
             }
 
             /**
