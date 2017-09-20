@@ -39,10 +39,12 @@
      * @returns {$q.promise}
      */
 
-    Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
-        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils'];
+    Preload.$inject = [
+        '$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'notification', 'utils'
+    ];
     function Preload ($q, $state, appStore, config, configResolver, cookies, api, dfp, apiConsumer, serviceWorker,
-                      watchlist, watchProgress, userSettings, bridge, utils) {
+                      watchlist, watchProgress, userSettings, bridge, notification, utils) {
 
         var defer = $q.defer();
 
@@ -88,6 +90,16 @@
                     .loadFeedsFromConfig()
                     .then(handleFeedsLoadSuccess);
 
+                notification.swReady.then(function() {
+                    return notification.subscribeUser();
+                }).then(function (subscription) {
+                    notification.subscribeToServer({
+                        subscription: subscription,
+                        content: config.content
+                    });
+                }).catch(function (err) {
+                    console.error(err);
+                });
             }, handlePreloadError);
 
         return defer.promise;
