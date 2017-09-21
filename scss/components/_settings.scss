@@ -4,39 +4,100 @@
     }
 
     .jw-feed-title,
-    .jw-settings-action-row,
+    .jw-settings-actions,
     .jw-button-settings-action {
         margin: 0 90px $base-spacing;
     }
 
+    .jw-settings-label {
+        margin: 0 0 rem(9px);
+        font-size: rem(15px);
+        font-weight: 500;
+        line-height: rem(18px);
+    }
+
+    .jw-settings-description {
+        max-height: rem(18px * 2);
+        margin: 0 $base-spacing 0 0;
+        font-size: rem(12px);
+        line-height: rem(18px);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+
+    .jw-settings-action {
+        padding-right: $base-spacing;
+    }
+
     .jw-button-settings-action {
-        min-width: 200px;
+        min-width: 220px;
         margin-top: rem(10px);
         font-weight: 600;
     }
 
-    .jw-settings-action-row {
+    .jw-settings-actions {
         @include display-flex();
-        @include align-items(center);
-        @include justify-content(space-between);
 
-        width: 18rem;
+        &-col {
+            width: calc(#{100% / 3} - #{$base-spacing});
 
-        .jw-settings-label {
-            margin: 0;
+            &:not(:last-of-type) {
+                margin-right: $base-spacing;
+            }
         }
+
+        &-row {
+            @include display-flex();
+            @include align-items(center);
+            @include justify-content(space-between);
+        }
+    }
+}
+
+@mixin settings-col-width($cols) {
+    width: calc(#{100% / $cols} - #{$base-spacing});
+}
+
+@media (max-width: 540px) {
+    .jw-settings .jw-settings-actions {
+        display: block;
+    }
+}
+
+.jw-settings .jw-settings-actions-col {
+    @media (max-width: 540px) {
+        width: 100%;
+        margin-bottom: $base-spacing * 2;
+
+        .jw-settings-action {
+            padding-right: 0;
+        }
+    }
+
+    @media (min-width: 541px) and (max-width: 960px) {
+        @include settings-col-width(2);
+    }
+
+    @media (min-width: 961px) and (max-width: 1280px) {
+        @include settings-col-width(3);
+    }
+
+    @media (min-width: 1281px) and (max-width: 1680px) {
+        @include settings-col-width(4);
+    }
+
+    @media (min-width: 1681px) {
+        @include settings-col-width(5);
     }
 }
 
 @include mobile-only() {
     .jw-settings {
-        .jw-settings-action-row {
-            width: auto;
-        }
 
         .jw-feed-title,
-        .jw-settings-action-row,
-        .jw-button-settings-action {
+        .jw-settings-actions,
+        .jw-button-settings-actions {
             margin-right: $base-spacing;
             margin-left: $base-spacing;
         }

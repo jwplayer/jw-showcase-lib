@@ -3,30 +3,43 @@
     <div class="jw-page-content pth">
         <div class="jw-settings-row">
             <div class="jw-feed-title">Play settings</div>
-            <div class="jw-settings-action-row">
-                <p class="jw-settings-label">Reduce data usage</p>
-                <div class="jw-settings-action">
-                    <jw-toggle
-                            aria-label="reduce data usage"
-                            tabindex="0"
-                            ng-model="vm.conserveBandwidth"
-                            ng-change="vm.toggleChangeHandler('conserveBandwidth')"
-                    ></jw-toggle>
+            <div class="jw-settings-actions">
+                <div class="jw-settings-actions-col">
+                    <p class="jw-settings-label">Reduce data usage</p>
+                    <div class="jw-settings-actions-row">
+                        <p class="jw-settings-description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A adipisci animi autem dicta earum
+                        </p>
+                        <div class="jw-settings-action">
+                            <jw-toggle
+                                    aria-label="reduce data usage"
+                                    tabindex="0"
+                                    ng-model="vm.conserveBandwidth"
+                                    ng-change="vm.toggleChangeHandler('conserveBandwidth')"
+                            ></jw-toggle>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="jw-settings-action-row">
-                <p class="jw-settings-label">Continue watching</p>
-                <div class="jw-settings-action">
-                    <jw-toggle
-                            aria-label="enable continue watching"
-                            tabindex="0"
-                            ng-model="vm.continueWatching"
-                            ng-change="vm.toggleChangeHandler('continueWatching')"
-                    ></jw-toggle>
+                <div class="jw-settings-actions-col">
+                    <p class="jw-settings-label">Continue watching</p>
+                    <div class="jw-settings-actions-row">
+                        <p class="jw-settings-description">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A adipisci animi autem dicta
+                            earum est explicabo harum ipsam nihil, non nostrum numquam perferendis, possimus quos
+                            repudiandae rerum sequi similique totam.
+                        </p>
+                        <div class="jw-settings-action">
+                            <jw-toggle
+                                    aria-label="enable continue watching"
+                                    tabindex="0"
+                                    ng-model="vm.continueWatching"
+                                    ng-change="vm.toggleChangeHandler('continueWatching')"
+                            ></jw-toggle>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="jw-settings-row">
             <div class="jw-feed-title">Your saved videos</div>
             <jw-card-slider
@@ -35,7 +48,8 @@
                     on-card-click="vm.cardClickHandler"
                     enable-title="false"
             ></jw-card-slider>
-            <jw-button ng-click="vm.clearWatchlist()" class="jw-button-default jw-button-secondary jw-button-settings-action">
+            <jw-button ng-click="vm.clearWatchlist()"
+                       class="jw-button-default jw-button-secondary jw-button-settings-action">
                 Clear saved videos
             </jw-button>
         </div>
@@ -48,7 +62,8 @@
                     on-card-click="vm.cardClickHandler"
                     enable-title="false"
             ></jw-card-slider>
-            <jw-button ng-click="vm.clearWatchProgress()" class="jw-button-default jw-button-secondary jw-button-settings-action">
+            <jw-button ng-click="vm.clearWatchProgress()"
+                       class="jw-button-default jw-button-secondary jw-button-settings-action">
                 Clear continue watching
             </jw-button>
         </div>
