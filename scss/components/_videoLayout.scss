@@ -42,6 +42,7 @@
 @include mobile-only () {
 
     .jw-video-layout {
+        padding-top: 0;
 
         &-align {
             padding: 0;

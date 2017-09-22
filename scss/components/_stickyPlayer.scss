@@ -1,0 +1,39 @@
+.jw-pinned-player-container {
+    display: none;
+
+    position: fixed;
+
+    z-index: $sticky-player-z-index;
+
+    bottom: $sticky-player-offset;
+    right: $sticky-player-offset;
+
+    width: $sticky-player-width-mobile;
+
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 1px;
+
+    // add box-shadow for floating effect
+    @include box-shadow(0 0 20px rgba(0, 0, 0, 0.4));
+
+    @include transition-property(transform, opacity);
+    @include transition-duration(100ms);
+    @include transition-timing-function(ease-in);
+
+    // only display div when it's being used
+    &.is-active {
+        display: block;
+
+        @include animation(jw-player-pin-animation $sticky-player-animation-mobile);
+    }
+
+    // animate when unpinning
+    &.is-deactivating {
+        @include animation(jw-player-unpin-animation $sticky-player-animation-mobile);
+    }
+
+    // stop transition effect when dragging
+    &.is-dragging {
+        @include transition-property(none);
+    }
+}

@@ -28,6 +28,12 @@
         xl: window.matchMedia('(min-width: 1681px)')
     };
 
+    /**
+     * @const VENDOR_PREFIXES
+     * @type  {Array}
+     */
+    var VENDOR_PREFIXES = [ 'webkit', 'moz', 'MS', 'o', '' ];
+
     angular
         .module('jwShowcase.core')
         .service('utils', utils);
@@ -55,6 +61,10 @@
         this.composeFacebookLink    = composeFacebookLink;
         this.composeTwitterLink     = composeTwitterLink;
         this.composeEmailLink       = composeEmailLink;
+        this.getElementOffsetTop    = getElementOffsetTop;
+        this.getScrollTop           = getScrollTop;
+        this.getDefaultValue        = getDefaultValue;
+        this.getPrefixedEventNames  = getPrefixedEventNames;
 
         ////////////////////////
 
@@ -273,6 +283,7 @@
                     success = true;
                 }
                 catch (error) {
+                    // nothing to do here
                 }
 
                 inputElement[0].blur();
@@ -450,6 +461,62 @@
                 .replace('{url}', encodeURIComponent($location.absUrl()))
                 .replace('{subject}', encodeURIComponent(title));
         }
+
+        /**
+         * Returns element position from top of document.
+         *
+         * @param   {object}  el  DOM element
+         * @return  {number}      Offset in pixels
+         */
+        function getElementOffsetTop(el) {
+            var boundingClientRect = el.getBoundingClientRect();
+            var bodyEl = document.body;
+            var docEl = document.documentElement;
+            var scrollTop = window.pageYOffset || docEl.scrollTop || bodyEl.scrollTop;
+            var clientTop = docEl.clientTop || bodyEl.clientTop || 0;
+            return Math.round(boundingClientRect.top + scrollTop - clientTop);
+        }
+
+        /**
+         * Returns the current y scroll position.
+         *
+         * @return  {number}  Scroll top in pixels
+         */
+        function getScrollTop() {
+            var docEl = document.documentElement;
+            return (window.pageYOffset || docEl.scrollTop) - (docEl.clientTop || 0);
+        }
+
+        /**
+         * Get default arg based on whether the variable is undefined.
+         *
+         * @param   {*}  arg           Any function argument
+         * @param   {*}  defaultValue  A given default value
+         * @return  {*}                The value, or defaultValue is value is undefined
+         */
+        function getDefaultValue(value, defaultValue) {
+            if (typeof value === 'undefined') {
+                return defaultValue;
+            }
+            return value;
+        }
+
+        /**
+         * Get vendor prefixed event names.
+         *
+         * @param   {String}  eventName  Event name
+         * @return  {String}             Space separated list of event names
+         */
+        function getPrefixedEventNames(eventName) {
+            eventName = eventName.charAt(0).toUpperCase() + eventName.slice(1);
+            return VENDOR_PREFIXES.map(function(prefix) {
+                if (prefix === '') {
+                    eventName = eventName.toLowerCase();
+                }
+                return prefix + eventName;
+            }).join(' ');
+        }
+
     }
 
 }());

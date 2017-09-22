@@ -33,7 +33,8 @@
     function player () {
 
         var playerInstance,
-            self = this;
+            onPinHandler,
+            onUnpinHandler;
 
         this.play              = playerMethod('play');
         this.pause             = playerMethod('pause');
@@ -45,6 +46,11 @@
         this.load              = playerMethod('load');
         this.setPlayer         = setPlayer;
         this.getPlayer         = getPlayer;
+        this.onPin             = onPin;
+        this.onUnpin           = onUnpin;
+        this.pin               = pin;
+        this.unpin             = unpin;
+        this.dismiss           = dismiss;
 
         this.currentTime = 0;
 
@@ -82,6 +88,45 @@
         function getPlayer () {
 
             return playerInstance;
+        }
+
+        // set handler for pin event piping
+        function onPin(handler) {
+            onPinHandler = handler;
+        }
+
+        // set handler for unpin event piping
+        function onUnpin(handler) {
+            onUnpinHandler = handler;
+        }
+
+        // pipe method through to sticky player's handler
+        function pin(resume) {
+            if (!onPinHandler) {
+                return;
+            }
+
+            onPinHandler(playerInstance, resume);
+        }
+
+        // pipe method through to sticky player's handler
+        function unpin(resume) {
+            if (!onUnpinHandler) {
+                return;
+            }
+
+            onUnpinHandler(playerInstance, resume);
+        }
+
+        function dismiss() {
+            if (!playerInstance) {
+                return;
+            }
+
+            playerInstance.remove();
+
+            // nullify
+            playerInstance = null;
         }
     }
 

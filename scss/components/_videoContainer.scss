@@ -7,7 +7,6 @@
     width: 100%;
 
     &.is-loading {
-
         .jw-video-loading {
             display: block;
         }
@@ -25,6 +24,26 @@
     .jw-video-container-player {
         @include single-transition(opacity, 0.2s, ease-out);
         @include cover();
+
+        &.minimized {
+            position: fixed;
+
+            z-index: $sticky-player-z-index;
+
+            // override positioning
+            top: auto;
+            left: auto;
+
+            right: $sticky-player-offset;
+            bottom: $sticky-player-offset;
+
+            width: $sticky-player-width;
+            height: auto;
+
+            // animation from bottom left
+            @include transform-origin(0%, 0%);
+            @include animation(jw-player-stick-animation $sticky-player-animation);
+        }
     }
 
     .jw-video-loading {
@@ -49,6 +68,28 @@
 
         .jwplayer.jw-flag-aspect-mode {
             height: 100% !important;
+        }
+    }
+}
+
+@include mobile-only () {
+
+    .jw-video-container {
+        .jw-video-container-player {
+            @include box-shadow(0 0 15px 0 rgba($black, 0.5));
+
+            @include transition(top $sticky-player-transition);
+
+            z-index: 1;
+
+            &.is-pinned {
+                position: fixed;
+                top: 0;
+
+                z-index: $view-z-index;
+
+                height: auto;
+            }
         }
     }
 }

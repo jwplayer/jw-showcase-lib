@@ -135,6 +135,7 @@
 
             ensureItemIsInFeed();
             createPlayerSettings();
+            scrollToTop();
 
             $scope.$watch(function () {
                 return userSettings.settings.conserveBandwidth;
@@ -193,6 +194,17 @@
          * Create player settings
          */
         function createPlayerSettings () {
+            // check for existing pinned player
+            var existingPlayer = player.getPlayer();
+            if (existingPlayer) {
+                // if playing the same item
+                if (existingPlayer.getPlaylistItem().mediaid === $state.params.mediaId) {
+                    vm.playerSettings.autostart = existingPlayer.getState() === 'playing';
+                }
+
+                // unpin asap
+                player.unpin();
+            }
 
             playlist = generatePlaylist(vm.activeFeed, item);
 
@@ -208,7 +220,7 @@
                 vm.playerSettings.skin = 'jw-showcase';
             }
 
-            if (!!window.cordova) {
+            if (window.cordova) {
                 vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
                 vm.playerSettings.cast                  = false;
             }
@@ -578,10 +590,7 @@
 
             updateStateSilently();
             update();
-
-            window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
-                scrollTop: 0
-            });
+            scrollToTop();
         }
 
         /**
@@ -593,6 +602,12 @@
             return function (cursor) {
                 return cursor.mediaid === mediaId;
             };
+        }
+
+        function scrollToTop() {
+            window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
+                scrollTop: 0
+            });
         }
     }
 

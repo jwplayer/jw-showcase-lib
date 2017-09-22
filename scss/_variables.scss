@@ -76,6 +76,16 @@ $video-layout-width: 1024px !default;
 $video-layout-right-rail-width: 1280px !default;
 
 //
+// StickyPlayer
+// --------------------------------
+$sticky-player-offset: 20px !default;
+$sticky-player-width: 400px !default;
+$sticky-player-width-mobile: 65% !default;
+$sticky-player-transition: 130ms ease-in-out !default;
+$sticky-player-animation: 130ms ease-in-out !default;
+$sticky-player-animation-mobile: 280ms ease-in-out !default;
+
+//
 // Z-index
 // --------------------------------
 
@@ -85,3 +95,4 @@ $header-z-index: 15 !default;
 $toolbar-z-index: 12 !default;
 $sidebar-z-index: 20 !default;
 $popups-z-index: 25 !default;
+$sticky-player-z-index: 30 !default;

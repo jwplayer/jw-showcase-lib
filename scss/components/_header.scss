@@ -116,5 +116,11 @@
         .jw-header-nav .jw-button-label {
             display: none;
         }
+
+        @include transition(transform $sticky-player-transition);
+
+        &.is-hidden {
+            @include transform(translateY(-100%));
+        }
     }
 }
