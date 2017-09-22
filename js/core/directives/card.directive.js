@@ -108,7 +108,7 @@
 
                 var completeTitle = '';
 
-                if (scope.vm.inVideoSearchEnabled) {
+                if (scope.vm.showCaptionMatches ) {
                     var matchCount = item.captionMatches.length;
 
                     completeTitle = '<span class="jw-card-title-matches">' + matchCount + ' matches: </span>';
