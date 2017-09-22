@@ -48,10 +48,12 @@
         player.onUnpin(onUnpin);
 
         function returnToVideo() {
+            // prevent click handler from firing when dragging mini player
             if (isDragging) {
                 return;
             }
 
+            // get current playlist item from video to determine the page to navigate to
             var playlistItem = player.getPlayer().getPlaylistItem();
             if (!playlistItem) {
                 return;
@@ -77,32 +79,30 @@
 
             addSwipeHandling(angular.element(playerInstanceEl));
 
-            $timeout(function () {
+            // wait for next cycle
+            window.requestAnimationFrame(function() {
                 playerInstance.resize();
                 playerInstance.setControls(false);
 
                 if (resume) {
                     playerInstance.play();
                 }
-            }, 1);
-        }
-
-        function dismiss() {
-            player.dismiss();
-
-            resetContainerDrag();
-            $stickyContainerEl.removeClass('is-active');
+            });
         }
 
         function onUnpin() {
-            var oldPlayerInstance = player.getPlayer();
+            var playerInstance = player.getPlayer();
+
+            if (!playerInstance) {
+                return;
+            }
 
             $stickyContainerEl.one(
                 utils.getPrefixedEventNames('animationEnd'),
                 function() {
                     window.requestAnimationFrame(function() {
                         // remove manually
-                        oldPlayerInstance.remove();
+                        playerInstance.remove();
                         // empty sticky container div manually because jwplayer leaves stuff after removal
                         $stickyContainerEl.empty();
 
@@ -115,6 +115,13 @@
             );
 
             $stickyContainerEl.addClass('is-deactivating');
+        }
+
+        function dismiss() {
+            player.dismiss();
+
+            resetContainerDrag();
+            $stickyContainerEl.removeClass('is-active');
         }
 
         function addSwipeHandling($playerInstanceEl) {
@@ -173,11 +180,17 @@
         }
 
         function resetContainerDrag() {
+            if ($stickyContainerEl.hasClass('is-dragging')) {
+                // wait for drag reset transition to finish
+                $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function (event) {
+                    isDragging = false;
+                });
+            } else {
+                isDragging = false;
+            }
+
             $stickyContainerEl.removeClass('is-dragging');
             $stickyContainerEl.removeAttr('style');
-            $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function(event) {
-                isDragging = false;
-            });
         }
 
     }

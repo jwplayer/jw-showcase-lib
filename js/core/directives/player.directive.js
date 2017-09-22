@@ -235,13 +235,13 @@
                     // set screen size specific scroll handler for sticky player
                     if (platform.screenSize() === 'mobile') {
                         // unstick desktop
-                        stickPlayer(false, 'desktop');
+                        stickPlayer(false);
 
                         onScrollDesktop && onScrollDesktop.clear();
                         onScrollMobile = onScroll.bind(mobileScrollHandler);
                     } else {
                         // unstick mobile
-                        stickPlayer(false, 'mobile');
+                        stickPlayer(false, true);
 
                         onScrollMobile && onScrollMobile.clear();
                         onScrollDesktop = onScroll.bind(desktopScrollHandler);
@@ -264,19 +264,21 @@
                 onScrollMobile && onScrollMobile.clear();
             }
 
-            function stickPlayer(state, screenSize) {
+            function stickPlayer(state, forMobile) {
                 if (playerStuck === state) {
                     return;
                 }
 
                 playerStuck = state;
 
-                screenSize = utils.getDefaultValue(screenSize, platform.screenSize());
+                if (forMobile) {
+                    // stick player to top of screen
 
-                if (screenSize === 'mobile') {
                     playerInstance.utils.toggleClass($headerEl[0], 'is-hidden', state);
                     playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'is-pinned', state);
                 } else {
+                    // stick smaller player to bottom right of screen
+
                     if (playerInstance) {
                         // wait for animation to finish
                         $videoPlayerContainerEl.one(
@@ -296,17 +298,13 @@
             }
 
             function mobileScrollHandler() {
-                var currentScrollTop = utils.getScrollTop();
-
                 // stick when we've scrolled passed header height
-                stickPlayer(currentScrollTop > 60, 'mobile');
+                stickPlayer(utils.getScrollTop() > 60, true);
             }
 
             function desktopScrollHandler() {
-                var currentScrollTop = utils.getScrollTop();
-
                 // stick when we've scrolled passed the player's top
-                stickPlayer(currentScrollTop > playerOffsetTop, 'desktop');
+                stickPlayer(utils.getScrollTop() > playerOffsetTop);
             }
 
         }

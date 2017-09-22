@@ -25,6 +25,9 @@
         @include single-transition(opacity, 0.2s, ease-out);
         @include cover();
 
+        @include transform-origin(100%, 100%);
+        @include animation(jw-player-unstick-animation $sticky-player-animation);
+
         &.minimized {
             position: fixed;
 
