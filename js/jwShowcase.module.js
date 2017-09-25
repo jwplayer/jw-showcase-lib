@@ -49,7 +49,7 @@
                     enabled: false,
                     message: 'This site uses cookies to give you the best experience. If you would like to change ' +
                              'your cookie preferences you may do so by <a href="http://www.aboutcookies.org" ' +
-                             'target="_blank">following these instructions'
+                             'target="_blank">following these instructions</a>'
                 },
                 videoTitlePosition:        'below',
                 useRecommendationPlaylist: false,
