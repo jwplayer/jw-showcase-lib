@@ -81,12 +81,15 @@
 
             // wait for next cycle
             window.requestAnimationFrame(function() {
+                if (resume) {
+                    // wait for resize to finish
+                    playerInstance.once('resize', function() {
+                        playerInstance.play();
+                    });
+                }
+
                 playerInstance.resize();
                 playerInstance.setControls(false);
-
-                if (resume) {
-                    playerInstance.play();
-                }
             });
         }
 

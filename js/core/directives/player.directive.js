@@ -225,10 +225,10 @@
             function setupScrollHandlers() {
                 var previousScreenSize = platform.screenSize();
 
-                function setupHandlersForScreensize(force) {
+                function setupHandlersForScreensize(evt) {
                     var screenSize = platform.screenSize();
-                    // if screen size did not change, and we don't want to force setup
-                    if (previousScreenSize === screenSize && !force) {
+                    // if screen size did not change
+                    if (previousScreenSize === screenSize && evt !== null) {
                         return;
                     }
 
@@ -253,7 +253,8 @@
                 // calculate proper player top offset
                 playerOffsetTop = utils.getElementOffsetTop($videoPlayerContainerEl[0]);
 
-                setupHandlersForScreensize(true);
+                // pass `null` to force initialisation
+                setupHandlersForScreensize(null);
 
                 // reset handlers on resize
                 window.addEventListener('resize', utils.debounce(setupHandlersForScreensize, 200));
