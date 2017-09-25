@@ -17,13 +17,9 @@
     }
 
     .jw-settings-description {
-        max-height: rem(18px * 2);
         margin: 0 $base-spacing 0 0;
         font-size: rem(12px);
         line-height: rem(18px);
-        text-overflow: ellipsis;
-        overflow: hidden;
-        word-wrap: break-word;
     }
 
     .jw-settings-action {
