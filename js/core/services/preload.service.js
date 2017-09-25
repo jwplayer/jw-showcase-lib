@@ -41,6 +41,7 @@
 
     Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
         'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils'];
+
     function Preload ($q, $state, appStore, config, configResolver, cookies, api, dfp, apiConsumer, serviceWorker,
                       watchlist, watchProgress, userSettings, bridge, utils) {
 
@@ -134,9 +135,11 @@
 
         function showCookiesNotice () {
 
-            var isBrowser = !window.cordova;
+            var isBrowser    = !window.cordova;
+            var cookieNotice = (angular.isObject(config.options.cookieNotice) && config.options.cookieNotice.enabled) ||
+                config.options.enableCookieNotice;
 
-            if (config.options.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
+            if (cookieNotice && !userSettings.settings.cookies && isBrowser) {
                 cookies.show();
             }
         }
