@@ -43,10 +43,6 @@
 
         vm.returnToVideo = returnToVideo;
 
-        // player event handlers
-        player.onPin(onPin);
-        player.onUnpin(onUnpin);
-
         function returnToVideo() {
             // prevent click handler from firing when dragging mini player
             if (isDragging) {

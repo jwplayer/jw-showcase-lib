@@ -44,12 +44,15 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform', 'onScroll'];
-    function JwPlayerDirective ($parse, $timeout, utils, player, platform, onScroll) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform'];
+    function JwPlayerDirective ($parse, $timeout, utils, player, platform) {
 
         return {
             scope:       {
-                settings: '='
+                settings:  '=',
+                pid:       '=',
+                item:      '=',
+                startTime: '='
             },
             replace:     false,
             templateUrl: 'views/core/jwPlayer.html',
@@ -59,22 +62,9 @@
         function link (scope, element, attr) {
 
             var playerId = generateRandomId(),
-                onScrollDesktop,
-                onScrollMobile,
                 initTimeoutId,
-                playerInstance;
-
-            // get applicable DOM elements
-            var $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player'));
-            var $headerEl = angular.element(document.querySelector('.jw-header'));
-
-            /**
-             * Player offset from top
-             * @type  {Number}
-             */
-            var playerOffsetTop = 0;
-
-            var playerStuck = false;
+                playerInstance,
+                playerService;
 
             activate();
 
@@ -96,17 +86,11 @@
                     // prevent initialisation
                     clearTimeout(initTimeoutId);
 
-                    // reset sticky player
-                    stickPlayer(false);
-
-                    // remove sticky player scroll handlers
-                    removeScrollHandlers();
-
-                    if (playerInstance && platform.screenSize() === 'mobile') {
-                        var state = playerInstance.getState();
+                    if (playerService && platform.screenSize() === 'mobile') {
+                        var state = playerService.getState();
                         if (state === 'playing' || state === 'paused') {
                             // pin player
-                            player.pin(state === 'playing');
+                            playerService.pin();
 
                             return;
                         }
@@ -117,12 +101,8 @@
 
                         // only remove player when the service instance is this player instance. Otherwise we could
                         // potentially unset an already set player because this is wrapped in a timeout.
-                        if (player.getPlayer() === playerInstance) {
-                            player.setPlayer(null);
-                        }
-
-                        if (playerInstance) {
-                            playerInstance.remove();
+                        if (player.getService(scope.pid) === playerService) {
+                            playerService.destroy();
                         }
                     }, 1000);
                 });
@@ -137,21 +117,21 @@
                     controls: true
                 }, scope.settings);
 
-                // determine autostart
-                if (settings.resume && settings.resume !== null) {
-                    // resume takes precedence
-                    settings.autostart = settings.resume;
-                } else {
-                    // override autostart for mobile devices
-                    if (window.cordova || platform.isMobile) {
-                        settings.autostart = false;
-                    }
+                // override autostart for mobile devices
+                if (window.cordova || platform.isMobile) {
+                    settings.autostart = false;
                 }
 
                 playerInstance = jwplayer(playerId)
                     .setup(settings);
 
-                setupScrollHandlers();
+                // create player service before binding event listeners
+                playerService = player.createService(playerInstance, {
+                    pid: scope.pid,
+                    item: scope.item,
+                    startTime: scope.startTime
+                });
+
                 bindPlayerEventListeners();
 
                 if (window.cordova && scope.settings.autostart) {
@@ -162,8 +142,6 @@
                         }.bind(this), 1);
                     });
                 }
-
-                player.setPlayer(playerInstance);
             }
 
             /**
@@ -220,92 +198,6 @@
                 }
 
                 return generateRandomId();
-            }
-
-            function setupScrollHandlers() {
-                var previousScreenSize = platform.screenSize();
-
-                function setupHandlersForScreensize(evt) {
-                    var screenSize = platform.screenSize();
-                    // if screen size did not change
-                    if (previousScreenSize === screenSize && evt !== null) {
-                        return;
-                    }
-
-                    // set screen size specific scroll handler for sticky player
-                    if (platform.screenSize() === 'mobile') {
-                        // unstick desktop
-                        stickPlayer(false);
-
-                        onScrollDesktop && onScrollDesktop.clear();
-                        onScrollMobile = onScroll.bind(mobileScrollHandler);
-                    } else {
-                        // unstick mobile
-                        stickPlayer(false, true);
-
-                        onScrollMobile && onScrollMobile.clear();
-                        onScrollDesktop = onScroll.bind(desktopScrollHandler);
-                    }
-
-                    previousScreenSize = platform.screenSize();
-                }
-
-                // calculate proper player top offset
-                playerOffsetTop = utils.getElementOffsetTop($videoPlayerContainerEl[0]);
-
-                // pass `null` to force initialisation
-                setupHandlersForScreensize(null);
-
-                // reset handlers on resize
-                window.addEventListener('resize', utils.debounce(setupHandlersForScreensize, 200));
-            }
-
-            function removeScrollHandlers() {
-                onScrollDesktop && onScrollDesktop.clear();
-                onScrollMobile && onScrollMobile.clear();
-            }
-
-            function stickPlayer(state, forMobile) {
-                if (playerStuck === state) {
-                    return;
-                }
-
-                playerStuck = state;
-
-                if (forMobile) {
-                    // stick player to top of screen
-
-                    playerInstance.utils.toggleClass($headerEl[0], 'is-hidden', state);
-                    playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'is-pinned', state);
-                } else {
-                    // stick smaller player to bottom right of screen
-
-                    if (playerInstance) {
-                        // wait for animation to finish
-                        $videoPlayerContainerEl.one(
-                            utils.getPrefixedEventNames('animationEnd'),
-                            function() {
-                                window.requestAnimationFrame(function() {
-                                    // update the player's size so the controls are adjusted
-                                    playerInstance.resize();
-                                });
-                            }
-                        );
-                    }
-
-                    // toggle class (and animation)
-                    playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'minimized', state);
-                }
-            }
-
-            function mobileScrollHandler() {
-                // stick when we've scrolled passed header height
-                stickPlayer(utils.getScrollTop() > 60, true);
-            }
-
-            function desktopScrollHandler() {
-                // stick when we've scrolled passed the player's top
-                stickPlayer(utils.getScrollTop() > playerOffsetTop);
             }
 
         }

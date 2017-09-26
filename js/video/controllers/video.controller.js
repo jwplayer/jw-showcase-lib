@@ -41,21 +41,21 @@
      * @requires jwShowcase.config
      */
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
-        'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed'];
+        'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed', 'onScroll'];
 
     function VideoController ($scope, $state, $stateParams, $timeout, dataStore, popup, watchProgress, seo,
-                              userSettings, player, platform, serviceWorker, utils, config, item, feed) {
+                              userSettings, player, platform, serviceWorker, utils, config, item, feed, onScroll) {
 
-        var vm                       = this,
-            lastPos                  = 0,
-            performedConditionalSeek = false,
-            started                  = false,
-            requestQualityChange     = false,
-            startTime                = $stateParams.startTime,
-            playlist                 = [],
-            levels,
-            watchProgressItem,
-            loadingTimeout;
+        var vm                      = this,
+            playlist                = [],
+            $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player')),
+            $headerEl               = angular.element(document.querySelector('.jw-header')),
+            playerOffsetTop         = 0,
+            playerStuck             = false,
+            playerService,
+            loadingTimeout,
+            onScrollDesktop,
+            onScrollMobile;
 
         /**
          * Current playing item
@@ -112,11 +112,9 @@
                 bi: config.id
             }
         };
-        vm.onComplete     = onComplete;
+        vm.startTime      = $stateParams.startTime;
         vm.onFirstFrame   = onFirstFrame;
-        vm.onTime         = onTime;
         vm.onPlaylistItem = onPlaylistItem;
-        vm.onLevels       = onLevels;
         vm.onReady        = onReady;
         vm.onError        = onError;
         vm.onSetupError   = onSetupError;
@@ -136,27 +134,19 @@
             ensureItemIsInFeed();
             createPlayerSettings();
             scrollToTop();
-
-            $scope.$watch(function () {
-                return userSettings.settings.conserveBandwidth;
-            }, conserveBandwidthChangeHandler);
+            setupScrollHandlers();
 
             $scope.$watch(function () {
                 return serviceWorker.isOnline();
             }, connectionChangeHandler);
 
+            $scope.$on('$destroy', function () {
+                removeScrollHandlers();
+            });
+
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
-
-            update();
-        }
-
-        /**
-         * Update controller
-         */
-        function update () {
-            watchProgressItem = watchProgress.getItem(vm.item);
         }
 
         /**
@@ -194,18 +184,6 @@
          * Create player settings
          */
         function createPlayerSettings () {
-            // check for existing pinned player
-            var existingPlayer = player.getPlayer();
-            if (existingPlayer) {
-                // if playing the same item
-                if (existingPlayer.getPlaylistItem().mediaid === $state.params.mediaId) {
-                    vm.playerSettings.autostart = existingPlayer.getState() === 'playing';
-                }
-
-                // unpin asap
-                player.unpin();
-            }
-
             playlist = generatePlaylist(vm.activeFeed, item);
 
             vm.playerSettings.playlist = playlist;
@@ -313,30 +291,6 @@
         }
 
         /**
-         * Handle conserveBandwidth setting change
-         *
-         * @param {boolean} value
-         */
-        function conserveBandwidthChangeHandler (value) {
-
-            var levelsLength,
-                toQuality = 0;
-
-            // nothing to do
-            if (!levels) {
-                return;
-            }
-
-            levelsLength = levels.length;
-
-            if (true === value) {
-                toQuality = levelsLength > 2 ? levelsLength - 2 : levelsLength;
-            }
-
-            requestQualityChange = toQuality;
-        }
-
-        /**
          * Handle changes in connection
          * @param val
          * @param prevVal
@@ -348,13 +302,12 @@
                 return;
             }
 
-            var state = player.getState();
+            var state = playerService.getState();
 
             // reload the playlist when connection has changed to ensure all playable items are loaded in the playlist.
             if (state !== 'playing' && state !== 'paused') {
                 playlist = generatePlaylist(vm.activeFeed, vm.item);
-                player.load(playlist);
-                update();
+                playerService.load(playlist);
             }
         }
 
@@ -365,10 +318,7 @@
          */
         function onReady (event) {
 
-            // Disabled because it scrolls down to the player
-            // if (config.options.enablePlayerAutoFocus && angular.isFunction(this.getContainer)) {
-            //     this.getContainer().focus();
-            // }
+            playerService = player.getService('video');
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;
@@ -441,7 +391,6 @@
             vm.item = newItem;
 
             updateStateSilently();
-            update();
         }
 
         /**
@@ -449,95 +398,8 @@
          */
         function onFirstFrame () {
 
-            var levelsLength;
-
             if (vm.loading) {
                 vm.loading = false;
-            }
-
-            started = true;
-
-            if (!levels) {
-                return;
-            }
-
-            levelsLength = levels.length;
-
-            // hd turned off
-            // set quality to last lowest level
-            if (true === userSettings.settings.conserveBandwidth) {
-                player.setCurrentQuality(levelsLength > 2 ? levelsLength - 2 : levelsLength);
-            }
-        }
-
-        /**
-         * Handle levels event
-         *
-         * @param event
-         */
-        function onLevels (event) {
-
-            levels = event.levels;
-        }
-
-        /**
-         * Handle complete event
-         */
-        function onComplete () {
-
-            watchProgress.removeItem(vm.item);
-        }
-
-        /**
-         * Handle time event
-         *
-         * @param event
-         */
-        function onTime (event) {
-
-            var position = Math.round(event.position);
-
-            if (false !== requestQualityChange) {
-                player.setCurrentQuality(requestQualityChange);
-                requestQualityChange = false;
-            }
-
-            // occasionally the onTime event fires before the onPlay or onFirstFrame event.
-            // so we have to prevent updating the watchProgress before the video has started
-            if (!started) {
-                return;
-            }
-
-            if (!performedConditionalSeek) {
-                return performConditionalSeek();
-            }
-
-            if (Math.abs(lastPos - position) > 5) {
-                lastPos = position;
-                watchProgress.handler(vm.item, event.position / event.duration);
-            }
-        }
-
-        /**
-         * Seek to time given in stateParams when set or resume the watch progress
-         */
-        function performConditionalSeek () {
-
-            var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching;
-
-            performedConditionalSeek = true;
-
-            // startTime via $stateParams
-            if (startTime) {
-                player.seek(startTime);
-
-                startTime = null;
-
-                return;
-            }
-
-            if (continueWatching && angular.isDefined(watchProgressItem)) {
-                resumeWatchProgress();
             }
         }
 
@@ -553,18 +415,6 @@
         }
 
         /**
-         * Resume video playback at last saved position from watchProgress
-         */
-        function resumeWatchProgress () {
-
-            var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
-
-            if (toWatchProgress > 0) {
-                player.seek(toWatchProgress * vm.item.duration);
-            }
-        }
-
-        /**
          * @ngdoc method
          * @name jwShowcase.video.VideoController#cardClickHandler
          * @methodOf jwShowcase.video.VideoController
@@ -575,7 +425,7 @@
          * @param {jwShowcase.core.item}    newItem         Clicked item
          * @param {boolean}                 clickedOnPlay   Did the user clicked on the play button
          */
-        function cardClickHandler (newItem, clickedOnPlay) {
+        function cardClickHandler (newItem) {
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
@@ -586,10 +436,9 @@
             vm.item = angular.copy(newItem);
 
             // start playing item from playlist
-            player.playlistItem(playlist.findIndex(byMediaId(vm.item.mediaid)));
+            playerService.playlistItem(playlist.findIndex(byMediaId(vm.item.mediaid)));
 
             updateStateSilently();
-            update();
             scrollToTop();
         }
 
@@ -608,6 +457,103 @@
             window.TweenLite.to(document.scrollingElement || document.body, 0.3, {
                 scrollTop: 0
             });
+        }
+
+        function setupScrollHandlers() {
+            var previousScreenSize = platform.screenSize();
+
+            function setupHandlersForScreensize(evt) {
+                var screenSize = platform.screenSize();
+                // if screen size did not change
+                if (previousScreenSize === screenSize && evt !== null) {
+                    return;
+                }
+
+                // set screen size specific scroll handler for sticky player
+                if (platform.screenSize() === 'mobile') {
+                    // unstick desktop
+                    stickPlayer(false);
+
+                    if (onScrollDesktop) {
+                        onScrollDesktop.clear();
+                    }
+                    onScrollMobile = onScroll.bind(mobileScrollHandler);
+                } else {
+                    // unstick mobile
+                    stickPlayer(false, true);
+
+                    if (onScrollMobile) {
+                        onScrollMobile.clear();
+                    }
+                    onScrollDesktop = onScroll.bind(desktopScrollHandler);
+                }
+
+                previousScreenSize = platform.screenSize();
+            }
+
+            // calculate proper player top offset
+            playerOffsetTop = utils.getElementOffsetTop($videoPlayerContainerEl[0]);
+
+            // pass `null` to force initialisation
+            setupHandlersForScreensize(null);
+
+            // reset handlers on resize
+            window.addEventListener('resize', utils.debounce(setupHandlersForScreensize, 200));
+        }
+
+        function removeScrollHandlers() {
+            if (onScrollDesktop) {
+                onScrollDesktop.clear();
+            }
+
+            if (onScrollMobile) {
+                onScrollMobile.clear();
+            }
+        }
+
+        function stickPlayer(state, forMobile) {
+            if (playerStuck === state || !playerService) {
+                return;
+            }
+
+            var playerInstance = playerService.getInstance();
+
+            playerStuck = state;
+
+            if (forMobile) {
+                // stick player to top of screen
+
+                playerInstance.utils.toggleClass($headerEl[0], 'is-hidden', state);
+                playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'is-pinned', state);
+            } else {
+                // stick smaller player to bottom right of screen
+
+                if (playerInstance) {
+                    // wait for animation to finish
+                    $videoPlayerContainerEl.one(
+                        utils.getPrefixedEventNames('animationEnd'),
+                        function () {
+                            window.requestAnimationFrame(function () {
+                                // update the player's size so the controls are adjusted
+                                playerInstance.resize();
+                            });
+                        }
+                    );
+                }
+
+                // toggle class (and animation)
+                playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'minimized', state);
+            }
+        }
+
+        function mobileScrollHandler() {
+            // stick when we've scrolled passed header height
+            stickPlayer(utils.getScrollTop() > 60, true);
+        }
+
+        function desktopScrollHandler() {
+            // stick when we've scrolled passed the player's top
+            stickPlayer(utils.getScrollTop() > playerOffsetTop);
         }
     }
 
