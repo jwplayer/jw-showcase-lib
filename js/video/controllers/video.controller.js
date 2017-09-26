@@ -134,7 +134,6 @@
             ensureItemIsInFeed();
             createPlayerSettings();
             scrollToTop();
-            setupScrollHandlers();
 
             $scope.$watch(function () {
                 return serviceWorker.isOnline();
@@ -318,7 +317,10 @@
          */
         function onReady (event) {
 
+            // wait for player ready before getting service and setting up scroll handlers
             playerService = player.getService('video');
+
+            setupScrollHandlers();
 
             if (!vm.playerSettings.autostart) {
                 vm.loading = false;
