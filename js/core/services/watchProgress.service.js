@@ -217,7 +217,7 @@
                     }
 
                     // try fetching the item from the API if it isn't already loaded by Showcase.
-                    return api.getItem(item.mediaid)
+                    return api.getItem(data.mediaid)
                         .then(function (item) {
                             item.progress    = data.progress;
                             item.lastWatched = data.lastWatched;
