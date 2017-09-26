@@ -26,10 +26,12 @@
      *
      * @requires jwShowcase.core.userSettings
      */
-    CookiesController.$inject = ['userSettings', 'popupInstance'];
-    function CookiesController (userSettings, popupInstance) {
+    CookiesController.$inject = ['userSettings', 'popupInstance', 'config'];
+    function CookiesController (userSettings, popupInstance, config) {
 
         var vm = this;
+
+        vm.config = config;
 
         vm.acceptButtonClickHandler = acceptButtonClickHandler;
 
