@@ -20,10 +20,15 @@
         .module('jwShowcase.core')
         .run(registerListener);
 
-    registerListener.$inject = ['$rootScope', '$location', 'appStore'];
-    function registerListener ($rootScope, $location, appStore) {
+    registerListener.$inject = ['$rootScope', '$location', 'appStore', '$state'];
+    function registerListener ($rootScope, $location, appStore, $state) {
 
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
+            if (toState.name === 'updateBrowser' && !toParams.directed) {
+                event.preventDefault();
+
+                $state.go('root.dashboard');
+            }
 
             if (fromState.scrollTop === 'last') {
                 appStore.scrollTopCache[$location.$$path] = document.body.scrollTop;

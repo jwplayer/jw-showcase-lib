@@ -61,6 +61,7 @@
         this.composeFacebookLink    = composeFacebookLink;
         this.composeTwitterLink     = composeTwitterLink;
         this.composeEmailLink       = composeEmailLink;
+        this.flexboxSupport         = flexboxSupport;
         this.getElementOffsetTop    = getElementOffsetTop;
         this.getScrollTop           = getScrollTop;
         this.getDefaultValue        = getDefaultValue;
@@ -517,6 +518,24 @@
             }).join(' ');
         }
 
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.utils#flexboxSupport
+         * @methodOf jwShowcase.core.utils
+         *
+         * @description
+         * Check if browser has support for flexbox
+         *
+         * @returns {boolean}
+         */
+        function flexboxSupport () {
+            var testElement           = document.createElement('div');
+            var flexboxSupported      = typeof testElement.style.flex !== 'undefined';
+            testElement               = null;
+
+            return flexboxSupported;
+        }
     }
 
 }());
