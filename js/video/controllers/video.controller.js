@@ -381,15 +381,8 @@
         function onSetupError () {
 
             popup
-                .show({
-                    controller:  'ConfirmController as vm',
-                    templateUrl: 'views/core/popups/confirm.html',
-                    resolve:     {
-                        message: 'Something went wrong while loading the video, try again?'
-                    }
-                })
+                .showConfirm('Something went wrong while loading the video, try again?')
                 .then(function (result) {
-
                     if (true === result) {
                         $state.reload();
                     }

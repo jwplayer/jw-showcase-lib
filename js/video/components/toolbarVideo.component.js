@@ -50,9 +50,9 @@
 
         var vm = this;
 
-        vm.config            = config;
-        vm.inWatchlist       = false;
-        vm.screenSize        = platform.screenSize();
+        vm.config      = config;
+        vm.inWatchlist = false;
+        vm.screenSize  = platform.screenSize();
 
         vm.shareButtonClickHandler     = shareButtonClickHandler;
         vm.watchlistButtonClickHandler = watchlistButtonClickHandler;
@@ -112,14 +112,9 @@
             }
 
             popup
-                .show({
-                    templateUrl: 'views/core/popups/confirm.html',
-                    controller:  'ConfirmController as vm',
-                    resolve:     {
-                        message: 'Media files can use significant storage space on your device. Are you sure you ' +
-                                 'want to download'
-                    }
-                })
+                .showConfirm(
+                    'Media files can use significant storage space on your device. Are you sure you want to download'
+                )
                 .then(function (result) {
                     if (result) {
                         watchlist.addItem(vm.item);

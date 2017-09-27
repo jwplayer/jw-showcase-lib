@@ -38,6 +38,7 @@
      */
     SidebarController.$inject = ['popup', 'dataStore', 'sidebar', 'watchlist', 'watchProgress', 'userSettings',
         'config'];
+
     function SidebarController (popup, dataStore, sidebar, watchlist, watchProgress, userSettings, config) {
 
         var vm = this;
@@ -55,7 +56,7 @@
         vm.clearWatchlist     = clearWatchlist;
         vm.clearWatchProgress = clearWatchProgress;
 
-        vm.itemClickHandler = itemClickHandler;
+        vm.itemClickHandler    = itemClickHandler;
         vm.toggleChangeHandler = toggleChangeHandler;
 
         activate();
@@ -129,21 +130,11 @@
          */
         function clearWatchlist () {
 
-
-            popup
-                .show({
-                    controller:  'ConfirmController as vm',
-                    templateUrl: 'views/core/popups/confirm.html',
-                    resolve:     {
-                        message: 'Do you wish to clear your Saved videos list?'
-                    }
-                })
-                .then(function (result) {
-
-                    if (true === result) {
-                        watchlist.clearAll();
-                    }
-                });
+            popup.showConfirm('Do you wish to clear your Saved videos list?').then(function (result) {
+                if (true === result) {
+                    watchlist.clearAll();
+                }
+            });
         }
 
         /**
@@ -156,20 +147,11 @@
          */
         function clearWatchProgress () {
 
-            popup
-                .show({
-                    controller:  'ConfirmController as vm',
-                    templateUrl: 'views/core/popups/confirm.html',
-                    resolve:     {
-                        message: 'Do you wish to clear your Continue watching list?'
-                    }
-                })
-                .then(function (result) {
-
-                    if (true === result) {
-                        watchProgress.clearAll();
-                    }
-                });
+            popup.showConfirm('Do you wish to clear your Continue watching list?').then(function (result) {
+                if (true === result) {
+                    watchProgress.clearAll();
+                }
+            });
         }
     }
 
