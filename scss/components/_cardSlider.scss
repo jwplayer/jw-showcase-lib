@@ -66,11 +66,18 @@ $featured-slider-max-width: 900px;
     }
 
     //
+    // jwCardSliderContent
+    // --------------------------------
+
+    .jw-card-slider-content {
+        position: relative;
+    }
+
+    //
     // jwCardSliderAlign
     // --------------------------------
 
     .jw-card-slider-align {
-        position: relative;
         padding: 0 90px;
     }
 
