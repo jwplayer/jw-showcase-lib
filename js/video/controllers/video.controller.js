@@ -31,7 +31,6 @@
      * @requires jwShowcase.core.dataStore
      * @requires jwShowcase.core.popup
      * @requires jwShowcase.core.watchProgress
-     * @requires jwShowcase.core.watchlist
      * @requires jwShowcase.core.seo
      * @requires jwShowcase.core.userSettings
      * @requires jwShowcase.core.player
@@ -39,6 +38,9 @@
      * @requires jwShowcase.core.serviceWorker
      * @requires jwShowcase.core.utils
      * @requires jwShowcase.config
+     * @requires jwShowcase.video.item
+     * @requires jwShowcase.video.feed
+     * @requires jwShowcase.core.onScroll
      */
     VideoController.$inject = ['$scope', '$state', '$stateParams', '$timeout', 'dataStore', 'popup', 'watchProgress',
         'seo', 'userSettings', 'player', 'platform', 'serviceWorker', 'utils', 'config', 'item', 'feed', 'onScroll'];
@@ -48,14 +50,34 @@
 
         var vm                      = this,
             playlist                = [],
-            $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player')),
-            $headerEl               = angular.element(document.querySelector('.jw-header')),
             playerOffsetTop         = 0,
             playerStuck             = false,
-            playerService,
+            $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player')),
+            $headerEl               = angular.element(document.querySelector('.jw-header')),
+            playerService = player.getService(platform.isMobile ? 'sticky' : 'video'),
             loadingTimeout,
             onScrollDesktop,
             onScrollMobile;
+
+        /**
+         * Player settings
+         * @type {Object}
+         */
+        var playerSettings = {
+            width: '100%',
+            height: '100%',
+            aspectratio: '16:9',
+            ph: 4,
+            autostart: $state.params.autoStart,
+            playlist: [],
+            preload: 'metadata',
+            sharing: false,
+            visualplaylist: false,
+            cast: config.options.cast || {},
+            analytics: {
+                bi: config.id
+            }
+        };
 
         /**
          * Current playing item
@@ -94,31 +116,10 @@
         vm.enableRail = config.options.rightRail.enabled;
 
         /**
-         * Player settings
-         * @type {Object}
+         * Is true when using mobile browser.
+         * @type {boolean}
          */
-        vm.playerSettings = {
-            width:          '100%',
-            height:         '100%',
-            aspectratio:    '16:9',
-            ph:             4,
-            autostart:      $state.params.autoStart,
-            playlist:       [],
-            preload:        'metadata',
-            sharing:        false,
-            visualplaylist: false,
-            cast:           config.options.cast || {},
-            analytics:      {
-                bi: config.id
-            }
-        };
-        vm.startTime      = $stateParams.startTime;
-        vm.onFirstFrame   = onFirstFrame;
-        vm.onPlaylistItem = onPlaylistItem;
-        vm.onReady        = onReady;
-        vm.onError        = onError;
-        vm.onSetupError   = onSetupError;
-        vm.onAdImpression = onAdImpression;
+        vm.isMobile = platform.isMobile;
 
         vm.cardClickHandler = cardClickHandler;
 
@@ -131,9 +132,9 @@
          */
         function activate () {
 
+            scrollToTop();
             ensureItemIsInFeed();
             createPlayerSettings();
-            scrollToTop();
 
             $scope.$watch(function () {
                 return serviceWorker.isOnline();
@@ -141,11 +142,31 @@
 
             $scope.$on('$destroy', function () {
                 removeScrollHandlers();
+
+                if (playerService && platform.isMobile) {
+                    var state = playerService.getState();
+                    if (state === 'playing' || state === 'paused') {
+                        // pin player
+                        playerService.pin();
+
+                        return;
+                    }
+                }
             });
 
             loadingTimeout = $timeout(function () {
                 vm.loading = false;
             }, 2000);
+        }
+
+        function setLoading(state) {
+            if (vm.loading === state) {
+                return;
+            }
+
+            vm.loading = state;
+            $timeout.cancel(loadingTimeout);
+            $scope.$apply();
         }
 
         /**
@@ -169,6 +190,14 @@
 
             $state.$current.locals.globals.item = vm.item;
 
+            // update the player, but don't reinstantiate
+            playerService.update(
+                vm.item,
+                {
+                    startTime: $stateParams.startTime
+                }
+            );
+
             $state
                 .go('root.video', newStateParams, {
                     notify: false
@@ -185,32 +214,51 @@
         function createPlayerSettings () {
             playlist = generatePlaylist(vm.activeFeed, item);
 
-            vm.playerSettings.playlist = playlist;
+            playerSettings.playlist = playlist;
 
             // disable advertising when we are offline, this prevents errors while playing videos offline in PWA.
             if (!navigator.onLine) {
-                vm.playerSettings.advertising = false;
+                playerSettings.advertising = false;
             }
 
             // if no skin is selected in dashboard use the jw-showcase skin
             if (!window.jwplayer.defaults.skin) {
-                vm.playerSettings.skin = 'jw-showcase';
+                playerSettings.skin = 'jw-showcase';
             }
 
             if (window.cordova) {
-                vm.playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
-                vm.playerSettings.cast                  = false;
+                playerSettings.analytics.sdkplatform = platform.isAndroid ? 1 : 2;
+                playerSettings.cast                  = false;
             }
 
             // disable related overlay if showcaseContentOnly is true.
             if (config.options.showcaseContentOnly) {
-                vm.playerSettings.related = false;
+                playerSettings.related = false;
             }
 
             // override player settings from config
             if (angular.isObject(config.options.player)) {
-                angular.merge(vm.playerSettings, config.options.player);
+                angular.merge(playerSettings, config.options.player);
             }
+
+            // initialize the jwplayer instance through the service
+            playerService.init(
+                playerSettings,
+                vm.item,
+                // options
+                {
+                    startTime: $stateParams.startTime
+                },
+                // events
+                {
+                    playlistItem: onPlaylistItem,
+                    firstFrame: onFirstFrame,
+                    ready: onReady,
+                    error: onError,
+                    setupError: onSetupError,
+                    adImpression: onAdImpression
+                }
+            );
         }
 
         /**
@@ -317,14 +365,10 @@
          */
         function onReady (event) {
 
-            // wait for player ready before getting service and setting up scroll handlers
-            playerService = player.getService('video');
-
             setupScrollHandlers();
 
-            if (!vm.playerSettings.autostart) {
-                vm.loading = false;
-                $timeout.cancel(loadingTimeout);
+            if (!playerSettings.autostart) {
+                setLoading(false);
             }
         }
 
@@ -335,8 +379,7 @@
          */
         function onError (event) {
 
-            vm.loading = false;
-            $timeout.cancel(loadingTimeout);
+            setLoading(false);
         }
 
         /**
@@ -359,8 +402,7 @@
                     }
                 });
 
-            vm.loading = false;
-            $timeout.cancel(loadingTimeout);
+            setLoading(false);
         }
 
         /**
@@ -400,9 +442,7 @@
          */
         function onFirstFrame () {
 
-            if (vm.loading) {
-                vm.loading = false;
-            }
+            setLoading(false);
         }
 
         /**
@@ -412,8 +452,7 @@
          */
         function onAdImpression (event) {
 
-            vm.loading = false;
-            $timeout.cancel(loadingTimeout);
+            setLoading(false);
         }
 
         /**
@@ -462,45 +501,52 @@
         }
 
         function setupScrollHandlers() {
-            var previousScreenSize = platform.screenSize();
+            if (platform.isMobile) {
+                // only check for player sticking to top
+            } else {
+                var wasMobileScreen = platform.screenSize() === 'mobile';
 
-            function setupHandlersForScreensize(evt) {
-                var screenSize = platform.screenSize();
-                // if screen size did not change
-                if (previousScreenSize === screenSize && evt !== null) {
-                    return;
-                }
-
-                // set screen size specific scroll handler for sticky player
-                if (platform.screenSize() === 'mobile') {
-                    // unstick desktop
-                    stickPlayer(false);
-
-                    if (onScrollDesktop) {
-                        onScrollDesktop.clear();
+                var setupHandlersForScreensize = function (evt) {
+                    var isMobileScreen = platform.screenSize() === 'mobile';
+                    // if screen size did not change
+                    if (wasMobileScreen === isMobileScreen && evt !== null) {
+                        return;
                     }
-                    onScrollMobile = onScroll.bind(mobileScrollHandler);
-                } else {
-                    // unstick mobile
-                    stickPlayer(false, true);
 
-                    if (onScrollMobile) {
-                        onScrollMobile.clear();
+                    // unstick player
+                    resetStuckPlayer();
+
+                    removeScrollHandlers();
+
+                    // set screen size specific scroll handler for sticky player
+                    if (isMobileScreen) {
+                        onScrollMobile = onScroll.bind(function (scrollTop) {
+                            // stick when we've scrolled passed header height
+                            stickPlayer(scrollTop > 60);
+                        }, {
+                            debounceResize: 300
+                        });
+                    } else {
+                        // calculate proper player top offset
+                        playerOffsetTop = utils.getElementOffsetTop($videoPlayerContainerEl[0]);
+
+                        onScrollDesktop = onScroll.bind(function (scrollTop) {
+                            // stick when we've scrolled passed the player's top
+                            stickPlayer(scrollTop > playerOffsetTop);
+                        }, {
+                            debounceResize: 300
+                        });
                     }
-                    onScrollDesktop = onScroll.bind(desktopScrollHandler);
-                }
 
-                previousScreenSize = platform.screenSize();
+                    wasMobileScreen = isMobileScreen;
+                };
+
+                // pass `null` to force initialisation
+                setupHandlersForScreensize(null);
+
+                // reset handlers on resize
+                window.addEventListener('resize', utils.debounce(setupHandlersForScreensize, 200));
             }
-
-            // calculate proper player top offset
-            playerOffsetTop = utils.getElementOffsetTop($videoPlayerContainerEl[0]);
-
-            // pass `null` to force initialisation
-            setupHandlersForScreensize(null);
-
-            // reset handlers on resize
-            window.addEventListener('resize', utils.debounce(setupHandlersForScreensize, 200));
         }
 
         function removeScrollHandlers() {
@@ -513,23 +559,22 @@
             }
         }
 
-        function stickPlayer(state, forMobile) {
-            if (playerStuck === state || !playerService) {
+        function stickPlayer(state) {
+            if (playerStuck === state) {
                 return;
             }
 
-            var playerInstance = playerService.getInstance();
-
             playerStuck = state;
 
-            if (forMobile) {
-                // stick player to top of screen
+            if (platform.screenSize() === 'mobile') {
+                // MOBILE: stick player to top of screen
 
-                playerInstance.utils.toggleClass($headerEl[0], 'is-hidden', state);
-                playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'is-pinned', state);
+                utils.toggleClass($headerEl, 'is-hidden', state);
+                utils.toggleClass($videoPlayerContainerEl, 'is-pinned', state);
             } else {
-                // stick smaller player to bottom right of screen
+                // NON-MOBILE: stick smaller player to bottom right of screen
 
+                var playerInstance = playerService.getInstance();
                 if (playerInstance) {
                     // wait for animation to finish
                     $videoPlayerContainerEl.one(
@@ -543,20 +588,29 @@
                     );
                 }
 
-                // toggle class (and animation)
-                playerInstance.utils.toggleClass($videoPlayerContainerEl[0], 'minimized', state);
+                // toggle classes (and animation)
+                utils.toggleClass($videoPlayerContainerEl, 'minimized', state);
+                utils.toggleClass($videoPlayerContainerEl, 'normalized', !state);
             }
         }
 
-        function mobileScrollHandler() {
-            // stick when we've scrolled passed header height
-            stickPlayer(utils.getScrollTop() > 60, true);
+        function resetStuckPlayer() {
+            playerStuck = false;
+
+            // disable animation
+            $videoPlayerContainerEl.addClass('no-anim');
+
+            $headerEl.removeClass('is-hidden');
+            $videoPlayerContainerEl.removeClass('is-pinned');
+            $videoPlayerContainerEl.removeClass('minimized');
+            $videoPlayerContainerEl.removeClass('normalized');
+
+            $timeout(function () {
+                // enable animation
+                $videoPlayerContainerEl.removeClass('no-anim');
+            }, 200);
         }
 
-        function desktopScrollHandler() {
-            // stick when we've scrolled passed the player's top
-            stickPlayer(utils.getScrollTop() > playerOffsetTop);
-        }
     }
 
 }());

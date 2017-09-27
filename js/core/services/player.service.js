@@ -29,13 +29,16 @@
      * automatically set by the {@link jwShowcase.core.directive:jwPlayer `jwPlayerDirective`}.
      */
 
-    player.$inject = ['$rootScope', 'userSettings', 'watchProgress', 'config'];
-    function player ($rootScope, userSettings, watchProgress, config) {
+    player.$inject = ['$rootScope', '$q', 'userSettings', 'watchProgress', 'config', 'platform'];
+    function player ($rootScope, $q, userSettings, watchProgress, config, platform) {
 
-        var playerServices = {};
+        var playerServices = {},
+            onPinHandler,
+            onUnpinHandler;
 
-        this.createService = createService;
         this.getService    = getService;
+        this.onPin         = onPin;
+        this.onUnpin       = onUnpin;
 
         activate();
 
@@ -49,24 +52,17 @@
         }
 
         /**
-         * (Un)set player instance
-         *
-         * @param player
-         */
-        function createService (player, options) {
-
-            options.pid = options.pid || 'default';
-
-            playerServices[options.pid] = playerService(player, options);
-        }
-
-        /**
          * Get player instance
          * @returns {*}
          */
         function getService (pid) {
 
             pid = pid || 'default';
+
+            if (!playerServices[pid]) {
+                // create new scope for player service
+                playerServices[pid] = playerService(pid);
+            }
 
             return playerServices[pid];
         }
@@ -84,29 +80,125 @@
             });
         }
 
-        function playerService(playerInstance, options) {
+        // set handler for pin event piping
+        function onPin(handler) {
 
-            var pid                      = options.pid,
-                item                     = options.item || null,
-                watchProgressItem        = item ? watchProgress.getItem(item) : null,
-                startTime                = options.startTime || null,
-                requestQualityChange     = false,
+            onPinHandler = handler;
+        }
+
+        // set handler for unpin event piping
+        function onUnpin(handler) {
+
+            onUnpinHandler = handler;
+        }
+
+        /**
+         * Player service creates a scope specifically
+         * for a player instance and handles all global
+         * events such as watch progress and quality
+         * changes.
+         *
+         * @param    {String}  pid             Unique simple identifier for player service
+         * @param    {Object}  options         Extra options for player
+         * @returns  {Object}                  Service API
+         */
+        function playerService(pid) {
+
+            var requestQualityChange     = false,
                 lastPos                  = 0,
                 started                  = false,
                 performedConditionalSeek = false,
-                PLAYER_EVENTS            = {
-                    firstFrame: onFirstFrame,
-                    levels: onLevels,
-                    complete: onComplete,
-                    time: onTime
-                },
-                levels,
-                onPinHandler,
-                onUnpinHandler;
+                continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching,
+                startTime,
+                item,
+                watchProgressItem,
+                playerInstance,
+                playerInstantiatedResolve,
+                levels;
 
+            var playerInstantiated = $q(function(resolve) {
+
+                // break resolve method out of scope
+                playerInstantiatedResolve = resolve;
+            });
+
+            // default player events to handle
+            var PLAYER_EVENTS = {
+                firstFrame: onFirstFrame,
+                levels: onLevels,
+                complete: onComplete,
+                time: onTime
+            };
 
             function getInstance() {
+
                 return playerInstance;
+            }
+
+            function getItem() {
+
+                return item;
+            }
+
+            function setup(playerId) {
+
+                playerInstance = jwplayer(playerId);
+
+                // resolve playerInstantiated promise
+                playerInstantiatedResolve();
+            }
+
+            function init(settings, playlistItem, options, events) {
+
+                // wait for playerInstance
+                playerInstantiated.then(function() {
+
+                    update(playlistItem, options);
+
+                    settings = angular.extend({
+                        controls: true
+                    }, settings);
+
+                    // override autostart for mobile devices
+                    if (window.cordova || platform.isMobile) {
+                        settings.autostart = false;
+                    }
+
+                    // call setup on jwplayer
+                    playerInstance.setup(settings);
+
+                    if (window.cordova && settings.autostart) {
+
+                        playerInstance.once('playlistItem', function () {
+                            setTimeout(function () {
+                                this.play(true);
+                            }.bind(this), 1);
+                        });
+                    }
+
+                    // add default event listeners to playerInstance
+                    angular.forEach(PLAYER_EVENTS, function (fn, type) {
+                        playerInstance.on(type, fn);
+                    });
+
+                    angular.forEach(events, function (fn, type) {
+                        playerInstance.on(type, fn);
+                    });
+                });
+            }
+
+            function update(playlistItem, options) {
+
+                item = playlistItem;
+
+                // set watchProgressItem only if we have item
+                watchProgressItem = item && watchProgress.getItem(item);
+
+                // set relevant options
+
+                if (options.startTime) {
+                    startTime = options.startTime;
+                }
             }
 
             /**
@@ -144,7 +236,9 @@
              */
             function onComplete() {
 
-                watchProgress.removeItem(item);
+                if (item) {
+                    watchProgress.removeItem(item);
+                }
             }
 
             /**
@@ -171,9 +265,12 @@
                     return performConditionalSeek();
                 }
 
-                if (Math.abs(lastPos - position) > 5) {
-                    lastPos = position;
-                    watchProgress.handler(item, event.position / event.duration);
+                if (item) {
+                    // handle updating watchprogress
+                    if (Math.abs(lastPos - position) > 5) {
+                        lastPos = position;
+                        watchProgress.handler(item, event.position / event.duration);
+                    }
                 }
             }
 
@@ -181,8 +278,6 @@
              * Seek to time given in stateParams when set or resume the watch progress
              */
             function performConditionalSeek() {
-
-                var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching;
 
                 performedConditionalSeek = true;
 
@@ -195,23 +290,18 @@
                 }
 
                 if (continueWatching && angular.isDefined(watchProgressItem)) {
-                    resumeWatchProgress();
-                }
-            }
+                    // resume video playback at last saved position from watchProgress
 
-            /**
-             * Resume video playback at last saved position from watchProgress
-             */
-            function resumeWatchProgress() {
+                    var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
 
-                var toWatchProgress = watchProgressItem ? watchProgressItem.progress : 0;
-
-                if (toWatchProgress > 0) {
-                    playerInstance.seek(toWatchProgress * item.duration);
+                    if (toWatchProgress > 0) {
+                        playerInstance.seek(toWatchProgress * item.duration);
+                    }
                 }
             }
 
             function lowerBandwidth(value) {
+
                 // nothing to do
                 if (!levels) {
                     return;
@@ -240,25 +330,6 @@
                         return playerInstance[method].apply(playerInstance, Array.prototype.slice.call(arguments));
                     }
                 };
-            }
-
-            /**
-             * Add event listeners to playerInstance
-             */
-            angular.forEach(PLAYER_EVENTS, function (fn, type) {
-                playerInstance.on(type, fn);
-            });
-
-            // set handler for pin event piping
-            function onPin(handler) {
-
-                onPinHandler = handler;
-            }
-
-            // set handler for unpin event piping
-            function onUnpin(handler) {
-
-                onUnpinHandler = handler;
             }
 
             // pipe method through to sticky player's handler
@@ -300,7 +371,11 @@
                 setCurrentQuality: playerMethod('setCurrentQuality'),
                 load: playerMethod('load'),
 
+                setup: setup,
+                init: init,
+                update: update,
                 getInstance: getInstance,
+                getItem: getItem,
                 lowerBandwidth: lowerBandwidth,
                 onPin: onPin,
                 onUnpin: onUnpin,

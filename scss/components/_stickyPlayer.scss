@@ -1,35 +1,45 @@
 .jw-pinned-player-container {
-    display: none;
-
-    position: fixed;
-
-    z-index: $sticky-player-z-index;
-
-    bottom: $sticky-player-offset;
-    right: $sticky-player-offset;
-
-    width: $sticky-player-width-mobile;
-
-    background-color: rgba(255, 255, 255, 0.6);
-    padding: 1px;
-
-    // add box-shadow for floating effect
-    @include box-shadow(0 0 20px rgba(0, 0, 0, 0.4));
+    $shadow-color: rgba(0, 0, 0, 0.4);
+    $box-shadow: 0 0 20px $shadow-color;
 
     @include transition-property(transform, opacity);
     @include transition-duration(100ms);
     @include transition-timing-function(ease-in);
 
-    // only display div when it's being used
-    &.is-active {
-        display: block;
+    position: absolute;
 
-        @include animation(jw-player-pin-animation $sticky-player-animation-mobile);
+    top: $header-height-mobile;
+    left: 0;
+
+    width: 100%;
+
+    &.is-pinned {
+        // add box-shadow for floating effect
+        @include box-shadow($box-shadow);
+
+        position: fixed;
+
+        top: 0;
     }
 
-    // animate when unpinning
-    &.is-deactivating {
-        @include animation(jw-player-unpin-animation $sticky-player-animation-mobile);
+    &.is-stuck {
+        $bg-color: rgba(255, 255, 255, 0.6);
+
+        // add box-shadow for floating effect
+        @include box-shadow($box-shadow);
+
+        position: fixed;
+
+        z-index: $sticky-player-z-index;
+
+        right: $sticky-player-offset;
+        bottom: $sticky-player-offset;
+
+        width: $sticky-player-width-mobile;
+
+        padding: 1px;
+        background-color: $bg-color;
+
     }
 
     // stop transition effect when dragging

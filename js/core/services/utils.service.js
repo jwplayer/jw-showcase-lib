@@ -64,8 +64,8 @@
         this.flexboxSupport         = flexboxSupport;
         this.getElementOffsetTop    = getElementOffsetTop;
         this.getScrollTop           = getScrollTop;
-        this.getDefaultValue        = getDefaultValue;
         this.getPrefixedEventNames  = getPrefixedEventNames;
+        this.toggleClass            = toggleClass;
 
         ////////////////////////
 
@@ -489,20 +489,6 @@
         }
 
         /**
-         * Get default arg based on whether the variable is undefined.
-         *
-         * @param   {*}  arg           Any function argument
-         * @param   {*}  defaultValue  A given default value
-         * @return  {*}                The value, or defaultValue is value is undefined
-         */
-        function getDefaultValue(value, defaultValue) {
-            if (typeof value === 'undefined') {
-                return defaultValue;
-            }
-            return value;
-        }
-
-        /**
          * Get vendor prefixed event names.
          *
          * @param   {String}  eventName  Event name
@@ -535,6 +521,10 @@
             testElement               = null;
 
             return flexboxSupported;
+        }
+
+        function toggleClass(element, className, state) {
+            angular.element(element)[state ? 'addClass' : 'removeClass'](className);
         }
     }
 

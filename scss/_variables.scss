@@ -78,7 +78,7 @@ $video-layout-right-rail-width: 1280px !default;
 //
 // StickyPlayer
 // --------------------------------
-$sticky-player-offset: 20px !default;
+$sticky-player-offset: $base-spacing !default;
 $sticky-player-width: 400px !default;
 $sticky-player-width-mobile: 65% !default;
 $sticky-player-transition: 130ms ease-in-out !default;

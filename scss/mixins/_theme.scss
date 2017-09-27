@@ -7,6 +7,7 @@
     $success-color: $green !default;
     $light-color: $gray-lighter !default;
     $dark-color: $gray-dark !default;
+    $shadow-color: rgba($black, 0.5) !default;
 
     $facebook-color: #3b5998 !default;
     $twitter-color: #55acee !default;
@@ -103,7 +104,7 @@
     $header-bg: $white !default;
     $header-color: $secondary-color !default;
     $header-hover-color: $primary-color !default;
-    $header-fixed-shadow: 0 0 15px 0 rgba($black, 0.5) !default;
+    $header-fixed-shadow: 0 0 15px 0 $shadow-color !default;
 
     $search-bg: $header-bg !default;
     $search-color: inherit !default;

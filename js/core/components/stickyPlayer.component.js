@@ -39,18 +39,22 @@
 
         var vm = this,
             isDragging = false,
+            isPinned   = false,
             $stickyContainerEl = angular.element($element.find('div')[0]);
 
         vm.returnToVideo = returnToVideo;
 
+        player.onPin(onPin);
+        player.onUnpin(onUnpin);
+
         function returnToVideo() {
             // prevent click handler from firing when dragging mini player
-            if (isDragging) {
+            if (isDragging || !isPinned) {
                 return;
             }
 
             // get current playlist item from video to determine the page to navigate to
-            var playlistItem = player.getPlayer().getPlaylistItem();
+            var playlistItem = player.getService('sticky').playlistItem();
             if (!playlistItem) {
                 return;
             }
@@ -62,18 +66,17 @@
             });
         }
 
-        function onPin(playerInstance, resume) {
+        function onPin(playerInstance) {
+            isPinned = true;
+
+            var resume = playerInstance.getState() === 'playing';
+
             // make sure the container is reset
             resetContainerDrag();
 
             $stickyContainerEl.addClass('is-active');
 
-            var playerInstanceEl = playerInstance.getContainer();
-
-            // move player to this element
-            $stickyContainerEl[0].appendChild(playerInstanceEl);
-
-            addSwipeHandling(angular.element(playerInstanceEl));
+            addSwipeHandling($stickyContainerEl);
 
             // wait for next cycle
             window.requestAnimationFrame(function() {
@@ -89,12 +92,8 @@
             });
         }
 
-        function onUnpin() {
-            var playerInstance = player.getPlayer();
-
-            if (!playerInstance) {
-                return;
-            }
+        function onUnpin(playerInstance) {
+            isPinned = false;
 
             $stickyContainerEl.one(
                 utils.getPrefixedEventNames('animationEnd'),
@@ -123,7 +122,7 @@
             $stickyContainerEl.removeClass('is-active');
         }
 
-        function addSwipeHandling($playerInstanceEl) {
+        function addSwipeHandling(el) {
             // threshold in pixels to swipe
             var threshold = 150;
 
@@ -132,7 +131,7 @@
             var moved = 0;
 
             betterSwipe.bind(
-                $playerInstanceEl,
+                el,
                 {
                     start: function(coords, event) {
                         // remember start position

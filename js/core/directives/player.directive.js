@@ -16,9 +16,6 @@
 
 (function () {
 
-    var PLAYER_EVENTS = ['ready', 'play', 'pause', 'complete', 'seek', 'error', 'setupError', 'playlistItem', 'time',
-        'firstFrame', 'levels', 'adImpression'];
-
     angular
         .module('jwShowcase.core')
         .directive('jwPlayer', JwPlayerDirective);
@@ -44,27 +41,22 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform'];
-    function JwPlayerDirective ($parse, $timeout, utils, player, platform) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player'];
+    function JwPlayerDirective ($parse, $timeout, utils, player) {
 
         return {
             scope:       {
-                settings:  '=',
-                pid:       '=',
-                item:      '=',
-                startTime: '='
+                pid:       '='
             },
             replace:     false,
             templateUrl: 'views/core/jwPlayer.html',
             link:        link
         };
 
-        function link (scope, element, attr) {
+        function link (scope, element) {
 
             var playerId = generateRandomId(),
-                initTimeoutId,
-                playerInstance,
-                playerService;
+                playerService = player.getService(scope.pid);
 
             activate();
 
@@ -79,108 +71,15 @@
                     .find('div')
                     .attr('id', playerId);
 
-                initTimeoutId = setTimeout(initialize, 500);
+                // create player instance through service
+                playerService.setup(playerId);
 
                 scope.$on('$destroy', function () {
-
-                    // prevent initialisation
-                    clearTimeout(initTimeoutId);
-
-                    if (playerService && platform.screenSize() === 'mobile') {
-                        var state = playerService.getState();
-                        if (state === 'playing' || state === 'paused') {
-                            // pin player
-                            playerService.pin();
-
-                            return;
-                        }
+                    // only remove player when the service instance is this player instance. Otherwise we could
+                    // potentially unset an already set player because this is wrapped in a timeout.
+                    if (player.getService(scope.pid) === playerService) {
+                        playerService.destroy();
                     }
-
-                    // remove player instance after timeout
-                    $timeout(function () {
-
-                        // only remove player when the service instance is this player instance. Otherwise we could
-                        // potentially unset an already set player because this is wrapped in a timeout.
-                        if (player.getService(scope.pid) === playerService) {
-                            playerService.destroy();
-                        }
-                    }, 1000);
-                });
-            }
-
-            /**
-             * Initialize JS player
-             */
-            function initialize () {
-
-                var settings = angular.extend({
-                    controls: true
-                }, scope.settings);
-
-                // override autostart for mobile devices
-                if (window.cordova || platform.isMobile) {
-                    settings.autostart = false;
-                }
-
-                playerInstance = jwplayer(playerId)
-                    .setup(settings);
-
-                // create player service before binding event listeners
-                playerService = player.createService(playerInstance, {
-                    pid: scope.pid,
-                    item: scope.item,
-                    startTime: scope.startTime
-                });
-
-                bindPlayerEventListeners();
-
-                if (window.cordova && scope.settings.autostart) {
-
-                    playerInstance.once('playlistItem', function () {
-                        setTimeout(function() {
-                            this.play(true);
-                        }.bind(this), 1);
-                    });
-                }
-            }
-
-            /**
-             * Add event listeners to playerInstance
-             */
-            function bindPlayerEventListeners () {
-
-                // custom events from directive
-                PLAYER_EVENTS.forEach(function (type) {
-                    playerInstance.on(type, function (event) {
-                        proxyEvent(type, event);
-                    });
-                });
-            }
-
-            /**
-             * Proxy JW Player event to directive attribute
-             *
-             * @param {string} type
-             * @param {Object} event
-             */
-            function proxyEvent (type, event) {
-
-                var attrName = 'on' + utils.ucfirst(type),
-                    parsed;
-
-                parsed = $parse(attr[attrName])(scope.$parent);
-
-                if (!angular.isFunction(parsed)) {
-                    return;
-                }
-
-                // prevent $digest every time event
-                if (type === 'time') {
-                    return parsed.call(playerInstance, event);
-                }
-
-                $timeout(function () {
-                    parsed.call(playerInstance, event);
                 });
             }
 

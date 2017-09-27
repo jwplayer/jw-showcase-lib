@@ -27,35 +27,47 @@
      * @description
      * Better swipe service with support for mouse leave
      */
-    onScroll.$inject = ['$timeout'];
-    function onScroll ($timeout) {
+    onScroll.$inject = ['$timeout', 'utils'];
+    function onScroll ($timeout, utils) {
 
-        function getScrollTop() {
-            return window.pageYOffset || document.body.scrollTop;
-        }
 
-        this.bind = function(callback, debounceTime) {
-            if (typeof debounceTime === 'undefined') {
-                // default to 100ms
-                debounceTime = 100;
+        this.bind = function(callback, opts) {
+            if (!opts) {
+                opts = {};
             }
 
+            opts.debounceTime = opts.debounceTime || 100;
+            opts.debounceResize = opts.debounceResize || false;
+
             var clear;
+            var resizing = false;
+            var resizeTimeout;
+            var lastScrollTop = utils.getScrollTop();
+
+            var resizeHandler = utils.debounce(function () {
+                resizing = true;
+
+                $timeout.cancel(resizeTimeout);
+
+                resizeTimeout = $timeout(function () {
+                    resizing = false;
+                }, opts.debounceResize);
+            }, 50);
+
             var raf = window.requestAnimationFrame;
 
             // if browser support animation frame
             if (raf) {
                 var af;
-                var lastScrollTop = getScrollTop();
 
                 var loop = function() {
-                    var scrollTop = getScrollTop();
+                    var scrollTop = utils.getScrollTop();
 
-                    if (lastScrollTop !== scrollTop) {
+                    if (lastScrollTop !== scrollTop && !resizing) {
                         lastScrollTop = scrollTop;
 
                         // fire callback function if scrolled
-                        callback();
+                        callback(scrollTop, scrollTop > lastScrollTop);
                     }
 
                     // continue loop
@@ -67,34 +79,40 @@
 
                 clear = function() {
                     cancelAnimationFrame(af);
+                    window.removeEventListener('resize', resizeHandler);
                 };
             } else {
                 // fallback to oldskool scroll event listener
                 var waiting = false;
-                var endScrollHandle;
+                var endScrollTimeout;
 
                 // debounce the event handler to improve performance
                 var debouncedHandler = function () {
-                    if (waiting) {
+                    if (waiting || resizing) {
                         return;
                     }
 
                     waiting = true;
 
-                    // clear previously scheduled endScrollHandle
-                    clearTimeout(endScrollHandle);
+                    var scrollTop = utils.getScrollTop();
+                    var scrolledDown = scrollTop > lastScrollTop;
 
-                    callback();
+                    // clear previously scheduled endScrollTimeout
+                    $timeout.cancel(endScrollTimeout);
+
+                    callback(scrollTop, scrolledDown);
 
                     // stop waiting after debounceTime
                     $timeout(function () {
                         waiting = false;
-                    }, debounceTime);
+                    }, opts.debounceTime);
 
                     // in case scroll happened while we were waiting, fire callback after twice the debounceTime
-                    endScrollHandle = $timeout(function () {
-                        callback();
-                    }, debounceTime * 2);
+                    endScrollTimeout = $timeout(function () {
+                        callback(scrollTop, scrolledDown);
+                    }, opts.debounceTime * 2);
+
+                    lastScrollTop = scrollTop;
                 };
 
                 // set listener and handler
@@ -103,7 +121,12 @@
                 clear = function() {
                     // remove listener
                     window.removeEventListener('scroll', debouncedHandler);
+                    window.removeEventListener('resize', resizeHandler);
                 };
+            }
+
+            if (opts.debounceResize) {
+                window.addEventListener('resize', resizeHandler);
             }
 
             // return 'API'

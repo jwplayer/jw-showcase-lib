@@ -34,18 +34,8 @@
                   </div>
                 </div>
 
-                <div class="jw-video-container-player">
-                  <jw-player
-                      pid="'video'"
-                      item="vm.item"
-                      start-time="vm.startTime"
-                      settings="vm.playerSettings"
-                      on-playlist-item="vm.onPlaylistItem"
-                      on-first-frame="vm.onFirstFrame"
-                      on-ready="vm.onReady"
-                      on-error="vm.onError"
-                      on-setup-error="vm.onSetupError"
-                      on-ad-impression="vm.onAdImpression"></jw-player>
+                <div class="jw-video-container-player no-anim">
+                  <jw-player ng-if="!vm.isMobile" pid="'video'"></jw-player>
                 </div>
               </div>
             </div>

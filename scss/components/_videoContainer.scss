@@ -25,27 +25,33 @@
         @include single-transition(opacity, 0.2s, ease-out);
         @include cover();
 
-        @include transform-origin(100%, 100%);
-        @include animation(jw-player-unstick-animation $sticky-player-animation);
+        &.no-anim {
+            @include animation(unset !important);
+            @include animation-duration(0s !important);
+        }
+
+        &.normalized {
+            @include transform-origin(100%, 100%);
+            @include animation(jw-player-unstick-animation $sticky-player-animation);
+        }
 
         &.minimized {
+            // animation from bottom left
+            @include transform-origin(0%, 0%);
+            @include animation(jw-player-stick-animation $sticky-player-animation);
+
             position: fixed;
 
             z-index: $sticky-player-z-index;
 
             // override positioning
             top: auto;
-            left: auto;
-
             right: $sticky-player-offset;
             bottom: $sticky-player-offset;
+            left: auto;
 
             width: $sticky-player-width;
             height: auto;
-
-            // animation from bottom left
-            @include transform-origin(0%, 0%);
-            @include animation(jw-player-stick-animation $sticky-player-animation);
         }
     }
 
@@ -87,9 +93,9 @@
 
             &.is-pinned {
                 position: fixed;
-                top: 0;
-
                 z-index: $view-z-index;
+
+                top: 0;
 
                 height: auto;
             }
