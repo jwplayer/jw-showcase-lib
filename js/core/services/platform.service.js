@@ -30,7 +30,7 @@
         var isTouch  = 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch),
             parser   = new window.UAParser(),
             result   = parser.getResult(),
-            osName   = result.os.name.toLowerCase(),
+            osName   = (result.os.name || '').toLowerCase(),
             isMobile = ['android', 'ios'].indexOf(osName) > -1;
 
         return {
