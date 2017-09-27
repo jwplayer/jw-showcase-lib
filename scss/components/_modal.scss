@@ -18,6 +18,10 @@
     .jw-modal-image {
         margin-bottom: 10px;
         text-align: center;
+
+        > img {
+            max-width: 100%;
+        }
     }
 
     .jw-modal-message {
@@ -46,5 +50,11 @@
     .jw-modal-row {
         margin: rem(50px);
         text-align: center;
+    }
+}
+
+@include mobile-only () {
+    .jw-modal .jw-modal-message-title {
+        font-size: 1.75rem;
     }
 }
