@@ -28,19 +28,20 @@
      */
     SettingsController.$inject = ['dataStore', 'watchlist', 'watchProgress', 'userSettings', 'popup', '$state', 'utils',
         'platform'];
+
     function SettingsController (dataStore, watchlist, watchProgress, userSettings, popup, $state, utils, platform) {
 
         var vm = this;
 
-        vm.savedVideosFeed      = dataStore.getFeed('saved-videos');
-        vm.continueWatchingFeed = dataStore.getFeed('continue-watching');
-        vm.conserveBandwidth    = userSettings.settings.conserveBandwidth;
-        vm.continueWatching     = userSettings.settings.continueWatching;
+        vm.watchlist         = dataStore.getFeed('saved-videos');
+        vm.watchProgress     = dataStore.getFeed('continue-watching');
+        vm.conserveBandwidth = userSettings.settings.conserveBandwidth;
+        vm.continueWatching  = userSettings.settings.continueWatching;
 
-        vm.toggleChangeHandler  = toggleChangeHandler;
-        vm.clearWatchlist       = clearWatchlist;
-        vm.clearWatchProgress   = clearWatchProgress;
-        vm.cardClickHandler     = cardClickHandler;
+        vm.toggleChangeHandler = toggleChangeHandler;
+        vm.clearWatchlist      = clearWatchlist;
+        vm.clearWatchProgress  = clearWatchProgress;
+        vm.cardClickHandler    = cardClickHandler;
 
         /**
          * @ngdoc method
@@ -59,7 +60,6 @@
 
             userSettings.set(type, vm[type]);
         }
-
 
         /**
          * @ngdoc method
