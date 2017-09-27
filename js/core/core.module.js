@@ -33,13 +33,16 @@
 
     function config ($stateProvider, $urlMatcherFactoryProvider, $touchProvider, seoProvider, historyProvider) {
 
+        // eliminate the ~300ms click delay for touch devices
         if ('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch)) {
             $touchProvider.ngClickOverrideEnabled(true);
         }
 
+        // this makes the trailing slash in states URL's optional.
         $urlMatcherFactoryProvider
             .strictMode(false);
 
+        // add a boolean URL matcher type, to make it possible to use `$stateParams.param === true`.
         $urlMatcherFactoryProvider
             .type('boolean', {
                 name:    'boolean',
@@ -55,9 +58,11 @@
                 pattern: /true|false/
             });
 
+        // define state which is used while navigating back while the history is empty.
         historyProvider
             .setDefaultState('root.dashboard');
 
+        // define abstract root state. The root state will also preload the application.
         $stateProvider
             .state('root', {
                 abstract:    true,
@@ -67,6 +72,7 @@
                 templateUrl: 'views/core/root.html'
             });
 
+        // define default page SEO parameters.
         seoProvider
             .otherwise(['$location', 'config', function ($location, config) {
                 return {
@@ -81,15 +87,18 @@
 
     function run ($document, history, platform) {
 
+        // initialize history and platform services.
         history.attach();
         platform.prepare();
 
+        // listen for keyup events and enable the focus ring when using the tab key.
         $document.on('keyup', function (evt) {
             if (9 === evt.which) {
                 document.body.classList.remove('jw-flag-no-focus');
             }
         });
 
+        // disable focus ring when a mouse click event is triggered.
         $document.on('click', function () {
             document.body.classList.add('jw-flag-no-focus');
         });
