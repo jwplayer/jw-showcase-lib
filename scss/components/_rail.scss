@@ -45,16 +45,15 @@
 
         &-image {
             @include flex(0 0 auto);
-            position: relative;
-            margin: $base-spacing;
-
             @include display-flex();
             @include align-items(center);
 
-            overflow: hidden;
-
+            position: relative;
             width: 160px;
             height: 90px;
+            margin: $base-spacing;
+
+            overflow: hidden;
 
             > img {
                 display: block;
