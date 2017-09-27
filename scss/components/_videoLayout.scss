@@ -63,6 +63,8 @@
 
             .jw-video-layout-rail {
                 @include flex-basis(100%);
+                @include flex(0);
+
                 width: 100%;
             }
         }
