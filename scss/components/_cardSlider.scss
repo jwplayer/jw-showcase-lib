@@ -96,7 +96,7 @@ $featured-slider-max-width: 900px;
 
     .jw-card-slider-button {
         @include single-transition(color, 0.2s, ease, 0s);
-        @include transform(translateY(-50%));
+        @include transform(translateY(-50%) translateY(-19.5px));
 
         display: block;
         position: absolute;
@@ -216,6 +216,16 @@ $featured-slider-max-width: 900px;
 
     .jw-feed-title {
         margin: 0 90px $base-spacing;
+    }
+}
+
+//
+// jwCardSlider-flag-hide-text
+// --------------------------------
+
+.jw-card-slider.jw-card-slider-flag-hide-text {
+    .jw-card-slider-button {
+        @include transform(translateY(-50%));
     }
 }
 
