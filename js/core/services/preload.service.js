@@ -81,6 +81,14 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
+                if (!utils.flexboxSupport()) {
+                    appStore.loading = false;
+
+                    $state.go('updateBrowser', {directed: true});
+
+                    return;
+                }
+
                 api.getPlayer(config.player)
                     .then(handlePreloadSuccess, handlePreloadError);
 

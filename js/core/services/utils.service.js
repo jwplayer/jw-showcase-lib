@@ -55,6 +55,7 @@
         this.composeFacebookLink    = composeFacebookLink;
         this.composeTwitterLink     = composeTwitterLink;
         this.composeEmailLink       = composeEmailLink;
+        this.flexboxSupport         = flexboxSupport;
 
         ////////////////////////
 
@@ -449,6 +450,24 @@
             return twitterShareLink
                 .replace('{url}', encodeURIComponent($location.absUrl()))
                 .replace('{subject}', encodeURIComponent(title));
+        }
+
+        /**
+         * @ngdoc method
+         * @name jwShowcase.core.utils#flexboxSupport
+         * @methodOf jwShowcase.core.utils
+         *
+         * @description
+         * Check if browser has support for flexbox
+         *
+         * @returns {boolean}
+         */
+        function flexboxSupport () {
+            var testElement           = document.createElement('div');
+            var flexboxSupported      = typeof testElement.style.flex !== 'undefined';
+            testElement               = null;
+
+            return flexboxSupported;
         }
     }
 
