@@ -1,49 +1,75 @@
-.jw-pinned-player-container {
-    $shadow-color: rgba(0, 0, 0, 0.4);
-    $box-shadow: 0 0 20px $shadow-color;
+.jw-sticky-player-container {
+    $transition: 300ms ease-in-out;
+    $box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 
-    @include transition-property(transform, opacity);
-    @include transition-duration(100ms);
-    @include transition-timing-function(ease-in);
+    // only transition top for mini player
+    @include transition(top $transition);
 
+    // start as absolute to scroll with page
     position: absolute;
 
+    z-index: $view-z-index;
+
+    // offset header height
     top: $header-height-mobile;
-    left: 0;
 
     width: 100%;
+    // make container 'invisible'
+    height: 0;
 
-    &.is-pinned {
-        // add box-shadow for floating effect
-        @include box-shadow($box-shadow);
+    > div {
+        @include transition(width $transition, padding $transition);
 
+        position: absolute;
+
+        // stick to right
+        right: 0;
+
+        width: 100%;
+    }
+
+    &.is-pinned,
+    &.is-stuck {
+        // set to fixed to prevent move on scroll
         position: fixed;
 
-        top: 0;
+        > div {
+            @include box-shadow($box-shadow);
+        }
+    }
+
+    &.is-pinned {
+        // offset top by header-height
+        transform: translateY(-$header-height-mobile);
     }
 
     &.is-stuck {
+        @include transition(top $transition, margin $transition, opacity $transition);
+
         $bg-color: rgba(255, 255, 255, 0.6);
 
-        // add box-shadow for floating effect
-        @include box-shadow($box-shadow);
-
-        position: fixed;
-
+        // move above all other elements
         z-index: $sticky-player-z-index;
 
-        right: $sticky-player-offset;
-        bottom: $sticky-player-offset;
+        // transition top to 100%
+        top: 100%;
 
-        width: $sticky-player-width-mobile;
+        > div {
+            // stick to right bottom
+            right: $sticky-player-offset;
+            bottom: $sticky-player-offset;
 
-        padding: 1px;
-        background-color: $bg-color;
+            // decrease width
+            width: $sticky-player-width-mobile;
 
+            padding: 1px;
+
+            background-color: $white;
+        }
     }
 
-    // stop transition effect when dragging
     &.is-dragging {
+        // stop transition effect when dragging
         @include transition-property(none);
     }
 }

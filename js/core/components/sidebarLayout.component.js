@@ -32,8 +32,8 @@
      * @requires jwShowcase.core.sidebar
      */
 
-    SidebarLayoutController.$inject = ['$scope', '$element', '$animate', 'sidebar'];
-    function SidebarLayoutController ($scope, $element, $animate, sidebar) {
+    SidebarLayoutController.$inject = ['$scope', '$element', '$animate', 'sidebar', 'platform'];
+    function SidebarLayoutController ($scope, $element, $animate, sidebar, platform) {
 
         var vm = this;
         var focusElement;
@@ -41,6 +41,7 @@
         vm.sidebar = sidebar;
         vm.backdropClickHandler = backdropClickHandler;
         vm.swipeLeftHandler     = swipeLeftHandler;
+        vm.isMobile             = platform.isMobile;
 
         activate();
 

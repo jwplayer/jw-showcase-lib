@@ -32,13 +32,9 @@
     player.$inject = ['$rootScope', '$q', 'userSettings', 'watchProgress', 'config', 'platform'];
     function player ($rootScope, $q, userSettings, watchProgress, config, platform) {
 
-        var playerServices = {},
-            onPinHandler,
-            onUnpinHandler;
+        var playerServices = {};
 
         this.getService    = getService;
-        this.onPin         = onPin;
-        this.onUnpin       = onUnpin;
 
         activate();
 
@@ -80,18 +76,6 @@
             });
         }
 
-        // set handler for pin event piping
-        function onPin(handler) {
-
-            onPinHandler = handler;
-        }
-
-        // set handler for unpin event piping
-        function onUnpin(handler) {
-
-            onUnpinHandler = handler;
-        }
-
         /**
          * Player service creates a scope specifically
          * for a player instance and handles all global
@@ -104,23 +88,23 @@
          */
         function playerService(pid) {
 
-            var requestQualityChange     = false,
-                lastPos                  = 0,
-                started                  = false,
-                performedConditionalSeek = false,
-                continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching,
+            var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching,
+                requestQualityChange,
+                lastPos,
+                started,
+                pinned,
+                performedConditionalSeek,
+                eventHandlers,
+                playerId,
                 startTime,
                 item,
                 watchProgressItem,
                 playerInstance,
-                playerInstantiatedResolve,
-                levels;
+                levels,
+                playerInstantiated,
+                playerInstantiatedResolve;
 
-            var playerInstantiated = $q(function(resolve) {
-
-                // break resolve method out of scope
-                playerInstantiatedResolve = resolve;
-            });
+            construct();
 
             // default player events to handle
             var PLAYER_EVENTS = {
@@ -129,6 +113,30 @@
                 complete: onComplete,
                 time: onTime
             };
+
+            function construct() {
+                requestQualityChange = false;
+                lastPos = 0;
+                started = false;
+                pinned = false;
+                performedConditionalSeek = false;
+                eventHandlers = {};
+
+                startTime = null;
+                item = null;
+                watchProgressItem = null;
+                playerInstance = null;
+                levels = null;
+
+                playerInstantiated = null;
+                playerInstantiatedResolve = null;
+
+                playerInstantiated = $q(function (resolve) {
+
+                    // break resolve method out of scope
+                    playerInstantiatedResolve = resolve;
+                });
+            }
 
             function getInstance() {
 
@@ -140,9 +148,10 @@
                 return item;
             }
 
-            function setup(playerId) {
+            function setup(id) {
+                playerId = id;
 
-                playerInstance = jwplayer(playerId);
+                playerInstance = jwplayer(id);
 
                 // resolve playerInstantiated promise
                 playerInstantiatedResolve();
@@ -165,7 +174,7 @@
                     }
 
                     // call setup on jwplayer
-                    playerInstance.setup(settings);
+                    playerInstance = playerInstance.setup(settings);
 
                     if (window.cordova && settings.autostart) {
 
@@ -177,13 +186,8 @@
                     }
 
                     // add default event listeners to playerInstance
-                    angular.forEach(PLAYER_EVENTS, function (fn, type) {
-                        playerInstance.on(type, fn);
-                    });
-
-                    angular.forEach(events, function (fn, type) {
-                        playerInstance.on(type, fn);
-                    });
+                    setPlayerEventHandlers(PLAYER_EVENTS);
+                    setPlayerEventHandlers(events);
                 });
             }
 
@@ -199,6 +203,12 @@
                 if (options.startTime) {
                     startTime = options.startTime;
                 }
+            }
+
+            function setPlayerEventHandlers(events) {
+                angular.forEach(events, function (fn, type) {
+                    playerInstance.on(type, fn);
+                });
             }
 
             /**
@@ -332,28 +342,50 @@
                 };
             }
 
-            // pipe method through to sticky player's handler
-            function pin() {
-
-                if (!onPinHandler) {
-                    return;
+            function canPin() {
+                if (platform.isMobile && pid === 'sticky') {
+                    var state = playerInstance.getState();
+                    return state === 'playing' || state === 'paused';
                 }
-
-                onPinHandler(playerInstance);
             }
 
-            // pipe method through to sticky player's handler
-            function unpin() {
-
-                if (!onUnpinHandler) {
+            function pin() {
+                if (!canPin()) {
                     return;
                 }
 
-                onUnpinHandler(playerInstance);
+                pinned = true;
+
+                fireEventHandlers('pin');
+            }
+
+            function unpin() {
+                if (!pinned) {
+                    return;
+                }
+
+                fireEventHandlers('unpin');
+
+                pinned = false;
+            }
+
+            function isPinned() {
+                return pinned;
+            }
+
+            function clear() {
+                var container = playerInstance.getContainer();
+
+                playerInstance.remove();
+
+                setTimeout(function() {
+
+                    construct();
+                    setup(playerId);
+                }, 1000);
             }
 
             function destroy() {
-
                 // call jwplayer remove
                 playerInstance.remove();
 
@@ -361,27 +393,69 @@
                 delete playerServices[pid];
             }
 
-            return {
-                play: playerMethod('play'),
-                pause: playerMethod('pause'),
-                stop: playerMethod('stop'),
-                seek: playerMethod('seek'),
-                getState: playerMethod('getState'),
-                playlistItem: playerMethod('playlistItem'),
-                setCurrentQuality: playerMethod('setCurrentQuality'),
-                load: playerMethod('load'),
+            function setEventHandler(eventName, handler) {
+                if (!eventHandlers[eventName]) {
+                    // initialize
+                    eventHandlers[eventName] = [];
+                }
 
-                setup: setup,
-                init: init,
-                update: update,
-                getInstance: getInstance,
-                getItem: getItem,
+                eventHandlers[eventName].push(handler);
+            }
+
+            function removeEventHandler(eventName, handler) {
+                if (!eventHandlers[eventName]) {
+                    // nothing to do
+                    return;
+                }
+
+                var index = eventHandlers[eventName].indexOf(handler);
+                if (index !== -1) {
+                    // remove from array
+                    eventHandlers[eventName].splice(index, 1);
+                }
+            }
+
+            function fireEventHandlers(eventName) {
+                if (!eventHandlers[eventName]) {
+                    return;
+                }
+
+                angular.forEach(eventHandlers[eventName], function(handler) {
+                    // call handler with playerInstance
+                    handler(playerInstance);
+                });
+            }
+
+            return {
+                play:              playerMethod('play'),
+                pause:             playerMethod('pause'),
+                stop:              playerMethod('stop'),
+                seek:              playerMethod('seek'),
+                getState:          playerMethod('getState'),
+                playlistItem:      playerMethod('playlistItem'),
+                setCurrentQuality: playerMethod('setCurrentQuality'),
+                load:              playerMethod('load'),
+
+                setPlayerEventHandlers: setPlayerEventHandlers,
+
+                on:      setEventHandler,
+                off:     removeEventHandler,
+                trigger: fireEventHandlers,
+
+                pin:      pin,
+                unpin:    unpin,
+                isPinned: isPinned,
+
+                setup:          setup,
+                init:           init,
+                update:         update,
+                getInstance:    getInstance,
+                getItem:        getItem,
                 lowerBandwidth: lowerBandwidth,
-                onPin: onPin,
-                onUnpin: onUnpin,
-                pin: pin,
-                unpin: unpin,
-                destroy: destroy
+                destroy:        destroy,
+                clear:          clear,
+
+                playerMethod: playerMethod
             };
 
         }

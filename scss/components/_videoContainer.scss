@@ -85,20 +85,9 @@
 
     .jw-video-container {
         .jw-video-container-player {
-            @include box-shadow(0 0 15px 0 rgba($black, 0.5));
-
             @include transition(top $sticky-player-transition);
 
             z-index: 1;
-
-            &.is-pinned {
-                position: fixed;
-                z-index: $view-z-index;
-
-                top: 0;
-
-                height: auto;
-            }
         }
     }
 }

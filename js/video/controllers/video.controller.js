@@ -52,9 +52,9 @@
             playlist                = [],
             playerOffsetTop         = 0,
             playerStuck             = false,
-            $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player')),
+            playerService           = player.getService(platform.isMobile ? 'sticky' : 'video'),
             $headerEl               = angular.element(document.querySelector('.jw-header')),
-            playerService = player.getService(platform.isMobile ? 'sticky' : 'video'),
+            $videoPlayerContainerEl,
             loadingTimeout,
             onScrollDesktop,
             onScrollMobile;
@@ -134,23 +134,28 @@
 
             scrollToTop();
             ensureItemIsInFeed();
-            createPlayerSettings();
+
+            // is same item already playing
+            if (playerService.getItem() && (playerService.getItem().mediaid === vm.item.mediaid)) {
+                // reuse
+                reusePlayer();
+            } else {
+                createPlayerSettings();
+            }
+
+            playerService.unpin();
 
             $scope.$watch(function () {
                 return serviceWorker.isOnline();
             }, connectionChangeHandler);
 
             $scope.$on('$destroy', function () {
+                stickPlayer(false);
                 removeScrollHandlers();
 
-                if (playerService && platform.isMobile) {
-                    var state = playerService.getState();
-                    if (state === 'playing' || state === 'paused') {
-                        // pin player
-                        playerService.pin();
-
-                        return;
-                    }
+                if (playerService) {
+                    // pin player
+                    playerService.pin();
                 }
             });
 
@@ -259,6 +264,15 @@
                     adImpression: onAdImpression
                 }
             );
+        }
+
+        function reusePlayer() {
+            // reset events
+            setupScrollHandlers();
+
+            playerService.setPlayerEventHandlers({
+                playlistItem: onPlaylistItem
+            });
         }
 
         /**
@@ -502,8 +516,17 @@
 
         function setupScrollHandlers() {
             if (platform.isMobile) {
+                $videoPlayerContainerEl = angular.element(document.querySelector('.jw-sticky-player-container'));
+
                 // only check for player sticking to top
+                onScrollMobile = onScroll.bind(function (scrollTop) {
+                    // stick when we've scrolled passed header height
+                    stickPlayer(scrollTop >= 60);
+                }, {
+                    debounceResize: 300
+                });
             } else {
+                $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player'));
                 var wasMobileScreen = platform.screenSize() === 'mobile';
 
                 var setupHandlersForScreensize = function (evt) {

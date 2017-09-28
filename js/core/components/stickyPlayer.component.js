@@ -39,87 +39,66 @@
 
         var vm = this,
             isDragging = false,
-            isPinned   = false,
-            $stickyContainerEl = angular.element($element.find('div')[0]);
+            $stickyContainerEl = angular.element($element.find('div')[0]),
+            playerService = player.getService('sticky');
 
         vm.returnToVideo = returnToVideo;
 
-        player.onPin(onPin);
-        player.onUnpin(onUnpin);
+        playerService.on('pin', onPin);
+        playerService.on('unpin', onUnpin);
 
         function returnToVideo() {
             // prevent click handler from firing when dragging mini player
-            if (isDragging || !isPinned) {
+            if (isDragging || !playerService.isPinned()) {
                 return;
             }
 
             // get current playlist item from video to determine the page to navigate to
-            var playlistItem = player.getService('sticky').playlistItem();
-            if (!playlistItem) {
+            var item = playerService.getItem();
+            if (!item) {
                 return;
             }
 
             return $state.go('root.video', {
-                feedId:    playlistItem.feedid,
-                mediaId:   playlistItem.mediaid,
-                slug:      playlistItem.$slug
+                feedId:  item.feedid,
+                mediaId: item.mediaid,
+                slug:    item.$slug
             });
         }
 
         function onPin(playerInstance) {
-            isPinned = true;
-
-            var resume = playerInstance.getState() === 'playing';
-
             // make sure the container is reset
             resetContainerDrag();
 
-            $stickyContainerEl.addClass('is-active');
+            $stickyContainerEl.removeClass('is-pinned');
+            $stickyContainerEl.addClass('is-stuck');
 
             addSwipeHandling($stickyContainerEl);
 
             // wait for next cycle
             window.requestAnimationFrame(function() {
-                if (resume) {
-                    // wait for resize to finish
-                    playerInstance.once('resize', function() {
-                        playerInstance.play();
-                    });
-                }
-
+                // resize and hide controls
                 playerInstance.resize();
                 playerInstance.setControls(false);
             });
         }
 
         function onUnpin(playerInstance) {
-            isPinned = false;
+            $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function() {
+                window.requestAnimationFrame(function() {
+                    playerInstance.resize();
+                    playerInstance.setControls(true);
+                });
+            });
 
-            $stickyContainerEl.one(
-                utils.getPrefixedEventNames('animationEnd'),
-                function() {
-                    window.requestAnimationFrame(function() {
-                        // remove manually
-                        playerInstance.remove();
-                        // empty sticky container div manually because jwplayer leaves stuff after removal
-                        $stickyContainerEl.empty();
-
-                        resetContainerDrag();
-                        $stickyContainerEl.removeClass('is-active');
-
-                        $stickyContainerEl.removeClass('is-deactivating');
-                    });
-                }
-            );
-
-            $stickyContainerEl.addClass('is-deactivating');
+            $stickyContainerEl.removeClass('is-stuck');
         }
 
         function dismiss() {
-            player.dismiss();
+            playerService.clear();
 
             resetContainerDrag();
-            $stickyContainerEl.removeClass('is-active');
+            $stickyContainerEl.removeClass('is-stuck');
         }
 
         function addSwipeHandling(el) {
@@ -152,7 +131,7 @@
 
                         // update css based on how much the container was dragged
                         $stickyContainerEl.css({
-                            transform: 'translateX(' + diff + 'px)',
+                            marginLeft: diff + 'px',
                             opacity: 1 - moved
                         });
                     },

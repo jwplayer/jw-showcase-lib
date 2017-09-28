@@ -71,46 +71,26 @@
     }
 }
 
-@include keyframes(jw-player-stick-animation) {
-    0% {
-        opacity: 0;
-        @include transform(scale(0.4) translateX(-10%) translateY(-500%));
-    }
-    100% {
-        opacity: 1;
-        @include transform(scale(1) translate(0, 0));
-    }
-}
-
-@include keyframes(jw-player-unstick-animation) {
-    0% {
-        opacity: 0;
-        @include transform(scale(0.4) translateY(150%));
-    }
-    100% {
-        opacity: 1;
-        @include transform(scale(1) translateY(0));
-    }
-}
-
 @include keyframes(jw-player-pin-animation) {
     0% {
-        opacity: 0;
         @include transform(scale(0.8) translateY(-250%));
+        opacity: 0;
     }
+
     100% {
-        opacity: 1;
         @include transform(scale(1) translateY(0));
+        opacity: 1;
     }
 }
 
 @include keyframes(jw-player-unpin-animation) {
     0% {
-        opacity: 1;
         @include transform(scale(1) translateY(0));
+        opacity: 1;
     }
+
     100% {
-        opacity: 0;
         @include transform(scale(0.8) translateY(-250%));
+        opacity: 0;
     }
 }
