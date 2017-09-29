@@ -155,7 +155,7 @@
 
                 if (playerService) {
                     // pin player
-                    playerService.pin();
+                    playerService.onLeaveVideoPage();
                 }
             });
 

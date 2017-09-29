@@ -40,12 +40,15 @@
         var vm = this,
             isDragging = false,
             $stickyContainerEl = angular.element($element.find('div')[0]),
-            playerService = player.getService('sticky');
+            playerService = player.getService('sticky'),
+            swiper;
 
         vm.returnToVideo = returnToVideo;
 
         playerService.on('pin', onPin);
         playerService.on('unpin', onUnpin);
+
+        addSwipeHandling($stickyContainerEl);
 
         function returnToVideo() {
             // prevent click handler from firing when dragging mini player
@@ -66,30 +69,30 @@
             });
         }
 
+        function afterPinTransition(playerInstance, pinned) {
+            $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function () {
+                window.requestAnimationFrame(function () {
+                    // activate swiper is pinned
+                    swiper.active(pinned);
+
+                    // resize and hide controls if pinned
+                    playerInstance.resize();
+                    playerInstance.setControls(!pinned);
+                });
+            });
+        }
+
         function onPin(playerInstance) {
             // make sure the container is reset
             resetContainerDrag();
 
-            $stickyContainerEl.removeClass('is-pinned');
+            afterPinTransition(playerInstance, true);
+
             $stickyContainerEl.addClass('is-stuck');
-
-            addSwipeHandling($stickyContainerEl);
-
-            // wait for next cycle
-            window.requestAnimationFrame(function() {
-                // resize and hide controls
-                playerInstance.resize();
-                playerInstance.setControls(false);
-            });
         }
 
         function onUnpin(playerInstance) {
-            $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function() {
-                window.requestAnimationFrame(function() {
-                    playerInstance.resize();
-                    playerInstance.setControls(true);
-                });
-            });
+            afterPinTransition(playerInstance, false);
 
             $stickyContainerEl.removeClass('is-stuck');
         }
@@ -99,6 +102,9 @@
 
             resetContainerDrag();
             $stickyContainerEl.removeClass('is-stuck');
+
+            // deactive swiper
+            swiper.active(false);
         }
 
         function addSwipeHandling(el) {
@@ -109,10 +115,14 @@
             var start = 0;
             var moved = 0;
 
-            betterSwipe.bind(
+            swiper = betterSwipe.bind(
                 el,
                 {
                     start: function(coords, event) {
+                        if (!playerService.isPinned()) {
+                            return;
+                        }
+
                         // remember start position
                         start = coords.x;
 
@@ -141,9 +151,15 @@
                         } else {
                             resetContainerDrag();
                         }
+
+                        start = 0;
+                        moved = 0;
                     },
                     cancel: function() {
                         resetContainerDrag();
+
+                        start = 0;
+                        moved = 0;
                     },
                     leave: function() {
                         if (moved >= 1) {
@@ -151,9 +167,15 @@
                         } else {
                             resetContainerDrag();
                         }
+
+                        start = 0;
+                        moved = 0;
                     }
                 }
             );
+
+            // not active by default
+            swiper.active(false);
         }
 
         function resetContainerDrag() {

@@ -78,7 +78,7 @@
 
         /**
          * Player service creates a scope specifically
-         * for a player instance and handles all global
+         * for a player instance and handles all 'global'
          * events such as watch progress and quality
          * changes.
          *
@@ -89,13 +89,13 @@
         function playerService(pid) {
 
             var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching,
+                pinHandlers = {},
+                playerId,
                 requestQualityChange,
                 lastPos,
                 started,
                 pinned,
                 performedConditionalSeek,
-                eventHandlers,
-                playerId,
                 startTime,
                 item,
                 watchProgressItem,
@@ -115,12 +115,12 @@
             };
 
             function construct() {
+                // set all vars in scope to their default values
                 requestQualityChange = false;
                 lastPos = 0;
                 started = false;
                 pinned = false;
                 performedConditionalSeek = false;
-                eventHandlers = {};
 
                 startTime = null;
                 item = null;
@@ -128,9 +128,7 @@
                 playerInstance = null;
                 levels = null;
 
-                playerInstantiated = null;
-                playerInstantiatedResolve = null;
-
+                // create promise for player instantiation
                 playerInstantiated = $q(function (resolve) {
 
                     // break resolve method out of scope
@@ -138,19 +136,32 @@
                 });
             }
 
-            function getInstance() {
+            function clear() {
+                // remove player instance
+                playerInstance.remove();
 
-                return playerInstance;
+                window.setTimeout(function() {
+                    // re-construct
+                    construct();
+
+                    // setup player again with same player id
+                    setup(playerId);
+                }, 1);
             }
 
-            function getItem() {
+            function destroy() {
+                // call jwplayer remove
+                playerInstance.remove();
 
-                return item;
+                // undefine service
+                delete playerServices[pid];
             }
 
             function setup(id) {
+                // move id into scope so we can re-use it later
                 playerId = id;
 
+                // create player instance
                 playerInstance = jwplayer(id);
 
                 // resolve playerInstantiated promise
@@ -159,7 +170,7 @@
 
             function init(settings, playlistItem, options, events) {
 
-                // wait for playerInstance
+                // wait for playerInstance to have been created
                 playerInstantiated.then(function() {
 
                     update(playlistItem, options);
@@ -173,19 +184,20 @@
                         settings.autostart = false;
                     }
 
-                    // call setup on jwplayer
-                    playerInstance = playerInstance.setup(settings);
+                    // call setup on jwplayer instance
+                    playerInstance.setup(settings);
 
-                    if (window.cordova && settings.autostart) {
+                    // TODO: this won't do
+                    // if (window.cordova && settings.autostart) {
 
-                        playerInstance.once('playlistItem', function () {
-                            setTimeout(function () {
-                                this.play(true);
-                            }.bind(this), 1);
-                        });
-                    }
+                    //     playerInstance.once('playlistItem', function () {
+                    //         setTimeout(function () {
+                    //             this.play(true);
+                    //         }.bind(this), 1);
+                    //     });
+                    // }
 
-                    // add default event listeners to playerInstance
+                    // add default and custom event listeners to playerInstance
                     setPlayerEventHandlers(PLAYER_EVENTS);
                     setPlayerEventHandlers(events);
                 });
@@ -193,13 +205,13 @@
 
             function update(playlistItem, options) {
 
+                // move playlistItem into scope for re-use
                 item = playlistItem;
 
                 // set watchProgressItem only if we have item
                 watchProgressItem = item && watchProgress.getItem(item);
 
-                // set relevant options
-
+                // parse options
                 if (options.startTime) {
                     startTime = options.startTime;
                 }
@@ -211,9 +223,6 @@
                 });
             }
 
-            /**
-             * Handle firstFrame event
-             */
             function onFirstFrame() {
 
                 if (!levels) {
@@ -222,28 +231,19 @@
 
                 started = true;
 
-                var levelsLength = levels.length;
-
                 // hd turned off
                 // set quality to last lowest level
                 if (true === userSettings.settings.conserveBandwidth) {
+                    var levelsLength = levels.length;
                     playerInstance.setCurrentQuality(levelsLength > 2 ? levelsLength - 2 : levelsLength);
                 }
             }
 
-            /**
-             * Handle levels event
-             *
-             * @param event
-             */
             function onLevels(event) {
 
                 levels = event.levels;
             }
 
-            /**
-             * Handle complete event
-             */
             function onComplete() {
 
                 if (item) {
@@ -251,15 +251,11 @@
                 }
             }
 
-            /**
-             * Handle time event
-             *
-             * @param event
-             */
             function onTime(event) {
 
                 var position = Math.round(event.position);
 
+                // is quality change was requested, handle it here
                 if (false !== requestQualityChange) {
                     playerInstance.setCurrentQuality(requestQualityChange);
                     requestQualityChange = false;
@@ -271,6 +267,7 @@
                     return;
                 }
 
+                // always check and perform at least one conditional seek
                 if (!performedConditionalSeek) {
                     return performConditionalSeek();
                 }
@@ -291,6 +288,7 @@
 
                 performedConditionalSeek = true;
 
+                // if a custom startTime was passed in options
                 if (startTime) {
                     playerInstance.seek(startTime);
 
@@ -299,6 +297,7 @@
                     return;
                 }
 
+                // if continue watching enabled and a watchProgressItem is available
                 if (continueWatching && angular.isDefined(watchProgressItem)) {
                     // resume video playback at last saved position from watchProgress
 
@@ -356,7 +355,7 @@
 
                 pinned = true;
 
-                fireEventHandlers('pin');
+                firePinHandler('pin');
             }
 
             function unpin() {
@@ -364,7 +363,7 @@
                     return;
                 }
 
-                fireEventHandlers('unpin');
+                firePinHandler('unpin');
 
                 pinned = false;
             }
@@ -373,57 +372,25 @@
                 return pinned;
             }
 
-            function clear() {
-                var container = playerInstance.getContainer();
+            function setPinHandler(eventName, handler) {
 
-                playerInstance.remove();
-
-                setTimeout(function() {
-
-                    construct();
-                    setup(playerId);
-                }, 1000);
+                pinHandlers[eventName] = handler;
             }
 
-            function destroy() {
-                // call jwplayer remove
-                playerInstance.remove();
-
-                // undefine service
-                delete playerServices[pid];
-            }
-
-            function setEventHandler(eventName, handler) {
-                if (!eventHandlers[eventName]) {
-                    // initialize
-                    eventHandlers[eventName] = [];
-                }
-
-                eventHandlers[eventName].push(handler);
-            }
-
-            function removeEventHandler(eventName, handler) {
-                if (!eventHandlers[eventName]) {
-                    // nothing to do
+            function firePinHandler(eventName) {
+                if (!pinHandlers[eventName]) {
                     return;
                 }
 
-                var index = eventHandlers[eventName].indexOf(handler);
-                if (index !== -1) {
-                    // remove from array
-                    eventHandlers[eventName].splice(index, 1);
-                }
+                pinHandlers[eventName](playerInstance);
             }
 
-            function fireEventHandlers(eventName) {
-                if (!eventHandlers[eventName]) {
-                    return;
+            function onLeaveVideoPage() {
+                if (canPin()) {
+                    pin();
+                } else {
+                    clear();
                 }
-
-                angular.forEach(eventHandlers[eventName], function(handler) {
-                    // call handler with playerInstance
-                    handler(playerInstance);
-                });
             }
 
             return {
@@ -438,9 +405,9 @@
 
                 setPlayerEventHandlers: setPlayerEventHandlers,
 
-                on:      setEventHandler,
-                off:     removeEventHandler,
-                trigger: fireEventHandlers,
+                onLeaveVideoPage: onLeaveVideoPage,
+
+                on: setPinHandler,
 
                 pin:      pin,
                 unpin:    unpin,
@@ -449,13 +416,18 @@
                 setup:          setup,
                 init:           init,
                 update:         update,
-                getInstance:    getInstance,
-                getItem:        getItem,
                 lowerBandwidth: lowerBandwidth,
                 destroy:        destroy,
                 clear:          clear,
 
-                playerMethod: playerMethod
+                playerMethod: playerMethod,
+
+                getInstance: function() {
+                    return playerInstance;
+                },
+                getItem: function() {
+                    return item;
+                }
             };
 
         }
