@@ -43,6 +43,10 @@
 
             element.addClass('jw-content-row-' + scope.options.type);
 
+            if (scope.options.playlistId) {
+                element.addClass('jw-content-row-' + scope.options.playlistId);
+            }
+
             element.append(html);
 
             if (scope.options.backgroundColor) {
