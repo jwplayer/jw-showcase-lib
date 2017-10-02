@@ -198,7 +198,7 @@ $featured-slider-max-width: 900px;
     }
 
     .jw-card-slider-list {
-        margin: 0 #{-$base-spacing / 2};
+        margin: 4px #{-$base-spacing / 2} 0;
 
         @for $i from 1 through 10 {
             &.slides-#{$i} .jw-card-slider-slide {
