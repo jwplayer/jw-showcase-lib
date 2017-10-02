@@ -66,31 +66,13 @@
     </div>
 
     <div class="jw-sidebar-group">
-      <div class="jw-sidebar-row">
-        <div class="jw-sidebar-label">
-          Reduce data usage
-        </div>
-        <div class="jw-sidebar-action">
-          <jw-toggle
-              aria-label="reduce data usage"
-              tabindex="0"
-              ng-model="vm.conserveBandwidth"
-              ng-change="vm.toggleChangeHandler('conserveBandwidth')"></jw-toggle>
-        </div>
-      </div>
-      <div class="jw-sidebar-row"
-          ng-if="::vm.config.options.enableContinueWatching">
-        <div class="jw-sidebar-label">
-          <span class="is-hidden-mobile">Enable </span>Continue watching
-        </div>
-        <div class="jw-sidebar-action">
-          <jw-toggle
-              aria-label="enable continue watching"
-              tabindex="0"
-              ng-model="vm.continueWatching"
-              ng-change="vm.toggleChangeHandler('continueWatching')"></jw-toggle>
-        </div>
-      </div>
+      <jw-button
+          class="jw-button-block jw-button-default"
+          tabindex="0"
+          ui-sref="root.settings">
+            <span class="jw-button-label">Settings</span>
+            <i class="jwy-icon jwy-icon-settings"></i>
+        </jw-button>
     </div>
   </div>
 </div>
