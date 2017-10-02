@@ -112,6 +112,10 @@
 
                 element.addClass(className);
 
+                if(scope.vm.enableText === false) {
+                    element.addClass('jw-card-slider-flag-hide-text');
+                }
+
                 scope.$on('$destroy', destroyHandler);
                 window.addEventListener('resize', resizeHandlerDebounced);
                 findElement('.jw-card-slider-align')[0].addEventListener('touchstart', onTouchStart, false);

@@ -744,4 +744,20 @@
             color: $primary-color;
         }
     }
+
+    //
+    // Settings
+    // --------------------------------
+
+    .jw-settings .jw-toggle-track {
+        background-color: $gray-alternate;
+    }
+
+    .jw-settings .jw-toggle-flag-checked .jw-toggle-track {
+        background-color: $blue;
+    }
+
+    .jw-settings-row {
+        border-bottom: 2px solid rgba($dark-color, 0.1);
+    }
 }
