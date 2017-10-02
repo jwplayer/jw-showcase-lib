@@ -20,9 +20,9 @@
         .module('jwShowcase.core')
         .directive('jwAdSlot', jwAdSlot);
 
-    jwAdSlot.$inject = ['$rootScope', 'config', 'dfp', 'utils', 'platform'];
+    jwAdSlot.$inject = ['config', 'dfp', 'utils', 'platform'];
 
-    function jwAdSlot ($rootScope, config, dfp, utils, platform) {
+    function jwAdSlot (config, dfp, utils, platform) {
         return {
             bindToController: true,
             controller:       angular.noop,

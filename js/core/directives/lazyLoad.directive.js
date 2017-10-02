@@ -35,19 +35,20 @@
      *
      * @example
      *
-     * <ion-view jw-lazy-load>
-     *   <ion-content>
-     *       <jw-card class="jw-lazy-load"></jw-card>
-     *       <jw-card class="jw-lazy-load"></jw-card>
-     *       <jw-card class="jw-lazy-load"></jw-card>
-     *       <jw-card class="jw-lazy-load"></jw-card>
-     *       <jw-card-slider class="jw-lazy-load"></jw-card-slider>
-     *   </ion-content>
+     * <jw-view jw-lazy-load>
+     *  <jw-card class="jw-lazy-load"></jw-card>
+     *  <jw-card class="jw-lazy-load"></jw-card>
+     *  <jw-card class="jw-lazy-load"></jw-card>
+     *  <jw-card class="jw-lazy-load"></jw-card>
+     *  <jw-card-slider class="jw-lazy-load"></jw-card-slider>
      * </ion-view>
+     *
+     * @requires jwShowcase.core.utils
      */
 
-    jwLazyLoad.$inject = ['$timeout', 'utils'];
-    function jwLazyLoad ($timeout, utils) {
+    jwLazyLoad.$inject = ['utils'];
+
+    function jwLazyLoad (utils) {
 
         return {
             link:  link,
@@ -57,6 +58,7 @@
         function link (scope, element, attrs) {
 
             var updateDebounced = utils.debounce(update, 150);
+
             activate();
 
             /////////////////////////
@@ -67,6 +69,7 @@
             function activate () {
 
                 window.addEventListener('scroll', updateDebounced, window.supportsPassive ? {passive: true} : false);
+
                 scope.$on('$destroy', destroy);
                 scope.$on('$viewContentUpdated', updateDebounced);
                 scope.$on('$viewContentLoaded', updateDebounced);
