@@ -85,7 +85,7 @@
          * Title of feed
          * @type {string}
          */
-        vm.activeFeedTitle = 'Next Up';
+        vm.activeFeedTitle = 'Related Videos';
 
         /**
          * Is true when the right rail is enabled.
@@ -218,6 +218,14 @@
                 vm.playerSettings.related = false;
             }
 
+            // [JW Station] Show related after each video
+            if ($stateParams.list) {
+                vm.playerSettings.related = {
+                    file:       'https://cdn.jwplayer.com/v2/playlists/' + $stateParams.list,
+                    oncomplete: 'show'
+                };
+            }
+
             // override player settings from config
             if (angular.isObject(config.options.player)) {
                 angular.merge(vm.playerSettings, config.options.player);
@@ -296,6 +304,9 @@
                     playlistItem.sources.splice(1);
                 }
             });
+
+            // [JW Station] Only load 1 video to enable related overlay
+            playlist.splice(1);
 
             return playlist;
         }
