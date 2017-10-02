@@ -22,41 +22,90 @@
     }
 
     .jw-video-container-player {
-        @include single-transition(opacity, 0.2s, ease-out);
-        @include cover();
+        // only transition top and delay it by half the transition length
+        @include transition(top $sticky-player-transition);
+        @include transition-delay(($sticky-player-transition-length / 2));
 
-        &.no-anim {
-            @include animation(unset !important);
-            @include animation-duration(0s !important);
+        // position absolute for auto aspect ratio
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+
+        // serves as screen-width container
+        &-inner {
+            position: relative;
+
+            width: 100%;
+            // max container width
+            max-width: $video-layout-right-rail-width;
+
+            margin: 0 auto;
+
+            .jw-showcase-player-container {
+                @include transition(width $sticky-player-transition);
+
+                position: absolute;
+
+                // pin to bottom right because that's where player will move to
+                bottom: 0;
+                right: 0;
+
+                // if this is not set, player will not be visible
+                width: 100%;
+                height: 100%;
+
+                .jw-showcase-player {
+                    // we have to be explicit in this definition to be able to delay 'transform' by half transition length
+                    @include transition(transform $sticky-player-transition);
+                    @include transition-delay(($sticky-player-transition-length / 2));
+
+                    // set defaults for transitioning
+                    @include box-shadow(0 0 0 $black);
+                    border: 0 solid $black;
+                }
+            }
         }
 
-        &.normalized {
-            @include transform-origin(100%, 100%);
-            @include animation(jw-player-unstick-animation $sticky-player-animation);
-        }
-
-        &.minimized {
-            // animation from bottom left
-            @include transform-origin(0%, 0%);
-            @include animation(jw-player-stick-animation $sticky-player-animation);
+        &.is-minimized {
+            // override transition delay
+            @include transition-delay(0ms);
 
             position: fixed;
 
-            z-index: $sticky-player-z-index;
+            z-index: $floating-player-z-index;
 
-            // override positioning
-            top: auto;
-            right: $sticky-player-offset;
-            bottom: $sticky-player-offset;
-            left: auto;
+            // set top to 100% to transition to bottom of viewport
+            top: 100%;
 
-            width: $sticky-player-width;
-            height: auto;
+            .jw-showcase-player-container {
+                // offset from bottom
+                bottom: $sticky-player-offset;
+
+                // use padding-left to position player on grid
+                padding-left: $sticky-player-offset;
+                // use padding-right instead of 'right' to offset from screen-corner
+                padding-right: $sticky-player-offset;
+
+                width: $sticky-player-width;
+
+                .jw-showcase-player {
+                    // because parent container uses top: 100%, transform this to -100 to compensate
+                    @include transform(translateY(-100%));
+
+                    @include transition(box-shadow $sticky-player-transition, border-color $sticky-player-transition, border-width $sticky-player-transition, transform $sticky-player-transition);
+                    // reset transition delay used for 'transform'
+                    @include transition-delay(0ms, 0ms, 0ms, 0ms);
+                }
+            }
         }
     }
 
     .jw-video-loading {
         @include transform(translate(-50%, -50%));
+
         display: none;
         position: absolute;
         top: 50%;
@@ -66,6 +115,25 @@
         color: $white;
         font-size: rem(52px);
         line-height: 1em;
+    }
+}
+
+// for screens larger than the container width
+@media screen and (min-width: ($video-layout-right-rail-width + ($sticky-player-offset / 2))) {
+    .jw-video-container {
+        .jw-video-container-player {
+            &.is-minimized {
+                .jw-showcase-player-container {
+                    // stick to right side of container/rail
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+
+    .jw-showcase-player {
+        // max player width is set so start of transition doesn't show player at 100% screen width
+        max-width: 896px;
     }
 }
 
@@ -88,6 +156,14 @@
             @include transition(top $sticky-player-transition);
 
             z-index: 1;
+
+            &.is-pinned {
+                position: fixed;
+
+                z-index: $view-z-index;
+
+                top: 0;
+            }
         }
     }
 }

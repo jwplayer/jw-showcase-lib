@@ -516,6 +516,7 @@
 
         function setupScrollHandlers() {
             if (platform.isMobile) {
+                // use sticky player container
                 $videoPlayerContainerEl = angular.element(document.querySelector('.jw-sticky-player-container'));
 
                 // only check for player sticking to top
@@ -527,6 +528,7 @@
                 });
             } else {
                 $videoPlayerContainerEl = angular.element(document.querySelector('.jw-video-container-player'));
+
                 var wasMobileScreen = platform.screenSize() === 'mobile';
 
                 var setupHandlersForScreensize = function (evt) {
@@ -612,26 +614,16 @@
                 }
 
                 // toggle classes (and animation)
-                utils.toggleClass($videoPlayerContainerEl, 'minimized', state);
-                utils.toggleClass($videoPlayerContainerEl, 'normalized', !state);
+                utils.toggleClass($videoPlayerContainerEl, 'is-minimized', state);
             }
         }
 
         function resetStuckPlayer() {
             playerStuck = false;
 
-            // disable animation
-            $videoPlayerContainerEl.addClass('no-anim');
-
             $headerEl.removeClass('is-hidden');
             $videoPlayerContainerEl.removeClass('is-pinned');
-            $videoPlayerContainerEl.removeClass('minimized');
-            $videoPlayerContainerEl.removeClass('normalized');
-
-            $timeout(function () {
-                // enable animation
-                $videoPlayerContainerEl.removeClass('no-anim');
-            }, 200);
+            $videoPlayerContainerEl.removeClass('is-minimized');
         }
 
     }

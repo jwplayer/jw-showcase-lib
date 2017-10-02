@@ -48,7 +48,7 @@
             scope:       {
                 pid:       '='
             },
-            replace:     false,
+            replace:     true,
             templateUrl: 'views/core/jwPlayer.html',
             link:        link
         };
@@ -68,6 +68,7 @@
             function activate () {
 
                 element
+                    .find('div')
                     .find('div')
                     .attr('id', playerId);
 

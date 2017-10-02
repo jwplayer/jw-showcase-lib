@@ -33,3 +33,9 @@
         @content;
     }
 }
+
+@mixin widescreen-only {
+    @media screen and (min-width: $video-layout-right-rail-width) {
+        @content;
+    }
+}

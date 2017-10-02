@@ -70,27 +70,3 @@
         @include transform(rotate(360deg));
     }
 }
-
-@include keyframes(jw-player-pin-animation) {
-    0% {
-        @include transform(scale(0.8) translateY(-250%));
-        opacity: 0;
-    }
-
-    100% {
-        @include transform(scale(1) translateY(0));
-        opacity: 1;
-    }
-}
-
-@include keyframes(jw-player-unpin-animation) {
-    0% {
-        @include transform(scale(1) translateY(0));
-        opacity: 1;
-    }
-
-    100% {
-        @include transform(scale(0.8) translateY(-250%));
-        opacity: 0;
-    }
-}

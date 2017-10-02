@@ -1,9 +1,6 @@
 .jw-sticky-player-container {
-    $transition: 300ms ease-in-out;
-    $box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-
     // only transition top for mini player
-    @include transition(top $transition);
+    @include transition(top $sticky-player-transition-mobile);
 
     // start as absolute to scroll with page
     position: absolute;
@@ -18,7 +15,7 @@
     height: 0;
 
     > div {
-        @include transition(width $transition, padding $transition);
+        @include transition(width $sticky-player-transition-mobile, padding $sticky-player-transition-mobile);
 
         position: absolute;
 
@@ -32,10 +29,6 @@
     &.is-stuck {
         // set to fixed to prevent move on scroll
         position: fixed;
-
-        > div {
-            @include box-shadow($box-shadow);
-        }
     }
 
     &.is-pinned {
@@ -44,9 +37,7 @@
     }
 
     &.is-stuck {
-        @include transition(top $transition, margin $transition, opacity $transition);
-
-        $bg-color: rgba(255, 255, 255, 0.6);
+        @include transition(top $sticky-player-transition-mobile, margin $sticky-player-transition-mobile, opacity $sticky-player-transition-mobile);
 
         // move above all other elements
         z-index: $sticky-player-z-index;
@@ -61,10 +52,6 @@
 
             // decrease width
             width: $sticky-player-width-mobile;
-
-            padding: 1px;
-
-            background-color: $white;
         }
     }
 

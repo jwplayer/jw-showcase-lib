@@ -79,11 +79,11 @@ $video-layout-right-rail-width: 1280px !default;
 // StickyPlayer
 // --------------------------------
 $sticky-player-offset: $base-spacing !default;
-$sticky-player-width: 400px !default;
+$sticky-player-width: 408px !default;
 $sticky-player-width-mobile: 65% !default;
-$sticky-player-transition: 130ms ease-in-out !default;
-$sticky-player-animation: 130ms ease-in-out !default;
-$sticky-player-animation-mobile: 280ms ease-in-out !default;
+$sticky-player-transition-length: 160ms !default;
+$sticky-player-transition: $sticky-player-transition-length ease-in-out !default;
+$sticky-player-transition-mobile: 240ms ease-in-out !default;
 
 //
 // Z-index
@@ -91,6 +91,7 @@ $sticky-player-animation-mobile: 280ms ease-in-out !default;
 
 $view-z-index: 5 !default;
 $loading-z-index: 10 !default;
+$floating-player-z-index: 14 !default;
 $header-z-index: 15 !default;
 $toolbar-z-index: 12 !default;
 $sidebar-z-index: 20 !default;

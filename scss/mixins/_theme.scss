@@ -172,6 +172,7 @@
     // Video
 
     $video-layout-bg: #e2e5ec !default;
+    $sticky-player-border: 2px solid $white;
 
     // VideoDetails
 
@@ -481,6 +482,38 @@
 
     .jw-video-layout {
         background-color: $video-layout-bg;
+    }
+
+    .jw-video-container {
+        .jw-video-container-player {
+            &.is-pinned,
+            &.is-minimized {
+                .jw-showcase-player {
+                    @include box-shadow(0 0 15px 0 $shadow-color);
+                }
+            }
+
+            &.is-minimized {
+                .jw-showcase-player {
+                    border: $sticky-player-border;
+                }
+            }
+        }
+    }
+
+    .jw-sticky-player-container {
+        &.is-pinned,
+        &.is-stuck {
+            .jw-showcase-player {
+                @include box-shadow(0 0 15px 0 $shadow-color);
+            }
+        }
+
+        &.is-stuck {
+            .jw-showcase-player {
+                border: $sticky-player-border;
+            }
+        }
     }
 
     //
