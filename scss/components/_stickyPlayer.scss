@@ -14,15 +14,24 @@
     // make container 'invisible'
     height: 0;
 
-    > div {
-        @include transition(width $sticky-player-transition-mobile, padding $sticky-player-transition-mobile);
+    &-inner {
+        @include transition(all $sticky-player-transition-mobile);
 
         position: absolute;
 
         // stick to right
+        top: 0;
         right: 0;
 
         width: 100%;
+    }
+
+    .jw-showcase-player {
+        @include transition(all $sticky-player-transition-mobile);
+
+        @include box-shadow(0 0 0 $black);
+        width: 100%;
+        border: 0px solid $black;
     }
 
     &.is-pinned,
@@ -45,13 +54,18 @@
         // transition top to 100%
         top: 100%;
 
-        > div {
-            // stick to right bottom
-            right: $sticky-player-offset;
-            bottom: $sticky-player-offset;
-
+        .jw-sticky-player-container-inner {
             // decrease width
             width: $sticky-player-width-mobile;
+
+            // stick to right bottom but offset from screen corners
+            margin-top: -$sticky-player-offset;
+            padding-right: $sticky-player-offset;
+        }
+
+        .jw-showcase-player {
+            // parent container uses top 100%, so offset this with translateY
+            transform: translateY(-100%);
         }
     }
 
