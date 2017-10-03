@@ -1,5 +1,4 @@
 $featured-slider-max-width: 900px;
-$default-slider-spacing: 90px;
 
 //
 // jwCardSlider
@@ -27,7 +26,7 @@ $default-slider-spacing: 90px;
         }
     }
 
-    &-flag-hide-title .jw-card-slider-title {
+    &-flag-hide-title .jw-feed-title {
         display: none;
     }
 
@@ -50,30 +49,6 @@ $default-slider-spacing: 90px;
         }
     }
 
-    &-916 .jw-card .jw-card-aspect {
-        padding-bottom: (16 / 9) * 100%;
-    }
-
-    &-23 .jw-card .jw-card-aspect {
-        padding-bottom: (3 / 2) * 100%;
-    }
-
-    &-11 .jw-card .jw-card-aspect {
-        padding-bottom: 100%;
-    }
-
-    &-43 .jw-card .jw-card-aspect {
-        padding-bottom: 75%;
-    }
-
-    &-53 .jw-card .jw-card-aspect {
-        padding-bottom: 60%;
-    }
-
-    &-21 .jw-card .jw-card-aspect {
-        padding-bottom: 50%;
-    }
-
     &.jw-lazy-load {
 
         .jw-card-poster {
@@ -91,31 +66,11 @@ $default-slider-spacing: 90px;
     }
 
     //
-    // jwCardSliderTitle
+    // jwCardSliderContent
     // --------------------------------
 
-    .jw-card-slider-title {
-        margin: 0 90px $base-spacing-heading;
-
-        font-size: 21px;
-        font-weight: bold;
-
-        > .jw-link {
-            display: inline-block;
-
-            text-decoration: none;
-            cursor: pointer;
-
-            > span,
-            > .jwy-icon {
-                vertical-align: middle;
-            }
-        }
-
-        .jw-card-slider-title-count {
-            font-size: rem(18px);
-            font-weight: normal;
-        }
+    .jw-card-slider-content {
+        position: relative;
     }
 
     //
@@ -148,7 +103,7 @@ $default-slider-spacing: 90px;
 
     .jw-card-slider-button {
         @include single-transition(color, 0.2s, ease, 0s);
-        @include transform(translateY(-25%));
+        @include transform(translateY(-50%) translateY(-19.5px));
 
         display: block;
         position: absolute;
@@ -200,10 +155,6 @@ $default-slider-spacing: 90px;
         margin: 0 auto;
     }
 
-    .jw-card-slider-title {
-        display: none;
-    }
-
     .jw-card-slider-list {
 
         @for $i from 1 through 10 {
@@ -230,6 +181,10 @@ $default-slider-spacing: 90px;
     .jw-card-info {
         padding-bottom: 25px;
     }
+
+    .jw-feed-title {
+        display: none;
+    }
 }
 
 //
@@ -238,15 +193,12 @@ $default-slider-spacing: 90px;
 
 .jw-card-slider.jw-card-slider-flag-default {
 
-    .jw-card-slider-container {
-        padding: 20px 0;
-    }
-
     .jw-card-slider-align {
-        padding: 0 #{90px - $base-spacing / 2};
+        padding: 0 90px;
     }
 
     .jw-card-slider-list {
+        margin: 6px #{-$base-spacing / 2} 0;
 
         @for $i from 1 through 10 {
             &.slides-#{$i} .jw-card-slider-slide {
@@ -268,6 +220,20 @@ $default-slider-spacing: 90px;
             }
         }
     }
+
+    .jw-feed-title {
+        margin: 0 90px $base-spacing;
+    }
+}
+
+//
+// jwCardSlider-flag-hide-text
+// --------------------------------
+
+.jw-card-slider.jw-card-slider-flag-hide-text {
+    .jw-card-slider-button {
+        @include transform(translateY(-50%));
+    }
 }
 
 //
@@ -276,17 +242,15 @@ $default-slider-spacing: 90px;
 
 @include mobile-only() {
 
-    .jw-card-slider {
+    .jw-card-slider.jw-card-slider-flag-default {
 
-        .jw-card-slider-container {
-            .jw-card-slider-title {
-                margin-right: $base-spacing;
-                margin-left: $base-spacing;
-            }
+        .jw-card-slider-container .jw-card-slider-align {
+            padding-left: $base-spacing;
+        }
 
-            .jw-card-slider-align {
-                padding-left: $base-spacing / 2;
-            }
+        .jw-feed-title {
+            margin-right: $base-spacing;
+            margin-left: $base-spacing;
         }
     }
 }

@@ -15,7 +15,6 @@
  **/
 
 (function () {
-    'use strict';
 
     angular
         .module('jwShowcase.core')
@@ -52,6 +51,7 @@
      * ```
      */
     jwCardGrid.$inject = ['$timeout', 'utils'];
+
     function jwCardGrid ($timeout, utils) {
 
         return {
@@ -62,17 +62,26 @@
             templateUrl:      'views/core/cardGrid.html',
             replace:          true,
             scope:            {
-                cols:          '=',
-                heading:       '=',
-                feed:          '=',
-                onCardClick:   '=',
-                cardClassName: '@'
+                feed:           '=',
+                aspectratio:    '=?',
+                cols:           '=?',
+                rows:           '=?',
+                enableTitle:    '=?',
+                enableText:     '=?',
+                enablePreview:  '=?',
+                enableShowMore: '=?',
+                enableSeeAll:   '=?',
+                onCardClick:    '=',
+                cardClassName:  '@',
+                title:          '@'
             }
         };
 
         function link (scope, element) {
 
-            var cols            = 0,
+            var columnOption    = {xs: 2, sm: 2, md: 3, lg: 4, xl: 5},
+                currentCols     = 0,
+                currentRows     = 6,
                 debouncedResize = utils.debounce(resize, 200);
 
             activate();
@@ -84,8 +93,26 @@
              */
             function activate () {
 
+                // set initial rows
+                if (scope.vm.rows) {
+                    currentRows = scope.vm.rows;
+                }
+
+                if (scope.vm.cols) {
+                    columnOption = scope.vm.cols;
+                }
+
+                scope.vm.controlIsVisible     = controlIsVisible;
+                scope.vm.showMoreClickHandler = showMoreClickHandler;
+                scope.vm.limit                = 9;
+                scope.vm.heading              = scope.vm.title;
+
+                if (!scope.vm.heading && scope.vm.feed) {
+                    scope.vm.heading = scope.vm.feed.title;
+                }
+
                 window.addEventListener('resize', debouncedResize);
-                $timeout(resize, 50);
+                resize();
 
                 scope.$on('$destroy', function () {
                     window.removeEventListener('resize', debouncedResize);
@@ -97,20 +124,42 @@
              */
             function resize () {
 
-                var toCols       = scope.vm.cols,
+                var toColumns    = columnOption,
                     gridsElement = angular.element(element[0].querySelector('.jw-card-grid-cards'));
 
-                if (angular.isObject(toCols)) {
-                    toCols = utils.getValueForScreenSize(toCols, 1);
+                if (angular.isObject(toColumns)) {
+                    toColumns = utils.getValueForScreenSize(toColumns, 1);
                 }
 
-                if (cols === toCols) {
+                if (currentCols === toColumns) {
                     return;
                 }
 
-                cols = toCols;
+                currentCols = toColumns;
 
-                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + cols;
+                $timeout(function () {
+                    scope.vm.limit = toColumns * currentRows;
+                });
+
+                gridsElement[0].className = 'jw-card-grid-cards jw-card-grid-' + currentCols;
+            }
+
+            /**
+             * Returns true when control should be visible
+             * @returns {boolean|string}
+             */
+            function controlIsVisible () {
+                return scope.vm.feed.playlist.length > scope.vm.limit &&
+                    (scope.vm.enableShowMore || scope.vm.enableSeeAll);
+            }
+
+            /**
+             * Handle click on Show more button
+             */
+            function showMoreClickHandler () {
+
+                currentRows += 10;
+                scope.vm.limit = currentCols * currentRows;
             }
         }
     }

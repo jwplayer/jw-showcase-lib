@@ -41,6 +41,7 @@
 
     Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
         'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils'];
+
     function Preload ($q, $state, appStore, config, configResolver, cookies, api, dfp, apiConsumer, serviceWorker,
                       watchlist, watchProgress, userSettings, bridge, utils) {
 
@@ -59,7 +60,6 @@
             .then(function (resolvedConfig) {
 
                 mergeSetValues(config, resolvedConfig);
-                applyConfigDefaults(config);
 
                 if (angular.isString(config.options.backgroundColor) && '' !== config.options.backgroundColor) {
                     document.body.style.backgroundColor = config.options.backgroundColor;
@@ -81,12 +81,18 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                api.getPlayer(config.player)
-                    .then(handlePreloadSuccess, handlePreloadError);
+                if (!utils.flexboxSupport()) {
+                    appStore.loading = false;
 
-                apiConsumer
-                    .loadFeedsFromConfig()
-                    .then(handleFeedsLoadSuccess);
+                    $state.go('updateBrowser', {directed: true});
+
+                    return;
+                }
+
+                $q.all([
+                    api.getPlayer(config.player),
+                    apiConsumer.loadFeedsFromConfig().then(handleFeedsLoadSuccess)
+                ]).then(handlePreloadSuccess, handlePreloadError);
 
             }, handlePreloadError);
 
@@ -135,9 +141,11 @@
 
         function showCookiesNotice () {
 
-            var isBrowser = !window.cordova;
+            var isBrowser    = !window.cordova;
+            var cookieNotice = (angular.isObject(config.options.cookieNotice) && config.options.cookieNotice.enabled) ||
+                config.options.enableCookieNotice;
 
-            if (config.options.enableCookieNotice && !userSettings.settings.cookies && isBrowser) {
+            if (cookieNotice && !userSettings.settings.cookies && isBrowser) {
                 cookies.show();
             }
         }
@@ -173,70 +181,6 @@
                 [bgClassNames.join(','), ['background-color', color, true]],
                 [colorClassNames.join(','), ['color', color, true]]
             ]);
-        }
-
-        /**
-         * Apply the config defaults and fixtures
-         * @param config
-         * @returns {*}
-         */
-        function applyConfigDefaults (config) {
-
-            if (angular.isArray(config.content)) {
-
-                // add continue watching feed if its not defined
-                if (config.options.enableContinueWatching && !containsPlaylistId(config.content, 'continue-watching')) {
-
-                    // when first feed is featured we place the continue watching slider after that
-                    var index = config.content[0] && config.content[0].featured ? 1 : 0;
-
-                    // insert at index
-                    config.content.splice(index, 0, {
-                        playlistId: 'continue-watching'
-                    });
-                }
-
-                // add saved videos feed if its not defined
-                if (!containsPlaylistId(config.content, 'saved-videos')) {
-
-                    // add as last slider
-                    config.content.push({
-                        playlistId: 'saved-videos'
-                    });
-                }
-
-                // make sure each content has the default settings
-                config.content = config.content.map(function (content) {
-
-                    if (!isSet(content.enableText)) {
-                        content.enableText = true;
-                    }
-
-                    if (!isSet(content.enableTitle)) {
-                        content.enableTitle = true;
-                    }
-
-                    if (!isSet(content.enablePreview)) {
-                        content.enablePreview = content.playlistId === 'continue-watching' || !!content.featured;
-                    }
-
-                    return content;
-                });
-            }
-
-            return config;
-        }
-
-        /**
-         * Test if collection contains a playlist id
-         * @param collection
-         * @param id
-         * @returns {boolean}
-         */
-        function containsPlaylistId (collection, id) {
-            return collection.findIndex(function (current) {
-                    return current.playlistId === id;
-                }) > -1;
         }
 
         /**

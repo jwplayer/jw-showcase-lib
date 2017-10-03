@@ -42,17 +42,20 @@
      * <jw-card item="item" featured="false" show-title="true"></jw-card>
      * ```
      */
-    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'dataStore',
-        'watchlist', 'utils', 'serviceWorker', 'config'];
+    cardDirective.$inject = ['$animate', '$q', '$state', '$timeout', '$templateCache', '$compile', 'watchlist',
+        'utils', 'serviceWorker', 'config'];
 
-    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, dataStore, watchlist, utils,
+    function cardDirective ($animate, $q, $state, $timeout, $templateCache, $compile, watchlist, utils,
                             serviceWorker, config) {
 
         return {
             scope:            {
-                item:     '=',
-                featured: '=',
-                onClick:  '='
+                item:          '=',
+                featured:      '=?',
+                aspectratio:   '=?',
+                enableText:    '=?',
+                enablePreview: '=?',
+                onClick:       '='
             },
             controllerAs:     'vm',
             controller:       angular.noop,
@@ -75,8 +78,6 @@
             scope.vm.containerClickHandler  = containerClickHandler;
             scope.vm.setActiveCaption       = setActiveCaption;
             scope.vm.removeActiveCaption    = removeActiveCaption;
-            scope.vm.isSearch               = isSearch;
-            scope.vm.isVideoFromSearch      = $state.is('root.videoFromSearch');
 
             activate();
 
@@ -84,19 +85,18 @@
 
             function activate () {
 
-                var feed       = dataStore.getFeed(scope.vm.item.feedid),
-                    item       = scope.vm.item,
-                    enableText = true,
-                    link       = generateLink();
+                var item = scope.vm.item,
+                    link = generateLink();
 
                 element.addClass('jw-card-flag-' + (scope.vm.featured ? 'featured' : 'default'));
 
-                if (feed && $state.is('root.dashboard')) {
-                    enableText = feed.enableText;
+                if (angular.isDefined(scope.vm.enableText)) {
+                    element.toggleClass('jw-card-flag-hide-text', !scope.vm.enableText);
                 }
 
-                if (!enableText) {
-                    element.addClass('jw-card-flag-hide-text');
+                // set slider aspectratio
+                if (angular.isString(scope.vm.aspectratio)) {
+                    element.addClass('jw-card-aspect-' + scope.vm.aspectratio.replace(':', ''));
                 }
 
                 if (serviceWorker.isSupported()) {
@@ -108,7 +108,7 @@
 
                 var completeTitle = '';
 
-                if (scope.vm.inVideoSearchEnabled) {
+                if (scope.vm.showCaptionMatches ) {
                     var matchCount = item.captionMatches.length;
 
                     completeTitle = '<span class="jw-card-title-matches">' + matchCount + ' matches: </span>';
@@ -125,8 +125,8 @@
                     .html(utils.getVideoDurationByItem(item));
 
                 // set watch progress
-                if (item.feedid === 'continue-watching') {
-                    scope.$watch('vm.item.progress', watchProgressUpdateHandler);
+                if (angular.isDefined(item.progress)) {
+                    watchProgressUpdateHandler();
                 }
 
                 scope.$on('$destroy', destroyDirectiveHandler);
@@ -141,18 +141,10 @@
              */
             function generateLink () {
 
-                if ($state.is('root.search')) {
-                    return $state.href('root.videoFromSearch', {
-                        query:   $state.params.query,
-                        mediaId: scope.vm.item.mediaid,
-                        slug:    scope.vm.item.$slug
-                    });
-                }
-
                 return $state.href('root.video', {
-                    feedId:  scope.vm.item.$feedid || scope.vm.item.feedid,
+                    list:    scope.vm.item.feedid,
                     mediaId: scope.vm.item.mediaid,
-                    slug:    scope.vm.item.$slug
+                    slug:    utils.slugify(scope.vm.item.title)
                 });
             }
 

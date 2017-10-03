@@ -3,7 +3,6 @@
 // --------------------------------
 
 .jw-video-layout {
-    padding-top: $base-spacing-heading;
 
     &-align {
         padding-right: 90px;
@@ -64,6 +63,8 @@
 
             .jw-video-layout-rail {
                 @include flex-basis(100%);
+                @include flex(0);
+
                 width: 100%;
             }
         }

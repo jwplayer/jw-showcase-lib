@@ -4,7 +4,7 @@
   </p>
 
   <ul class="jw-video-details-tags" ng-if="vm.enableTags">
-    <li ng-repeat="tag in vm.jwVideoDetails.item.$tags track by $index">
+    <li ng-repeat="tag in vm.jwVideoDetails.item.tags.split(',') track by $index">
       <a class="jw-video-details-tag" ui-sref="root.tag({tag: tag})">{{ ::tag }}</a>
     </li>
   </ul>

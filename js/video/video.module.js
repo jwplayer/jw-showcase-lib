@@ -28,91 +28,37 @@
         .config(config);
 
     config.$inject = ['$stateProvider', '$urlRouterProvider', 'seoProvider'];
+
     function config ($stateProvider, $urlRouterProvider, seoProvider) {
 
-        var videoState = {
-            controller:  'VideoController as vm',
-            templateUrl: 'views/video/video.html',
-            resolve:     {
-                feed:            resolveFeed,
-                item:            resolveItem,
-                recommendations: resolveRecommendations
-            },
-            params:      {
-                autoStart: false,
-                startTime: null,
-                slug:      {
-                    value:  null,
-                    squash: true
-                }
-            },
-            scrollTop:   0
-        };
-
         $urlRouterProvider
-            .when('/list/:feedId/video', '/list/:feedId');
+            .when('/list/:feedId/video', '/list/:feedId')
+            .when('/search/:query/video/:mediaId/:slug', '/:mediaId/:slug')
+            .when('/list/:list/video/:mediaId/:slug', '/:mediaId/:slug?list');
 
         $stateProvider
-            .state('root.video', angular.extend({
-                url: '/list/:feedId/video/:mediaId/:slug'
-            }, videoState))
-            .state('root.videoFromSearch', angular.extend({
-                url: '/search/:query/video/:mediaId/:slug'
-            }, videoState));
+            .state('root.video', {
+                url:         '/:mediaId/:slug?list',
+                controller:  'VideoController as vm',
+                templateUrl: 'views/video/video.html',
+                resolve:     {
+                    item: resolveItem,
+                    feed: resolveFeed
+                },
+                params:      {
+                    autoStart: false,
+                    startTime: null,
+                    slug:      {
+                        value:  null,
+                        squash: true
+                    }
+                },
+                scrollTop:   0
+            });
 
         seoProvider
-            .state('root.video', generateSeoState('root.video'))
-            .state('root.videoFromSearch', generateSeoState('root.videoFromSearch'));
-
-        /////////////////
-
-        resolveFeed.$inject = ['$stateParams', '$q', 'dataStore', 'apiConsumer', 'preload'];
-        function resolveFeed ($stateParams, $q, dataStore, apiConsumer) {
-
-            if ($stateParams.query) {
-                return apiConsumer.getSearchFeed($stateParams.query);
-            }
-
-            var feed = dataStore.getFeed($stateParams.feedId);
-
-            if (!feed) {
-                return $q.reject();
-            }
-
-            return feed.promise.then(function (res) {
-                return res.clone();
-            });
-        }
-
-        resolveItem.$inject = ['$stateParams', '$q', 'feed'];
-        function resolveItem ($stateParams, $q, feed) {
-            return feed.findItem($stateParams.mediaId) || $q.reject();
-        }
-
-        resolveRecommendations.$inject = ['$stateParams', 'config', 'apiConsumer', 'FeedModel', 'item'];
-        function resolveRecommendations ($stateParams, config, apiConsumer, FeedModel, item) {
-
-            if (!config.recommendationsPlaylist) {
-                return;
-            }
-
-            var recommendationsFeed = new FeedModel(config.recommendationsPlaylist, 'Related Videos', false);
-
-            recommendationsFeed.relatedMediaId = $stateParams.mediaId;
-
-            return apiConsumer.populateFeedModel(recommendationsFeed, 'recommendations').then(function () {
-                recommendationsFeed.playlist.unshift(item);
-                return recommendationsFeed;
-            }).catch(function () {
-                // when this recommendations request fails, don't prevent the video page from loading
-                return undefined;
-            });
-        }
-
-        function generateSeoState (stateName) {
-
-            return ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
-                var canonical = $state.href(stateName, {slug: item.$slug}, {absolute: true});
+            .state('root.video', ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
+                var canonical = $state.href('root.video', {slug: utils.slugify(item.title)}, {absolute: true});
 
                 return {
                     title:       item.title + ' - ' + config.siteName,
@@ -130,7 +76,54 @@
                         uploadDate:   utils.secondsToISO8601(item.pubdate)
                     }
                 };
-            }];
+            }]);
+
+        /////////////////
+
+        resolveItem.$inject = ['$stateParams', '$q', 'dataStore', 'api', 'config', 'preload'];
+
+        function resolveItem ($stateParams, $q, dataStore, api, config) {
+
+            var item = dataStore.getItem($stateParams.mediaId);
+
+            // item not found in preloaded data.
+            if (!item) {
+
+                // show video not found error
+                if (config.options.showcaseContentOnly) {
+                    return $q.reject(new Error('Video not found'));
+                }
+
+                // get item from api.
+                return api.getItem($stateParams.mediaId);
+            }
+
+            return item;
+        }
+
+        resolveFeed.$inject = ['$stateParams', 'dataStore', 'apiConsumer', 'config', 'preload'];
+
+        function resolveFeed ($stateParams, dataStore, apiConsumer, config) {
+
+            // publisher prefers using recommendations feed for the playlist
+            var preferRecommendations = config.recommendationsPlaylist && config.options.useRecommendationPlaylist;
+
+            // try feed from list query parameter first
+            if ($stateParams.list && !preferRecommendations) {
+                var feed = dataStore.getFeed($stateParams.list);
+
+                if (feed) {
+                    return feed.$promise;
+                }
+            }
+
+            // try recommendations feed when recommendationsPlaylist is set
+            if (config.recommendationsPlaylist) {
+
+                return apiConsumer
+                    .getRecommendationsFeed($stateParams.mediaId)
+                    .catch(angular.noop); // prevent stateChangeError
+            }
         }
     }
 

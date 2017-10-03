@@ -26,12 +26,14 @@
      */
 
     popup.$inject = ['$rootScope', '$document', '$q', '$controller', '$compile', '$templateCache'];
+
     function popup ($rootScope, $document, $q, $controller, $compile, $templateCache) {
 
         var popups        = [],
             popupsElement = null;
 
-        this.show = show;
+        this.show        = show;
+        this.showConfirm = showConfirm;
 
         activate();
 
@@ -80,6 +82,22 @@
             }
 
             $q.reject('failed to create popup');
+        }
+
+        /**
+         * Shortcut to confirm popup.
+         *
+         * @param {string} message
+         */
+        function showConfirm (message) {
+
+            return show({
+                controller:  'ConfirmController as vm',
+                templateUrl: 'views/core/popups/confirm.html',
+                resolve:     {
+                    message: message
+                }
+            });
         }
 
         /**

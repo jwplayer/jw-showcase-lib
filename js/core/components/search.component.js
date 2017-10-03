@@ -71,18 +71,33 @@
          */
         function activate () {
 
-            $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+            $rootScope.$on('$stateChangeSuccess', stateChangeSuccessHandler);
+        }
 
-                if ('root.search' !== toState.name) {
-                    vm.searchPhrase    = '';
-                    vm.searchBarActive = false;
-                }
-                else {
-                    vm.searchPhrase       = toParams.query.replace(/\+/g, ' ');
-                    vm.searchBarActive    = true;
-                    vm.showCaptionMatches = toParams.showCaptionMatches;
-                }
-            });
+        /**
+         * Handle $stateChangeSuccess event
+         *
+         * @param event
+         * @param toState
+         * @param toParams
+         */
+        function stateChangeSuccessHandler (event, toState, toParams) {
+
+            // disable and clear searchBar when navigating to a state other than root.search.
+            if ('root.search' !== toState.name) {
+                vm.searchPhrase    = '';
+                vm.searchBarActive = false;
+                return;
+            }
+
+            // use search query parameter, but only when searchPhrase is empty.
+            if (!vm.searchPhrase) {
+                vm.searchPhrase = toParams.query.replace(/\+/g, ' ');
+            }
+
+            // enable searchBar
+            vm.searchBarActive    = true;
+            vm.showCaptionMatches = toParams.showCaptionMatches;
         }
 
         /**

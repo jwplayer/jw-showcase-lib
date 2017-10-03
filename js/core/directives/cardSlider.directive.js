@@ -54,15 +54,21 @@
      * ```
      */
     cardSliderDirective.$inject = ['$state', '$compile', '$templateCache', 'utils'];
+
     function cardSliderDirective ($state, $compile, $templateCache, utils) {
 
         return {
             scope:            {
-                feed:        '=',
-                featured:    '=',
-                onCardClick: '=',
-                firstItem:   '=',
-                title:       '@'
+                feed:          '=',
+                onCardClick:   '=',
+                firstItem:     '=?',
+                featured:      '=?',
+                aspectratio:   '=?',
+                cols:          '=?',
+                enableTitle:   '=?',
+                enableText:    '=?',
+                enablePreview: '=?',
+                title:         '@'
             },
             replace:          true,
             controller:       angular.noop,
@@ -99,14 +105,15 @@
              */
             function activate () {
 
+                scope.vm.heading = scope.vm.feed.title;
+
                 var classNameSuffix = scope.vm.featured ? 'featured' : 'default',
-                    className       = 'jw-card-slider-flag-' + classNameSuffix,
-                    loading         = scope.vm.feed.loading;
+                    className       = 'jw-card-slider-flag-' + classNameSuffix;
 
                 element.addClass(className);
 
-                if (!scope.vm.featured) {
-                    scope.vm.heading = scope.vm.title || scope.vm.feed.title || 'loading';
+                if(scope.vm.enableText === false) {
+                    element.addClass('jw-card-slider-flag-hide-text');
                 }
 
                 scope.$on('$destroy', destroyHandler);
@@ -122,11 +129,6 @@
 
                 if (scope.vm.feed) {
                     totalItems = scope.vm.feed.playlist.length;
-                }
-
-                if (loading) {
-                    element.addClass('jw-card-slider-flag-loading');
-                    // renderLoadingSlides();
                 }
 
                 leftSlidesVisible = scope.vm.featured;
@@ -168,19 +170,8 @@
              */
             function feedUpdateHandler (newValue, oldValue) {
 
-                if ($state.is('root.dashboard')) {
-
-                    // set slider background color
-                    element.css('background-color', scope.vm.feed.backgroundColor || '');
-
-                    // set slider aspectratio
-                    if (scope.vm.feed.aspectratio) {
-                        element.addClass('jw-card-slider-' + scope.vm.feed.aspectratio.replace(':', ''));
-                    }
-
-                    if (angular.isDefined(scope.vm.feed.enableTitle)) {
-                        element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.feed.enableTitle);
-                    }
+                if (angular.isDefined(scope.vm.enableTitle)) {
+                    element.toggleClass('jw-card-slider-flag-hide-title', !scope.vm.enableTitle);
                 }
 
                 if (!feedHasChanged(newValue, oldValue)) {
@@ -193,7 +184,8 @@
 
                 totalItems = scope.vm.feed.playlist.length;
 
-                element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
+                //
+                // element.toggleClass('jw-card-slider-flag-loading', scope.vm.feed.loading);
 
                 resizeHandler(true);
             }
@@ -217,11 +209,11 @@
              */
             function comparePlaylist (playlist, prevPlaylist) {
 
-                var playlistMap     = playlist.map(function (item) {
-                        return item.$key;
+                var playlistMap     = playlist.map(function (item, index) {
+                        return $$key(item, index);
                     }),
-                    prevPlaylistMap = prevPlaylist.map(function (item) {
-                        return item.$key;
+                    prevPlaylistMap = prevPlaylist.map(function (item, index) {
+                        return $$key(item, index);
                     });
 
                 return angular.equals(playlistMap, prevPlaylistMap);
@@ -234,7 +226,7 @@
             function resizeHandler (forceRender) {
 
                 var newItemsVisible = getItemsVisible(),
-                    needsRender     = newItemsVisible !== itemsVisible;
+                    needsRender     = forceRender || newItemsVisible !== itemsVisible;
 
                 itemsVisible   = newItemsVisible;
                 itemsMargin    = newItemsVisible + 1;
@@ -249,17 +241,8 @@
 
                 findElements('.jw-card-slider-button').toggleClass('ng-hide', !sliderCanSlide);
 
-                if (forceRender || needsRender) {
-
-                    if (scope.vm.feed.error) {
-                        renderErrorSlides();
-                    }
-                    else if (scope.vm.feed.loading) {
-                        renderLoadingSlides();
-                    }
-                    else {
-                        renderSlides();
-                    }
+                if (needsRender) {
+                    renderSlides();
                 }
 
                 moveSlider(0, false);
@@ -273,8 +256,8 @@
 
                 var cols = scope.vm.featured ? DEFAULT_COLS_FEATURED : DEFAULT_COLS;
 
-                if (angular.isDefined(scope.vm.feed.cols) && $state.is('root.dashboard')) {
-                    cols = scope.vm.feed.cols;
+                if (angular.isObject(scope.vm.cols) || angular.isNumber(scope.vm.cols)) {
+                    cols = scope.vm.cols;
                 }
 
                 return angular.isNumber(cols) ? cols : utils.getValueForScreenSize(cols, 1);
@@ -331,7 +314,7 @@
              */
             function renderSlides () {
 
-                var playlist = scope.vm.feed.playlist,
+                var playlist      = scope.vm.feed.playlist,
                     nextSliderMap = [],
                     nextSliderList;
 
@@ -399,7 +382,7 @@
                         }
 
                         item  = playlist[itemIndex];
-                        slide = findExistingSlide(item, visible) || createSlide(item);
+                        slide = findExistingSlide(item, visible, itemIndex) || createSlide(item, itemIndex);
 
                         addClassNamesToSlide(slide, itemIndex, visible);
                         list.push(slide);
@@ -410,11 +393,11 @@
                     return list;
                 }
 
-                function createSlide (item) {
+                function createSlide (item, itemIndex) {
 
                     var slide = compileSlide(item);
                     nextSliderMap.push({
-                        key: item.$key,
+                        key: $$key(item, itemIndex),
                         el:  slide
                     });
 
@@ -433,16 +416,16 @@
                     }
                 }
 
-                function findExistingSlide (item, visible) {
+                function findExistingSlide (item, visible, itemIndex) {
 
-                    var mapIndex = sliderMap.length,
+                    var mapIndex   = sliderMap.length,
                         candidates = [],
                         useIndex,
                         slide;
 
                     while (mapIndex--) {
 
-                        if (sliderMap[mapIndex].key !== item.$key) {
+                        if (sliderMap[mapIndex].key !== $$key(item, itemIndex)) {
                             continue;
                         }
 
@@ -522,7 +505,12 @@
 
                 var childScope = scope.$new(false, scope);
 
-                childScope.item = angular.copy(item);
+                childScope.item          = angular.copy(item);
+
+                childScope.featured      = scope.vm.featured;
+                childScope.enableText    = scope.vm.enableText;
+                childScope.enablePreview = scope.vm.enablePreview;
+                childScope.aspectratio   = scope.vm.aspectratio;
 
                 return $compile(angular.element(slideTemplate))(childScope);
             }
@@ -771,6 +759,16 @@
             function easeOutDistance (current, total) {
 
                 return Math.sin((0.5 / total) * current) * current;
+            }
+
+            /**
+             * Generate key based on item and index
+             * @param item
+             * @param index
+             * @returns {*}
+             */
+            function $$key (item, index) {
+                return index + item.mediaid;
             }
         }
     }

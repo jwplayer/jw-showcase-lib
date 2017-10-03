@@ -26,12 +26,15 @@
      * @ngdoc service
      * @name jwShowcase.core.watchlist
      *
+     * @requires $q
      * @requires jwShowcase.core.dataStore
+     * @requires jwShowcase.core.api
      * @requires jwShowcase.core.session
      * @requires jwShowcase.core.serviceWorker
      */
-    watchlist.$inject = ['dataStore', 'session', 'serviceWorker'];
-    function watchlist (dataStore, session, serviceWorker) {
+    watchlist.$inject = ['$q', 'dataStore', 'api', 'session', 'serviceWorker'];
+
+    function watchlist ($q, dataStore, api, session, serviceWorker) {
 
         this.addItem    = addItem;
         this.hasItem    = hasItem;
@@ -72,17 +75,12 @@
          */
         function addItem (item, download) {
 
-            var index = findItemIndex(item),
-                clone;
+            var index = findItemIndex(item);
 
             download = angular.isDefined(download) ? download : true;
 
             if (index === -1) {
-                clone         = angular.extend({}, item);
-                clone.$feedid = clone.$feedid || clone.feedid;
-                clone.feedid  = dataStore.watchlistFeed.feedid;
-
-                dataStore.watchlistFeed.playlist.unshift(clone);
+                dataStore.watchlistFeed.playlist.unshift(angular.copy(item));
                 persist();
 
                 if (download && serviceWorker.isSupported()) {
@@ -142,15 +140,9 @@
          */
         function persist () {
 
-            var playlist = dataStore.watchlistFeed.playlist,
-                data     = playlist.map(function (item) {
-                    return {
-                        mediaid: item.mediaid,
-                        feedid:  item.$feedid
-                    };
-                });
-
-            session.save(LOCAL_STORAGE_KEY, data);
+            session.save(LOCAL_STORAGE_KEY, dataStore.watchlistFeed.playlist.map(function (item) {
+                return {mediaid: item.mediaid, feedid: item.feedid};
+            }));
         }
 
         /**
@@ -186,19 +178,28 @@
          */
         function restore () {
 
-            var data = session.load(LOCAL_STORAGE_KEY, []);
+            var promises = session
+                .load(LOCAL_STORAGE_KEY, [])
+                .map(function (data) {
+                    // try to get item from dataStore
+                    var item = dataStore.getItem(data.mediaid);
 
-            data.map(function (keys) {
-                var item = dataStore.getItem(keys.mediaid, keys.feedid);
+                    // try fetching the item from the API if it isn't already loaded by Showcase.
+                    return item || api.getItem(data.mediaid).catch(function () {
 
-                if (item) {
+                        // item doesn't exist anymore, return undefined so that the rest don't fail.
+                        return undefined;
+                    });
+                });
 
-                    item.feedid = dataStore.watchlistFeed.feedid;
-                    item.$feedid = keys.feedid;
+            return $q.all(promises)
+                .then(function (items) {
+                    // add all items to feed.
+                    dataStore.watchlistFeed.playlist = items.filter(angular.isDefined);
 
-                    addItem(item, false);
-                }
-            });
+                    // persist valid data to session.
+                    persist();
+                });
         }
     }
 

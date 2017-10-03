@@ -69,8 +69,6 @@
 
     $card-slider-title-color: $secondary-color !default;
     $card-slider-error-title-color: #979797 !default;
-    $card-slider-border-bottom-color: rgba(#333, 0.2) !default;
-    $card-slider-border-bottom: 1px solid $card-slider-border-bottom-color !default;
     $card-slider-button-color: $white !default;
     $card-slider-button-hover-color: $primary-color !default;
 
@@ -85,6 +83,10 @@
 
     $card-slider-error-bg: $black !default;
     $card-slider-error-card-bg: $secondary-color !default;
+
+    // CardGrid
+
+    $card-grid-title-color: $secondary-color !default;
 
     // Cookies
 
@@ -360,8 +362,6 @@
     .jw-card-slider {
 
         &-flag-default {
-            border-bottom: $card-slider-border-bottom;
-
             .jw-card-slider-controls {
                 color: $card-slider-button-color;
 
@@ -383,11 +383,11 @@
             }
         }
 
-        &-flag-error .jw-card-slider-title {
+        &-flag-error .jw-feed-title {
             color: $card-slider-error-title-color;
         }
 
-        .jw-card-slider-title {
+        .jw-feed-title {
             color: $card-slider-title-color;
         }
 
@@ -413,6 +413,21 @@
 
     .jw-card-menu {
         background-color: $card-menu-bg;
+    }
+
+    //
+    // CardGrid
+    // --------------------------------
+
+    .jw-card-grid {
+
+        &-control {
+            color: $secondary-color;
+        }
+
+        .jw-feed-title {
+            color: $card-grid-title-color;
+        }
     }
 
     //
@@ -728,5 +743,21 @@
         .jw-toggle {
             color: $primary-color;
         }
+    }
+
+    //
+    // Settings
+    // --------------------------------
+
+    .jw-settings .jw-toggle-track {
+        background-color: $gray-alternate;
+    }
+
+    .jw-settings .jw-toggle-flag-checked .jw-toggle-track {
+        background-color: $blue;
+    }
+
+    .jw-settings-row {
+        border-bottom: 2px solid rgba($dark-color, 0.1);
     }
 }

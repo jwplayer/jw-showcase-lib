@@ -69,12 +69,11 @@
              */
             function activate () {
 
-                var watchProgressFeed = jwCard.item.feedid === dataStore.watchProgressFeed.feedid,
+                var watchProgressFeed = angular.isNumber(jwCard.item.progress),
                     featuredCard      = jwCard.featured;
 
                 itemPosterUrl   = generatePosterUrl();
                 thumbnailsTrack = getThumbnailsTrack();
-                feed            = dataStore.getFeed(jwCard.item.feedid);
 
                 scope.$on('caption_changed', function (event, data) {
                     showPositionThumbnail(data.thumbnails, data.caption.time);
@@ -84,8 +83,8 @@
                     showDefaultPoster();
                 });
 
-                // if the thumbnailTrack doesn't exist or the feed.enablePreview is false there is no need to continue
-                if (!thumbnailsTrack || !feed || !feed.enablePreview) {
+                // if the thumbnailTrack doesn't exist or enablePreview is false there is no need to continue
+                if (!thumbnailsTrack || !jwCard.enablePreview) {
                     return showDefaultPoster();
                 }
 
@@ -101,7 +100,7 @@
                 }
 
                 // set watch progress
-                if (watchProgressFeed && feed.enablePreview) {
+                if (watchProgressFeed && jwCard.enablePreview) {
 
                     // set progressPreview flag to true
                     progressPreview = true;

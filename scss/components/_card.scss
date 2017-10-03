@@ -43,6 +43,30 @@
         }
     }
 
+    &.jw-card-aspect-916 .jw-card-aspect {
+        padding-bottom: (16 / 9) * 100%;
+    }
+
+    &.jw-card-aspect-23 .jw-card-aspect {
+        padding-bottom: (3 / 2) * 100%;
+    }
+
+    &.jw-card-aspect-11 .jw-card-aspect {
+        padding-bottom: 100%;
+    }
+
+    &.jw-card-aspect-43 .jw-card-aspect {
+        padding-bottom: 75%;
+    }
+
+    &.jw-card-aspect-53 .jw-card-aspect {
+        padding-bottom: 60%;
+    }
+
+    &.jw-card-aspect-21 .jw-card-aspect {
+        padding-bottom: 50%;
+    }
+
     .jw-button-watchlist {
         @include single-transition(transform, 0.2s, cubic-bezier(0.48, 0.76, 0.39, 1.15), 0s);
         position: absolute;

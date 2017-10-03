@@ -21,6 +21,7 @@
         .directive('jwAdSlot', jwAdSlot);
 
     jwAdSlot.$inject = ['config', 'dfp', 'utils', 'platform'];
+
     function jwAdSlot (config, dfp, utils, platform) {
         return {
             bindToController: true,
@@ -29,7 +30,7 @@
             link:             link,
             restrict:         'E',
             replace:          true,
-            template:         '<div></div>',
+            template:         '<div class="jw-ad-slot"></div>',
             scope:            {
                 slotId:          '@',
                 slotSize:        '=',
@@ -71,9 +72,15 @@
                 // display ad
                 dfp.display(attrs.slotId);
 
+                // destroy ad when scope is being destroyed
                 scope.$on('$destroy', function () {
                     window.removeEventListener('resize', resizeDebounced);
                     dfp.destroy(attrs.slotId);
+                });
+
+                // refresh adunit when the view is restored from cache
+                scope.$on('$viewRestored', function () {
+                    dfp.refresh(attrs.slotId);
                 });
             }
 

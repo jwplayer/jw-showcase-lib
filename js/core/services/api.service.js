@@ -35,6 +35,28 @@
 
         /**
          * @ngdoc method
+         * @name jwShowcase.core.api#getItem
+         * @methodOf jwShowcase.core.api
+         *
+         * @param {string} mediaId Id of the item
+         * @description
+         * Get media from jw platform
+         *
+         * @resolves {jwShowcase.core.item}
+         * @returns {Promise} Promise which will be resolved when the request is completed.
+         */
+        this.getItem = function (mediaId) {
+
+            // reject when mediaId is empty or no string
+            if (!angular.isString(mediaId) || mediaId === '') {
+                return $q.reject(new Error('mediaId is not given or not a string'));
+            }
+
+            return getItem(config.contentService + '/v2/media/' + mediaId);
+        };
+
+        /**
+         * @ngdoc method
          * @name jwShowcase.core.api#getFeed
          * @methodOf jwShowcase.core.api
          *
@@ -80,9 +102,10 @@
                 return $q.reject(new Error('search phrase is not given or not a string'));
             }
 
-            phrase = encodeURIComponent(phrase);
+            var url = config.contentService + '/v2/playlists/' + searchPlaylist;
 
-            return getFeed(config.contentService + '/v2/playlists/' + searchPlaylist + '?search=' + phrase);
+            return getFeed(url + '?search=' + encodeURIComponent(phrase));
+
         };
 
         /**
@@ -124,36 +147,35 @@
             });
 
             function findMatches (location, positions) {
-                return $http.get(location)
-                    .then(function (response) {
-                        var vtt = response.data;
+                return $http.get(location).then(function (response) {
+                    var vtt = response.data;
 
-                        return $q(function (resolve, reject) {
-                            var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
-                            var segments = [];
+                    return $q(function (resolve, reject) {
+                        var parser   = new WebVTT.Parser(window, WebVTT.StringDecoder());
+                        var segments = [];
 
-                            parser.onparsingerror = reject;
-                            parser.oncue          = function (cue) {
-                                segments.push(cue);
-                            };
+                        parser.onparsingerror = reject;
+                        parser.oncue          = function (cue) {
+                            segments.push(cue);
+                        };
 
-                            parser.onflush = function () {
-                                resolve(positions.map(function (position) {
-                                    var segment = segments[position - 1];
-                                    var regex   = new RegExp('(' + phrase + ')', 'ig');
+                        parser.onflush = function () {
+                            resolve(positions.map(function (position) {
+                                var segment = segments[position - 1];
+                                var regex   = new RegExp('(' + phrase + ')', 'ig');
 
-                                    return {
-                                        text:        segment.text,
-                                        time:        segment.startTime,
-                                        highlighted: segment.text.replace(regex, '<span>$1</span>')
-                                    };
-                                }));
-                            };
+                                return {
+                                    text:        segment.text,
+                                    time:        segment.startTime,
+                                    highlighted: segment.text.replace(regex, '<span>$1</span>')
+                                };
+                            }));
+                        };
 
-                            parser.parse(vtt);
-                            parser.flush();
-                        });
+                        parser.parse(vtt);
+                        parser.flush();
                     });
+                });
             }
         };
 
@@ -210,7 +232,7 @@
             };
 
             script.onerror = function () {
-                defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
+                defer.reject(new Error('Player with id `' + playerId + '` could not be loaded'));
             };
 
             script.async = true;
@@ -219,6 +241,31 @@
 
             return defer.promise;
         };
+
+        /**
+         * Get item from the given URL
+         *
+         * @param {string} url
+         * @returns {Promise}
+         */
+        function getItem (url) {
+
+            return $http.get(url)
+                .then(function (response) {
+                    return response.data;
+                })
+                .then(function (feed) {
+                    if (!angular.isArray(feed.playlist) || !feed.playlist.length) {
+                        return $q.reject(new Error('Item not found'));
+                    }
+
+                    return feed.playlist[0];
+                })
+                .then(fixItemUrls)
+                .catch(function () {
+                    return $q.reject('Failed to get item');
+                });
+        }
 
         /**
          * Get feed from the given URL.
@@ -245,22 +292,6 @@
                 }
 
                 feed.playlist = feed.playlist
-                    .map(function (item, index) {
-
-                        if (!item.feedid) {
-                            item.feedid = feed.feedid;
-                        }
-
-                        item.$key  = index + item.mediaid;
-                        item.$slug = utils.slugify(item.title);
-                        item.$tags = [];
-
-                        if (angular.isString(item.tags)) {
-                            item.$tags = item.tags.split(',');
-                        }
-
-                        return item;
-                    })
                     .map(fixItemUrls);
 
                 return feed;
@@ -354,8 +385,6 @@
      * @property {string}               link            Link
      * @property {string}               mediaid         Video id
      * @property {string}               feedid          Feed id (set by apiService)
-     * @property {string}               $feedid         Original feedid
-     * @property {string}               $slug           Title slugified
      * @property {number}               pubdate         Publication date timestamp
      * @property {Object[]}             sources         Video sources
      * @property {string}               tags            Tags

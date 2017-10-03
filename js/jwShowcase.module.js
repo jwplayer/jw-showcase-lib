@@ -27,14 +27,17 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.settings',
             'jwShowcase.tag',
+            'jwShowcase.updateBrowser',
             'jwShowcase.video'
         ])
         .value('config', {
             contentService: 'https://content.jwplatform.com',
             options:        {
+                theme:                     'light',
+                showcaseContentOnly:       true,
                 enableContinueWatching:    true,
-                enableCookieNotice:        false,
                 enableFeaturedText:        true,
                 enablePlayerAutoFocus:     true,
                 enableHeader:              true,
@@ -44,6 +47,12 @@
                 enableAddToHome:           false,
                 rightRail:                 {
                     enabled: false
+                },
+                cookieNotice:              {
+                    enabled: false,
+                    message: 'This site uses cookies to give you the best experience. If you would like to change ' +
+                             'your cookie preferences you may do so by <a href="http://www.aboutcookies.org" ' +
+                             'target="_blank">following these instructions</a>'
                 },
                 videoTitlePosition:        'below',
                 useRecommendationPlaylist: false,
@@ -77,12 +86,15 @@
      * @property {boolean}              options.enableHeader
      * @property {boolean}              options.enableFooter
      * @property {boolean}              options.enableContinueWatching
-     * @property {boolean}              options.enableCookieNotice
      * @property {boolean}              options.enablePlayerAutoFocus
      * @property {string}               options.videoTitlePosition
      *
      * @property {Object|boolean}       options.rightRail
      * @property {boolean}              options.rightRail.enabled
+     *
+     * @property {Object|boolean}       options.cookieNotice
+     * @property {boolean}              options.cookieNotice.enabled
+     * @property {string}               options.cookieNotice.message
      *
      * @property {Object|boolean}       options.displayAds
      * @property {string}               options.displayAds.client
