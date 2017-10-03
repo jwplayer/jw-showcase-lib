@@ -232,7 +232,7 @@
             };
 
             script.onerror = function () {
-                defer.reject(new Error('Player with id `' + playerId + '` could not been loaded'));
+                defer.reject(new Error('Player with id `' + playerId + '` could not be loaded'));
             };
 
             script.async = true;

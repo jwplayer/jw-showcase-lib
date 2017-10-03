@@ -89,12 +89,10 @@
                     return;
                 }
 
-                api.getPlayer(config.player)
-                    .then(handlePreloadSuccess, handlePreloadError);
-
-                apiConsumer
-                    .loadFeedsFromConfig()
-                    .then(handleFeedsLoadSuccess);
+                $q.all([
+                    api.getPlayer(config.player),
+                    apiConsumer.loadFeedsFromConfig().then(handleFeedsLoadSuccess)
+                ]).then(handlePreloadSuccess, handlePreloadError);
 
             }, handlePreloadError);
 

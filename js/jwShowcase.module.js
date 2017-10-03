@@ -27,6 +27,7 @@
             'jwShowcase.dashboard',
             'jwShowcase.feed',
             'jwShowcase.search',
+            'jwShowcase.settings',
             'jwShowcase.tag',
             'jwShowcase.updateBrowser',
             'jwShowcase.video'
@@ -34,6 +35,7 @@
         .value('config', {
             contentService: 'https://content.jwplatform.com',
             options:        {
+                theme:                     'light',
                 showcaseContentOnly:       true,
                 enableContinueWatching:    true,
                 enableFeaturedText:        true,
@@ -46,7 +48,7 @@
                 rightRail:                 {
                     enabled: false
                 },
-                cookieNotice: {
+                cookieNotice:              {
                     enabled: false,
                     message: 'This site uses cookies to give you the best experience. If you would like to change ' +
                              'your cookie preferences you may do so by <a href="http://www.aboutcookies.org" ' +

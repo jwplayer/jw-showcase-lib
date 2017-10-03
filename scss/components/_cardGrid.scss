@@ -48,7 +48,7 @@
     .jw-card-grid {
 
         &-align {
-            margin: $base-spacing-heading $base-spacing #{-$base-spacing};
+            margin: 0 $base-spacing #{-$base-spacing};
         }
 
         &-cards {
