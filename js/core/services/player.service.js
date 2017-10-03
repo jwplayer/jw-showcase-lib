@@ -29,9 +29,12 @@
      * automatically set by the {@link jwShowcase.core.directive:jwPlayer `jwPlayerDirective`}.
      */
 
-    player.$inject = ['$rootScope', '$q', 'userSettings', 'watchProgress', 'config', 'platform'];
-    function player ($rootScope, $q, userSettings, watchProgress, config, platform) {
+    player.$inject = ['$rootScope', '$q', 'userSettings', 'watchProgress', 'config', 'platform', 'dataStore'];
+    function player ($rootScope, $q, userSettings, watchProgress, config, platform, dataStore) {
 
+        /**
+         * Holds instantiated player services.
+         */
         var playerServices = {};
 
         this.getService    = getService;
@@ -53,6 +56,7 @@
          */
         function getService (pid) {
 
+            // default pid is... 'default'!
             pid = pid || 'default';
 
             if (!playerServices[pid]) {
@@ -82,9 +86,9 @@
          * events such as watch progress and quality
          * changes.
          *
-         * @param    {String}  pid             Unique simple identifier for player service
-         * @param    {Object}  options         Extra options for player
-         * @returns  {Object}                  Service API
+         * @param   {string} pid     Unique simple identifier for player service
+         * @param   {object} options Extra options for player
+         * @returns {object}         Service API
          */
         function playerService(pid) {
 
@@ -111,10 +115,15 @@
                 firstFrame: onFirstFrame,
                 levels: onLevels,
                 complete: onComplete,
-                time: onTime
+                time: onTime,
+                playlistItem: onPlaylistItem
             };
 
+            /**
+             * Set all scope variables to their original values.
+             */
             function construct() {
+
                 // set all vars in scope to their default values
                 requestQualityChange = false;
                 lastPos = 0;
@@ -136,10 +145,17 @@
                 });
             }
 
+            /**
+             * Clear the player and this service.
+             *
+             * Called when mini player is dismissed by user.
+             */
             function clear() {
+
                 // remove player instance
                 playerInstance.remove();
 
+                // wait for next event loop
                 window.setTimeout(function() {
                     // re-construct
                     construct();
@@ -149,7 +165,12 @@
                 }, 1);
             }
 
+            /**
+             * Completely destroy the player and
+             * this service.
+             */
             function destroy() {
+
                 // call jwplayer remove
                 playerInstance.remove();
 
@@ -157,7 +178,15 @@
                 delete playerServices[pid];
             }
 
+            /**
+             * Create a jwplayer instance for an element ID.
+             *
+             * Called by directive.
+             *
+             * @param {string} id
+             */
             function setup(id) {
+
                 // move id into scope so we can re-use it later
                 playerId = id;
 
@@ -168,12 +197,33 @@
                 playerInstantiatedResolve();
             }
 
+            /**
+             * Initialize/setup the player instance.
+             *
+             * Will wait for the directive to
+             * have instantiated the player.
+             *
+             * @param {object} settings      Settings for jwplayer
+             * @param {object} playlistItem  Current playlist item
+             * @param {object} options       Additional options
+             * @param {object} events        Player events and handlers to bind
+             */
             function init(settings, playlistItem, options, events) {
 
                 // wait for playerInstance to have been created
                 playerInstantiated.then(function() {
 
-                    update(playlistItem, options);
+                    // move playlistItem into scope for re-use
+                    item = playlistItem;
+
+                    // set watchProgressItem only if we have item
+                    watchProgressItem = item && watchProgress.getItem(item);
+
+                    // parse options
+                    if (options.startTime) {
+                        // set local startTime so video can start there
+                        startTime = options.startTime;
+                    }
 
                     settings = angular.extend({
                         controls: true
@@ -187,7 +237,7 @@
                     // call setup on jwplayer instance
                     playerInstance.setup(settings);
 
-                    // TODO: this won't do
+                    // TODO: this won't do anything
                     // if (window.cordova && settings.autostart) {
 
                     //     playerInstance.once('playlistItem', function () {
@@ -203,22 +253,10 @@
                 });
             }
 
-            function update(playlistItem, options) {
-
-                // move playlistItem into scope for re-use
-                item = playlistItem;
-
-                // set watchProgressItem only if we have item
-                watchProgressItem = item && watchProgress.getItem(item);
-
-                // parse options
-                if (options.startTime) {
-                    startTime = options.startTime;
-                }
-            }
-
             function setPlayerEventHandlers(events) {
+                // loop through event names and handlers
                 angular.forEach(events, function (fn, type) {
+                    // set on playerInstance
                     playerInstance.on(type, fn);
                 });
             }
@@ -281,6 +319,33 @@
                 }
             }
 
+            function onPlaylistItem(event) {
+
+                // search item in dataStore
+                var newItem = dataStore.getItem(event.item.mediaid);
+
+                // if item is not loaded in showcase
+                if (!newItem) {
+
+                    // return when publisher has showcaseContentOnly set to true
+                    if (config.options.showcaseContentOnly) {
+                        return;
+                    }
+
+                    // fallback to item given in event object
+                    newItem = event.item;
+                }
+
+                // return if item doesn't exist or its the same item
+                if (newItem.mediaid === item.mediaid) {
+                    return;
+                }
+
+                // reset lastPos
+                lastPos = 0;
+                item = newItem;
+            }
+
             /**
              * Seek to time given in stateParams when set or resume the watch progress
              */
@@ -309,9 +374,19 @@
                 }
             }
 
+            /**
+             * When called with boolean value, this
+             * method will set the requestQualityChange
+             * variable, which is handled in the `onTime`
+             * handler, and will lower or raise
+             * the video's quality.
+             *
+             * @param   {boolean} value If video quality should be lowered
+             * @returns {void}
+             */
             function lowerBandwidth(value) {
 
-                // nothing to do
+                // nothing to do when no video quality levels
                 if (!levels) {
                     return;
                 }
@@ -323,6 +398,7 @@
                     toQuality = levelsLength > 2 ? levelsLength - 2 : levelsLength;
                 }
 
+                // set to integer value so `onTime` will handle it
                 requestQualityChange = toQuality;
             }
 
@@ -341,14 +417,29 @@
                 };
             }
 
+            /**
+             * Checks if player can be pinned.
+             *
+             * @returns {boolean} If player is pinable
+             */
             function canPin() {
-                if (platform.isMobile && pid === 'sticky') {
+
+                // only 'mobile' player is pinnable
+                if (platform.isMobile && pid === 'mobile') {
+                    // players that have not yet started will not be pinned
                     var state = playerInstance.getState();
                     return state === 'playing' || state === 'paused';
                 }
             }
 
+            /**
+             * Pin player by checking if it's possible, and firing
+             * the registered pin handler.
+             *
+             * @returns {void}
+             */
             function pin() {
+
                 if (!canPin()) {
                     return;
                 }
@@ -358,7 +449,14 @@
                 firePinHandler('pin');
             }
 
+            /**
+             * Unpin player by checking if it's pinned, and firing the
+             * registered unpin event handler.
+             *
+             * @returns {void}
+             */
             function unpin() {
+
                 if (!pinned) {
                     return;
                 }
@@ -368,27 +466,55 @@
                 pinned = false;
             }
 
+            /**
+             * Return local pinned boolean.
+             *
+             * Can be used to check if player is pinned.
+             *
+             * @returns {boolean} If player is pinned
+             */
             function isPinned() {
+
                 return pinned;
             }
 
+            /**
+             * Set handler to fire when player gets (un)pinned.
+             *
+             * @param {string}   eventName 'pin' or 'unpin'
+             * @param {function} handler   Method to call on event
+             */
             function setPinHandler(eventName, handler) {
 
                 pinHandlers[eventName] = handler;
             }
 
+            /**
+             * Fire registered (un)pin event handler.
+             *
+             * @param   {string} eventName 'pin' or 'unpin'
+             * @returns {void}
+             */
             function firePinHandler(eventName) {
+
                 if (!pinHandlers[eventName]) {
                     return;
                 }
 
+                // call with playerInstance
                 pinHandlers[eventName](playerInstance);
             }
 
+            /**
+             * Based on whether the player can be pinned,
+             * will either pin or clear the player.
+             */
             function onLeaveVideoPage() {
                 if (canPin()) {
+                    // do it!
                     pin();
                 } else {
+                    // traditional clear
                     clear();
                 }
             }
@@ -415,7 +541,6 @@
 
                 setup:          setup,
                 init:           init,
-                update:         update,
                 lowerBandwidth: lowerBandwidth,
                 destroy:        destroy,
                 clear:          clear,

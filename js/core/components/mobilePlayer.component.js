@@ -18,15 +18,15 @@
 
     angular
         .module('jwShowcase.core')
-        .component('jwStickyPlayer', {
+        .component('jwMobilePlayer', {
             controllerAs:     'vm',
-            controller:       StickyPlayerController,
-            templateUrl:      'views/core/stickyPlayer.html'
+            controller:       MobilePlayerController,
+            templateUrl:      'views/core/mobilePlayer.html'
         });
 
     /**
      * @ngdoc controller
-     * @name jwShowcase.core.StickyPlayerController
+     * @name jwShowcase.core.MobilePlayerController
      *
      * @requires $element
      * @requires $timeout
@@ -34,24 +34,27 @@
      * @requires jwShowcase.core.betterSwipe
      * @requires jwShowcase.core.player
      */
-    StickyPlayerController.$inject = ['$element', '$timeout', '$state', 'betterSwipe', 'utils', 'player'];
-    function StickyPlayerController ($element, $timeout, $state, betterSwipe, utils, player) {
+    MobilePlayerController.$inject = ['$element', '$timeout', '$state', 'betterSwipe', 'utils', 'player'];
+    function MobilePlayerController ($element, $timeout, $state, betterSwipe, utils, player) {
 
         var vm = this,
             isDragging = false,
-            $stickyContainerEl = angular.element($element.find('div')[0]),
-            playerService = player.getService('sticky'),
+            $containerEl = angular.element($element.find('div')[0]),
+            playerService = player.getService('mobile'),
             swiper;
 
         vm.returnToVideo = returnToVideo;
 
+        // register event handlers on player service
         playerService.on('pin', onPin);
         playerService.on('unpin', onUnpin);
 
-        addSwipeHandling($stickyContainerEl);
+        // setup swipe handling asap
+        addSwipeHandling($containerEl);
 
         function returnToVideo() {
-            // prevent click handler from firing when dragging mini player
+
+            // ignore click handler when dragging mini player or when player is not pinned
             if (isDragging || !playerService.isPinned()) {
                 return;
             }
@@ -69,12 +72,21 @@
             });
         }
 
+        /**
+         * Handle pin and unpin event and transition.
+         *
+         * @param {object}  playerInstance Instance of jwplayer
+         * @param {boolean} pinned         If player is pinned
+         */
         function afterPinTransition(playerInstance, pinned) {
-            $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function () {
-                window.requestAnimationFrame(function () {
-                    // activate swiper is pinned
-                    swiper.active(pinned);
 
+            // wait for transition end event
+            $containerEl.one(utils.getPrefixedEventNames('transitionEnd'), function () {
+                // (de)activate swiper when (not) pinned
+                swiper.active(pinned);
+
+                // improve render speed
+                window.requestAnimationFrame(function () {
                     // resize and hide controls if pinned
                     playerInstance.resize();
                     playerInstance.setControls(!pinned);
@@ -82,32 +94,59 @@
             });
         }
 
+        /**
+         * Handle pinning player.
+         *
+         * Fired when player gets pinned.
+         *
+         * @param {object} playerInstance Instance of jwplayer
+         */
         function onPin(playerInstance) {
+
             // make sure the container is reset
             resetContainerDrag();
 
             afterPinTransition(playerInstance, true);
 
-            $stickyContainerEl.addClass('is-stuck');
+            $containerEl.addClass('is-pinned');
         }
 
+        /**
+         * Handle unpinning player.
+         *
+         * Fired when player gets unpinned.
+         *
+         * @param {object} playerInstance Instance of jwplayer
+         */
         function onUnpin(playerInstance) {
+
             afterPinTransition(playerInstance, false);
 
-            $stickyContainerEl.removeClass('is-stuck');
+            $containerEl.removeClass('is-pinned');
         }
 
+        /**
+         * Handle manual mini player dismissal.
+         */
         function dismiss() {
+
+            // reset/reinstantiate player (service) and its properties
             playerService.clear();
 
             resetContainerDrag();
-            $stickyContainerEl.removeClass('is-stuck');
+            $containerEl.removeClass('is-pinned');
 
             // deactive swiper
             swiper.active(false);
         }
 
+        /**
+         * Add swipe handling for mobile player element.
+         *
+         * @param {object} el Mobile player container element
+         */
         function addSwipeHandling(el) {
+
             // threshold in pixels to swipe
             var threshold = 150;
 
@@ -115,10 +154,12 @@
             var start = 0;
             var moved = 0;
 
+            // bind betterSwipe to element and handle events
             swiper = betterSwipe.bind(
                 el,
                 {
                     start: function(coords, event) {
+                        // no need to do anything if player is not pinned
                         if (!playerService.isPinned()) {
                             return;
                         }
@@ -126,8 +167,8 @@
                         // remember start position
                         start = coords.x;
 
-                        // add css class to prevent transitions
-                        $stickyContainerEl.addClass('is-dragging');
+                        // add css class to prevent transitions when dragging
+                        $containerEl.addClass('is-dragging');
                     },
                     move: function(coords, event) {
                         var diff = coords.x - start;
@@ -140,12 +181,13 @@
                         }
 
                         // update css based on how much the container was dragged
-                        $stickyContainerEl.css({
+                        $containerEl.css({
                             marginLeft: diff + 'px',
                             opacity: 1 - moved
                         });
                     },
                     end: function() {
+                        // if we moved past the threshold
                         if (moved >= 1) {
                             dismiss();
                         } else {
@@ -162,6 +204,7 @@
                         moved = 0;
                     },
                     leave: function() {
+                        // if we moved past the threshold
                         if (moved >= 1) {
                             dismiss();
                         } else {
@@ -178,18 +221,22 @@
             swiper.active(false);
         }
 
+        /**
+         * Reset container's original positionm.
+         */
         function resetContainerDrag() {
-            if ($stickyContainerEl.hasClass('is-dragging')) {
+
+            if ($containerEl.hasClass('is-dragging')) {
                 // wait for drag reset transition to finish
-                $stickyContainerEl.one(utils.getPrefixedEventNames('transitionEnd'), function (event) {
+                $containerEl.one(utils.getPrefixedEventNames('transitionEnd'), function (event) {
                     isDragging = false;
                 });
             } else {
                 isDragging = false;
             }
 
-            $stickyContainerEl.removeClass('is-dragging');
-            $stickyContainerEl.removeAttr('style');
+            $containerEl.removeClass('is-dragging');
+            $containerEl.removeAttr('style');
         }
 
     }

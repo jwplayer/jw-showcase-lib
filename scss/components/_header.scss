@@ -15,9 +15,10 @@
     //
     &-fixed {
         position: fixed;
-        width: 100%;
 
         z-index: $header-z-index;
+
+        width: 100%;
     }
 
     //
@@ -28,8 +29,8 @@
         width: 100%;
 
         .jw-header-main .jw-header-title {
-            white-space: normal;
             overflow: visible;
+            white-space: normal;
         }
     }
 
@@ -68,8 +69,8 @@
             max-width: 100%;
             max-height: $header-height - 20px;
 
-            cursor: pointer;
             vertical-align: middle;
+            cursor: pointer;
         }
     }
 
@@ -102,6 +103,9 @@
 @include mobile-only () {
 
     .jw-header {
+        // align with sticky player transition property
+        @include transition(transform $sticky-player-transition);
+
         height: $header-height-mobile;
 
         .jw-header-main .jw-header-logo {
@@ -116,8 +120,6 @@
         .jw-header-nav .jw-button-label {
             display: none;
         }
-
-        @include transition(transform $sticky-player-transition);
 
         &.is-hidden {
             @include transform(translateY(-100%));

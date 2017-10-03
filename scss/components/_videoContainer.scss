@@ -26,7 +26,7 @@
         @include transition(top $sticky-player-transition);
         @include transition-delay(($sticky-player-transition-length / 2));
 
-        // position absolute for auto aspect ratio
+        // position absolute for auto aspect ratio sibling div
         position: absolute;
 
         top: 0;
@@ -50,8 +50,8 @@
                 position: absolute;
 
                 // pin to bottom right because that's where player will move to
-                bottom: 0;
                 right: 0;
+                bottom: 0;
 
                 // if this is not set, player will not be visible
                 width: 100%;
@@ -69,7 +69,8 @@
             }
         }
 
-        &.is-minimized {
+        // pinned as mini player to bottom of screen
+        &.is-pinned {
             // override transition delay
             @include transition-delay(0ms);
 
@@ -84,12 +85,12 @@
                 // offset from bottom
                 bottom: $sticky-player-offset;
 
-                // use padding-left to position player on grid
-                padding-left: $sticky-player-offset;
+                width: $sticky-player-width;
+
                 // use padding-right instead of 'right' to offset from screen-corner
                 padding-right: $sticky-player-offset;
-
-                width: $sticky-player-width;
+                // use padding-left to position player on grid
+                padding-left: $sticky-player-offset;
 
                 .jw-showcase-player {
                     // because parent container uses top: 100%, transform this to -100 to compensate
@@ -138,7 +139,8 @@
 
             z-index: 1;
 
-            &.is-pinned {
+            // stuck to top of screen
+            &.is-stuck {
                 position: fixed;
 
                 z-index: $view-z-index;
@@ -172,7 +174,7 @@
 @media screen and (min-width: ($video-layout-right-rail-width + ($sticky-player-offset / 2))) {
     .jw-video-container {
         .jw-video-container-player {
-            &.is-minimized {
+            &.is-pinned {
                 .jw-showcase-player-container {
                     // stick to right side of container/rail
                     padding-right: 0;

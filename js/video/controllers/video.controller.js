@@ -52,7 +52,7 @@
             playlist                = [],
             playerOffsetTop         = 0,
             playerStuck             = false,
-            playerService           = player.getService(platform.isMobile ? 'sticky' : 'video'),
+            playerService           = player.getService(platform.isMobile ? 'mobile' : 'video'),
             $headerEl               = angular.element(document.querySelector('.jw-header')),
             $videoPlayerContainerEl,
             loadingTimeout,
@@ -194,14 +194,6 @@
             angular.merge($stateParams, newStateParams);
 
             $state.$current.locals.globals.item = vm.item;
-
-            // update the player, but don't reinstantiate
-            playerService.update(
-                vm.item,
-                {
-                    startTime: $stateParams.startTime
-                }
-            );
 
             $state
                 .go('root.video', newStateParams, {
@@ -509,8 +501,8 @@
 
         function setupScrollHandlers() {
             if (platform.isMobile) {
-                // use sticky player container
-                $videoPlayerContainerEl = angular.element(document.querySelector('.jw-sticky-player-container'));
+                // use mobile player container
+                $videoPlayerContainerEl = angular.element(document.querySelector('.jw-mobile-player-container'));
 
                 // only check for player sticking to top
                 onScrollMobile = onScroll.bind(function (scrollTop) {
@@ -536,7 +528,7 @@
 
                     removeScrollHandlers();
 
-                    // set screen size specific scroll handler for sticky player
+                    // set screen size specific scroll handler for mobile player
                     if (isMobileScreen) {
                         onScrollMobile = onScroll.bind(function (scrollTop) {
                             // stick when we've scrolled passed header height
@@ -588,9 +580,9 @@
                 // MOBILE: stick player to top of screen
 
                 utils.toggleClass($headerEl, 'is-hidden', state);
-                utils.toggleClass($videoPlayerContainerEl, 'is-pinned', state);
+                utils.toggleClass($videoPlayerContainerEl, 'is-stuck', state);
             } else {
-                // NON-MOBILE: stick smaller player to bottom right of screen
+                // NON-MOBILE: pin smaller player to bottom right of screen
 
                 var playerInstance = playerService.getInstance();
                 if (playerInstance) {
@@ -607,7 +599,7 @@
                 }
 
                 // toggle classes (and animation)
-                utils.toggleClass($videoPlayerContainerEl, 'is-minimized', state);
+                utils.toggleClass($videoPlayerContainerEl, 'is-pinned', state);
             }
         }
 
@@ -615,8 +607,8 @@
             playerStuck = false;
 
             $headerEl.removeClass('is-hidden');
+            $videoPlayerContainerEl.removeClass('is-stuck');
             $videoPlayerContainerEl.removeClass('is-pinned');
-            $videoPlayerContainerEl.removeClass('is-minimized');
         }
 
     }

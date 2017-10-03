@@ -1,4 +1,4 @@
-.jw-sticky-player-container {
+.jw-mobile-player-container {
     // only transition top for mini player
     @include transition(top $sticky-player-transition-mobile);
 
@@ -31,7 +31,7 @@
 
         @include box-shadow(0 0 0 $black);
         width: 100%;
-        border: 0px solid $black;
+        border: 0 solid $black;
     }
 
     &.is-pinned,
@@ -40,13 +40,13 @@
         position: fixed;
     }
 
-    &.is-pinned {
+    &.is-stuck {
         // offset top by header-height
         transform: translateY(-$header-height-mobile);
     }
 
-    &.is-stuck {
-        @include transition(top $sticky-player-transition-mobile, margin $sticky-player-transition-mobile, opacity $sticky-player-transition-mobile);
+    &.is-pinned {
+        @include transition(top $sticky-player-transition-mobile);
 
         // move above all other elements
         z-index: $sticky-player-z-index;
@@ -54,7 +54,7 @@
         // transition top to 100%
         top: 100%;
 
-        .jw-sticky-player-container-inner {
+        .jw-mobile-player-container-inner {
             // decrease width
             width: $sticky-player-width-mobile;
 

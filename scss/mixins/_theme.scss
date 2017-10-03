@@ -486,14 +486,14 @@
 
     .jw-video-container {
         .jw-video-container-player {
-            &.is-pinned,
-            &.is-minimized {
+            &.is-stuck,
+            &.is-pinned {
                 .jw-showcase-player {
                     @include box-shadow(0 0 15px 0 $shadow-color);
                 }
             }
 
-            &.is-minimized {
+            &.is-pinned {
                 .jw-showcase-player {
                     border: $sticky-player-border;
                 }
@@ -501,15 +501,15 @@
         }
     }
 
-    .jw-sticky-player-container {
-        &.is-pinned,
-        &.is-stuck {
+    .jw-mobile-player-container {
+        &.is-stuck,
+        &.is-pinned {
             .jw-showcase-player {
                 @include box-shadow(0 0 15px 0 $shadow-color);
             }
         }
 
-        &.is-stuck {
+        &.is-pinned {
             .jw-showcase-player {
                 border: $sticky-player-border;
             }

@@ -84,7 +84,8 @@ $sticky-player-width: 408px !default;
 $sticky-player-width-mobile: 65% !default;
 $sticky-player-transition-length: 160ms !default;
 $sticky-player-transition: $sticky-player-transition-length ease-in-out !default;
-$sticky-player-transition-mobile: 240ms ease-in-out !default;
+$sticky-player-transition-mobile-length: 240ms !default;
+$sticky-player-transition-mobile: $sticky-player-transition-mobile-length ease-in-out !default;
 
 //
 // Z-index
