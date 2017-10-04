@@ -42,7 +42,7 @@
             isIOS:           osName === 'ios',
             isWindows:       osName === 'windows',
             isMobile:        isMobile,
-            isCrawler:       /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent),
+            isPrerender:     /prerender/i.test(navigator.userAgent),
             browserName:     result.browser.name,
             browserVersion:  result.browser.version,
             platformName:    result.os.name,

@@ -81,7 +81,7 @@
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                if (!utils.flexboxSupport() && !platform.isCrawler) {
+                if (!utils.flexboxSupport() && !platform.isPrerender) {
                     appStore.loading = false;
 
                     $state.go('updateBrowser', {directed: true});
