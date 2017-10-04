@@ -25,6 +25,7 @@
         .factory('platform', platform);
 
     platform.$inject = [];
+
     function platform () {
 
         var isTouch  = 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch),
@@ -41,6 +42,7 @@
             isIOS:           osName === 'ios',
             isWindows:       osName === 'windows',
             isMobile:        isMobile,
+            isCrawler:       /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent),
             browserName:     result.browser.name,
             browserVersion:  result.browser.version,
             platformName:    result.os.name,
