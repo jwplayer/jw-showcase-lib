@@ -61,7 +61,7 @@
                 var canonical = $state.href('root.video', {slug: utils.slugify(item.title)}, {absolute: true});
 
                 return {
-                    title:       item.title + ' - ' + config.siteName,
+                    title:       item.title,
                     description: item.description,
                     image:       item.image,
                     canonical:   canonical,
