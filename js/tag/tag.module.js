@@ -43,7 +43,7 @@
             });
 
         seoProvider
-            .state('root.feed', ['$state', 'config', 'feed', function ($state, config, feed) {
+            .state('root.tag', ['$state', 'config', 'feed', function ($state, config, feed) {
 
                 return {
                     title:       feed.title + ' - ' + config.siteName,
