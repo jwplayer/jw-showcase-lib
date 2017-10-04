@@ -569,27 +569,27 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
-            var playlistIndex = playlist.findIndex(byMediaId(vm.item.mediaid));
+            var playlistIndex = playlist.findIndex(byMediaId(newItem.mediaid));
 
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
                 return;
             }
 
-            // if the item is not loaded in the playlist, reload the state
-            if (playlistIndex === -1) {
-                return $state.go('root.video', {
-                    mediaId: vm.item.mediaid,
-                    list:    vm.item.feedid,
-                    slug:    utils.slugify(vm.item.title)
-                });
-            }
-
             // update current item and set playlistItem
             vm.item = angular.copy(newItem);
 
-            // start playing item from playlist
-            player.playlistItem(playlistIndex);
+            // [JWStation]
+            // if the item is not loaded in the playlist, reload the state
+            if (playlistIndex === -1) {
+                playlist = generatePlaylist(vm.activeFeed, vm.item);
+                player.load(playlist);
+                player.play(true);
+            }
+            else {
+                // start playing item from playlist
+                player.playlistItem(playlistIndex);
+            }
 
             updateStateSilently();
             update();
