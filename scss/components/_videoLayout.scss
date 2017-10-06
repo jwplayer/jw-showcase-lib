@@ -5,8 +5,8 @@
 .jw-video-layout {
 
     &-align {
-        padding-right: 90px;
-        padding-left: 90px;
+        padding-right: $video-layout-padding;
+        padding-left: $video-layout-padding;
     }
 
     &-row {
@@ -28,9 +28,9 @@
         }
 
         .jw-video-layout-rail {
-            @include flex(0 0 360px);
+            @include flex(0 0 $video-layout-right-rail-width-rail-width);
             position: relative;
-            width: 360px;
+            width: $video-layout-right-rail-width-rail-width;
         }
 
         .jw-video-layout-align {
