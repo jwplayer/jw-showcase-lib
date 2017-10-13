@@ -32,7 +32,7 @@
 
         $stateProvider
             .state('root.tag', {
-                url:         '/tag/:tag',
+                url:         '/t/:tag',
                 controller:  'TagController as vm',
                 templateUrl: 'views/tag/tag.html',
                 resolve:     {
