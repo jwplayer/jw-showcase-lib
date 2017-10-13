@@ -74,3 +74,26 @@
         @include transition-property(none);
     }
 }
+
+@include tablet-and-larger() {
+    .jw-mobile-player-container {
+        // start as absolute to scroll with page
+        position: absolute;
+
+        z-index: $view-z-index;
+
+        // offset header height
+        top: $header-height + $base-spacing + $base-spacing-heading;
+
+        &-inner {
+            padding: 0 $base-spacing;
+        }
+
+        &.is-pinned {
+            .jw-mobile-player-container-inner {
+                // decrease width
+                width: $sticky-player-width-tablet;
+            }
+        }
+    }
+}
