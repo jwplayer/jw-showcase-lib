@@ -40,16 +40,21 @@
 
         this.bind = function(element, handlers) {
             var active = false;
+            var enabled = true;
 
             // call ngTouch's $swipe.bind
             $swipe.bind(element, {
                 start: function() {
+                    if (!enabled) {
+                        return;
+                    }
+
                     active = true;
 
                     pipeHandler(handlers.start, this, arguments);
                 },
                 move: function() {
-                    if (!active) {
+                    if (!(active && enabled)) {
                         return;
                     }
 
@@ -85,8 +90,8 @@
             // return new object which acts as API
             return {
                 // allow manual activation of handlers
-                active: function(state) {
-                    active = state;
+                enable: function(state) {
+                    enabled = state;
                 }
             };
         };

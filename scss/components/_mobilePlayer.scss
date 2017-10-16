@@ -76,6 +76,8 @@
 }
 
 @include tablet-and-larger() {
+    $topOffset: $header-height + $base-spacing-heading;
+
     .jw-mobile-player-container {
         // start as absolute to scroll with page
         position: absolute;
@@ -83,10 +85,10 @@
         z-index: $view-z-index;
 
         // offset header height
-        top: $header-height + $base-spacing + $base-spacing-heading;
+        top: $topOffset;
 
         &-inner {
-            padding: 0 $base-spacing;
+            padding: 0 $video-layout-padding;
         }
 
         &.is-pinned {
@@ -94,6 +96,19 @@
                 // decrease width
                 width: $sticky-player-width-tablet;
             }
+        }
+
+        // right rail enabled
+        &-flag-rail {
+            .jw-mobile-player-container-inner {
+                padding: 0 $base-spacing;
+            }
+        }
+
+        &-flag-ad {
+            $ad-height: 90px;
+
+            top: $topOffset + $base-spacing + $ad-height;
         }
     }
 }

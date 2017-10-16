@@ -588,7 +588,7 @@
                 if (playerInstance) {
                     // wait for animation to finish
                     $videoPlayerContainerEl.one(
-                        utils.getPrefixedEventNames('animationEnd'),
+                        utils.getPrefixedEventNames('transitionEnd'),
                         function () {
                             window.requestAnimationFrame(function () {
                                 // update the player's size so the controls are adjusted

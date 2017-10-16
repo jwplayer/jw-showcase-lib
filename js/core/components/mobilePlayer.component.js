@@ -34,8 +34,8 @@
      * @requires jwShowcase.core.betterSwipe
      * @requires jwShowcase.core.player
      */
-    MobilePlayerController.$inject = ['$element', '$timeout', '$state', 'betterSwipe', 'utils', 'player'];
-    function MobilePlayerController ($element, $timeout, $state, betterSwipe, utils, player) {
+    MobilePlayerController.$inject = ['$element', '$timeout', '$state', 'config', 'betterSwipe', 'utils', 'player'];
+    function MobilePlayerController ($element, $timeout, $state, config, betterSwipe, utils, player) {
 
         var vm = this,
             isDragging = false,
@@ -44,6 +44,9 @@
             swiper;
 
         vm.returnToVideo = returnToVideo;
+
+        vm.enableRail = config.options.rightRail.enabled;
+        vm.offsetDisplayAd = config.options.displayAds && config.options.displayAds.slots['above-video'];
 
         // register event handlers on player service
         playerService.on('pin', onPin);
@@ -83,7 +86,7 @@
             // wait for transition end event
             $containerEl.one(utils.getPrefixedEventNames('transitionEnd'), function () {
                 // (de)activate swiper when (not) pinned
-                swiper.active(pinned);
+                swiper.enable(pinned);
 
                 // improve render speed
                 window.requestAnimationFrame(function () {
@@ -137,7 +140,7 @@
             $containerEl.removeClass('is-pinned');
 
             // deactive swiper
-            swiper.active(false);
+            swiper.enable(false);
         }
 
         /**
@@ -218,7 +221,7 @@
             );
 
             // not active by default
-            swiper.active(false);
+            swiper.enable(false);
         }
 
         /**

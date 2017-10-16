@@ -1,4 +1,8 @@
-<div class="jw-mobile-player-container" ng-click="vm.returnToVideo()">
+<div
+    class="jw-mobile-player-container"
+    ng-class="{'jw-mobile-player-container-flag-rail': vm.enableRail, 'jw-mobile-player-container-flag-ad': vm.offsetDisplayAd}"
+    ng-click="vm.returnToVideo()"
+>
     <div class="jw-mobile-player-container-inner">
         <jw-player pid="'mobile'"></jw-player>
     </div>
