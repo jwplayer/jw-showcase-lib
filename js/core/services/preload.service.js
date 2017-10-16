@@ -171,6 +171,7 @@
                     '.jw-cookies-title',
                     '.jw-loading .jw-loading-icon .jwy-icon',
                     '.jw-skin-jw-showcase .jw-button-color:hover',
+                    '.jw-skin-jw-showcase .jw-button-color:focus',
                     '.jw-skin-jw-showcase .jw-toggle.jw-off:hover',
                     '.jw-skin-jw-showcase .jw-toggle:not(.jw-off)',
                     '.jw-theme-light .jw-card.jw-card-flag-default .jw-card-title .jw-card-title-matches',
