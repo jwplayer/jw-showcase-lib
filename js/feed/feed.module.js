@@ -32,7 +32,7 @@
 
         $stateProvider
             .state('root.feed', {
-                url:         '/list/:feedId',
+                url:         '/p/:feedId',
                 controller:  'FeedController as vm',
                 templateUrl: 'views/feed/feed.html',
                 resolve:     {

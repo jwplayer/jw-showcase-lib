@@ -32,7 +32,7 @@
 
         $stateProvider
             .state('root.tag', {
-                url:         '/tag/:tag',
+                url:         '/t/:tag',
                 controller:  'TagController as vm',
                 templateUrl: 'views/tag/tag.html',
                 resolve:     {
@@ -43,7 +43,7 @@
             });
 
         seoProvider
-            .state('root.feed', ['$state', 'config', 'feed', function ($state, config, feed) {
+            .state('root.tag', ['$state', 'config', 'feed', function ($state, config, feed) {
 
                 return {
                     title:       feed.title + ' - ' + config.siteName,

@@ -69,7 +69,9 @@
       <jw-button
           class="jw-button-block jw-button-default"
           tabindex="0"
-          ui-sref="root.settings">
+          ui-sref="root.settings"
+          ui-sref-active="active"
+          ng-click="vm.itemClickHandler($event)">
             <span class="jw-button-label">Settings</span>
             <i class="jwy-icon jwy-icon-settings"></i>
         </jw-button>

@@ -34,7 +34,7 @@
             .state('updateBrowser',{
                 controller:  'UpdateBrowserController as vm',
                 templateUrl: 'views/updateBrowser/updateBrowser.html',
-                url: '/update-browser',
+                url: '/e/update-browser',
                 params: {
                     directed: false
                 }

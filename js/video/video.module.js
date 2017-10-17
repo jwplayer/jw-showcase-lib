@@ -32,13 +32,13 @@
     function config ($stateProvider, $urlRouterProvider, seoProvider) {
 
         $urlRouterProvider
-            .when('/list/:feedId/video', '/list/:feedId')
-            .when('/search/:query/video/:mediaId/:slug', '/:mediaId/:slug')
-            .when('/list/:list/video/:mediaId/:slug', '/:mediaId/:slug?list');
+            .when('/list/:feedId/video', '/p/:feedId')
+            .when('/search/:query/video/:mediaId/:slug', '/m/:mediaId/:slug')
+            .when('/list/:list/video/:mediaId/:slug', '/m/:mediaId/:slug?list');
 
         $stateProvider
             .state('root.video', {
-                url:         '/:mediaId/:slug?list',
+                url:         '/m/:mediaId/:slug?list',
                 controller:  'VideoController as vm',
                 templateUrl: 'views/video/video.html',
                 resolve:     {
