@@ -203,37 +203,12 @@
                 vm.playerSettings.advertising = false;
             }
 
-            // if using JW8
-            if (window.jwplayer.version.indexOf('8') === 0) {
-                // do a dirty check to see if we can apply the showcase skin
-                var defaultSkin = {
-                    controlbar: {
-                        background: '#000000',
-                        icons: '#CCCCCC',
-                        iconsactive: '#FFFFFF',
-                        text: '#F2F2F2'
-                    },
-                    menus: {
-                        background: '#333333',
-                        text: '#F2F2F2',
-                        textactive: '#FFFFFF'
-                    },
-                    timeslider: {
-                        progress: '#F2F2F2',
-                        rail: '#FFFFFF'
-                    },
-                    tooltips: {
-                        background: '#FFFFFF',
-                        text: '#333333'
-                    }
-                };
-
-                if (angular.equals(window.jwplayer.defaults.skin, defaultSkin)) {
+            // if no skin is selected in dashboard use the jw-showcase skin
+            if (!window.jwplayer.defaults.skin) {
+                // if using JW8
+                if (window.jwplayer.version.indexOf('8') === 0) {
                     vm.playerSettings.skin = { name: 'jw-showcase' };
-                }
-            } else {
-                if (!window.jwplayer.defaults.skin) {
-                    // if no skin is selected in dashboard use the jw-showcase skin
+                } else {
                     vm.playerSettings.skin = 'jw-showcase';
                 }
             }
