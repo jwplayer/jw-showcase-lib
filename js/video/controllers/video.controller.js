@@ -205,7 +205,12 @@
 
             // if no skin is selected in dashboard use the jw-showcase skin
             if (!window.jwplayer.defaults.skin) {
-                vm.playerSettings.skin = 'jw-showcase';
+                // if using JW8
+                if (window.jwplayer.version.indexOf('8') === 0) {
+                    vm.playerSettings.skin = { name: 'jw-showcase' };
+                } else {
+                    vm.playerSettings.skin = 'jw-showcase';
+                }
             }
 
             if (!!window.cordova) {

@@ -33,7 +33,7 @@
 
         $stateProvider
             .state('root.settings', {
-                url: '/settings',
+                url: '/u',
                 controller: 'SettingsController as vm',
                 templateUrl: 'views/settings/settings.html',
                 scrollTop: 0,
