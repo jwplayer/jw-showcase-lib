@@ -44,8 +44,8 @@
      * <jw-player settings="vm.playerSettings" on-play="vm.onPlayEvent"></jw-player>
      * ```
      */
-    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform'];
-    function JwPlayerDirective ($parse, $timeout, utils, player, platform) {
+    JwPlayerDirective.$inject = ['$parse', '$timeout', 'utils', 'player', 'platform', 'config'];
+    function JwPlayerDirective ($parse, $timeout, utils, player, platform, config) {
 
         return {
             scope:       {
@@ -62,6 +62,8 @@
                 initTimeoutId,
                 playerInstance;
 
+            scope.enableClickToPlay = config.experimental.enableClickToPlay;
+
             activate();
 
             ////////////////////////
@@ -72,7 +74,7 @@
             function activate () {
 
                 angular
-                    .element(element[0])
+                    .element(element.find('div')[0])
                     .attr('id', playerId);
 
                 initTimeoutId = setTimeout(initialize, 500);

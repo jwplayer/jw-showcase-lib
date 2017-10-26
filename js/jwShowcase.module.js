@@ -57,7 +57,8 @@
                 videoTitlePosition:        'below',
                 useRecommendationPlaylist: false,
                 displayAds:                false
-            }
+            },
+            experimental: {}
         });
 
     /**
@@ -99,6 +100,11 @@
      * @property {Object|boolean}       options.displayAds
      * @property {string}               options.displayAds.client
      * @property {Array}                options.displayAds.slots
+     *
+     * @property {Object}               experimental
+     * @property {boolean}              experimental.enableRelatedOverlay
+     * @property {boolean}              experimental.removeSiteNameFromSEO
+     * @property {boolean}              experimental.enableClickToPlay
      */
 
     /**

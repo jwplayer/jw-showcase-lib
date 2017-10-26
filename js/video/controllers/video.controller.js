@@ -53,6 +53,7 @@
             requestQualityChange     = false,
             startTime                = $stateParams.startTime,
             playlist                 = [],
+            enableRelatedOverlay     = config.experimental.enableRelatedOverlay,
             levels,
             watchProgressItem,
             loadingTimeout;
@@ -85,7 +86,7 @@
          * Title of feed
          * @type {string}
          */
-        vm.activeFeedTitle = 'Related Videos';
+        vm.activeFeedTitle = enableRelatedOverlay ? 'Related Videos' : 'Next Up';
 
         /**
          * Is true when the right rail is enabled.
@@ -223,8 +224,8 @@
                 vm.playerSettings.related = false;
             }
 
-            // [JW Station] Show related after each video
-            if ($stateParams.list) {
+            // Show related after each video
+            if (enableRelatedOverlay && $stateParams.list) {
                 vm.playerSettings.related = {
                     file:       'https://cdn.jwplayer.com/v2/playlists/' + $stateParams.list,
                     oncomplete: 'show'
@@ -310,8 +311,10 @@
                 }
             });
 
-            // [JW Station] Only load 1 video to enable related overlay
-            playlist.splice(1);
+            if (enableRelatedOverlay) {
+                // Only load 1 video to enable related overlay
+                playlist.splice(1);
+            }
 
             return playlist;
         }
@@ -584,14 +587,12 @@
             // update current item and set playlistItem
             vm.item = angular.copy(newItem);
 
-            // [JWStation]
             // if the item is not loaded in the playlist, reload the state
             if (playlistIndex === -1) {
                 playlist = generatePlaylist(vm.activeFeed, vm.item);
                 player.load(playlist);
                 player.play(true);
-            }
-            else {
+            } else {
                 // start playing item from playlist
                 player.playlistItem(playlistIndex);
             }
