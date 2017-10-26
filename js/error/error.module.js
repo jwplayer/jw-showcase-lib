@@ -32,11 +32,11 @@
                 }
             })
             .state('root.videoNotFound', {
-                url:         '/video-not-found',
+                url:         '/e/video-not-found',
                 templateUrl: 'views/error/videoNotFound.html'
             })
             .state('root.feedNotFound', {
-                url:         '/feed-not-found',
+                url:         '/e/feed-not-found',
                 templateUrl: 'views/error/feedNotFound.html'
             });
     }
