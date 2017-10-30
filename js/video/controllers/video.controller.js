@@ -452,6 +452,13 @@
                 vm.loading = false;
             }
 
+            if (!started && window.fbq) {
+              window.fbq('track', 'Lead', {
+                value: 10.00,
+                currency: 'USD'
+              });
+            }
+
             started = true;
 
             if (!levels) {

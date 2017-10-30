@@ -77,6 +77,13 @@
                     dfp.setup();
                 }
 
+                if (config.options.facebookPixelCode) {
+                    var script = document.createElement('script');
+                    script.src = config.options.facebookPixelCode;
+                    script.type = 'text/javascript';
+                    document.body.appendChild(script);
+                }
+
                 setTimeout(function () {
                     document.body.classList.remove('jw-flag-loading-config');
                 });
