@@ -62,7 +62,7 @@
                 initTimeoutId,
                 playerInstance;
 
-            scope.enableClickToPlay = config.experimental.enableClickToPlay;
+            scope.showClickToPlayText = config.experimental.showClickToPlayText;
 
             activate();
 
