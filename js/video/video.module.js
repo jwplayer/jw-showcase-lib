@@ -60,14 +60,8 @@
             .state('root.video', ['$state', 'config', 'item', 'utils', function ($state, config, item, utils) {
                 var canonical = $state.href('root.video', {slug: utils.slugify(item.title)}, {absolute: true});
 
-                var title = item.title;
-                if (!config.experimental.removeSiteNameFromSEO) {
-                    // include siteName if not overridden by config
-                    title += ' - ' + config.siteName;
-                }
-
                 return {
-                    title:       title,
+                    title:       item.title,
                     description: item.description,
                     image:       item.image,
                     canonical:   canonical,

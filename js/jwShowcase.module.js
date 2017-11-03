@@ -103,7 +103,6 @@
      *
      * @property {Object}               experimental
      * @property {boolean}              experimental.enableRelatedOverlay
-     * @property {boolean}              experimental.removeSiteNameFromSEO
      * @property {boolean}              experimental.showClickToPlayText
      */
 
