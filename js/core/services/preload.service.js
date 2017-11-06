@@ -40,10 +40,10 @@
      */
 
     Preload.$inject = ['$q', '$state', 'appStore', 'config', 'configResolver', 'cookies', 'api', 'dfp',
-        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils'];
+        'apiConsumer', 'serviceWorker', 'watchlist', 'watchProgress', 'userSettings', 'bridge', 'utils', 'platform'];
 
     function Preload ($q, $state, appStore, config, configResolver, cookies, api, dfp, apiConsumer, serviceWorker,
-                      watchlist, watchProgress, userSettings, bridge, utils) {
+                      watchlist, watchProgress, userSettings, bridge, utils, platform) {
 
         var defer = $q.defer();
 
@@ -77,11 +77,18 @@
                     dfp.setup();
                 }
 
+                if (config.options.facebookPixelCode) {
+                    var script = document.createElement('script');
+                    script.src = config.options.facebookPixelCode;
+                    script.type = 'text/javascript';
+                    document.body.appendChild(script);
+                }
+
                 setTimeout(function () {
                     document.body.classList.remove('jw-flag-loading-config');
                 });
 
-                if (!utils.flexboxSupport()) {
+                if (!utils.flexboxSupport() && !platform.isPrerender) {
                     appStore.loading = false;
 
                     $state.go('updateBrowser', {directed: true});

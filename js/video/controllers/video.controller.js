@@ -53,6 +53,7 @@
             requestQualityChange     = false,
             startTime                = $stateParams.startTime,
             playlist                 = [],
+            enableRelatedOverlay     = config.experimental.enableRelatedOverlay,
             levels,
             watchProgressItem,
             loadingTimeout;
@@ -85,7 +86,7 @@
          * Title of feed
          * @type {string}
          */
-        vm.activeFeedTitle = 'Next Up';
+        vm.activeFeedTitle = enableRelatedOverlay ? 'Related Videos' : 'Next Up';
 
         /**
          * Is true when the right rail is enabled.
@@ -223,6 +224,14 @@
                 vm.playerSettings.related = false;
             }
 
+            // Show related after each video
+            if (enableRelatedOverlay && $stateParams.list) {
+                vm.playerSettings.related = {
+                    file:       'https://cdn.jwplayer.com/v2/playlists/' + $stateParams.list,
+                    oncomplete: 'show'
+                };
+            }
+
             // override player settings from config
             if (angular.isObject(config.options.player)) {
                 angular.merge(vm.playerSettings, config.options.player);
@@ -301,6 +310,11 @@
                     playlistItem.sources.splice(1);
                 }
             });
+
+            if (enableRelatedOverlay) {
+                // Only load 1 video to enable related overlay
+                playlist.splice(1);
+            }
 
             return playlist;
         }
@@ -445,6 +459,13 @@
                 vm.loading = false;
             }
 
+            if (!started && window.fbq) {
+              window.fbq('track', 'Lead', {
+                value: 10.00,
+                currency: 'USD'
+              });
+            }
+
             started = true;
 
             if (!levels) {
@@ -568,6 +589,8 @@
          */
         function cardClickHandler (newItem, clickedOnPlay) {
 
+            var playlistIndex = playlist.findIndex(byMediaId(newItem.mediaid));
+
             // same item
             if (vm.item.mediaid === newItem.mediaid) {
                 return;
@@ -576,8 +599,15 @@
             // update current item and set playlistItem
             vm.item = angular.copy(newItem);
 
-            // start playing item from playlist
-            player.playlistItem(playlist.findIndex(byMediaId(vm.item.mediaid)));
+            // if the item is not loaded in the playlist, reload the state
+            if (playlistIndex === -1) {
+                playlist = generatePlaylist(vm.activeFeed, vm.item);
+                player.load(playlist);
+                player.play(true);
+            } else {
+                // start playing item from playlist
+                player.playlistItem(playlistIndex);
+            }
 
             updateStateSilently();
             update();
