@@ -119,15 +119,6 @@
 
                 bindPlayerEventListeners();
 
-                if (window.cordova && scope.settings.autostart) {
-
-                    playerInstance.once('playlistItem', function () {
-                        setTimeout(function() {
-                            this.play(true);
-                        }.bind(this), 1);
-                    });
-                }
-
                 player.setPlayer(playerInstance);
             }
 

@@ -449,6 +449,10 @@
          */
         function onFirstFrame () {
 
+            // call update here too so that watchProgressItem can
+            // be set before trying to resume watchProgress
+            update();
+
             var levelsLength;
 
             if (vm.loading) {
@@ -530,21 +534,22 @@
          */
         function performConditionalSeek () {
 
-            var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching;
-
-            performedConditionalSeek = true;
-
             // startTime via $stateParams
             if (startTime) {
                 player.seek(startTime);
 
                 startTime = null;
 
+                performedConditionalSeek = true;
+
                 return;
             }
 
+            var continueWatching = userSettings.settings.continueWatching && config.options.enableContinueWatching;
             if (continueWatching && angular.isDefined(watchProgressItem)) {
                 resumeWatchProgress();
+
+                performedConditionalSeek = true;
             }
         }
 
